@@ -12,11 +12,11 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class WorkflowApplicable extends DataObjectDecorator {
-	
 	public function extraStatics() {
 		return array(
 			'has_one' => array(
 				'WorkflowDefinition' => 'WorkflowDefinition',
+				'ActiveWorkflow' => 'WorkflowInstance',
 			)
 		);
 	}

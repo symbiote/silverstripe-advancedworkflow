@@ -5,8 +5,9 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  */
 
 /**
- * A workflow action describes a the 'state' a workflow can
- * be in while waiting for 
+ * A workflow action describes a the 'state' a workflow can be in, and
+ * the action(s) that occur while in that state. An action can then have
+ * subsequent transitions out of the current state. 
  *
  * @author marcus@silverstripe.com.au
  */
@@ -22,24 +23,27 @@ class WorkflowAction extends DataObject {
 		'Workflow' => 'WorkflowInstance',
 	);
 
+	public static $extensions = array(
+		'SortableObject',
+	);
+
+
 	/**
-	 * Gets a list of all transitions available in this workflow
+	 * Gets a list of all transitions available from this workflow action
 	 */
 	public function getAllTransitions() {
 		return DataObject::get('WorkflowTransition', '"ActionID" = '.((int) $this->ID));
 	}
 
-
 	/**
 	 * Perform whatever needs to be done for this action. If this action can be considered executed, then
 	 * return true - if not (ie it needs some user input first), return false and 'execute' will be triggered
-	 * at a later point in time after the user has provided more data, either directly or indirectly. 
+	 * again at a later point in time after the user has provided more data, either directly or indirectly.
 	 *
 	 * @return boolean
 	 *			Has this action finished? If so, just execute the 'complete' functionality.
 	 */
 	public function execute() {
-
 		return true;
 	}
 
@@ -51,8 +55,22 @@ class WorkflowAction extends DataObject {
 	 * followed. Otherwise, return the list of transitions that are valid for this action to follow; it is then
 	 * up to the user to decide which to follow. 
 	 */
-	public function completeAction() {
-		
-	}
+	public function getNextTransitions() {
+		$available = $this->getAllTransitions();
+		// iterate through the transitions and see if they're valid for the current state of the item being
+		// workflowed
+		$valid = new DataObjectSet();
+		if ($available) {
+			foreach ($available as $t) {
+				if ($t->isValid()) {
+					$valid->push($t);
+				}
+			}
+		} else {
+			// we don't have a valid next transition (at least, for this user...) so just pause here?
+			// NOOP - we just want to return the empty $valid set for now. 
+		}
 
+		return $valid;
+	}
 }

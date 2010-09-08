@@ -16,8 +16,6 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * Basically, a manual step requires the interaction of someone to pick which action to take, an automatic
  * step will automatically determine what to do once it has finished.
  *
- * 
- *
  * @author marcus@silverstripe.com.au
  */
 class WorkflowDefinition extends DataObject {
@@ -30,4 +28,13 @@ class WorkflowDefinition extends DataObject {
 	public static $has_many = array(
 		'Actions' => 'WorkflowAction',
 	);
+
+	/**
+	 * Get all the actions sorted in the appropriate order...
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getSortedActions() {
+		return DataObject::get('WorkflowAction', '"WorkflowDefID"='.((int) $this->ID), 'Sort ASC');
+	}
 }

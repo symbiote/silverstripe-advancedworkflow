@@ -23,6 +23,14 @@ class WorkflowTransition extends DataObject {
 
 	public static $has_one = array(
 		'Action' => 'WorkflowAction',
-		'NextStep' => 'WorkflowAction',
+		'NextAction' => 'WorkflowAction',
 	);
+
+	/**
+	 * Is it valid for this transition to be followed given the
+	 * state of the current workflow? 
+	 */
+	public function isValid() {
+		return true;
+	}
 }
