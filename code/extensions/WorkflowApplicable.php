@@ -20,4 +20,8 @@ class WorkflowApplicable extends DataObjectDecorator {
 			)
 		);
 	}
+
+	public function updateCMSFields(FieldSet $fields) {
+		
+	}
 }

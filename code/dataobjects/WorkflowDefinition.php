@@ -30,11 +30,43 @@ class WorkflowDefinition extends DataObject {
 	);
 
 	/**
+	 * By default, a workflow definition is bound to a particular set of users or groups.
+	 * 
+	 * This is covered across to the workflow instance - it is up to subsequent
+	 * workflow actions to change this if needbe. 
+	 * 
+	 * @var array
+	 */
+	public static $many_many = array(
+		'Users' => 'Member',
+		'Groups' => 'Group'
+	);
+
+	/**
 	 * Get all the actions sorted in the appropriate order...
 	 *
 	 * @return DataObjectSet
 	 */
 	public function getSortedActions() {
 		return DataObject::get('WorkflowAction', '"WorkflowDefID"='.((int) $this->ID), 'Sort ASC');
+	}
+
+	
+	public function TreeTitle() {
+		return $this->Title;
+	}
+
+	/**
+	 */
+	public function getCMSFields() {
+		$fields = new FieldSet(new TabSet('Root'));
+
+		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowDefinition.TITLE', 'Title')));
+		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
+
+		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
+		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
+
+		return $fields;
 	}
 }

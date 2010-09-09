@@ -33,4 +33,16 @@ class WorkflowTransition extends DataObject {
 	public function isValid() {
 		return true;
 	}
+
+	public function summaryFields() {
+		return array('Title' => 'Title');
+	}
+
+	public function getTableFieldTypes() {
+		$fields = array(
+			'Title' => 'TextField',
+		);
+		
+		return $fields;
+	}
 }

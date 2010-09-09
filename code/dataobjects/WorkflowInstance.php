@@ -27,6 +27,16 @@ class WorkflowInstance extends DataObject {
 	);
 
 	/**
+	 * The list of users who are responsible for performing the current WorkflowAction
+	 *
+	 * @var array
+	 */
+	public static $many_many = array(
+		'Users' => 'Member',
+		'Groups' => 'Group'
+	);
+
+	/**
 	 * Get the object that this workflow is active for.
 	 *
 	 * Because workflows might not just be on sitetree items, we

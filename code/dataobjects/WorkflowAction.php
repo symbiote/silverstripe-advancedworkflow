@@ -73,4 +73,30 @@ class WorkflowAction extends DataObject {
 
 		return $valid;
 	}
+
+
+	public function getCMSFields() {
+		$fields = new FieldSet(new TabSet('Root'));
+
+		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
+		if ($this->ID) {
+
+		}
+	}
+	
+	public function summaryFields() {
+		return array('Title' => 'Title', 'Transitions' => 'Transitions');
+	}
+
+	public function getTableFieldTypes() {
+		$fields = array(
+			'Title' => 'TextField',
+			'Transitions' => new LiteralField('Transition', 'Can only edit transitions once created'),
+		);
+
+		if ($this->ID) {
+		}
+
+		return $fields;
+	}
 }
