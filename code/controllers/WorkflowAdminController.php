@@ -34,7 +34,6 @@ class WorkflowAdminController extends LeftAndMain {
 	 */
 	public function init() {
 		parent::init();
-
 		Requirements::css('ssau-formfields/javascript/jstree-0.9.9a2/themes/default/style.css');
 		Requirements::javascript('ssau-formfields/javascript/jstree-0.9.9a2/jquery.tree.js');
 		Requirements::javascript('activityworkflow/javascript/WorkflowAdmin.jquery.js');
@@ -120,15 +119,27 @@ class WorkflowAdminController extends LeftAndMain {
 	 */
 	public function CreateWorkflowForm() {
 		$classes = ClassInfo::subclassesFor(self::$tree_class);
+		array_unshift($classes, '');
+		
+		$actionclasses = ClassInfo::subclassesFor('WorkflowAction');
+		array_shift($actionclasses);
+		array_unshift($actionclasses, '');
+
+		$transitionclasses = ClassInfo::subclassesFor('WorkflowTransition');
+		array_unshift($transitionclasses, '');
 
 		$fields = new FieldSet(
 			new HiddenField("ParentID"),
+			new HiddenField("ParentType"),
+			new HiddenField("CreateType"),
 			new HiddenField("Locale", 'Locale', Translatable::get_current_locale()),
-			new DropdownField("WorkflowDefinitionType", "", $classes)
+			new DropdownField("WorkflowDefinitionTypes", "", $classes),
+			new DropdownField("WorkflowActionTypes", "", $actionclasses),
+			new DropdownField("WorkflowTransitionTypes", "", $transitionclasses)
 		);
 
 		$actions = new FieldSet(
-			new FormAction("createworkflow", _t('WorkflowAdmin.CREATE',"Create"))
+			new FormAction("createworkflowitem", _t('WorkflowAdmin.CREATE',"Create"))
 		);
 
 		return new Form($this, "CreateWorkflowForm", $fields, $actions);
@@ -137,16 +148,9 @@ class WorkflowAdminController extends LeftAndMain {
 	/**
 	 * Create a new workflow
 	 */
-	public function createworkflow($data, $form, $request) {
-		$workflow = new WorkflowDefinition();
-		$workflow->Title = _t('WorkflowAdmin.NEW_WORKFLOW', 'New Workflow');
-		$workflow->write();
+	public function createworkflowitem($data, $form, $request) {
 
-		if(isset($_REQUEST['returnID'])) {
-			return $workflow->ID;
-		} else {
-			return $this->returnItemToUser($workflow);
-		}
+		return print_r($data, true);
 	}
 
 	/**

@@ -27,6 +27,7 @@ class WorkflowAction extends DataObject {
 		'SortableObject',
 	);
 
+	public static $allowed_children = array('WorkflowTransition');
 
 	/**
 	 * Gets a list of all transitions available from this workflow action

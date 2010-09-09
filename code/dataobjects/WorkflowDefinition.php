@@ -42,6 +42,8 @@ class WorkflowDefinition extends DataObject {
 		'Groups' => 'Group'
 	);
 
+	public static $allowed_children = array('WorkflowAction');
+
 	/**
 	 * Get all the actions sorted in the appropriate order...
 	 *

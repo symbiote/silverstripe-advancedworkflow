@@ -1,6 +1,34 @@
 (function ($, proto) {
+	var WorkflowTree = null;
+	var treeContainer = null;
+	
 	$().ready(function () {
-		var treeContainer = $('#WorkflowTree');
+		var createForm = $('#Form_CreateWorkflowForm');
+		var currentCreateType = null;
+		var updateCreateSelection = function (type) {
+			type = type + 'Types';
+			currentCreateType = type;
+			createForm.find('select').val('0').hide();
+			createForm.find('#WorkflowDefinitionTypes select').show();
+			createForm.find('#'+type + ' select').show();
+		};
+
+		updateCreateSelection('WorkflowDefinition');
+
+		createForm.find('select').change(function () {
+			var current = treeContainer.find('a.clicked').parent();
+			if (current && current.length) {
+				var id = current.attr('id').split('-');
+				createForm.find('input[name=ParentID]').val(id[1]);
+				createForm.find('input[name=ParentType]').val(id[0]);
+				createForm.find('input[name=CreateType]').val(createForm.find('#'+currentCreateType + ' select').val());
+			}
+		});
+
+		/**
+		 * TREE functions
+		 */
+		treeContainer = $('#WorkflowTree');
 		treeContainer.tree({
 			data : {
 				type : "json",
@@ -14,9 +42,15 @@
 				theme_name: 'default'
 			},
 			callback: {
+				check_move: function () {
+					return false;
+				},
+				onmove: function (node, refNode, type, tree, rb) {
+					alert(node);
+				},
 				onselect: function (node, tree) {
 					var bits = node.id.split('-');
-					
+
 					if (bits[1]) {
 						var id = bits[1];
 						var url = 'admin/workflowadmin/loadworkflow/'+id + '?ClassType='+bits[0]+'&ajax=1';
@@ -33,7 +67,9 @@
 							new Ajax.Request(url , {
 								asynchronous : true,
 								onSuccess : function( response ) {
-
+									var allowedTypes = $(node).attr('allowed');
+									updateCreateSelection(allowedTypes);
+									
 									editForm.loadNewPage(response.responseText);
 
 									var subform;
