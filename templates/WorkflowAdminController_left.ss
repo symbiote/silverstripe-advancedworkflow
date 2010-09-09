@@ -16,22 +16,6 @@
 		</form>
 	<% end_control %>
 
-	$DeleteItemsForm
-
-	<div id="sitetree_holder">
-		<ul id="sitetree" class="tree unformatted">
-			<li id="$ID" class="Root"><a><strong><% _t('WORKFLOWS', 'Workflows') %></strong></a>
-				<% if Workflows %>
-				<ul>
-					<% control Workflows %>
-					<li id="record-$ID">
-						<a href="admin/workflowadmin/loadworkflow/$ID" title="">$Title</a>
-					</li>
-					<!-- all other users' changes-->
-					<% end_control %>
-				</ul>
-				<% end_if %>
-			</li>
-		</ul>
+	<div id="WorkflowTree">
 	</div>
 </div>

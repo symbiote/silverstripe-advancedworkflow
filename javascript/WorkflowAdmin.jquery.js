@@ -1,35 +1,78 @@
-(function ($) {
-	ssauUrlTree = $.tree.reference(treeContainer);
-	
-	treeContainer.tree({
-		data : {
-			type : "json",
-			async: true,
-			opts : {
+(function ($, proto) {
+	$().ready(function () {
+		var treeContainer = $('#WorkflowTree');
+		treeContainer.tree({
+			data : {
+				type : "json",
 				async: true,
-				url : 'workflowadmin/childnodes'
-			}
-		},
-		ui: {
-			theme_name: 'default'
-		},
-		callback: {
-			onselect: function (node, tree) {
-				var bits = node.id.split('-');
-				if (bits[1]) {
-					var internalHref = $('[name=internalhref]');
-					internalHref.val('[sitetree_link id=' + bits[1] + ']');
-					var linkTitle = $('[name=linkTitle]');
-					linkTitle.val(node.getAttribute('title'));
+				opts : {
+					async: true,
+					url : '__ajax-tree/childnodes/WorkflowDefinition'
 				}
 			},
-			onsearch: function (nodes, tree) {
-				// by default, jstree looks for the ID that was searched on, which in our case isn't
-				// what is actually there. Lets convert it eh?
-				// "a:contains('[sitetree_link id=8]')"
-				var selectedId = nodes.selector.replace(/.+=(\d+).+/, 'SiteTree-$1');
-				ssauUrlTree.scroll_into_view('#'+selectedId);
+			ui: {
+				theme_name: 'default'
+			},
+			callback: {
+				onselect: function (node, tree) {
+					var bits = node.id.split('-');
+					
+					if (bits[1]) {
+						var id = bits[1];
+						var url = 'admin/workflowadmin/loadworkflow/'+id + '?ClassType='+bits[0]+'&ajax=1';
+						var editForm = proto('Form_EditForm');
+
+						var okay = false;
+						if (editForm.isChanged()) {
+							okay = confirm("There are unsaved changes, are you sure?");
+						} else {
+							okay = true;
+						}
+
+						if (okay) {
+							new Ajax.Request(url , {
+								asynchronous : true,
+								onSuccess : function( response ) {
+
+									editForm.loadNewPage(response.responseText);
+
+									var subform;
+
+									if(subform = proto('Form_MemberForm')) subform.close();
+									if(subform = proto('Form_SubForm')) subform.close();
+
+									if(editForm.elements.ID) {
+										this.notify('PageLoaded', this.elements.ID.value);
+									}
+
+									return true;
+								},
+								onFailure : function(response) {
+									alert(response.responseText);
+									errorMessage('error loading page',response);
+								}
+							});
+						}
+
+					}
+				},
+				onsearch: function (nodes, tree) {
+					// by default, jstree looks for the ID that was searched on, which in our case isn't
+					// what is actually there. Lets convert it eh?
+					// "a:contains('[sitetree_link id=8]')"
+					var selectedId = nodes.selector.replace(/.+=(\d+).+/, 'SiteTree-$1');
+					WorkflowTree.scroll_into_view('#'+selectedId);
+				}
 			}
-		}
-	});
-})(jQuery);
+		});
+
+		var WorkflowTree = $.tree.reference(treeContainer);
+
+		$('#Form_EditForm').bind('PageSaved', function (e, b, d) {
+//			var current = treeContainer.find('a.clicked');
+			WorkflowTree.refresh()
+		});
+	})
+
+	
+})(jQuery, $);

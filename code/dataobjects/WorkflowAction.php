@@ -75,6 +75,22 @@ class WorkflowAction extends DataObject {
 	}
 
 
+	public function numchildren() {
+		return $this->stageChildren()->Count();
+	}
+
+	public function stageChildren() {
+		$kids = $this->getAllTransitions();
+		if ($kids) {
+			return $kids;
+		}
+		return new DataObjectSet();
+	}
+
+	public function RelativeLink() {
+		return '';
+	}
+	
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
 
@@ -82,6 +98,8 @@ class WorkflowAction extends DataObject {
 		if ($this->ID) {
 
 		}
+
+		return $fields;
 	}
 	
 	public function summaryFields() {

@@ -20,7 +20,8 @@ class WorkflowAdminController extends LeftAndMain {
 
 	public static $allowed_actions = array(
 		'loadworkflow',
-		'update',
+		'EditForm',
+		'save',
 		'delete',
 		'CreateWorkflowForm',
 		'createworkflow',
@@ -33,37 +34,66 @@ class WorkflowAdminController extends LeftAndMain {
 	 */
 	public function init() {
 		parent::init();
+
+		Requirements::css('ssau-formfields/javascript/jstree-0.9.9a2/themes/default/style.css');
+		Requirements::javascript('ssau-formfields/javascript/jstree-0.9.9a2/jquery.tree.js');
 		Requirements::javascript('activityworkflow/javascript/WorkflowAdmin.jquery.js');
-		Requirements::javascript('activityworkflow/javascript/jstree-0.9.9.a2/jquery.tree.js');
 	}
 
 	public function EditForm($request=null, $vars=null) {
 		$forUser = Member::currentUser();
-		$id = (int) $this->request->param('ID');
-		$workflow = null;
+		$id = (int) $this->request->postVar('ID');
+		if (!$id) {
+			$id = $this->request->param('ID');
+		}
+		$type = $this->request->postVar('ClassType');
+		if (!$type) {
+			$type = $this->request->getVar('ClassType');
+			if (!$type) {
+				$type = 'WorkflowDefinition';
+			}
+		}
+
+		$editItem = null;
 		if ($id) {
-			$workflow = DataObject::get_by_id('WorkflowDefinition', $id);
+			$editItem = DataObject::get_by_id($type, $id);
 		} else {
+			
 		}
 
 		$form = null;
 
-		if ($workflow) {
-			$idField = new HiddenField('ID', '', $workflow->ID);
-
-			$fields = $workflow->getCMSFields();
+		if ($editItem) {
+			$idField = new HiddenField('ID', '', $editItem->ID);
+			$typeField = new HiddenField('ClassType', '', $editItem->ClassName);
+			
+			$fields = $editItem->getCMSFields();
+			$fields->push($idField);
+			$fields->push($typeField);
 
 			$actions = new FieldSet();
-
-			$actions->push(new FormAction('update', _t('ActivityWorkflow.UPDATE', 'Update')));
-			$actions->push(new FormAction('delete', _t('ActivityWorkflow.DELETE', 'Delete')));
-
+			$actions->push(new FormAction('save', _t('ActivityWorkflow.SAVE', 'Save')));
 			$form = new Form($this, "EditForm", $fields, $actions);
-
-			$form->loadDataFrom($workflow);
+			$form->loadDataFrom($editItem);
 		}
 
 		return $form;
+	}
+
+	public function save($data, Form $form, $request) {
+		$type = isset($data['ClassType']) ? $data['ClassType'] : 'WorkflowDefinition';
+		$id = $data['ID'];
+
+		$editItem = DataObject::get_by_id($type, $id);
+
+		if ($editItem) {
+			$form->saveInto($editItem);
+			$editItem->write();
+			FormResponse::status_message("Saved", "good");
+		} else {
+			FormResponse::status_message("Invalid object", "bad");
+		}
+		return FormResponse::respond();
 	}
 
 
@@ -82,72 +112,6 @@ class WorkflowAdminController extends LeftAndMain {
 	public function Workflows() {
 		return DataObject::get('WorkflowDefinition');
 	}
-
-	/**
-	 * Return the entire site tree as a nested UL.
-	 * @return string HTML for site tree
-	 */
-	public function SiteTreeAsUL() {
-		$obj = singleton('WorkflowDefinition');
-		$number = $obj->markPartialTree(1, null);
-
-		if($p = $this->currentPage()) $obj->markToExpose($p);
-
-		$titleEval = '"<li id=\"record-$child->ID\" class=\"$child->class" . $child->markingClasses() .  ($extraArg->isCurrentPage($child) ? " current" : "") . "\">" . ' .
-			'"<a href=\"" . Controller::join_links(substr($extraArg->Link(),0,-1), "show", $child->ID) . "\" class=\" contents\" >" . $child->Title . "</a>" ';
-
-		$this->generateTreeStylingJS();
-
-		$siteTreeList = $obj->getChildrenAsUL(
-			'',
-			$titleEval,
-			$this,
-			true,
-			'AllChildrenIncludingDeleted',
-			'numChildren',
-			true,
-			1
-		);
-
-		// Wrap the root if needs be
-		$rootLink = $this->Link() . 'show/root';
-		$baseUrl = Director::absoluteBaseURL() . self::$url_segment;
-		if(!isset($rootID)) {
-			$siteTree = "<ul id=\"sitetree\" class=\"tree unformatted\"><li id=\"record-root\" class=\"Root\"><a href=\"$rootLink\"><strong>All Connectors</strong></a>"
-			. $siteTreeList . "</li></ul>";
-		}
-
-		return $siteTree;
-	}
-
-	/**
-	 * Returns a subtree of items underneath the given folder.
-	 *
-	 * We do our own version of returning tree data here - SilverStripe's base functionality is just too greedy
-	 * with data for this to be happy.
-	 */
-	public function getsubtree() {
-		$obj = ExternalContent::getDataObjectFor($_REQUEST['ID']);  //  DataObject::get_by_id('ExternalContentSource', $_REQUEST['ID']);
-
-		$siteTreeList = '';
-		if ($obj) {
-			try {
-				$children = $obj->stageChildren();
-				if ($children) {
-					foreach ($children as $child) {
-						$siteTreeList .= '<li id="record-'.$child->ID.'" class="'.$child->class .' unexpanded closed">' .
-						'<a href="' . Controller::join_links(substr($this->Link(),0,-1), "show", $child->ID) . '" class=" contents">' . $child->Title . '</a>';
-					}
-				}
-			} catch (Exception $e) {
-				singleton('ECUtils')->log("Failed creating tree: ".$e->getMessage(), SS_Log::ERR);
-				singleton('ECUtils')->log($e->getTraceAsString(), SS_Log::ERR);
-			}
-		}
-
-		return $siteTreeList;
-	}
-
 
 	/**
 	 * Get the form used to create a new workflow

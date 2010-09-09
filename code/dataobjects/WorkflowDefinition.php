@@ -56,6 +56,22 @@ class WorkflowDefinition extends DataObject {
 		return $this->Title;
 	}
 
+	public function numchildren() {
+		return $this->stageChildren()->Count();
+	}
+
+	public function stageChildren() {
+		$kids = $this->getSortedActions();
+		if ($kids) {
+			return $kids;
+		}
+		return new DataObjectSet();
+	}
+
+	public function RelativeLink() {
+		return '';
+	}
+
 	/**
 	 */
 	public function getCMSFields() {
