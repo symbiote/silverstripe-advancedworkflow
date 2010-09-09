@@ -25,8 +25,7 @@ class WorkflowAdminController extends LeftAndMain {
 		'delete',
 		'CreateWorkflowForm',
 		'createworkflow',
-		'deleteworkflows',
-		'DeleteItemsForm'
+		'deleteworkflow',
 	);
 
 	/**
@@ -36,7 +35,9 @@ class WorkflowAdminController extends LeftAndMain {
 		parent::init();
 		Requirements::css('ssau-formfields/javascript/jstree-0.9.9a2/themes/default/style.css');
 		Requirements::javascript('ssau-formfields/javascript/jstree-0.9.9a2/jquery.tree.js');
+		Requirements::javascript('sapphire/thirdparty/jquery-form/jquery.form.js');
 		Requirements::javascript('activityworkflow/javascript/WorkflowAdmin.jquery.js');
+		
 	}
 
 	public function EditForm($request=null, $vars=null) {
@@ -149,61 +150,59 @@ class WorkflowAdminController extends LeftAndMain {
 	 * Create a new workflow
 	 */
 	public function createworkflowitem($data, $form, $request) {
+		$newItem = null;
+		
+		if ($data['WorkflowDefinitionTypes']) {
+			$createType = $data['WorkflowDefinitionTypes'];
+			$newItem = new WorkflowDefinition();
+			$newItem->Title = 'New Workflow Definition';
+			$newItem->write();
+		} else {
+			$actionclasses = ClassInfo::subclassesFor('WorkflowAction');
+			$transitionclasses = ClassInfo::subclassesFor('WorkflowTransition');
+			$createType = $data['CreateType'];
+			
+			$idField = null;
+			if (in_array($createType, $actionclasses)) {
+				$newItem = new $createType;
+				$idField = 'WorkflowDefID';
+			} else if (in_array($createType, $transitionclasses)) {
+				$newItem = new $createType;
+				$idField = 'ActionID';
+			}
 
-		return print_r($data, true);
-	}
+			if (!$newItem) {
+				throw new Exception("Invalid creation type");
+			}
 
-	/**
-	 * Copied from AssetAdmin...
-	 *
-	 * @return Form
-	 */
-	function DeleteItemsForm() {
-		$form = new Form(
-			$this,
-			'DeleteItemsForm',
-			new FieldSet(
-				new LiteralField('SelectedPagesNote',
-					sprintf('<p>%s</p>', _t('WorkflowAdmin.SELECT_WORKFLOWS','Select the workflows that you want to delete and then click the button below'))
-				),
-				new HiddenField('csvIDs')
-			),
-			new FieldSet(
-				new FormAction('deleteworkflows', _t('WorkflowAdmin.DELWORKFLOWS','Delete the selected workflows'))
-			)
+			$newItem->Title = 'New '.$createType;
+			$newItem->$idField = $data['ParentID'];
+
+			$newItem->write();
+		}
+
+		$res = array(
+			'success' => 1,
+			'type' => $newItem->ClassName,
+			'ID' => $newItem->ID
 		);
 
-		$form->addExtraClass('actionparams');
-
-		return $form;
+		return Convert::array2json($res);
 	}
 
-	public function deleteworkflows() {
-		$script = '';
-		$ids = split(' *, *', $_REQUEST['csvIDs']);
-		$script = '';
-
-		if(!$ids) return false;
-
-		foreach($ids as $id) {
-			if(is_numeric($id)) {
-				$record = DataObject::get_by_id('WorkflowDefinition', $id);
-				if($record) {
-					$script .= $this->deleteTreeNodeJS($record);
-					$record->delete();
-					$record->destroy();
-				}
+	public function deleteworkflow($request) {
+		$id = (int) $request->postVar('ID');
+		$type = $request->postVar('Type');
+		if (!ClassInfo::exists($type) || !$id) {
+			throw new Exception("Invalid type passed");
+		}
+		if($id) {
+			$record = DataObject::get_by_id($type, $id);
+			if($record) {
+				$record->delete();
+				$record->destroy();
 			}
 		}
-
-		$size = sizeof($ids);
-		if($size > 1) {
-		  $message = $size.' '._t('WorkflowAdmin.WORKFLOWS_DELETED', 'workflows deleted.');
-		} else {
-		  $message = $size.' '._t('WorkflowAdmin.WORKFLOW_DELETED', 'workflow deleted.');
-		}
-
-		$script .= "statusMessage('$message');";
-		echo $script;
+		return Convert::array2json(array('success' => 1));
 	}
 }

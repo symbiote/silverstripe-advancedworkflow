@@ -9,7 +9,7 @@
 	<div style="clear:both;"></div>
 
 	<% control CreateWorkflowForm %>
-		<form class="actionparams" id="$FormName" action="$FormAction">
+		<form class="actionparams" id="$FormName" action="$FormAction" method="POST">
 			<% control Fields %>
 			$FieldHolder
 			<% end_control %>

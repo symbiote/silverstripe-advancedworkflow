@@ -34,6 +34,31 @@ class WorkflowTransition extends DataObject {
 		return true;
 	}
 
+	/**
+	 * Before saving, make sure we're not in an infinite loop
+	 */
+	public function  onBeforeWrite() {
+		parent::onBeforeWrite();
+		if ($this->ActionID == $this->NextActionID) {
+			$this->NextActionID = 0;
+		}
+	}
+
+
+
+	public function numchildren() {
+		return $this->stageChildren()->Count();
+	}
+
+	public function stageChildren() {
+		return new DataObjectSet();
+	}
+
+	public function RelativeLink() {
+		return '';
+	}
+	
+
 	public function summaryFields() {
 		return array('Title' => 'Title');
 	}
