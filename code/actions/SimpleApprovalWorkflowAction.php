@@ -14,6 +14,9 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class SimpleApprovalWorkflowAction extends WorkflowAction {
+	
+	public static $icon = 'activityworkflow/images/approval.png';
+
     public function execute() {
 		// we don't need to do anything for this execution,
 		// as we're relying on the fact that there's at least 2 outbound transitions

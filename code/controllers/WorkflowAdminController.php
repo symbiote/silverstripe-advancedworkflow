@@ -111,7 +111,7 @@ class WorkflowAdminController extends LeftAndMain {
 	 * @return DataObjectSet
 	 */
 	public function Workflows() {
-		return DataObject::get('WorkflowDefinition');
+		return singleton('WorkflowService')->getDefinitions();
 	}
 
 	/**
@@ -209,7 +209,7 @@ class WorkflowAdminController extends LeftAndMain {
 
 	public function sort($request) {
 		$sortIds = $request->postVar('ids');
-		$ids = explode(',', $sortIds);
+		$ids = explode(',', trim($sortIds, ','));
 		if (!count($ids)) {
 			return '{}';
 		}

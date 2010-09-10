@@ -10,10 +10,17 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class PublishItemWorkflowAction extends WorkflowAction {
-    public function execute() {
 
-		// TODO Publish the item attached to the workflow instance.
-		
+	public static $icon = 'activityworkflow/images/publish.png';
+
+    public function execute() {
+		$context = $this->Workflow()->getContext();
+
+		if ($context) {
+			// publish it!
+			$context->doPublish();
+		}
+
 		return true;
 	}
 }

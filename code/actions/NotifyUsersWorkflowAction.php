@@ -11,6 +11,9 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class NotifyUsersWorkflowAction extends WorkflowAction {
+
+	public static $icon = 'activityworkflow/images/notify.png';
+	
     public static $db = array(
 		'Subject' => 'Varchar(64)',
 		'NotificationText' => 'Text',

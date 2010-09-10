@@ -127,7 +127,7 @@
 			},
 			callback: {
 				check_move: function (node, refNode, type, tree) {
-					if (type == 'insert') {
+					if (type == 'inside') {
 						return false;
 					}
 					var moveParent = node.parent();
@@ -155,6 +155,9 @@
 
 				},
 				onmove: function (node, refNode, type, tree, rb) {
+					if (type == 'inside') {
+						return false;
+					}
 					var parent = $(node).parent();
 					var kids = parent.find('li');
 					var newOrder = '';

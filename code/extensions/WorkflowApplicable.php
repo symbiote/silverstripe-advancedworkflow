@@ -16,12 +16,69 @@ class WorkflowApplicable extends DataObjectDecorator {
 		return array(
 			'has_one' => array(
 				'WorkflowDefinition' => 'WorkflowDefinition',
-				'ActiveWorkflow' => 'WorkflowInstance',
 			)
 		);
 	}
 
 	public function updateCMSFields(FieldSet $fields) {
-		
+		$svc = singleton('WorkflowService');
+		$effective = $svc->getDefinitionFor($this->owner);
+		$effectiveTitle = 'None';
+		if ($effective) {
+			$effectiveTitle = $effective->Title;
+		}
+
+		$definitions[] = 'Inherit';
+		$map = $svc->getDefinitions()->map();
+		foreach ($map as $id => $title) {
+			$definitions[$id] = $title;
+		}
+
+		$fields->addFieldsToTab('Root.Workflow', array(
+			new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $definitions),
+			new ReadonlyField('EffectiveWorkflow', _t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle)
+		));
+	}
+
+
+	public function updateCMSActions($actions) {
+		$svc = singleton('WorkflowService');
+		$active = $svc->getWorkflowFor($this->owner);
+
+		if ($active) {
+			$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+		} else {
+			$effective = $svc->getDefinitionFor($this->owner);
+			if ($effective) {
+				// we can add an action for starting off the workflow at least
+				$initial = $effective->getInitialAction();
+				$actions->push(new FormAction('startworkflow', $initial->Title));
+			}
+		}
+	}
+
+	/**
+	 * Content can never be directly publishable
+	 */
+	public function canPublish() {
+		return false;
+	}
+
+	/**
+	 * Cannot directly delete an object from live - it must be deleted from draft, then have the change pushed through
+	 * as part of a changeset submission
+	 */
+//	public function canDeleteFromLive() {
+//	}
+
+	/**
+	 * Can only edit content that's NOT in another person's content changeset
+	 */
+	public function canEdit() {
+		$svc = singleton('WorkflowService');
+		$active = $svc->getWorkflowFor($this->owner);
+		if ($active) {
+			return false;
+		}
 	}
 }

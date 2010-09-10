@@ -49,6 +49,15 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
+	 * Gets the item that this workflow is being executed against.
+	 *
+	 * @return DataObject
+	 */
+	public function getContext() {
+		return $this->getTarget();
+	}
+
+	/**
 	 * Start a workflow based on a particular definition for a particular object.
 	 *
 	 * The object is optional; if not specified, it is assumed that this workflow
@@ -58,32 +67,45 @@ class WorkflowInstance extends DataObject {
 	 * @param DataObject $for
 	 */
 	public function beginWorkflow(WorkflowDefinition $definition, DataObject $for=null) {
-		if ($for && Object::has_extension($for->ClassName, 'WorkflowApplicable')) {
-			$for->ActiveWorkflowID = $this->ID;
-			$this->TargetClass = $for->ClassName;
-			$this->TargetID = $for->ID;
-			$for->write();
-		}
-
 		// make sure to have an ID first!!!
 		if (!$this->ID) {
 			$this->write();
 		}
 		
+		if ($for && Object::has_extension($for->ClassName, 'WorkflowApplicable')) {
+			$this->TargetClass = $for->ClassName;
+			$this->TargetID = $for->ID;
+			$for->write();
+		}
+
 		$this->Title = sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 
-		$actionMapping = array();
+		$users = $definition->Users();
+		if ($users->Count()) {
+			foreach ($users as $user) {
+				$this->Users()->add($user);
+			}
+		}
 
+		$groups = $definition->Groups();
+		if ($groups->Count()) {
+			foreach ($groups as $group) {
+				$this->Groups()->add($group);
+			}
+		}
+
+		$actionMapping = array();
 		$actions = $definition->getSortedActions();
 				
 		if ($actions) {
-			
 			foreach ($actions as $action) {
 				$newAction = $action->duplicate(false);
 				$newAction->WorkflowDefID = 0;
 				$newAction->WorkflowID = $this->ID;
 				$newAction->Sort = 0;
 				$newAction->write();
+				$newAction->cloneFromDefinition($action);
+
 				$actionMapping[$action->ID] = $newAction->ID;
 
 				if (!$this->CurrentActionID) {
@@ -101,6 +123,8 @@ class WorkflowInstance extends DataObject {
 						$newTransition->ActionID = $actionMapping[$transition->ActionID];
 						$newTransition->NextActionID = $actionMapping[$transition->NextActionID];
 						$newTransition->write();
+						
+						$newTransition->cloneFromDefinition($transition);
 					}
 				}
 			}
@@ -168,6 +192,7 @@ class WorkflowInstance extends DataObject {
 		// we're finished... !
 		$this->CurrentActionID = 0;
 		$this->WorkflowStatus = $status;
+
 		$this->write();
 	}
 
@@ -211,7 +236,7 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @param boolean $persistant
 	 */
-	public function flushCache($persistant=true) {
+	public function flushCache($persistent=true) {
 		parent::flushCache($persistent);
 		$this->components = array();
 	}

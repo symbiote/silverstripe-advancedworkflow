@@ -59,6 +59,20 @@ class WorkflowDefinition extends DataObject {
 		return DataObject::get('WorkflowAction', '"WorkflowDefID"='.((int) $this->ID), 'Sort ASC');
 	}
 
+	/**
+	 * Gets the action that first triggers off the workflow
+	 * 
+	 * @return WorkflowAction
+	 */
+	public function getInitialAction() {
+		$actions = $this->getSortedActions();
+		if ($actions && $actions->Count()) {
+			return $actions->First();
+		}
+	}
+
+
+	/* CMS FUNCTIONS */
 	
 	public function TreeTitle() {
 		return $this->Title;

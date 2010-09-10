@@ -12,6 +12,7 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
 class WorkflowService {
 
 	public function  __construct() {
+		
 	}
 
 	/**
@@ -51,15 +52,24 @@ class WorkflowService {
 		$id = $item;
 		if ($item instanceof WorkflowAction) {
 			$id = $item->WorkflowID;
-		} else if (Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
-			$id = $item->ActiveWorkflowID;
-		}
-
-		$id = (int) $id;
-		if ($id) {
-			// now load the workflow instance
 			return DataObject::get_by_id('WorkflowInstance', $id);
+		} else if (Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
+			$filter = singleton('WfUtils')->dbQuote(array(
+				'TargetClass =' => $item->ClassName,
+				'TargetID =' => $item->ID,
+			));
+
+			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\')');
 		}
+	}
+
+	/**
+	 * Get all the available workflow definitions
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getDefinitions() {
+		return DataObject::get('WorkflowDefinition', '', 'Sort ASC');
 	}
 
 	/**
@@ -69,7 +79,7 @@ class WorkflowService {
 	 *
 	 * @param DataObject $node
 	 */
-	public function getAvailableOptions(DataObject $dataObject) {
+	public function getAvailableWorkflowOptions(DataObject $dataObject) {
 		if (Object::has_extension($dataObject->ClassName, 'WorkflowApplicable')) {
 			if ($dataObject->ActiveInstanceID) {
 				// we can just return the instance's current step's options
@@ -105,10 +115,7 @@ class WorkflowService {
 			throw new Exception("Invalid transition ID $transitionId");
 		}
 
-		$filter = singleton('WfUtils')->dbQuote(array(
-			'ActionID =' => $transition->ActionID
-		));
-		$action = DataObject::get_one('WorkflowAction', $filter);
+		$action = DataObject::get_by_id('WorkflowAction', $transition->ActionID);
 
 		// if we're a current instance, get that and transition
 		if ($action->WorkflowID) {
@@ -120,14 +127,21 @@ class WorkflowService {
 	/**
 	 * Starts the workflow for the given data object, assuming it or a parent has
 	 * a definition specified. 
-	 *
+	 * 
 	 * @param DataObject $object
 	 */
 	public function startWorkflow(DataObject $object) {
+		$existing = $this->getWorkflowFor($object);
+		if ($existing) {
+			throw new ExistingWorkflowException("That object already has a workflow running");
+		}
+
 		$definition = $this->getDefinitionFor($object);
-		$instance = new WorkflowInstance();
-		$instance->beginWorkflow($definition, $object);
-		$instance->execute();
+		if ($definition) {
+			$instance = new WorkflowInstance();
+			$instance->beginWorkflow($definition, $object);
+			$instance->execute();
+		}
 	}
 
 	/**
@@ -152,3 +166,5 @@ class WorkflowService {
 		}
 	}
 }
+
+class ExistingWorkflowException extends Exception {};

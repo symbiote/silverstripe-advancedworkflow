@@ -50,7 +50,40 @@ class WorkflowTransition extends DataObject {
 		}
 	}
 
+	/**
+	 * Called when this workflow transition is cloned from the definition of the transition
+	 *
+	 * If your custom action defines custom properties, this is where you can update
+	 * them for the new definition
+	 *
+	 * @param WorkflowTransition $action
+	 */
+	public function cloneFromDefinition(WorkflowTransition $action) {
 
+	}
+
+	/* CMS FUNCTIONS */
+
+	public function getCMSFields() {
+		$fields = new FieldSet(new TabSet('Root'));
+		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
+
+		$filter = '';
+		if ($this->ActionID) {
+			$filter = '"WorkflowDefID" = '.((int) $this->Action()->WorkflowDefID);
+		}
+
+		$actions = DataObject::get('WorkflowAction', $filter);
+		$options = array();
+		if ($actions) {
+			$options = $actions->map();
+		}
+
+		$fields->addFieldToTab('Root.Main', new DropdownField('ActionID', _t('WorkflowTransition.ACTION', 'Action'), $options));
+		$fields->addFieldToTab('Root.Main', new DropdownField('NextActionID', _t('WorkflowTransition.NEXT_ACTION', 'Next Action'), $options));
+
+		return $fields;
+	}
 
 	public function numchildren() {
 		return $this->stageChildren()->Count();

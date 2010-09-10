@@ -14,6 +14,7 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
 class WorkflowAction extends DataObject {
     public static $db = array(
 		'Title' => 'Varchar(255)',
+		'Comment' => 'HTMLText',
 		'Type' => "Enum('Dynamic,Manual','Manual')",
 		'Executed' => 'Boolean',
 	);
@@ -36,6 +37,14 @@ class WorkflowAction extends DataObject {
 	 */
 	public function getAllTransitions() {
 		return DataObject::get('WorkflowTransition', '"ActionID" = '.((int) $this->ID), 'Sort ASC');
+	}
+
+	/**
+	 * Can documents in the current workflow state be edited?
+	 * 
+	 */
+	public function canEdit() {
+		return true;
 	}
 
 	/**
@@ -78,6 +87,27 @@ class WorkflowAction extends DataObject {
 	}
 
 
+	/**
+	 * Called when this workflow action is cloned from the definition of the action
+	 *
+	 * If your custom action defines custom properties, this is where you can update
+	 * them for the new definition
+	 *
+	 * @param WorkflowTransition $action
+	 */
+	public function cloneFromDefinition(WorkflowAction $action) {
+
+	}
+
+	/* CMS RELATED FUNCTIONALITY... */
+
+	/**
+	 * Gets fields for when this is part of an active workflow
+	 */
+	public function updateWorkflowFields($fields) {
+		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+	}
+
 	public function numchildren() {
 		return $this->stageChildren()->Count();
 	}
@@ -96,11 +126,7 @@ class WorkflowAction extends DataObject {
 	
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
-
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
-		if ($this->ID) {
-
-		}
 
 		return $fields;
 	}
