@@ -1,6 +1,10 @@
 (function ($, proto) {
 	var WorkflowTree = null;
 	var treeContainer = null;
+
+	var DELETE_URL = 'admin/workflowadmin/deleteworkflow';
+	var LOAD_URL = 'admin/workflowadmin/loadworkflow';
+	var SORT_URL = 'admin/workflowadmin/sort';
 	
 	$().ready(function () {
 		var createForm = $('#Form_CreateWorkflowForm');
@@ -52,7 +56,7 @@
 				return;
 			}
 			if (confirm("Are you sure?")) {
-				$.post('admin/workflowadmin/deleteworkflow', {ID: bits[1], Type: bits[0]}, function (data) {
+				$.post(DELETE_URL, {ID: bits[1], Type: bits[0]}, function (data) {
 					var d = $.parseJSON(data);
 					if (d && d.success) {
 						WorkflowTree.refresh();
@@ -66,7 +70,7 @@
 			var bits = typeId.split('-');
 			if (bits[1]) {
 				var id = bits[1];
-				var url = 'admin/workflowadmin/loadworkflow/'+id + '?ClassType='+bits[0]+'&ajax=1';
+				var url = LOAD_URL + '/' + id + '?ClassType=' + bits[0] + '&ajax=1';
 				var editForm = proto('Form_EditForm');
 
 				var okay = false;
@@ -102,7 +106,6 @@
 						}
 					});
 				}
-
 			}
 		}
 
@@ -123,11 +126,44 @@
 				theme_name: 'default'
 			},
 			callback: {
-				check_move: function () {
+				check_move: function (node, refNode, type, tree) {
+					if (type == 'insert') {
+						return false;
+					}
+					var moveParent = node.parent();
+					var pid = null;
+					pid = moveParent.attr('id');
+
+					var classes = $(node).attr('class').split(' ');
+					var baseType = classes[0];
+					// get the actual 'li' node
+
+					var target = refNode.parent();
+					var targetClasses = target.attr('class').split(' ');
+					var targetType = targetClasses[0];
+
+					var targetParent = target.parent();
+
+					var tpid = null;
+					tpid = targetParent.attr('id');
+
+					if (tpid == pid && baseType == targetType) {
+						return true;
+					}
+
 					return false;
+
 				},
 				onmove: function (node, refNode, type, tree, rb) {
-					alert(node);
+					var parent = $(node).parent();
+					var kids = parent.find('li');
+					var newOrder = '';
+					var sep = '';
+					for (var i = 0; i < kids.length; i++) {
+						newOrder += sep + $(kids[i]).attr('id');
+						sep = ',';
+					}
+					$.post(SORT_URL, {ids: newOrder});
 				},
 				onselect: function (node, tree) {
 					loadEditFor(node.id);

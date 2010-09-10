@@ -29,6 +29,10 @@ class WorkflowDefinition extends DataObject {
 		'Actions' => 'WorkflowAction',
 	);
 
+	public static $extensions = array(
+		'SortableObject',
+	);
+
 	/**
 	 * By default, a workflow definition is bound to a particular set of users or groups.
 	 * 
@@ -43,6 +47,8 @@ class WorkflowDefinition extends DataObject {
 	);
 
 	public static $allowed_children = array('WorkflowAction');
+
+	public static $icon = 'activityworkflow/images/definition.png';
 
 	/**
 	 * Get all the actions sorted in the appropriate order...

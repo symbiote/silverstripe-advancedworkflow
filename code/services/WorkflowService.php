@@ -10,8 +10,11 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class WorkflowService {
+
+	public function  __construct() {
+	}
+
 	/**
-	 * 
 	 * Gets the workflow definition for a given dataobject, if there is one
 	 * 
 	 * Will recursively query parent elements until it finds one, if available
@@ -125,5 +128,27 @@ class WorkflowService {
 		$instance = new WorkflowInstance();
 		$instance->beginWorkflow($definition, $object);
 		$instance->execute();
+	}
+
+	/**
+	 * Reorders actions within a definition
+	 *
+	 * @param WorkflowDefinition|WorkflowAction $objects
+	 *				The objects to be reordered
+	 * @param array $newOrder
+	 *				An array of IDs of the actions in the order they should be.
+	 */
+	public function reorder($objects, $newOrder) {
+		$sortVals = array_values($objects->map('ID', 'Sort'));
+		// save the new ID values - but only use existing sort values to prevent
+		// conflicts with items not in the table
+		foreach($newOrder as $key => $id) {
+			if (!$id) {
+				continue;
+			}
+			$object = $objects->find('ID', $id);
+			$object->Sort = $sortVals[$key];
+			$object->write();
+		}
 	}
 }

@@ -26,6 +26,12 @@ class WorkflowTransition extends DataObject {
 		'NextAction' => 'WorkflowAction',
 	);
 
+	public static $extensions = array(
+		'SortableObject',
+	);
+
+	public static $icon = 'activityworkflow/images/transition.png';
+
 	/**
 	 * Is it valid for this transition to be followed given the
 	 * state of the current workflow? 

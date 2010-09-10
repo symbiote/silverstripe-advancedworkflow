@@ -23,6 +23,8 @@ class WorkflowAction extends DataObject {
 		'Workflow' => 'WorkflowInstance',
 	);
 
+	public static $icon = 'activityworkflow/images/action.png';
+
 	public static $extensions = array(
 		'SortableObject',
 	);
@@ -33,7 +35,7 @@ class WorkflowAction extends DataObject {
 	 * Gets a list of all transitions available from this workflow action
 	 */
 	public function getAllTransitions() {
-		return DataObject::get('WorkflowTransition', '"ActionID" = '.((int) $this->ID));
+		return DataObject::get('WorkflowTransition', '"ActionID" = '.((int) $this->ID), 'Sort ASC');
 	}
 
 	/**

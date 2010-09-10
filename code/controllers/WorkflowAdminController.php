@@ -26,6 +26,7 @@ class WorkflowAdminController extends LeftAndMain {
 		'CreateWorkflowForm',
 		'createworkflow',
 		'deleteworkflow',
+		'sort',
 	);
 
 	/**
@@ -204,5 +205,42 @@ class WorkflowAdminController extends LeftAndMain {
 			}
 		}
 		return Convert::array2json(array('success' => 1));
+	}
+
+	public function sort($request) {
+		$sortIds = $request->postVar('ids');
+		$ids = explode(',', $sortIds);
+		if (!count($ids)) {
+			return '{}';
+		}
+
+		$bits = explode('-', $ids[0]);
+		$item = DataObject::get_by_id($bits[0], $bits[1]);
+		$currentObjects = null;
+		if ($item instanceof WorkflowAction) {
+			$parent = $item->WorkflowDef();
+			$currentObjects = $parent->getSortedActions();
+		} else if ($item instanceof WorkflowTransition) {
+			$parent = $item->Action();
+			$currentObjects = $parent->getAllTransitions();
+		} else if ($item instanceof WorkflowDefinition) {
+			$currentObjects = DataObject::get('WorkflowDefinition', '', 'Sort ASC');
+		} else {
+			throw new Exception("Invalid sort options");
+		}
+
+		$newOrder = array();
+		foreach ($ids as $id) {
+			$bits = explode('-', $id);
+			$newOrder[] = $bits[1];
+		}
+
+		if (count($newOrder) != $currentObjects->Count()) {
+			throw new Exception("Invalid ordering count");
+		}
+
+		singleton('WorkflowService')->reorder($currentObjects, $newOrder);
+
+		return '{}';
 	}
 }
