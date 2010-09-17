@@ -41,10 +41,27 @@ class WorkflowAction extends DataObject {
 
 	/**
 	 * Can documents in the current workflow state be edited?
-	 * 
 	 */
 	public function canEdit() {
 		return true;
+	}
+
+	/**
+	 * Does this action restrict viewing of the document?
+	 *
+	 * @return boolean
+	 */
+	public function canView() {
+		return true;
+	}
+
+	/**
+	 * Does this action restrict the publishing of a document?
+	 *
+	 * @return boolean
+	 */
+	public function canPublish() {
+		return false;
 	}
 
 	/**

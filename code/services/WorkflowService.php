@@ -50,10 +50,11 @@ class WorkflowService {
 	 */
 	public function getWorkflowFor($item) {
 		$id = $item;
+		
 		if ($item instanceof WorkflowAction) {
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
-		} else if (Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
+		} else if (is_object($item) && Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
 			$filter = singleton('WfUtils')->dbQuote(array(
 				'TargetClass =' => $item->ClassName,
 				'TargetID =' => $item->ID,

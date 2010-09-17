@@ -21,14 +21,13 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 		return $this->javascriptRefresh($data['ID']);
 	}
 
-
 	/**
 	 * Need to update the edit form AFTER it's been transformed to read only so that the workflow stuff is still
-	 * allowed to be added.
+	 * allowed to be added with 'write' permissions
 	 *
 	 * @param Form $form
 	 */
-	public function updateEditForm($form) {
+	public function updateEditForm(Form $form) {
 		$svc = singleton('WorkflowService');
 
 		$active = $svc->getWorkflowFor($this->owner->getRecord($this->owner->currentPageID()));
@@ -37,8 +36,16 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 			$current = $active->CurrentAction();
 			
 			$wfFields = $this->getWorkflowFieldsFor($current);
+			
+			$allowed = array_keys($wfFields->saveableFields());
+			$data = array();
+			foreach ($allowed as $fieldName) {
+				$data[$fieldName] = $current->$fieldName;
+			}
 
-				$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+
+			$form->loadDataFrom($data);
 		}
 	}
 
@@ -57,7 +64,7 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		$action->updateWorkflowFields($fields);
-
+		
 		return $fields;
 	}
 
@@ -71,16 +78,23 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 		$allowed = array_keys($allowedFields);
 		$form->saveInto($action, $allowed);
 		$action->write();
-		if (isset($data['TransitionID'])) {
-			$svc = singleton('WorkflowService');
+
+		$svc = singleton('WorkflowService');
+		if (isset($data['TransitionID']) && $data['TransitionID']) {
+			
 			$svc->executeTransition($data['TransitionID']);
+		} else {
+			// otherwise, just try to execute the current workflow to see if it
+			// can now proceed based on user input
+			$workflow = $svc->getWorkflowFor($action);
+			$workflow->execute();
 		}
 
 		return $this->javascriptRefresh($data['ID']);
 	}
 
 	protected function javascriptRefresh($nodeId, $message = 'Please wait...') {
-		FormResponse::add("$('sitetree').getTreeNodeByIdx(\"$nodeId\").selectTreeNode();");
+		FormResponse::add("$('Form_EditForm').resetElements(); $('sitetree').getTreeNodeByIdx(\"$nodeId\").selectTreeNode();");
 		FormResponse::status_message($message, "good");
 		return FormResponse::respond();
 	}

@@ -225,10 +225,46 @@ class WorkflowInstance extends DataObject {
 		$this->write();
 		$this->flushCache();
 
-		// @TODO call the transition extend directly...
 		$transition->extend('onTransition');
 
 		$this->execute();
+	}
+
+	/**
+	 * Can documents in the current workflow state be edited?
+	 */
+	public function canEdit() {
+		$action = $this->CurrentAction();
+		if ($action) {
+			return $action->canEdit();
+		}
+		return true;
+	}
+
+	/**
+	 * Does this action restrict viewing of the document?
+	 *
+	 * @return boolean
+	 */
+	public function canView() {
+		$action = $this->CurrentAction();
+		if ($action) {
+			return $action->canView();
+		}
+		return true;
+	}
+
+	/**
+	 * Does this action restrict the publishing of a document?
+	 *
+	 * @return boolean
+	 */
+	public function canPublish() {
+		$action = $this->CurrentAction();
+		if ($action) {
+			return $action->canPublish();
+		}
+		return true;
 	}
 
 	/**

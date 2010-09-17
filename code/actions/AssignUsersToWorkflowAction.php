@@ -23,6 +23,6 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 	);
 
     public function execute() {
-		return true;
+		return false;
 	}
 }

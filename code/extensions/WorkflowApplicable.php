@@ -12,6 +12,15 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class WorkflowApplicable extends DataObjectDecorator {
+	
+	/**
+	 * 
+	 * A cache var for the current workflow instance
+	 *
+	 * @var WorkflowInstance
+	 */
+	protected $currentInstance;
+
 	public function extraStatics() {
 		return array(
 			'has_one' => array(
@@ -58,9 +67,29 @@ class WorkflowApplicable extends DataObjectDecorator {
 	}
 
 	/**
-	 * Content can never be directly publishable
+	 * Gets the current instance of workflow
+	 *
+	 * @return WorkflowInstance
+	 */
+	public function getWorkflowInstance() {
+		if (!$this->currentInstance) {
+			$svc = singleton('WorkflowService');
+			$this->currentInstance = $svc->getWorkflowFor($this->owner);
+		}
+
+		return $this->currentInstance;
+	}
+
+	/**
+	 * Content can never be directly publishable if there's a workflow applied.
+	 *
+	 * If there's an active instance, then it 'might' be publishable
 	 */
 	public function canPublish() {
+		$active = $this->getWorkflowInstance();
+		if ($active) {
+			return $active->canPublish();
+		}
 		return false;
 	}
 
@@ -75,10 +104,10 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 * Can only edit content that's NOT in another person's content changeset
 	 */
 	public function canEdit() {
-		$svc = singleton('WorkflowService');
-		$active = $svc->getWorkflowFor($this->owner);
+		$active = $this->getWorkflowInstance();
 		if ($active) {
-			return false;
+			return $active->canEdit();
 		}
+		return true;
 	}
 }
