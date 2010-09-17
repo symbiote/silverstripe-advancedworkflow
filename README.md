@@ -12,3 +12,12 @@ Requirements
 ------------
 
 The activity workflow module requires the ssau-formfields module. 
+
+Installation
+------------
+
+Add 
+
+	DataObject::add_extension('SiteTree', 'WorkflowApplicable');
+
+to your site's _config.php file
