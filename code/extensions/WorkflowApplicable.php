@@ -55,7 +55,9 @@ class WorkflowApplicable extends DataObjectDecorator {
 		$active = $svc->getWorkflowFor($this->owner);
 
 		if ($active) {
-			$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+			if ($this->canEditWorkflow()) {
+				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+			}
 		} else {
 			$effective = $svc->getDefinitionFor($this->owner);
 			if ($effective) {
@@ -109,5 +111,16 @@ class WorkflowApplicable extends DataObjectDecorator {
 			return $active->canEditTarget();
 		}
 		return true;
+	}
+
+	/**
+	 * Can a user edit the current workflow attached to this item?
+	 */
+	public function canEditWorkflow() {
+		$active = $this->getWorkflowInstance();
+		if ($active) {
+			return $active->canEdit();
+		}
+		return false;
 	}
 }

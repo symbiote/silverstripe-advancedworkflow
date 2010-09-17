@@ -23,6 +23,9 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 	);
 
     public function execute() {
-		return false;
+		// update the list of assigned users based on what was set in the definition.
+
+		// and just return true
+		return true;
 	}
 }

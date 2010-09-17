@@ -43,7 +43,7 @@ class WorkflowAction extends DataObject {
 	 * Can documents in the current workflow state be edited?
 	 */
 	public function canEdit() {
-		return true;
+		return false;
 	}
 
 	/**

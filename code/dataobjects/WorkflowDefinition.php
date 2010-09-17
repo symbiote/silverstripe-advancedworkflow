@@ -71,7 +71,6 @@ class WorkflowDefinition extends DataObject {
 		}
 	}
 
-
 	/* CMS FUNCTIONS */
 	
 	public function TreeTitle() {
@@ -101,7 +100,6 @@ class WorkflowDefinition extends DataObject {
 
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowDefinition.TITLE', 'Title')));
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
-
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
 

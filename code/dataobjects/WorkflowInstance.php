@@ -254,6 +254,10 @@ class WorkflowInstance extends DataObject {
 			$member = Member::currentUser();
 		}
 
+		if(Permission::checkMember($member, "ADMIN")) {
+			return true;
+		}
+
 		$memberGroups = $member->Groups();
 		/* @var $memberGroups DataObjectSet */
 		if ($memberGroups) {

@@ -34,8 +34,11 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 	public function updateEditForm(Form $form) {
 		$svc = singleton('WorkflowService');
 
-		$active = $svc->getWorkflowFor($this->owner->getRecord($this->owner->currentPageID()));
+		$p = $this->owner->getRecord($this->owner->currentPageID());
+
+		$active = $svc->getWorkflowFor($p);
 		if ($active) {
+			
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
 			
@@ -50,6 +53,10 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 
 			$form->loadDataFrom($data);
+
+			if (!$p->canEditWorkflow()) {
+				$form->makeReadonly();
+			}
 		}
 	}
 
@@ -82,7 +89,7 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 	 */
 	public function updateworkflow($data, Form $form, $request) {
 		$p = $this->owner->getRecord($this->owner->currentPageID());
-		if (!$p || !$p->canEdit()) {
+		if (!$p || !$p->canEditWorkflow()) {
 			return;
 		}
 

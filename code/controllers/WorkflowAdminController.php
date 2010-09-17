@@ -56,7 +56,7 @@ class WorkflowAdminController extends LeftAndMain {
 		}
 
 		$editItem = null;
-		if ($id) {
+		if ($id && is_numeric($id)) {
 			$editItem = DataObject::get_by_id($type, $id);
 		} else {
 			
