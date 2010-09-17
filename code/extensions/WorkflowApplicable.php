@@ -88,7 +88,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	public function canPublish() {
 		$active = $this->getWorkflowInstance();
 		if ($active) {
-			return $active->canPublish();
+			return $active->canPublishTarget();
 		}
 		return false;
 	}
@@ -106,7 +106,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	public function canEdit() {
 		$active = $this->getWorkflowInstance();
 		if ($active) {
-			return $active->canEdit();
+			return $active->canEditTarget();
 		}
 		return true;
 	}

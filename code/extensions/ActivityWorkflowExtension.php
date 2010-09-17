@@ -11,6 +11,10 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  */
 class ActivityWorkflowExtension extends LeftAndMainDecorator {
     public function startworkflow($data, $form, $request) {
+		$p = $this->owner->getRecord($this->owner->currentPageID());
+		if (!$p || !$p->canEdit()) {
+			return;
+		}
 		$item = DataObject::get_by_id('SiteTree', (int) $data['ID']);
 
 		if ($item) {
@@ -68,7 +72,20 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 		return $fields;
 	}
 
+	/**
+	 * Update a workflow based on user input. 
+	 *
+	 * @param <type> $data
+	 * @param Form $form
+	 * @param <type> $request
+	 * @return <type>
+	 */
 	public function updateworkflow($data, Form $form, $request) {
+		$p = $this->owner->getRecord($this->owner->currentPageID());
+		if (!$p || !$p->canEdit()) {
+			return;
+		}
+
 		$action = DataObject::get_by_id('WorkflowAction', $data['CurrentActionID']);
 		$allowedFields = $this->getWorkflowFieldsFor($action)->saveableFields();
 

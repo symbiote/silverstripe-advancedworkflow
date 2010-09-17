@@ -230,10 +230,56 @@ class WorkflowInstance extends DataObject {
 		$this->execute();
 	}
 
+	public function canView($member=null) {
+		return $this->userHasAccess($member);
+	}
+	public function canEdit($member=null) {
+		return $this->userHasAccess($member);
+	}
+	public function canDelete($member=null) {
+		return $this->userHasAccess($member);
+	}
+
+	/**
+	 * Checks whether the given user is in the list of users assigned to this
+	 * workflow
+	 *
+	 * @param $memberID
+	 */
+	protected function userHasAccess($member) {
+		if (!$member) {
+			if (!Member::currentUserID()) {
+				return false;
+			}
+			$member = Member::currentUser();
+		}
+
+		$memberGroups = $member->Groups();
+		/* @var $memberGroups DataObjectSet */
+		if ($memberGroups) {
+			$groups = $this->Groups();
+			if ($groups) {
+				// see if they're in it
+				foreach ($groups as $group) {
+					if ($match = $memberGroups->find('ID', $group->ID)) {
+						return true;
+					}
+				}
+			}
+		}
+
+		$users = $this->Users();
+		
+		if ($users && $user = $users->find('ID', $member->ID)) {
+			return true;
+		}
+		return false;
+	}
+
 	/**
 	 * Can documents in the current workflow state be edited?
 	 */
-	public function canEdit() {
+	public function canEditTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
 			return $action->canEdit();
@@ -246,7 +292,7 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @return boolean
 	 */
-	public function canView() {
+	public function canViewTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
 			return $action->canView();
@@ -259,7 +305,7 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @return boolean
 	 */
-	public function canPublish() {
+	public function canPublishTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
 			return $action->canPublish();
