@@ -116,7 +116,7 @@ class WorkflowInstance extends DataObject {
 			// iterate again, so we can clone the action transitions with appropriate
 			// mappings
 			foreach ($actions as $action) {
-				$transitions = $action->getAllTransitions();
+				$transitions = $action->Transitions();
 				if ($transitions) {
 					foreach ($transitions as $transition) {
 						$newTransition = $transition->duplicate(false);
@@ -172,7 +172,7 @@ class WorkflowInstance extends DataObject {
 			$this->performTransition($availableTransition);
 		} else {
 			// see if there are ANY transitions for the action, not just if there's a valid one
-			$all = $currentAction->getAllTransitions();
+			$all = $currentAction->Transitions();
 			if ($currentAction->Executed && !$all || $all->Count() == 0) {
 				$this->completeWorkflow();
 			} else {
@@ -203,7 +203,7 @@ class WorkflowInstance extends DataObject {
 	 * @param WorkflowAction $action
 	 */
 	protected function checkTransitions(WorkflowAction $action) {
-		$transitions = $action->getNextTransitions();
+		$transitions = $action->getValidTransitions();
 		// if there's JUST ONE transition, then we need should
 		// immediately follow it.
 		if ($transitions && $transitions->Count() == 1) {

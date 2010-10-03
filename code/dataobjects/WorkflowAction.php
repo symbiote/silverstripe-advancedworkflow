@@ -24,6 +24,10 @@ class WorkflowAction extends DataObject {
 		'Workflow' => 'WorkflowInstance',
 	);
 
+	public static $has_many = array(
+		'Transitions' => 'WorkflowTransition.Action'
+	);
+
 	public static $icon = 'activityworkflow/images/action.png';
 
 	public static $extensions = array(
@@ -31,13 +35,6 @@ class WorkflowAction extends DataObject {
 	);
 
 	public static $allowed_children = array('WorkflowTransition');
-
-	/**
-	 * Gets a list of all transitions available from this workflow action
-	 */
-	public function getAllTransitions() {
-		return DataObject::get('WorkflowTransition', '"ActionID" = '.((int) $this->ID), 'Sort ASC');
-	}
 
 	/**
 	 * Returns the action title that describes all instances of this action - default to the singular name.
@@ -91,22 +88,18 @@ class WorkflowAction extends DataObject {
 	 *
 	 * If this action has a single valid transition, it should be returned by this method and will be immediately
 	 * followed. Otherwise, return the list of transitions that are valid for this action to follow; it is then
-	 * up to the user to decide which to follow. 
+	 * up to the user to decide which to follow.
+	 *
+	 * @return DataObjectSet
 	 */
-	public function getNextTransitions() {
-		$available = $this->getAllTransitions();
+	public function getValidTransitions() {
+		$available = $this->Transitions();
+		$valid     = new DataObjectSet();
+
 		// iterate through the transitions and see if they're valid for the current state of the item being
 		// workflowed
-		$valid = new DataObjectSet();
-		if ($available) {
-			foreach ($available as $t) {
-				if ($t->isValid()) {
-					$valid->push($t);
-				}
-			}
-		} else {
-			// we don't have a valid next transition (at least, for this user...) so just pause here?
-			// NOOP - we just want to return the empty $valid set for now. 
+		if($available) foreach($available as $transition) {
+			if($transition->isValid()) $valid->push($transition);
 		}
 
 		return $valid;
@@ -139,11 +132,7 @@ class WorkflowAction extends DataObject {
 	}
 
 	public function stageChildren() {
-		$kids = $this->getAllTransitions();
-		if ($kids) {
-			return $kids;
-		}
-		return new DataObjectSet();
+		return ($children = $this->Transitions()) ? $children : new DataObjectSet();
 	}
 
 	public function RelativeLink() {

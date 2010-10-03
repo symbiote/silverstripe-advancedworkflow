@@ -45,7 +45,7 @@ class WorkflowEngineTests extends SapphireTest {
 			$this->assertNotEquals($stepTwo->ID, $action->ID);
 
 			if ($action->Title == 'Step One') {
-				$transitions = $action->getAllTransitions();
+				$transitions = $action->Transitions();
 				$this->assertEquals(1, $transitions->Count());
 				$t = $transitions->First();
 				$this->assertNotEquals($transitionOne->ID, $t->ID);

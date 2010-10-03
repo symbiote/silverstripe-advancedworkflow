@@ -84,14 +84,14 @@ class WorkflowService {
 				// we can just return the instance's current step's options
 				$instance = $dataObject->ActiveInstance();
 				$currentAction = $instance->CurrentAction();
-				$transitions = $currentAction->getNextTransitions();
+				$transitions = $currentAction->getValidTransitions();
 				return $transitions;
 			} else if ($definition = $this->getDefinitionFor($dataObject)) {
 				// we have a definition, but no actual instance has been created yet, so
 				// we need to return a clone of the 'StartAction', which is actually
 				// responsible for starting a workflow off.
 				$start = $definition->getStartAction();
-				return $start->getNextTransitions();
+				return $start->getValidTransitions();
 			}
 		}
 	}

@@ -66,7 +66,7 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 	 * @param WorkflowAction $action
 	 */
 	protected function getWorkflowFieldsFor($action) {
-		$options = $action->getNextTransitions();
+		$options = $action->getValidTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
 		$fields = new FieldSet();
 

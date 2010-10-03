@@ -222,7 +222,7 @@ class WorkflowAdminController extends LeftAndMain {
 			$currentObjects = $parent->getSortedActions();
 		} else if ($item instanceof WorkflowTransition) {
 			$parent = $item->Action();
-			$currentObjects = $parent->getAllTransitions();
+			$currentObjects = $parent->Transitions();
 		} else if ($item instanceof WorkflowDefinition) {
 			$currentObjects = DataObject::get('WorkflowDefinition', '', 'Sort ASC');
 		} else {
