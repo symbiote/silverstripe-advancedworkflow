@@ -11,20 +11,26 @@ $(function() {
 		 *
 		 * @param {DOMObject} item
 		 */
-		changeWorkflowItem: function(item) {
-			var item = $(item);
-			var type = item.attr('data-type');
+		changeWorkflowItem: function() {
+			var current = $('#Workflows').jstree('get_selected');
 
-			if(type == 'WorkflowDefinition') {
-				$('#Form_CreateTransitionForm').fadeOut(400, function() {
-					$('#Form_CreateActionForm').fadeIn().find('input[name=ParentID]').val(item.attr('data-id'));
-				});
-			} else if(type == 'WorkflowAction') {
-				$('#Form_CreateActionForm').fadeOut(400, function() {
-					$('#Form_CreateTransitionForm').fadeIn().find('input[name=ParentID]').val(item.attr('data-id'));
-				});
-			} else {
-				$('#Form_CreateActionForm, #Form_CreateTransitionForm').fadeOut();
+			if(!current.length) {
+				$('#Form_CreateActionForm, #Form_CreateTransitionForm').hide();
+				return;
+			}
+
+			switch(current.attr('data-type')) {
+				case 'WorkflowDefinition':
+					$('#Form_CreateActionForm').show().find('input[name=ParentID]').val(current.attr('data-id'));
+					$('#Form_CreateTransitionForm').hide();
+					break;
+				case 'WorkflowAction':
+					$('#Form_CreateActionForm').hide();
+					$('#Form_CreateTransitionForm').show().find('input[name=ParentID]').val(current.attr('data-id'));
+					break;
+				default:
+					$('#Form_CreateActionForm, #Form_CreateTransitionForm').hide();
+					break;
 			}
 		}
 	});
@@ -94,13 +100,13 @@ $(function() {
 		var self = $(args.args[0]);
 
 		$('#ModelAdminPanel').fn('loadForm', self.attr('href'));
-		$('#left').fn('changeWorkflowItem', self.parents('li'));
+		$('#left').fn('changeWorkflowItem');
 
 		return false;
 	});
 
 	$('#Workflows').bind('reopen.jstree', function(event, args) {
-		$('#left').fn('changeWorkflowItem', args.inst.get_selected());
+		$('#left').fn('changeWorkflowItem');
 	});
 });
 
