@@ -36,6 +36,31 @@ class WorkflowInstance extends DataObject {
 		'Groups' => 'Group'
 	);
 
+	public static $summary_fields = array(
+		'Title',
+		'WorkflowStatus',
+		'Created'
+	);
+
+	/**
+	 * Returns a table that summarises all the actions performed as part of this instance.
+	 *
+	 * @return FieldSet
+	 */
+	public function getActionsSummaryFields() {
+		return new FieldSet(new TabSet('Root', new Tab('Actions', new TableListField(
+			'WorkflowActions',
+			'WorkflowAction',
+			array(
+				'Title'       => 'Title',
+				'Comment'     => 'Comment',
+				'Created'     => 'Date',
+				'Member.Name' => 'Author'
+			),
+			'"Executed" = 1 AND "WorkflowID" = ' . $this->ID
+		))));
+	}
+
 	/**
 	 * Get the object that this workflow is active for.
 	 *

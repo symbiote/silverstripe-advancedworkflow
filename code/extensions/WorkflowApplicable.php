@@ -43,11 +43,20 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 
 		$fields->addFieldsToTab('Root.Workflow', array(
-			new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $definitions),
-			new ReadonlyField('EffectiveWorkflow', _t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle)
+			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.WORKFLOW', 'Workflow')),
+			new DropdownField('WorkflowDefinitionID',
+				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $definitions),
+			new ReadonlyField('EffectiveWorkflow',
+				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle),
+			new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')),
+			$logTable = new ComplexTableField(
+				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields'
+			)
 		));
-	}
 
+		$logTable->setPermissions(array('show'));
+		$logTable->setPopupSize(760, 420);
+	}
 
 	public function updateCMSActions($actions) {
 		$svc = singleton('WorkflowService');
