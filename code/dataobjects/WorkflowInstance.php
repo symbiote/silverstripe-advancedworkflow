@@ -230,6 +230,24 @@ class WorkflowInstance extends DataObject {
 		$this->execute();
 	}
 
+	/**
+	 * Returns a set of all Members that are assigned to this instance, either directly or via a group.
+	 *
+	 * @todo   This could be made more efficient.
+	 * @return DataObjectSet
+	 */
+	public function getAssignedMembers() {
+		$members = $this->Users();
+		$groups  = $this->Groups();
+
+		foreach($groups as $group) {
+			$members->merge($group->Members());
+		}
+
+		$members->removeDuplicates();
+		return $members;
+	}
+
 	public function canView($member=null) {
 		return $this->userHasAccess($member);
 	}
