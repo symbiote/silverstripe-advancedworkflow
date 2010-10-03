@@ -65,7 +65,7 @@ class WorkflowAction extends DataObject {
 	/**
 	 * Can documents in the current workflow state be edited?
 	 */
-	public function canEdit() {
+	public function canEditTarget() {
 		return false;
 	}
 
@@ -74,7 +74,7 @@ class WorkflowAction extends DataObject {
 	 *
 	 * @return boolean
 	 */
-	public function canView() {
+	public function canViewTarget() {
 		return true;
 	}
 
@@ -83,7 +83,7 @@ class WorkflowAction extends DataObject {
 	 *
 	 * @return boolean
 	 */
-	public function canPublish() {
+	public function canPublishTarget() {
 		return false;
 	}
 

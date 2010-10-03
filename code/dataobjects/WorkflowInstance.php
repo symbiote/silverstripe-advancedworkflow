@@ -286,7 +286,7 @@ class WorkflowInstance extends DataObject {
 	public function canEditTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canEdit();
+			return $action->canEditTarget();
 		}
 		return true;
 	}
@@ -299,7 +299,7 @@ class WorkflowInstance extends DataObject {
 	public function canViewTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canView();
+			return $action->canViewTarget();
 		}
 		return true;
 	}
@@ -312,7 +312,7 @@ class WorkflowInstance extends DataObject {
 	public function canPublishTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canPublish();
+			return $action->canPublishTarget();
 		}
 		return true;
 	}
