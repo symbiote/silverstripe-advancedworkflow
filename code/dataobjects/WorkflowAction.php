@@ -21,7 +21,8 @@ class WorkflowAction extends DataObject {
 
 	public static $has_one = array(
 		'WorkflowDef' => 'WorkflowDefinition',
-		'Workflow' => 'WorkflowInstance',
+		'Workflow'    => 'WorkflowInstance',
+		'Member'      => 'Member'
 	);
 
 	public static $has_many = array(

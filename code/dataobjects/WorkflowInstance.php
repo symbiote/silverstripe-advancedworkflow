@@ -160,6 +160,7 @@ class WorkflowInstance extends DataObject {
 			// if not, it means the action is still waiting on either time or user input
 			if ($result) {
 				$currentAction->Executed = true;
+				$currentAction->MemberID = Member::currentUserID();
 				$currentAction->write();
 				$availableTransition = $this->checkTransitions($currentAction);
 			}
