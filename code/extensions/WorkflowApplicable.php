@@ -38,8 +38,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 
 		$definitions[] = 'Inherit';
-		$map = $svc->getDefinitions()->map();
-		foreach ($map as $id => $title) {
+		if($defs = $svc->getDefinitions())foreach ($defs->map() as $id => $title) {
 			$definitions[$id] = $title;
 		}
 

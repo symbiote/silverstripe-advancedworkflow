@@ -47,7 +47,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			$chidren = false;
 		}
 
-		foreach($items as $item) {
+		if($items) foreach($items as $item) {
 			$new = array(
 				'data' => array(
 					'title' => $item->Title,
