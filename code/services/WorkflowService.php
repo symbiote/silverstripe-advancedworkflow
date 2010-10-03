@@ -153,6 +153,8 @@ class WorkflowService {
 	 */
 	public function reorder($objects, $newOrder) {
 		$sortVals = array_values($objects->map('ID', 'Sort'));
+		sort($sortVals);
+
 		// save the new ID values - but only use existing sort values to prevent
 		// conflicts with items not in the table
 		foreach($newOrder as $key => $id) {
