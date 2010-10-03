@@ -54,7 +54,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 					'attr'  => array('href' => $this->Link("$type/{$item->ID}/edit")),
 					'icon'  => $item->stat('icon')),
 				'attr' => array(
-					'id'         => "{$item->class}_{$item->ID}",
+					'id'         => "{$type}_{$item->ID}",
 					'title'      => Convert::raw2att($item->Title),
 					'data-id'    => $item->ID,
 					'data-type'  => $type,

@@ -108,7 +108,11 @@ $('#left form').live('submit', function() {
 	var form = $(this);
 
 	$('#ModelAdminPanel').fn('loadForm', form.attr('action'), form.formToArray(), function() {
-		if(form.attr('id') == 'Form_CreateActionForm') $('#Workflows').jstree('refresh');
+		if(form.is('#Form_CreateActionForm')) {
+			var parent = form.find('select').val('').end().find('input[name=ParentID]');
+			$('#Workflows').jstree('refresh', '#WorkflowDefinition_' + parent.val());
+		}
+
 		$('input[type=submit]', form).removeClass('loading');
 	});
 
@@ -147,7 +151,19 @@ $('#form_actions_right input').live('click', function() {
 			}
 		}
 
-		$('#Workflows').jstree('refresh');
+		// figure out which section of the tree to reload
+		if(action.indexOf('WorkflowDefinition') != -1) {
+			var node = -1;
+		} else {
+			if(form.is('#Form_AddForm')) {
+				var node = '#WorkflowAction_' + form.find('select[name=ActionID]').val();
+			} else {
+				var match = form.attr('action').match(/admin\/workflows\/([a-zA-Z0-9_]+)\/([0-9]+)\/.*/);
+				var node  = $('#' + match[1] + '_' + match[2]).parent().parent();
+			}
+		}
+
+		$('#Workflows').jstree('refresh', node);
 	}));
 
 	return false;
