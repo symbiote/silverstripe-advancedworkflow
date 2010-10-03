@@ -37,6 +37,23 @@ class WorkflowAction extends DataObject {
 	public static $allowed_children = array('WorkflowTransition');
 
 	/**
+	 * Returns an array of possible action classes to action title, suitable for use in a dropdown.
+	 *
+	 * @return array
+	 */
+	public static function get_dropdown_map() {
+		$classes = ClassInfo::subclassesFor(__CLASS__);
+		$actions = array();
+
+		array_shift($classes);
+		foreach($classes as $class) {
+			$actions[$class] = singleton($class)->getActionTitle();
+		}
+
+		return $actions;
+	}
+
+	/**
 	 * Returns the action title that describes all instances of this action - default to the singular name.
 	 *
 	 * @return string
