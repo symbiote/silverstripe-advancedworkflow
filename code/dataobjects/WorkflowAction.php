@@ -40,6 +40,15 @@ class WorkflowAction extends DataObject {
 	}
 
 	/**
+	 * Returns the action title that describes all instances of this action - default to the singular name.
+	 *
+	 * @return string
+	 */
+	public function getActionTitle() {
+		return $this->singular_name();
+	}
+
+	/**
 	 * Can documents in the current workflow state be edited?
 	 */
 	public function canEdit() {
