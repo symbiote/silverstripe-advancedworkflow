@@ -1,15 +1,12 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
  * workflow definition applied to them. At some point, the workflow definition is then
- * triggered. 
+ * triggered.
  *
- * @author marcus@silverstripe.com.au
+ * @author  marcus@silverstripe.com.au
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package activityworkflow
  */
 class WorkflowApplicable extends DataObjectDecorator {
 	

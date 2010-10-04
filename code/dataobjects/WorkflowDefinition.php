@@ -1,9 +1,4 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * An overall definition of a workflow
  *
@@ -16,7 +11,9 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * Basically, a manual step requires the interaction of someone to pick which action to take, an automatic
  * step will automatically determine what to do once it has finished.
  *
- * @author marcus@silverstripe.com.au
+ * @author  marcus@silverstripe.com.au
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package activityworkflow
  */
 class WorkflowDefinition extends DataObject {
 

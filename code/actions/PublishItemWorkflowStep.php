@@ -1,13 +1,11 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * Publishes an item
  *
- * @author marcus@silverstripe.com.au
+ * @author     marcus@silverstripe.com.au
+ * @license    BSD License (http://silverstripe.org/bsd-license/)
+ * @package    activityworkflow
+ * @subpackage actions
  */
 class PublishItemWorkflowAction extends WorkflowAction {
 

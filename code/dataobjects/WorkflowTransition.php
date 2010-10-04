@@ -1,9 +1,4 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * A workflow transition.
  *
@@ -14,7 +9,9 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * Therefore, any logic around whether the workflow can proceed should be
  * managed within this method. 
  *
- * @author marcus@silverstripe.com.au
+ * @author  marcus@silverstripe.com.au
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package activityworkflow
  */
 class WorkflowTransition extends DataObject {
 

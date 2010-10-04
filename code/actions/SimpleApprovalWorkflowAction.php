@@ -1,9 +1,4 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * A simple approval step that waits for any assigned user to trigger one of the relevant
  * transitions
@@ -11,7 +6,10 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * A more complicated workflow might use a majority, quorum or other type of
  * approval functionality
  *
- * @author marcus@silverstripe.com.au
+ * @author     marcus@silverstripe.com.au
+ * @license    BSD License (http://silverstripe.org/bsd-license/)
+ * @package    activityworkflow
+ * @subpackage actions
  */
 class SimpleApprovalWorkflowAction extends WorkflowAction {
 	

@@ -1,15 +1,12 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
  * the action(s) that occur while in that state. An action can then have
  * subsequent transitions out of the current state. 
  *
- * @author marcus@silverstripe.com.au
+ * @author  marcus@silverstripe.com.au
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package activityworkflow
  */
 class WorkflowAction extends DataObject {
 

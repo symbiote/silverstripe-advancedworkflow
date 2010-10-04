@@ -1,13 +1,10 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
  * Handles interactions triggered by users in the backend. 
  *
- * @author marcus@silverstripe.com.au
+ * @author  marcus@silverstripe.com.au
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package activityworkflow
  */
 class ActivityWorkflowExtension extends LeftAndMainDecorator {
     public function startworkflow($data, $form, $request) {
