@@ -2,7 +2,6 @@
 /**
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
  *
- * @todo       Show the CMS user what fields are available in the email.
  * @license    BSD License (http://silverstripe.org/bsd-license/)
  * @package    activityworkflow
  * @subpackage actions
@@ -25,7 +24,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			new LiteralField('NotificationNote', '<p>' . $this->fieldLabel('NotificationNote') . '</p>'),
 			new TextField('EmailSubject', $this->fieldLabel('EmailSubject')),
 			new TextField('EmailFrom', $this->fieldLabel('EmailFrom')),
-			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate'))
+			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate'), 10),
+			new ToggleCompositeField('FormattingHelpContainer',
+				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
 
 		return $fields;
@@ -38,7 +39,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'All users attached to the workflow will be sent an email when this action is run.'),
 			'EmailSubject'      => _t('ActivityWorkfow.EMAILSUBJECT', 'Email subject'),
 			'EmailFrom'         => _t('ActivityWorkfow.EMAILFROM', 'Email from'),
-			'EmailTemplate'     => _t('ActivityWorkfow.EMAILTEMPLATE', 'Email template')
+			'EmailTemplate'     => _t('ActivityWorkfow.EMAILTEMPLATE', 'Email template'),
+			'FormattingHelp'    => _t('ActivityWorkflow.FORMATTINGHELP', 'Formatting Help')
 		));
 	}
 
@@ -109,6 +111,29 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		}
 
 		return $result;
+	}
+
+	/**
+	 * Returns a basic set of instructions on how email templates are populated with variables.
+	 *
+	 * @return string
+	 */
+	public function getFormattingHelp() {
+		$note = _t('NotifyUsersWorkflowAction.FORMATTINGNOTE',
+			'Notification emails can contain HTML formatting. The following special variables are replaced with their
+			respective values in both the email subject and template/body.');
+		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
+			'These fields will be populated from the member that initiates the notification action.');
+		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
+			'Any summary fields from the workflow target will be available. Additionally, the CMSLink variable will
+			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
+		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
+
+		$memberFields = implode(', ', array_keys($this->getMemberFields()));
+
+		return "<p>$note</p>
+			<p><strong>\$Member.($memberFields)</strong><br>$member</p>
+			<p><strong>\$Context.($fieldName)</strong><br>$context</p>";
 	}
 
 }
