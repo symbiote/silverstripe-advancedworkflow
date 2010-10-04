@@ -53,11 +53,7 @@ class WorkflowService {
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
 		} else if (is_object($item) && Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
-			$filter = singleton('WfUtils')->dbQuote(array(
-				'TargetClass =' => $item->ClassName,
-				'TargetID =' => $item->ID,
-			));
-
+			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $item->ClassName, $item->ID);
 			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\')');
 		}
 	}

@@ -164,7 +164,6 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function execute() {
 		if (!$this->CurrentActionID) {
-			singleton('WfUtils')->log("Workflow #$this->ID appears to be invalid: attempted to execute() without current action", SS_Log::ERR);
 			throw new Exception("Attempted to start an invalid workflow instance #$this->ID!");
 		}
 
