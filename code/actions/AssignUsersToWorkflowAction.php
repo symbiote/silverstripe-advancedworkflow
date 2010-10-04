@@ -1,31 +1,56 @@
 <?php
-/* 
- * 
-All code covered by the BSD license located at http://silverstripe.org/bsd-license/
- */
-
 /**
- * A workflow action that's used to change the users that are assigned to the
- * running instance of a workflow
+ * A workflow action that allows additional users or groups to be assigned to
+ * the workflow part-way through the workflow path.
  *
- * @author marcus@silverstripe.com.au
+ * @license    BSD License (http://silverstripe.org/bsd-license/)
+ * @package    activityworkflow
+ * @subpackage actions
  */
 class AssignUsersToWorkflowAction extends WorkflowAction {
 
-	public static $icon = 'activityworkflow/images/assign.png';
-	
-	/**
-	 * @var array
-	 */
 	public static $many_many = array(
-		'Users' => 'Member',
+		'Users'  => 'Member',
 		'Groups' => 'Group'
 	);
 
-    public function execute() {
-		// update the list of assigned users based on what was set in the definition.
+	public static $icon = 'activityworkflow/images/assign.png';
 
-		// and just return true
+	public function execute() {
+		$this->Workflow()->Users()->addMany($this->Users());
+		$this->Workflow()->Groups()->addMany($this->Groups());
+
 		return true;
 	}
+
+	public function getCMSFields() {
+		$fields = parent::getCMSFields();
+
+		$fields->addFieldsToTab('Root.Main', array(
+			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
+			new TreeMultiselectField('Users', $this->fieldLabel('Users'), 'Member'),
+			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'Group')
+		));
+
+		return $fields;
+	}
+
+	public function fieldLabels() {
+		return array_merge(parent::fieldLabels(), array(
+			'AssignUsers' => _t('ActivityWorkflow.ASSIGNUSERS', 'Assign Users'),
+			'Users'       => _t('ActivityWorkflow.USERS', 'Users'),
+			'Groups'      => _t('ActivityWorkflow.GROUPS', 'Groups')
+		));
+	}
+
+	/**
+	 * Copies the users and groups across from the definition action.
+	 *
+	 * @param WorkflowDefinition $definition
+	 */
+	public function cloneFromDefinition(WorkflowDefinition $definition) {
+		$this->Users()->addMany($definition->Users());
+		$this->Groups()->addMany($definition->Groups());
+	}
+
 }
