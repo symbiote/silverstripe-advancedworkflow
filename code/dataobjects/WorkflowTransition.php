@@ -102,11 +102,4 @@ class WorkflowTransition extends DataObject {
 		return array('Title' => 'Title');
 	}
 
-	public function getTableFieldTypes() {
-		$fields = array(
-			'Title' => 'TextField',
-		);
-		
-		return $fields;
-	}
 }

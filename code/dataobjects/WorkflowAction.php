@@ -168,15 +168,4 @@ class WorkflowAction extends DataObject {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
 
-	public function getTableFieldTypes() {
-		$fields = array(
-			'Title' => 'TextField',
-			'Transitions' => new LiteralField('Transition', 'Can only edit transitions once created'),
-		);
-
-		if ($this->ID) {
-		}
-
-		return $fields;
-	}
 }
