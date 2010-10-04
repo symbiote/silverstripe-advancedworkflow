@@ -36,8 +36,6 @@ class WorkflowAction extends DataObject {
 		'SortableObject',
 	);
 
-	public static $allowed_children = array('WorkflowTransition');
-
 	/**
 	 * Returns an array of possible action classes to action title, suitable for use in a dropdown.
 	 *
@@ -146,18 +144,10 @@ class WorkflowAction extends DataObject {
 		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
 	}
 
-	public function numchildren() {
-		return $this->stageChildren()->Count();
+	public function numChildren() {
+		return count($this->Transitions());
 	}
 
-	public function stageChildren() {
-		return ($children = $this->Transitions()) ? $children : new DataObjectSet();
-	}
-
-	public function RelativeLink() {
-		return '';
-	}
-	
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));

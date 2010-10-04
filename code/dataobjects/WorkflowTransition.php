@@ -85,18 +85,9 @@ class WorkflowTransition extends DataObject {
 		return $fields;
 	}
 
-	public function numchildren() {
-		return $this->stageChildren()->Count();
+	public function numChildren() {
+		return 0;
 	}
-
-	public function stageChildren() {
-		return new DataObjectSet();
-	}
-
-	public function RelativeLink() {
-		return '';
-	}
-	
 
 	public function summaryFields() {
 		return array('Title' => 'Title');

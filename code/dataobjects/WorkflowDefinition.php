@@ -46,8 +46,6 @@ class WorkflowDefinition extends DataObject {
 		'Groups' => 'Group'
 	);
 
-	public static $allowed_children = array('WorkflowAction');
-
 	public static $icon = 'activityworkflow/images/definition.png';
 
 	/**
@@ -71,26 +69,8 @@ class WorkflowDefinition extends DataObject {
 		}
 	}
 
-	/* CMS FUNCTIONS */
-	
-	public function TreeTitle() {
-		return $this->Title;
-	}
-
-	public function numchildren() {
-		return $this->stageChildren()->Count();
-	}
-
-	public function stageChildren() {
-		$kids = $this->getSortedActions();
-		if ($kids) {
-			return $kids;
-		}
-		return new DataObjectSet();
-	}
-
-	public function RelativeLink() {
-		return '';
+	public function numChildren() {
+		return count($this->Actions());
 	}
 
 	/**

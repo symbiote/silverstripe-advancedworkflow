@@ -33,7 +33,6 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 		$data     = array();
 		$class    = $request->getVar('class');
 		$id       = $request->getVar('id');
-		$children = true;
 
 		if($id == 0) {
 			$items = singleton('WorkflowService')->getDefinitions();
@@ -44,7 +43,6 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 		} else {
 			$items   = DataObject::get('WorkflowTransition', '"ActionID" = ' . (int) $id, '"Sort"');
 			$type    = 'WorkflowTransition';
-			$chidren = false;
 		}
 
 		if($items) foreach($items as $item) {
@@ -61,7 +59,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 					'data-class' => $item->class)
 			);
 
-			if($children && $item->numChildren() > 0) {
+			if($item->numChildren() > 0) {
 				$new['state'] = 'closed';
 			}
 
