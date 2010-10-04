@@ -12,9 +12,10 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class WorkflowAction extends DataObject {
-    public static $db = array(
+
+	public static $db = array(
 		'Title' => 'Varchar(255)',
-		'Comment' => 'HTMLText',
+		'Comment' => 'Text',
 		'Type' => "Enum('Dynamic,Manual','Manual')",
 		'Executed' => 'Boolean',
 	);
