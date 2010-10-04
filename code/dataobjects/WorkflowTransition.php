@@ -17,17 +17,17 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
  * @author marcus@silverstripe.com.au
  */
 class WorkflowTransition extends DataObject {
-    public static $db = array(
+
+	public static $db = array(
 		'Title' => 'Varchar(128)',
+		'Sort'  => 'Int'
 	);
+
+	public static $default_sort = 'Sort';
 
 	public static $has_one = array(
 		'Action' => 'WorkflowAction',
 		'NextAction' => 'WorkflowAction',
-	);
-
-	public static $extensions = array(
-		'SortableObject',
 	);
 
 	public static $icon = 'activityworkflow/images/transition.png';
@@ -44,10 +44,15 @@ class WorkflowTransition extends DataObject {
 	 * Before saving, make sure we're not in an infinite loop
 	 */
 	public function  onBeforeWrite() {
-		parent::onBeforeWrite();
-		if ($this->ActionID == $this->NextActionID) {
+		if($this->ActionID == $this->NextActionID) {
 			$this->NextActionID = 0;
 		}
+
+		if(!$this->Sort) {
+			$this->Sort = DB::query('SELECT MAX("SORT") + 1 FROM "WorkflowTransition"')->value();
+		}
+
+		parent::onBeforeWrite();
 	}
 
 	/**

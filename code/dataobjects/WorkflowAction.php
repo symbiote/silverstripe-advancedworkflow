@@ -14,11 +14,14 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
 class WorkflowAction extends DataObject {
 
 	public static $db = array(
-		'Title' => 'Varchar(255)',
-		'Comment' => 'Text',
-		'Type' => "Enum('Dynamic,Manual','Manual')",
+		'Title'    => 'Varchar(255)',
+		'Comment'  => 'Text',
+		'Type'     => "Enum('Dynamic,Manual','Manual')",
 		'Executed' => 'Boolean',
+		'Sort'     => 'Int'
 	);
+
+	public static $default_sort = 'Sort';
 
 	public static $has_one = array(
 		'WorkflowDef' => 'WorkflowDefinition',
@@ -31,10 +34,6 @@ class WorkflowAction extends DataObject {
 	);
 
 	public static $icon = 'activityworkflow/images/action.png';
-
-	public static $extensions = array(
-		'SortableObject',
-	);
 
 	/**
 	 * Returns an array of possible action classes to action title, suitable for use in a dropdown.
@@ -122,6 +121,13 @@ class WorkflowAction extends DataObject {
 		return $valid;
 	}
 
+	public function onBeforeWrite() {
+		if(!$this->Sort) {
+			$this->Sort = DB::query('SELECT MAX("SORT") + 1 FROM "WorkflowAction"')->value();
+		}
+
+		parent::onBeforeWrite();
+	}
 
 	/**
 	 * Called when this workflow action is cloned from the definition of the action

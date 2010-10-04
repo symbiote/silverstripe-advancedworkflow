@@ -21,16 +21,15 @@ All code covered by the BSD license located at http://silverstripe.org/bsd-licen
 class WorkflowDefinition extends DataObject {
 
 	public static $db = array(
-		'Title' => 'Varchar(128)',
+		'Title'       => 'Varchar(128)',
 		'Description' => 'Text',
+		'Sort'        => 'Int'
 	);
+
+	public static $default_sort = 'Sort';
 
 	public static $has_many = array(
 		'Actions' => 'WorkflowAction',
-	);
-
-	public static $extensions = array(
-		'SortableObject',
 	);
 
 	/**
@@ -67,6 +66,14 @@ class WorkflowDefinition extends DataObject {
 		if ($actions && $actions->Count()) {
 			return $actions->First();
 		}
+	}
+
+	public function onBeforeWrite() {
+		if(!$this->Sort) {
+			$this->Sort = DB::query('SELECT MAX("SORT") + 1 FROM "WorkflowDefinition"')->value();
+		}
+
+		parent::onBeforeWrite();
 	}
 
 	public function numChildren() {

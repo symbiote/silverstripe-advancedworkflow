@@ -10,8 +10,7 @@ with multiple possible transitions between the actions.
 
 Requirements
 ------------
-
-The activity workflow module requires the ssau-formfields module. 
+*  SilverStripe 2.4+
 
 Installation
 ------------
