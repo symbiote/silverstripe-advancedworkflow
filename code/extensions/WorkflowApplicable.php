@@ -27,22 +27,24 @@ class WorkflowApplicable extends DataObjectDecorator {
 	}
 
 	public function updateCMSFields(FieldSet $fields) {
-		$svc = singleton('WorkflowService');
-		$effective = $svc->getDefinitionFor($this->owner);
-		$effectiveTitle = 'None';
-		if ($effective) {
+		$service = singleton('WorkflowService');
+
+		if($effective = $service->getDefinitionFor($this->owner)) {
 			$effectiveTitle = $effective->Title;
+		} else {
+			$effectiveTitle = _t('WorkflowApplicable.NONE', '(none)');
 		}
 
-		$definitions[] = 'Inherit';
-		if($defs = $svc->getDefinitions())foreach ($defs->map() as $id => $title) {
-			$definitions[$id] = $title;
+		$allDefinitions = array(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
+
+		if($definitions = $service->getDefinitions()) {
+			$allDefinitions += $definitions->map();
 		}
 
 		$fields->addFieldsToTab('Root.Workflow', array(
 			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')),
 			new DropdownField('WorkflowDefinitionID',
-				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $definitions),
+				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions),
 			new ReadonlyField('EffectiveWorkflow',
 				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle),
 			new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')),
