@@ -102,19 +102,8 @@ class WorkflowInstance extends DataObject {
 
 		$this->Title = sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 
-		$users = $definition->Users();
-		if ($users->Count()) {
-			foreach ($users as $user) {
-				$this->Users()->add($user);
-			}
-		}
-
-		$groups = $definition->Groups();
-		if ($groups->Count()) {
-			foreach ($groups as $group) {
-				$this->Groups()->add($group);
-			}
-		}
+		$this->Users()->addMany($definition->Users());
+		$this->Groups()->addMany($definition->Groups());
 
 		$actionMapping = array();
 		$actions = $definition->Actions();
