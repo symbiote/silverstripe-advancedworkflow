@@ -47,10 +47,12 @@ class WorkflowApplicable extends DataObjectDecorator {
 				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle),
 			new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')),
 			$logTable = new ComplexTableField(
-				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields'
+				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields',
+				sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $this->owner->class, $this->owner->ID)
 			)
 		));
 
+		$logTable->setRelationAutoSetting(false);
 		$logTable->setPermissions(array('show'));
 		$logTable->setPopupSize(760, 420);
 	}
