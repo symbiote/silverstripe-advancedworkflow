@@ -287,26 +287,7 @@ class WorkflowInstance extends DataObject {
 			return true;
 		}
 
-		$memberGroups = $member->Groups();
-		/* @var $memberGroups DataObjectSet */
-		if ($memberGroups) {
-			$groups = $this->Groups();
-			if ($groups) {
-				// see if they're in it
-				foreach ($groups as $group) {
-					if ($match = $memberGroups->find('ID', $group->ID)) {
-						return true;
-					}
-				}
-			}
-		}
-
-		$users = $this->Users();
-		
-		if ($users && $user = $users->find('ID', $member->ID)) {
-			return true;
-		}
-		return false;
+		return $member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID);
 	}
 
 	/**
