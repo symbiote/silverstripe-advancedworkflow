@@ -40,7 +40,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 
 		$fields->addFieldsToTab('Root.Workflow', array(
-			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.WORKFLOW', 'Workflow')),
+			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')),
 			new DropdownField('WorkflowDefinitionID',
 				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $definitions),
 			new ReadonlyField('EffectiveWorkflow',
