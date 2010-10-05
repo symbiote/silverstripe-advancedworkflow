@@ -45,24 +45,12 @@ class WorkflowDefinition extends DataObject {
 	public static $icon = 'activityworkflow/images/definition.png';
 
 	/**
-	 * Get all the actions sorted in the appropriate order...
-	 *
-	 * @return DataObjectSet
-	 */
-	public function getSortedActions() {
-		return DataObject::get('WorkflowAction', '"WorkflowDefID"='.((int) $this->ID), 'Sort ASC');
-	}
-
-	/**
 	 * Gets the action that first triggers off the workflow
 	 * 
 	 * @return WorkflowAction
 	 */
 	public function getInitialAction() {
-		$actions = $this->getSortedActions();
-		if ($actions && $actions->Count()) {
-			return $actions->First();
-		}
+		if($actions = $this->Actions()) return $actions->First();
 	}
 
 	public function onBeforeWrite() {

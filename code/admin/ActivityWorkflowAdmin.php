@@ -38,10 +38,10 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			$items = singleton('WorkflowService')->getDefinitions();
 			$type  = 'WorkflowDefinition';
 		} elseif($class == 'WorkflowDefinition') {
-			$items = DataObject::get('WorkflowAction', '"WorkflowDefID" = ' . (int) $id, '"Sort"');
+			$items = DataObject::get('WorkflowAction', '"WorkflowDefID" = ' . (int) $id);
 			$type  = 'WorkflowAction';
 		} else {
-			$items   = DataObject::get('WorkflowTransition', '"ActionID" = ' . (int) $id, '"Sort"');
+			$items   = DataObject::get('WorkflowTransition', '"ActionID" = ' . (int) $id);
 			$type    = 'WorkflowTransition';
 		}
 

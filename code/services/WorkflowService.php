@@ -61,7 +61,7 @@ class WorkflowService {
 	 * @return DataObjectSet
 	 */
 	public function getDefinitions() {
-		return DataObject::get('WorkflowDefinition', '', 'Sort ASC');
+		return DataObject::get('WorkflowDefinition');
 	}
 
 	/**

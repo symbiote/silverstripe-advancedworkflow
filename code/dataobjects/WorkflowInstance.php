@@ -117,8 +117,8 @@ class WorkflowInstance extends DataObject {
 		}
 
 		$actionMapping = array();
-		$actions = $definition->getSortedActions();
-				
+		$actions = $definition->Actions();
+
 		if ($actions) {
 			foreach ($actions as $action) {
 				$newAction = $action->duplicate(false);
