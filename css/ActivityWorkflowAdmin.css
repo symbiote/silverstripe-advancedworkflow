@@ -1,10 +1,13 @@
 #left { background: #FFF; }
 #left #ToggleForms { height: 24px; }
-#ToggleForms, #Form_CreateForm_WorkflowDefinition { background: #EEE; border-bottom: 1px solid #CCC; padding: 5px; }
+#ToggleForms, #Form_CreateDefinitionForm { background: #EEE; border-bottom: 1px solid #CCC; padding: 5px; }
+#left form { overflow: auto; }
+#left fieldset { float: left; }
+#left .Actions { float: right; }
+#left label { font-size: 12px; line-height: 24px; }
+#left .dropdown .middleColumn { padding-top: 2px; }
+#left select { font-size: 12px; width: 185px !important; }
 #left .jstree { margin-top: 5px; }
 #left .jstree-focused { background: none; }
 #left .jstree-clicked, #left .jstree-hovered { border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
 #Form_CreateActionForm, #Form_CreateTransitionForm { display: none; }
-#Form_CreateActionForm { overflow: auto; }
-#Form_CreateActionForm fieldset { float: left; padding-top: 2px; width: 155px; }
-#Form_CreateActionForm .Actions { float: left; }

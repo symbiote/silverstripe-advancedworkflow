@@ -109,12 +109,14 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 	 * @return Form
 	 */
 	public function CreateDefinitionForm() {
-		$form = $this->WorkflowDefinition()->CreateForm();
-		$form->setActions(new FieldSet(
-			new FormAction('add', _t('ActivityWorkflowAdmin.CREATEWORKFLOW', 'Create Workflow'))
-		));
-
-		return $form;
+		return new Form(
+			$this,
+			'CreateDefinitionForm',
+			new FieldSet(
+				$this->getClassCreationField('WorkflowDefinition')),
+			new FieldSet(
+				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
+		);
 	}
 
 	/**
@@ -125,46 +127,11 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			$this,
 			'CreateActionForm',
 			new FieldSet(
-				new DropdownField('ActionClass', '', WorkflowAction::get_dropdown_map(), '', null,
-					_t('ActivityWorkflowAdmin.SELECT', '(select)')),
-				new HiddenField('ParentID')
-			),
-			new FieldSet(new FormAction(
-				'doCreateAction', _t('ActivityWorkflowAdmin.CREATEACTION', 'Create Action')
-			))
+				$this->getClassCreationField('WorkflowAction', false),
+				new HiddenField('ParentID')),
+			new FieldSet(
+				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
 		);
-	}
-
-	/**
-	 * @param array $data
-	 * @param Form $form
-	 */
-	public function doCreateAction($data, $form) {
-		$definitionId = $data['ParentID'];
-		$actionClass  = $data['ActionClass'];
-
-		if(!DataObject::get_by_id('WorkflowDefinition', $definitionId)) {
-			return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkflowAdmin.INVALIDDEFID', 'An invalid definition ID was specified.')
-			);
-		}
-
-		if(!class_exists($actionClass) || !is_subclass_of($actionClass, 'WorkflowAction')) {
-			return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkflowAdmin.INVALIDACTIONCLASS', 'An invalid action class was specified')
-			);
-		}
-
-		$action = new $actionClass();
-		$action->Title = 'New ' . $action->singular_name();
-		$action->WorkflowDefID = $definitionId;
-		$action->write();
-
-		$controller = $this->getRecordControllerClass('WorkflowAction');
-		$controller = new $controller($this->WorkflowAction(), null, $action->ID);
-		$form       = $controller->EditForm();
-
-		return $this->isAjax() ? $form->forAjaxTemplate() : $form->forTemplate();
 	}
 
 	/**
@@ -174,33 +141,116 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 		return new Form(
 			$this,
 			'CreateTransitionForm',
-			new FieldSet(new HiddenField('ParentID')),
-			new FieldSet(new FormAction(
-				'doCreateTransition', _t('ActivityWorkflowAdmin.CREATETRANSITION', 'Create Transition')
-			))
+			new FieldSet(
+				$this->getClassCreationField('WorkflowTransition'),
+				new HiddenField('ParentID')),
+			new FieldSet(
+				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
 		);
 	}
 
 	/**
-	 * @param array $data
-	 * @param Form $form
+	 * Creates a workflow item - a definition, action, transition or any subclasses
+	 * of these.
+	 *
+	 * @param  array $data
+	 * @param  Form $form
+	 * @return string
 	 */
-	public function doCreateTransition($data, $form) {
-		$actionId = $data['ParentID'];
+	public function doCreateWorkflowItem($data, $form) {
+		// assume the form name is in the form CreateTypeForm
+		$data      = $form->getData();
+		$type      = 'Workflow' . substr($form->Name(), 6, -4);
+		$allowSelf = ($type != 'WorkflowAction');
 
-		if(!DataObject::get_by_id('WorkflowAction', $actionId)) {
-			return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkflowAdmin.INVALIDACTIONID', 'An invalid action ID was specified.')
+		// determine the class to create - if it is manually specified then use that,
+		// falling back to creating an object of the root type if allowed.
+		if(isset($data['Class']) && class_exists($data['Class'])) {
+			$class = $data['Class'];
+			$valid = is_subclass_of($class, $type) || ($allowSelf && $class == $type);
+
+			if(!$valid) return new SS_HTTPResponse(
+				null, 400, _t('ActivityWorkfowAdmin.INVALIDITEM', 'An invalid workflow item was specified.')
+			);
+		} else {
+			$class = $type;
+
+			if(!$allowSelf) return new SS_HTTPResponse(
+				null, 400, _t('ActivityWorkflowAdmin.MUSTSPECIFYITEM', 'You must specify a workflow item to create.')
 			);
 		}
 
-		$form = $this->WorkflowTransition()->AddForm();
-		$form->dataFieldByName('ActionID')->setValue($actionId);
+		// check that workflow actions and transitions have valid parent id values.
+		if($type != 'WorkflowDefinition') {
+			$parentId = $data['ParentID'];
+			$parentClass = ($type == 'WorkflowAction') ? 'WorkflowDefinition' : 'WorkflowAction';
+
+			if(!is_numeric($parentId) || !DataObject::get_by_id($parentClass, $parentId)) {
+				return new SS_HTTPResponse(
+					null, 400, _t('ActivityWorkflowAdmin.INVALIDPARENT', 'An invalid parent was specified.')
+				);
+			}
+		}
+
+		// if an add form can be returned without writing a new rcord to the database,
+		// then just do that
+		if(array_key_exists($class, $this->getManagedModels())) {
+			$form  = $this->$type()->AddForm();
+			$title = singleton($type)->singular_name();
+
+			if($type == 'WorkflowTransition') {
+				$form->dataFieldByName('ActionID')->setValue($parentId);
+			}
+		} else {
+			$record = new $class;
+			$record->Title = sprintf(_t('ActivityWorkflowAdmin.NEWITEM', 'New %s'), $record->singular_name());
+
+			if($type == 'WorkflowAction') {
+				$record->WorkflowDefID = $parentId;
+			} elseif($type == 'WorkflowTransition') {
+				$record->ActionID = $parentId;
+			}
+
+			$record->write();
+
+			$control = $this->getRecordControllerClass('WorkflowDefinition');
+			$control = new $control($this->$type(), null, $record->ID);
+			$form    = $control->EditForm();
+			$title   = $record->singular_name();
+		}
 
 		return new SS_HTTPResponse(
-			$form->forAjaxTemplate(),
-			200,
-			_t('ActivityWorkflowAdmin.FILLTOADDTRANSITION', 'Fill out this form to add a transition to the database.')
+			$this->isAjax() ? $form->forAjaxTemplate() : $form->forTemplate(), 200,
+			sprintf(_t('WorkflowActivityAdmin.CREATEITEM', 'Fill out this form to create a "%s".'), $title)
+		);
+	}
+
+	/**
+	 * Returns a dropdown createable classes which all have a common parent class,
+	 * or a label field if only one option is available.
+	 *
+	 * @param  string $class The parent class.
+	 * @param  bool $includeSelf Include the parent class itself.
+	 * @return DropdownField|LabelField
+	 */
+	protected function getClassCreationField($class, $includeSelf = true) {
+		$classes    = ClassInfo::subclassesFor($class);
+		$createable = array();
+
+		if(!$includeSelf) {
+			array_shift($classes);
+		}
+
+		foreach($classes as $class) {
+			if(singleton($class)->canCreate()) $createable[$class] = singleton($class)->singular_name();
+		}
+
+		if(count($classes) == 1) {
+			return new LabelField('Class', current($createable));
+		}
+
+		return new DropdownField(
+			'Class', '', $createable, '', null, ($includeSelf ? false : _t('ActivityWorkflowAdmin.SELECT', '(select)'))
 		);
 	}
 

@@ -114,11 +114,24 @@ $('#left form').live('submit', function() {
 	var form = $(this);
 
 	$('#ModelAdminPanel').fn('loadForm', form.attr('action'), form.formToArray(), function() {
-		if(form.is('#Form_CreateActionForm')) {
-			var parent = form.find('select').val('').end().find('input[name=ParentID]');
-			$('#Workflows').jstree('refresh', '#WorkflowDefinition_' + parent.val());
+		// if the record has been written to the database, reload the relevant portion of the tree
+		if($('#Form_EditForm').length) {
+			switch(form.attr('id')) {
+			 	case 'Form_CreateDefinitionForm':
+					$('#Workflows').jstree('refresh');
+					break;
+				case 'Form_CreateActionForm':
+					$('#Workflows').jstree('refresh',
+						'#WorkflowDefinition_' + $('input[name=ParentID]', form).val());
+					break;
+				case 'Form_CreateTransitionForm':
+					$('#Workflows').jstree('refresh',
+						'#WorkflowAction_' + $('input[name=ParentID]', form).val());
+					break;
+			}
 		}
 
+		$('select', form).val('');
 		$('input[type=submit]', form).removeClass('loading');
 	});
 
