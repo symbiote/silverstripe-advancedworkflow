@@ -156,7 +156,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 		}
 
 		$action = new $actionClass();
-		$action->Title = 'New ' . $action->getActionTitle();
+		$action->Title = 'New ' . $action->singular_name();
 		$action->WorkflowDefID = $definitionId;
 		$action->write();
 

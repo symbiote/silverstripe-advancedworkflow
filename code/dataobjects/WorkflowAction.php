@@ -43,19 +43,10 @@ class WorkflowAction extends DataObject {
 
 		array_shift($classes);
 		foreach($classes as $class) {
-			$actions[$class] = singleton($class)->getActionTitle();
+			$actions[$class] = singleton($class)->singular_name();
 		}
 
 		return $actions;
-	}
-
-	/**
-	 * Returns the action title that describes all instances of this action - default to the singular name.
-	 *
-	 * @return string
-	 */
-	public function getActionTitle() {
-		return $this->singular_name();
 	}
 
 	/**
