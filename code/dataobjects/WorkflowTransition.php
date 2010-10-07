@@ -30,8 +30,11 @@ class WorkflowTransition extends DataObject {
 	public static $icon = 'activityworkflow/images/transition.png';
 
 	/**
-	 * Is it valid for this transition to be followed given the
-	 * state of the current workflow? 
+	 * Returns true if it is valid for this transition to be followed given the
+	 * current state of a workflow.
+	 *
+	 * @param  WorkflowInstance $workflow
+	 * @return bool
 	 */
 	public function isValid() {
 		return true;
@@ -46,7 +49,7 @@ class WorkflowTransition extends DataObject {
 		}
 
 		if(!$this->Sort) {
-			$this->Sort = DB::query('SELECT MAX("SORT") + 1 FROM "WorkflowTransition"')->value();
+			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowTransition"')->value();
 		}
 
 		parent::onBeforeWrite();

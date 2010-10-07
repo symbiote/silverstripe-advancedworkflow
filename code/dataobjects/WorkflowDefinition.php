@@ -55,7 +55,7 @@ class WorkflowDefinition extends DataObject {
 
 	public function onBeforeWrite() {
 		if(!$this->Sort) {
-			$this->Sort = DB::query('SELECT MAX("SORT") + 1 FROM "WorkflowDefinition"')->value();
+			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowDefinition"')->value();
 		}
 
 		parent::onBeforeWrite();
