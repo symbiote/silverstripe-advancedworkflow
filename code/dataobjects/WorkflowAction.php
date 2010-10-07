@@ -33,23 +33,6 @@ class WorkflowAction extends DataObject {
 	public static $icon = 'activityworkflow/images/action.png';
 
 	/**
-	 * Returns an array of possible action classes to action title, suitable for use in a dropdown.
-	 *
-	 * @return array
-	 */
-	public static function get_dropdown_map() {
-		$classes = ClassInfo::subclassesFor(__CLASS__);
-		$actions = array();
-
-		array_shift($classes);
-		foreach($classes as $class) {
-			$actions[$class] = singleton($class)->singular_name();
-		}
-
-		return $actions;
-	}
-
-	/**
 	 * Can documents in the current workflow state be edited?
 	 */
 	public function canEditTarget() {
