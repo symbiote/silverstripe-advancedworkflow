@@ -11,12 +11,12 @@ class PublishItemWorkflowAction extends WorkflowAction {
 
 	public static $icon = 'activityworkflow/images/publish.png';
 
-    public function execute() {
-		$context = $this->Workflow()->getContext();
+	public function execute(WorkflowInstance $workflow) {
+		$target = $workflow->getTarget();
 
-		if ($context) {
+		if ($target) {
 			// publish it!
-			$context->doPublish();
+			$target->doPublish();
 		}
 
 		return true;

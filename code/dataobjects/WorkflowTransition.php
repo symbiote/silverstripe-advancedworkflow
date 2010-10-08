@@ -36,7 +36,7 @@ class WorkflowTransition extends DataObject {
 	 * @param  WorkflowInstance $workflow
 	 * @return bool
 	 */
-	public function isValid() {
+	public function isValid(WorkflowInstance $workflow) {
 		return true;
 	}
 
@@ -53,18 +53,6 @@ class WorkflowTransition extends DataObject {
 		}
 
 		parent::onBeforeWrite();
-	}
-
-	/**
-	 * Called when this workflow transition is cloned from the definition of the transition
-	 *
-	 * If your custom action defines custom properties, this is where you can update
-	 * them for the new definition
-	 *
-	 * @param WorkflowTransition $action
-	 */
-	public function cloneFromDefinition(WorkflowTransition $action) {
-
 	}
 
 	/* CMS FUNCTIONS */

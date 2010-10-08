@@ -99,17 +99,10 @@ class WorkflowApplicable extends DataObjectDecorator {
 	public function canPublish() {
 		$active = $this->getWorkflowInstance();
 		if ($active) {
-			return $active->canPublishTarget();
+			return $active->canPublishTarget($this->owner);
 		}
 		return false;
 	}
-
-	/**
-	 * Cannot directly delete an object from live - it must be deleted from draft, then have the change pushed through
-	 * as part of a changeset submission
-	 */
-//	public function canDeleteFromLive() {
-//	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
@@ -117,7 +110,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	public function canEdit() {
 		$active = $this->getWorkflowInstance();
 		if ($active) {
-			return $active->canEditTarget();
+			return $active->canEditTarget($this->owner);
 		}
 		return true;
 	}

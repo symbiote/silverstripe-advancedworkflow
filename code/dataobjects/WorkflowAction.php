@@ -22,7 +22,6 @@ class WorkflowAction extends DataObject {
 
 	public static $has_one = array(
 		'WorkflowDef' => 'WorkflowDefinition',
-		'Workflow'    => 'WorkflowInstance',
 		'Member'      => 'Member'
 	);
 
@@ -34,26 +33,31 @@ class WorkflowAction extends DataObject {
 
 	/**
 	 * Can documents in the current workflow state be edited?
+	 *
+	 * @param  DataObject $target
+	 * @return bool
 	 */
-	public function canEditTarget() {
+	public function canEditTarget(DataObject $target) {
 		return false;
 	}
 
 	/**
 	 * Does this action restrict viewing of the document?
 	 *
-	 * @return boolean
+	 * @param  DataObject $target
+	 * @return bool
 	 */
-	public function canViewTarget() {
+	public function canViewTarget(DataObject $target) {
 		return true;
 	}
 
 	/**
 	 * Does this action restrict the publishing of a document?
 	 *
-	 * @return boolean
+	 * @param  DataObject $target
+	 * @return bool
 	 */
-	public function canPublishTarget() {
+	public function canPublishTarget(DataObject $target) {
 		return false;
 	}
 
@@ -62,34 +66,11 @@ class WorkflowAction extends DataObject {
 	 * return true - if not (ie it needs some user input first), return false and 'execute' will be triggered
 	 * again at a later point in time after the user has provided more data, either directly or indirectly.
 	 *
-	 * @return boolean
-	 *			Has this action finished? If so, just execute the 'complete' functionality.
+	 * @param  WorkflowInstance $workflow
+	 * @return bool Returns true if this action has finished.
 	 */
-	public function execute() {
+	public function execute(WorkflowInstance $workflow) {
 		return true;
-	}
-
-	/**
-	 * Called if the 'executed' property is set to 'true' when the engine next has a chance to analyse
-	 * the state of this action.
-	 *
-	 * If this action has a single valid transition, it should be returned by this method and will be immediately
-	 * followed. Otherwise, return the list of transitions that are valid for this action to follow; it is then
-	 * up to the user to decide which to follow.
-	 *
-	 * @return DataObjectSet
-	 */
-	public function getValidTransitions() {
-		$available = $this->Transitions();
-		$valid     = new DataObjectSet();
-
-		// iterate through the transitions and see if they're valid for the current state of the item being
-		// workflowed
-		if($available) foreach($available as $transition) {
-			if($transition->isValid()) $valid->push($transition);
-		}
-
-		return $valid;
 	}
 
 	public function onBeforeWrite() {
@@ -98,18 +79,6 @@ class WorkflowAction extends DataObject {
 		}
 
 		parent::onBeforeWrite();
-	}
-
-	/**
-	 * Called when this workflow action is cloned from the definition of the action
-	 *
-	 * If your custom action defines custom properties, this is where you can update
-	 * them for the new definition
-	 *
-	 * @param WorkflowTransition $action
-	 */
-	public function cloneFromDefinition(WorkflowAction $action) {
-
 	}
 
 	/* CMS RELATED FUNCTIONALITY... */

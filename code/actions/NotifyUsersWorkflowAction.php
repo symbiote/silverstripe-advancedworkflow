@@ -44,9 +44,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		));
 	}
 
-	public function execute() {
+	public function execute(WorkflowInstance $workflow) {
 		$email   = new Email;
-		$members = $this->Workflow()->getAssignedMembers();
+		$members = $workflow->getAssignedMembers();
 		$emails  = '';
 
 		if(!$members || !count($members)) return;
@@ -55,7 +55,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			if($member->Email) $emails .= "$member->Email, ";
 		}
 
-		$context   = $this->getContextFields();
+		$context   = $this->getContextFields($workflow->getTarget());
 		$member    = $this->getMemberFields();
 		$variables = array();
 
@@ -75,21 +75,19 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	}
 
 	/**
+	 * @param  DataObject $target
 	 * @return array
 	 */
-	public function getContextFields() {
-		if(!$this->Workflow()->getContext()) return array();
-
-		$record = $this->Workflow()->getContext();
-		$fields = $record->summaryFields();
+	public function getContextFields(DataObject $target) {
+		$fields = $target->summaryFields();
 		$result = array();
 
 		foreach($fields as $field) {
-			$result[$field] = $record->$field;
+			$result[$field] = $target->$field;
 		}
 
-		if($record instanceof SiteTree) {
-			$result['CMSLink'] = singleton('CMSMain')->Link("show/{$record->ID}");
+		if($target instanceof SiteTree) {
+			$result['CMSLink'] = singleton('CMSMain')->Link("show/{$target->ID}");
 		}
 
 		return $result;

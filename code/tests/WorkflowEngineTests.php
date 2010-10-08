@@ -8,7 +8,8 @@
  * @subpackage tests
  */
 class WorkflowEngineTests extends SapphireTest {
-    public function testCreateWorkflowInstance() {
+
+	public function testCreateWorkflowInstance() {
 		$definition = new WorkflowDefinition();
 		$definition->Title = "Create Workflow Instance";
 		$definition->write();
@@ -17,7 +18,6 @@ class WorkflowEngineTests extends SapphireTest {
 		$stepOne->Title = "Step One";
 		$stepOne->WorkflowDefID = $definition->ID;
 		$stepOne->write();
-
 
 		$stepTwo = new WorkflowAction();
 		$stepTwo->Title = "Step Two";
@@ -35,51 +35,33 @@ class WorkflowEngineTests extends SapphireTest {
 
 		$instance->beginWorkflow($definition);
 
-		$actions = $instance->Actions();
+		$actions = $definition->Actions();
 		$this->assertEquals(2, $actions->Count());
 
-		foreach ($actions as $action) {
-			$this->assertNotEquals($stepOne->ID, $action->ID);
-			$this->assertNotEquals($stepTwo->ID, $action->ID);
-
-			if ($action->Title == 'Step One') {
-				$transitions = $action->Transitions();
-				$this->assertEquals(1, $transitions->Count());
-				$t = $transitions->First();
-				$this->assertNotEquals($transitionOne->ID, $t->ID);
-				$this->assertEquals($transitionOne->Title, $t->Title);
-			}
-		}
+		$transitions = $actions->find('Title', 'Step One')->Transitions();
+		$this->assertEquals(1, $transitions->Count());
 	}
 
 	public function testExecuteImmediateWorkflow() {
 		$def = $this->createDefinition();
 
 		$actions = $def->Actions();
-		$firstAction = $actions->First();
+		$firstAction = $def->getInitialAction();
 		$this->assertEquals('Step One', $firstAction->Title);
 
 		$instance = new WorkflowInstance();
 		$instance->beginWorkflow($def);
-
-		$newActions = $instance->Actions();
-
-		$this->assertNotNull($newActions);
-		$this->assertEquals(2, $newActions->Count());
-
-		$this->assertNotEquals($firstAction->ID, $instance->CurrentActionID);
 		$this->assertTrue($instance->CurrentActionID > 0);
+
 		$instance->execute();
 
-		$this->assertEquals('Complete', $instance->WorkflowStatus);
-
-		// the instance should now be complete, and all actions should be marked as executed
+		// the instance should be complete, and have two finished workflow action
+		// instances.
 		$actions = $instance->Actions();
 		$this->assertEquals(2, $actions->Count());
-		foreach ($actions as $action) {
-			if ($action->Executed) {
-				$this->assertTrue(true);
-			}
+
+		foreach($actions as $action) {
+			$this->assertTrue((bool) $action->Finished);
 		}
 	}
 
@@ -92,7 +74,6 @@ class WorkflowEngineTests extends SapphireTest {
 		$stepOne->Title = "Step One";
 		$stepOne->WorkflowDefID = $definition->ID;
 		$stepOne->write();
-
 
 		$stepTwo = new WorkflowAction();
 		$stepTwo->Title = "Step Two";
@@ -107,4 +88,5 @@ class WorkflowEngineTests extends SapphireTest {
 
 		return $definition;
 	}
+
 }

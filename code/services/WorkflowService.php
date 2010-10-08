@@ -65,31 +65,6 @@ class WorkflowService {
 	}
 
 	/**
-	 * Gets the available 'next' options for the given dataobject. If it 
-	 * doesn't have an active workflow running, then we should figure out the
-	 * available 'start' options 
-	 *
-	 * @param DataObject $node
-	 */
-	public function getAvailableWorkflowOptions(DataObject $dataObject) {
-		if (Object::has_extension($dataObject->ClassName, 'WorkflowApplicable')) {
-			if ($dataObject->ActiveInstanceID) {
-				// we can just return the instance's current step's options
-				$instance = $dataObject->ActiveInstance();
-				$currentAction = $instance->CurrentAction();
-				$transitions = $currentAction->getValidTransitions();
-				return $transitions;
-			} else if ($definition = $this->getDefinitionFor($dataObject)) {
-				// we have a definition, but no actual instance has been created yet, so
-				// we need to return a clone of the 'StartAction', which is actually
-				// responsible for starting a workflow off.
-				$start = $definition->getStartAction();
-				return $start->getValidTransitions();
-			}
-		}
-	}
-
-	/**
 	 * Given a transition ID, figure out what should happen to
 	 * the given $subject.
 	 *
@@ -97,23 +72,26 @@ class WorkflowService {
 	 * and then transition as expected. However, in some cases (eg to start the workflow)
 	 * it is necessary to instead create a new instance. 
 	 *
-	 * @param DataObject $subject
+	 * @param DataObject $target
 	 * @param int $transitionId
 	 */
-	public function executeTransition($transitionId) {
-		
+	public function executeTransition(DataObject $target, $transitionId) {
+		$workflow   = $this->getWorkflowFor($target);
 		$transition = DataObject::get_by_id('WorkflowTransition', $transitionId);
-		if (!$transition) {
+
+		if(!$transition) {
 			throw new Exception("Invalid transition ID $transitionId");
 		}
 
-		$action = DataObject::get_by_id('WorkflowAction', $transition->ActionID);
-
-		// if we're a current instance, get that and transition
-		if ($action->WorkflowID) {
-			$instance = $this->getWorkflowFor($action);
-			$instance->performTransition($transition);
+		if(!$workflow) {
+			throw new Exception('A transition was executed on a target that does not have a workflow.');
 		}
+
+		if($transition->Action()->WorkflowDefID != $workflow->DefinitionID) {
+			throw new Exception("Transition #$transition->ID is not attached to workflow #$workflow->ID.");
+		}
+
+		$workflow->performTransition($transition);
 	}
 
 	/**

@@ -15,12 +15,12 @@ class WorkflowInstance extends DataObject {
 	);
 
 	public static $has_one = array(
-		'Definition' => 'WorkflowDefinition',
-		'CurrentAction' => 'WorkflowAction',
+		'Definition'    => 'WorkflowDefinition',
+		'CurrentAction' => 'WorkflowActionInstance'
 	);
 
 	public static $has_many = array(
-		'Actions' => 'WorkflowAction',
+		'Actions' => 'WorkflowActionInstance',
 	);
 
 	/**
@@ -47,14 +47,14 @@ class WorkflowInstance extends DataObject {
 	public function getActionsSummaryFields() {
 		return new FieldSet(new TabSet('Root', new Tab('Actions', new TableListField(
 			'WorkflowActions',
-			'WorkflowAction',
+			'WorkflowActionInstance',
 			array(
-				'Title'       => 'Title',
-				'Comment'     => 'Comment',
-				'Created'     => 'Date',
-				'Member.Name' => 'Author'
+				'BaseAction.Title' => 'Title',
+				'Comment'          => 'Comment',
+				'Created'          => 'Date',
+				'Member.Name'      => 'Author'
 			),
-			'"Executed" = 1 AND "WorkflowID" = ' . $this->ID
+			'"Finished" = 1 AND "WorkflowID" = ' . $this->ID
 		))));
 	}
 
@@ -71,15 +71,6 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * Gets the item that this workflow is being executed against.
-	 *
-	 * @return DataObject
-	 */
-	public function getContext() {
-		return $this->getTarget();
-	}
-
-	/**
 	 * Start a workflow based on a particular definition for a particular object.
 	 *
 	 * The object is optional; if not specified, it is assumed that this workflow
@@ -89,59 +80,25 @@ class WorkflowInstance extends DataObject {
 	 * @param DataObject $for
 	 */
 	public function beginWorkflow(WorkflowDefinition $definition, DataObject $for=null) {
-		// make sure to have an ID first!!!
-		if (!$this->ID) {
-			$this->write();
-		}
-		
+		if(!$this->ID) $this->write();
+
 		if ($for && Object::has_extension($for->ClassName, 'WorkflowApplicable')) {
 			$this->TargetClass = $for->ClassName;
 			$this->TargetID = $for->ID;
-			$for->write();
 		}
 
+		$action = new WorkflowActionInstance;
+		$action->BaseActionID = $definition->getInitialAction()->ID;
+		$action->WorkflowID   = $this->ID;
+		$action->write();
+
 		$this->Title = sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
+		$this->DefinitionID    = $definition->ID;
+		$this->CurrentActionID = $action->ID;
+		$this->write();
 
 		$this->Users()->addMany($definition->Users());
 		$this->Groups()->addMany($definition->Groups());
-
-		$actionMapping = array();
-		$actions = $definition->Actions();
-
-		if ($actions) {
-			foreach ($actions as $action) {
-				$newAction = $action->duplicate(false);
-				$newAction->WorkflowDefID = 0;
-				$newAction->WorkflowID = $this->ID;
-				$newAction->Sort = 0;
-				$newAction->write();
-				$newAction->cloneFromDefinition($action);
-
-				$actionMapping[$action->ID] = $newAction->ID;
-
-				if (!$this->CurrentActionID) {
-					$this->CurrentActionID = $newAction->ID;
-				}
-			}
-
-			// iterate again, so we can clone the action transitions with appropriate
-			// mappings
-			foreach ($actions as $action) {
-				$transitions = $action->Transitions();
-				if ($transitions) {
-					foreach ($transitions as $transition) {
-						$newTransition = $transition->duplicate(false);
-						$newTransition->ActionID = $actionMapping[$transition->ActionID];
-						$newTransition->NextActionID = $actionMapping[$transition->NextActionID];
-						$newTransition->write();
-						
-						$newTransition->cloneFromDefinition($transition);
-					}
-				}
-			}
-		}
-
-		$this->write();
 	}
 
 	/**
@@ -153,67 +110,53 @@ class WorkflowInstance extends DataObject {
 			throw new Exception("Attempted to start an invalid workflow instance #$this->ID!");
 		}
 
-		$currentAction = $this->CurrentAction();
-		// see if it's been executed. If it has, it means that the action has multiple
-		// transitions (or no transitions at the time) so we should do a
-		// subsequent check now.
-		$availableTransition = null;
-		if ($currentAction->Executed) {
-			// see if there's any transitions we can make use of.
-			$availableTransition = $this->checkTransitions($currentAction);
-		} else {
-			// otherwise, lets execute the current action
-			$result = $currentAction->execute();
+		$action     = $this->CurrentAction();
+		$transition = false;
 
-			// if the execution was successful (ie everything finished as expected)
-			// the we can go ahead and check for the next transition
-			// if not, it means the action is still waiting on either time or user input
-			if ($result) {
-				$currentAction->Executed = true;
-				$currentAction->MemberID = Member::currentUserID();
-				$currentAction->write();
-				$availableTransition = $this->checkTransitions($currentAction);
+		// if the action has already finished, it means it has either multiple (or no
+		// transitions at the time), so a subsequent check should be run.
+		if($action->Finished) {
+			$transition = $this->checkTransitions($action);
+		} else {
+			$result = $action->BaseAction()->execute($this);
+
+			// if the action was successful, then the action has finished running and
+			// next transition should be run - otherwise wait for more time or user
+			// input.
+			if($result) {
+				$action->Finished = true;
+				$action->MemberID = Member::currentUserID();
+				$action->write();
+
+				$transition = $this->checkTransitions($action);
 			}
 		}
 
-		// okay, if there's an available transition straight from the execute, then lets
-		// do that. Otherwise, check to see whether this is actually the last step
-		// entirely
-		if ($availableTransition) {
-			$this->performTransition($availableTransition);
+		// if the action finished, and there's only one available transition then
+		// move onto that step - otherwise check if the workflow has finished.
+		if($transition) {
+			$this->performTransition($transition);
 		} else {
-			// see if there are ANY transitions for the action, not just if there's a valid one
-			$all = $currentAction->Transitions();
-			if ($currentAction->Executed && !$all || $all->Count() == 0) {
-				$this->completeWorkflow();
+			// see if there are any transitions available, even if they are not valid.
+			if($action->Finished && !count($action->BaseAction()->Transitions())) {
+				$this->WorkflowStatus  = 'Complete';
+				$this->CurrentActionID = 0;
 			} else {
 				$this->WorkflowStatus = 'Paused';
-				$this->write();
 			}
+
+			$this->write();
 		}
-	}
-
-	/**
-	 * Mark the workflow as complete
-	 *
-	 * @param String $status
-	 *				The status of the completed workflow. Either Complete or Cancelled.
-	 */
-	public function completeWorkflow($status = 'Complete') {
-		// we're finished... !
-		$this->CurrentActionID = 0;
-		$this->WorkflowStatus = $status;
-
-		$this->write();
 	}
 
 	/**
 	 * Evaluate all the transitions of an action and determine whether we should
-	 * follow any of them yet. 
+	 * follow any of them yet.
 	 *
-	 * @param WorkflowAction $action
+	 * @param  WorkflowActionInstance $action
+	 * @return WorkflowTransition
 	 */
-	protected function checkTransitions(WorkflowAction $action) {
+	protected function checkTransitions(WorkflowActionInstance $action) {
 		$transitions = $action->getValidTransitions();
 		// if there's JUST ONE transition, then we need should
 		// immediately follow it.
@@ -231,13 +174,16 @@ class WorkflowInstance extends DataObject {
 	 * @param WorkflowTransition $transition
 	 */
 	public function performTransition(WorkflowTransition $transition) {
-		// we'll update our CurrentAction to the new value and execute again
-		$this->CurrentActionID = $transition->NextActionID;
+		$action = new WorkflowActionInstance;
+		$action->BaseActionID = $transition->NextActionID;
+		$action->WorkflowID   = $this->ID;
+		$action->write();
+
+		$this->CurrentActionID = $action->ID;
 		$this->write();
-		$this->flushCache();
+		$this->components = array(); // manually clear the has_one cache
 
 		$transition->extend('onTransition');
-
 		$this->execute();
 	}
 
@@ -296,7 +242,7 @@ class WorkflowInstance extends DataObject {
 	public function canEditTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canEditTarget();
+			return $action->canEditTarget($this->getTarget());
 		}
 		return true;
 	}
@@ -309,7 +255,7 @@ class WorkflowInstance extends DataObject {
 	public function canViewTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canViewTarget();
+			return $action->canViewTarget($this->getTarget());
 		}
 		return true;
 	}
@@ -322,18 +268,9 @@ class WorkflowInstance extends DataObject {
 	public function canPublishTarget() {
 		$action = $this->CurrentAction();
 		if ($action) {
-			return $action->canPublishTarget();
+			return $action->canPublishTarget($this->getTarget());
 		}
 		return true;
 	}
 
-	/**
-	 * Overridden because dataobject doesn't clear out components (just componentCache??)
-	 *
-	 * @param boolean $persistant
-	 */
-	public function flushCache($persistent=true) {
-		parent::flushCache($persistent);
-		$this->components = array();
-	}
 }

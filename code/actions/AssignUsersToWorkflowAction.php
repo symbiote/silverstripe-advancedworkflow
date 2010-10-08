@@ -16,9 +16,9 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 	public static $icon = 'activityworkflow/images/assign.png';
 
-	public function execute() {
-		$this->Workflow()->Users()->addMany($this->Users());
-		$this->Workflow()->Groups()->addMany($this->Groups());
+	public function execute(WorkflowInstance $workflow) {
+		$workflow->Users()->addMany($this->Users());
+		$workflow->Groups()->addMany($this->Groups());
 
 		return true;
 	}
@@ -41,16 +41,6 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 			'Users'       => _t('ActivityWorkflow.USERS', 'Users'),
 			'Groups'      => _t('ActivityWorkflow.GROUPS', 'Groups')
 		));
-	}
-
-	/**
-	 * Copies the users and groups across from the definition action.
-	 *
-	 * @param WorkflowDefinition $definition
-	 */
-	public function cloneFromDefinition(WorkflowDefinition $definition) {
-		$this->Users()->addMany($definition->Users());
-		$this->Groups()->addMany($definition->Groups());
 	}
 
 }

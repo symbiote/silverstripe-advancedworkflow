@@ -39,7 +39,7 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
 			
-			$wfFields = $this->getWorkflowFieldsFor($current);
+			$wfFields = $this->getWorkflowFieldsFor($active);
 			
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
@@ -60,19 +60,19 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 	/**
 	 * Gets the fields that should be shown for a given action
 	 *
-	 * @param WorkflowAction $action
+	 * @param WorkflowInstance $workflow
 	 */
-	protected function getWorkflowFieldsFor($action) {
-		$options = $action->getValidTransitions();
+	protected function getWorkflowFieldsFor($workflow) {
+		$action    = $workflow->CurrentAction();
+		$options   = $action->getValidTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
-		$fields = new FieldSet();
+		$fields    = new FieldSet();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new HiddenField('CurrentActionID', '', $action->ID));
 		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
 
-		$action->updateWorkflowFields($fields);
-		
+		$action->BaseAction()->updateWorkflowFields($fields);
+
 		return $fields;
 	}
 
@@ -85,29 +85,27 @@ class ActivityWorkflowExtension extends LeftAndMainDecorator {
 	 * @return <type>
 	 */
 	public function updateworkflow($data, Form $form, $request) {
+		$svc = singleton('WorkflowService');
 		$p = $this->owner->getRecord($this->owner->currentPageID());
+		$workflow = $svc->getWorkflowFor($p);
+		$action = $workflow->CurrentAction();
+
 		if (!$p || !$p->canEditWorkflow()) {
 			return;
 		}
 
-		$action = DataObject::get_by_id('WorkflowAction', $data['CurrentActionID']);
-		$allowedFields = $this->getWorkflowFieldsFor($action)->saveableFields();
-
-		unset($allowedFields['CurrentActionID']);
+		$allowedFields = $this->getWorkflowFieldsFor($workflow)->saveableFields();
 		unset($allowedFields['TransitionID']);
 
 		$allowed = array_keys($allowedFields);
 		$form->saveInto($action, $allowed);
 		$action->write();
 
-		$svc = singleton('WorkflowService');
 		if (isset($data['TransitionID']) && $data['TransitionID']) {
-			
-			$svc->executeTransition($data['TransitionID']);
+			$svc->executeTransition($p, $data['TransitionID']);
 		} else {
 			// otherwise, just try to execute the current workflow to see if it
 			// can now proceed based on user input
-			$workflow = $svc->getWorkflowFor($action);
 			$workflow->execute();
 		}
 
