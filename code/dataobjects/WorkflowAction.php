@@ -62,6 +62,20 @@ class WorkflowAction extends DataObject {
 	}
 
 	/**
+	 * Gets an object that is used for saving the actual state of things during
+	 * a running workflow. It still uses the workflow action def for managing the
+	 * functional execution, however if you need to store additional data for
+	 * the state, you can specify your own instance instead. 
+	 *
+	 * @return WorkflowActionInstance
+	 */
+	public function getInstanceForWorkflow() {
+		$instance = new WorkflowActionInstance();
+		$instance->BaseActionID = $this->ID;
+		return $instance;
+	}
+
+	/**
 	 * Perform whatever needs to be done for this action. If this action can be considered executed, then
 	 * return true - if not (ie it needs some user input first), return false and 'execute' will be triggered
 	 * again at a later point in time after the user has provided more data, either directly or indirectly.

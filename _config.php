@@ -9,3 +9,8 @@
 
 Object::add_extension('Member', 'Hierarchy');
 Object::add_extension('LeftAndMain', 'ActivityWorkflowExtension');
+
+
+if (($ACTIVITY_WORKFLOW_DIR = basename(dirname(__FILE__))) != 'activityworkflow') {
+	throw new Exception("The frontend editing module must be in a directory named 'frontend-editing', not $ACTIVITY_WORKFLOW_DIR");
+}

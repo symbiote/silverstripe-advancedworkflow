@@ -16,7 +16,6 @@
  * @package activityworkflow
  */
 class WorkflowDefinition extends DataObject {
-
 	public static $db = array(
 		'Title'       => 'Varchar(128)',
 		'Description' => 'Text',
@@ -44,6 +43,7 @@ class WorkflowDefinition extends DataObject {
 
 	public static $icon = 'activityworkflow/images/definition.png';
 
+
 	/**
 	 * Gets the action that first triggers off the workflow
 	 * 
@@ -53,6 +53,9 @@ class WorkflowDefinition extends DataObject {
 		if($actions = $this->Actions()) return $actions->First();
 	}
 
+	/**
+	 * Ensure a sort value is set
+	 */
 	public function onBeforeWrite() {
 		if(!$this->Sort) {
 			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowDefinition"')->value();
@@ -61,6 +64,9 @@ class WorkflowDefinition extends DataObject {
 		parent::onBeforeWrite();
 	}
 
+	/**
+	 * @return int
+	 */
 	public function numChildren() {
 		return count($this->Actions());
 	}

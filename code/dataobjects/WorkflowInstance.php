@@ -80,15 +80,17 @@ class WorkflowInstance extends DataObject {
 	 * @param DataObject $for
 	 */
 	public function beginWorkflow(WorkflowDefinition $definition, DataObject $for=null) {
-		if(!$this->ID) $this->write();
+		if(!$this->ID) {
+			$this->write();
+		}
 
 		if ($for && Object::has_extension($for->ClassName, 'WorkflowApplicable')) {
 			$this->TargetClass = $for->ClassName;
 			$this->TargetID = $for->ID;
 		}
 
-		$action = new WorkflowActionInstance;
-		$action->BaseActionID = $definition->getInitialAction()->ID;
+		// lets create the first WorkflowActionInstance. 
+		$action = $definition->getInitialAction()->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
 
@@ -174,8 +176,8 @@ class WorkflowInstance extends DataObject {
 	 * @param WorkflowTransition $transition
 	 */
 	public function performTransition(WorkflowTransition $transition) {
-		$action = new WorkflowActionInstance;
-		$action->BaseActionID = $transition->NextActionID;
+		$definition = DataObject::get_by_id('WorkflowAction', $transition->NextActionID);
+		$action = $definition->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
 
