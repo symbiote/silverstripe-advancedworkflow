@@ -3,7 +3,7 @@
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
  *
  * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage actions
  */
 class NotifyUsersWorkflowAction extends WorkflowAction {
@@ -14,7 +14,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		'EmailTemplate' => 'Text'
 	);
 
-	public static $icon = 'activityworkflow/images/notify.png';
+	public static $icon = 'advancedworkflow/images/notify.png';
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -34,13 +34,13 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 	public function fieldLabels() {
 		return array_merge(parent::fieldLabels(), array(
-			'NotificationEmail' => _t('ActivityWorkfow.NOTIFICATIONEMAIL', 'Notification Email'),
-			'NotificationNote'  => _t('ActivityWorkfow.NOTIFICATIONNOTE',
+			'NotificationEmail' => _t('NotifyUsersWorkflowAction.NOTIFICATIONEMAIL', 'Notification Email'),
+			'NotificationNote'  => _t('NotifyUsersWorkflowAction.NOTIFICATIONNOTE',
 				'All users attached to the workflow will be sent an email when this action is run.'),
-			'EmailSubject'      => _t('ActivityWorkfow.EMAILSUBJECT', 'Email subject'),
-			'EmailFrom'         => _t('ActivityWorkfow.EMAILFROM', 'Email from'),
-			'EmailTemplate'     => _t('ActivityWorkfow.EMAILTEMPLATE', 'Email template'),
-			'FormattingHelp'    => _t('ActivityWorkflow.FORMATTINGHELP', 'Formatting Help')
+			'EmailSubject'      => _t('NotifyUsersWorkflowAction.EMAILSUBJECT', 'Email subject'),
+			'EmailFrom'         => _t('NotifyUsersWorkflowAction.EMAILFROM', 'Email from'),
+			'EmailTemplate'     => _t('NotifyUsersWorkflowAction.EMAILTEMPLATE', 'Email template'),
+			'FormattingHelp'    => _t('NotifyUsersWorkflowAction.FORMATTINGHELP', 'Formatting Help')
 		));
 	}
 

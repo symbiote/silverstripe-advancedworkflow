@@ -4,7 +4,7 @@
  *
  * @author     marcus@silverstripe.com.au
  * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage tests
  */
 class WorkflowEngineTests extends SapphireTest {

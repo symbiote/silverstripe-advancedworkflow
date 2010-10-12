@@ -4,7 +4,7 @@
  * and is either currently running, or has finished.
  *
  * @license BSD License (http://silverstripe.org/bsd-license/)
- * @package activityworkflow
+ * @package advancedworkflow
  */
 class WorkflowActionInstance extends DataObject {
 

@@ -4,7 +4,7 @@
  * the workflow part-way through the workflow path.
  *
  * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage actions
  */
 class AssignUsersToWorkflowAction extends WorkflowAction {
@@ -14,7 +14,7 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 		'Groups' => 'Group'
 	);
 
-	public static $icon = 'activityworkflow/images/assign.png';
+	public static $icon = 'advancedworkflow/images/assign.png';
 
 	public function execute(WorkflowInstance $workflow) {
 		$workflow->Users()->addMany($this->Users());
@@ -37,9 +37,9 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 	public function fieldLabels() {
 		return array_merge(parent::fieldLabels(), array(
-			'AssignUsers' => _t('ActivityWorkflow.ASSIGNUSERS', 'Assign Users'),
-			'Users'       => _t('ActivityWorkflow.USERS', 'Users'),
-			'Groups'      => _t('ActivityWorkflow.GROUPS', 'Groups')
+			'AssignUsers' => _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
+			'Users'       => _t('AssignUsersToWorkflowAction.USERS', 'Users'),
+			'Groups'      => _t('AssignUsersToWorkflowAction.GROUPS', 'Groups')
 		));
 	}
 

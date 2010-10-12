@@ -6,7 +6,7 @@
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
- * @package activityworkflow
+ * @package advancedworkflow
  */
 class WorkflowAction extends DataObject {
 
@@ -29,7 +29,7 @@ class WorkflowAction extends DataObject {
 		'Transitions' => 'WorkflowTransition.Action'
 	);
 
-	public static $icon = 'activityworkflow/images/action.png';
+	public static $icon = 'advancedworkflow/images/action.png';
 
 	/**
 	 * Can documents in the current workflow state be edited?

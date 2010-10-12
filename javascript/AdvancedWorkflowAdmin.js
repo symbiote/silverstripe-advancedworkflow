@@ -45,7 +45,7 @@ $(function() {
 		 * @param {Function} callback
 		 */
 		loadForm: function(url, data, callback) {
-			statusMessage(ss.i18n._t('ActivityWorkflow.LOADING', 'Loading...'));
+			statusMessage(ss.i18n._t('AdvancedWorkflow.LOADING', 'Loading...'));
 			$(this).load(url, data, responseHandler(function(response, status, xhr) {
 				$('#form_actions_right').remove();
 				Behaviour.apply();
@@ -92,7 +92,7 @@ $(function() {
 			data += '&ids[]=' + $(this).attr('data-id');
 		});
 
-		statusMessage(ss.i18n._t('ActivityWorkflow.SAVINGORDER', 'Saving order...'));
+		statusMessage(ss.i18n._t('AdvancedWorkflow.SAVINGORDER', 'Saving order...'));
 		__last_xhr = $.post(link, data, responseHandler());
 	});
 
@@ -150,7 +150,7 @@ $('#form_actions_right input').live('click', function() {
 	var isDelete = ($(this).attr('name') == 'action_doDelete');
 
 	if(isDelete) {
-		if(!confirm(ss.i18n._t('ActivityWorkflow.REALLYDELETE', 'Do you really want to delete this?'))) {
+		if(!confirm(ss.i18n._t('AdvancedWorkflow.REALLYDELETE', 'Do you really want to delete this?'))) {
 			button.removeClass('loading');
 			return false;
 		}
@@ -163,10 +163,10 @@ $('#form_actions_right input').live('click', function() {
 
 		if(!isDelete) {
 			if($('#right #ModelAdminPanel form').hasClass('validationerror')) {
-				errorMessage(ss.i18n._t('ActivityWorkflow.VALIDATIONERROR', 'Validation Error'));
+				errorMessage(ss.i18n._t('AdvancedWorkflow.VALIDATIONERROR', 'Validation Error'));
 				return;
 			} else {
-				statusMessage(ss.i18n._t('ActivityWorkflow.SAVED', 'Saved'), 'good');
+				statusMessage(ss.i18n._t('AdvancedWorkflow.SAVED', 'Saved'), 'good');
 			}
 		}
 

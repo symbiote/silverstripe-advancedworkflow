@@ -4,9 +4,9 @@
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
- * @package activityworkflow
+ * @package advancedworkflow
  */
-class ActivityWorkflowExtension extends LeftAndMainDecorator {
+class AdvancedWorkflowExtension extends LeftAndMainDecorator {
     public function startworkflow($data, $form, $request) {
 		$p = $this->owner->getRecord($this->owner->currentPageID());
 		if (!$p || !$p->canEdit()) {

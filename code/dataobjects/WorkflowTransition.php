@@ -11,7 +11,7 @@
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
- * @package activityworkflow
+ * @package advancedworkflow
  */
 class WorkflowTransition extends DataObject {
 
@@ -27,7 +27,7 @@ class WorkflowTransition extends DataObject {
 		'NextAction' => 'WorkflowAction',
 	);
 
-	public static $icon = 'activityworkflow/images/transition.png';
+	public static $icon = 'advancedworkflow/images/transition.png';
 
 	/**
 	 * Returns true if it is valid for this transition to be followed given the

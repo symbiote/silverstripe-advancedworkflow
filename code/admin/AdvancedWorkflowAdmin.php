@@ -3,19 +3,19 @@
  * An admin interface for managing workflow definitions, actions and transitions.
  *
  * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage admin
  */
-class ActivityWorkflowAdmin extends ModelAdmin {
+class AdvancedWorkflowAdmin extends ModelAdmin {
 
 	public static $title = 'Workflows';
 	public static $menu_title = 'Workflows';
 	public static $url_segment = 'workflows';
 
 	public static $managed_models = array(
-		'WorkflowDefinition' => array('record_controller' => 'ActivityWorkflowAdmin_RecordController'),
-		'WorkflowAction'     => array('record_controller' => 'ActivityWorkflowAdmin_RecordController'),
-		'WorkflowTransition' => array('record_controller' => 'ActivityWorkflowAdmin_RecordController')
+		'WorkflowDefinition' => array('record_controller' => 'AdvancedWorkflowAdmin_RecordController'),
+		'WorkflowAction'     => array('record_controller' => 'AdvancedWorkflowAdmin_RecordController'),
+		'WorkflowTransition' => array('record_controller' => 'AdvancedWorkflowAdmin_RecordController')
 	);
 
 	public static $allowed_actions = array(
@@ -89,19 +89,19 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 				$current = DataObject::get('WorkflowTransition', sprintf('"ActionID" = %d', $parentId));
 				break;
 			default:
-				return $this->httpError(400, _t('ActivityWorkflow.INVALIDSORTTYPE', 'Invalid sort type.'));
+				return $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDSORTTYPE', 'Invalid sort type.'));
 		}
 
 		if(!$order || count($order) != count($current)) {
 			return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkflow.INVALIDSORT', 'An invalid sort order was specified.')
+				null, 400, _t('AdvancedWorkflowAdmin.INVALIDSORT', 'An invalid sort order was specified.')
 			);
 		}
 
 		$service->reorder($current, $order);
 
 		return new SS_HTTPResponse(
-			null, 200, _t('ActivityWorkflow.SORTORDERSAVED', 'The sort order has been saved.')
+			null, 200, _t('AdvancedWorkflowAdmin.SORTORDERSAVED', 'The sort order has been saved.')
 		);
 	}
 
@@ -115,7 +115,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			new FieldSet(
 				$this->getClassCreationField('WorkflowDefinition')),
 			new FieldSet(
-				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
+				new FormAction('doCreateWorkflowItem', _t('AdvancedWorkflowAdmin.CREATE', 'Create')))
 		);
 	}
 
@@ -130,7 +130,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 				$this->getClassCreationField('WorkflowAction', false),
 				new HiddenField('ParentID')),
 			new FieldSet(
-				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
+				new FormAction('doCreateWorkflowItem', _t('AdvancedWorkflowAdmin.CREATE', 'Create')))
 		);
 	}
 
@@ -145,7 +145,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 				$this->getClassCreationField('WorkflowTransition'),
 				new HiddenField('ParentID')),
 			new FieldSet(
-				new FormAction('doCreateWorkflowItem', _t('ActivityWorkfowAdmin.CREATE', 'Create')))
+				new FormAction('doCreateWorkflowItem', _t('AdvancedWorkflowAdmin.CREATE', 'Create')))
 		);
 	}
 
@@ -170,13 +170,13 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			$valid = is_subclass_of($class, $type) || ($allowSelf && $class == $type);
 
 			if(!$valid) return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkfowAdmin.INVALIDITEM', 'An invalid workflow item was specified.')
+				null, 400, _t('AdvancedWorkflowAdmin.INVALIDITEM', 'An invalid workflow item was specified.')
 			);
 		} else {
 			$class = $type;
 
 			if(!$allowSelf) return new SS_HTTPResponse(
-				null, 400, _t('ActivityWorkflowAdmin.MUSTSPECIFYITEM', 'You must specify a workflow item to create.')
+				null, 400, _t('AdvancedWorkflowAdmin.MUSTSPECIFYITEM', 'You must specify a workflow item to create.')
 			);
 		}
 
@@ -187,7 +187,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 
 			if(!is_numeric($parentId) || !DataObject::get_by_id($parentClass, $parentId)) {
 				return new SS_HTTPResponse(
-					null, 400, _t('ActivityWorkflowAdmin.INVALIDPARENT', 'An invalid parent was specified.')
+					null, 400, _t('AdvancedWorkflowAdmin.INVALIDPARENT', 'An invalid parent was specified.')
 				);
 			}
 		}
@@ -203,7 +203,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 			}
 		} else {
 			$record = new $class;
-			$record->Title = sprintf(_t('ActivityWorkflowAdmin.NEWITEM', 'New %s'), $record->singular_name());
+			$record->Title = sprintf(_t('AdvancedWorkflowAdmin.NEWITEM', 'New %s'), $record->singular_name());
 
 			if($type == 'WorkflowAction') {
 				$record->WorkflowDefID = $parentId;
@@ -221,7 +221,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 
 		return new SS_HTTPResponse(
 			$this->isAjax() ? $form->forAjaxTemplate() : $form->forTemplate(), 200,
-			sprintf(_t('WorkflowActivityAdmin.CREATEITEM', 'Fill out this form to create a "%s".'), $title)
+			sprintf(_t('AdvancedWorkflowAdmin.CREATEITEM', 'Fill out this form to create a "%s".'), $title)
 		);
 	}
 
@@ -250,7 +250,7 @@ class ActivityWorkflowAdmin extends ModelAdmin {
 		}
 
 		return new DropdownField(
-			'Class', '', $createable, '', null, ($includeSelf ? false : _t('ActivityWorkflowAdmin.SELECT', '(select)'))
+			'Class', '', $createable, '', null, ($includeSelf ? false : _t('AdvancedWorkflowAdmin.SELECT', '(select)'))
 		);
 	}
 
@@ -260,10 +260,10 @@ class ActivityWorkflowAdmin extends ModelAdmin {
  * A record controller that hides the "Back" button, and shows a message on deletion rather than redirecting to
  * the search form.
  *
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage admin
  */
-class ActivityWorkflowAdmin_RecordController extends ModelAdmin_RecordController {
+class AdvancedWorkflowAdmin_RecordController extends ModelAdmin_RecordController {
 
 	/**
 	 * @return Form
@@ -287,7 +287,7 @@ class ActivityWorkflowAdmin_RecordController extends ModelAdmin_RecordController
 				'EditForm',
 				new FieldSet(new LiteralField(
 					'RecordDeleted',
-					'<p>' . _t('ActivityWorkflowAdmin.RECORDDELETED', 'This record has been deleted.') . '</p>'
+					'<p>' . _t('AdvancedWorkflowAdmin.RECORDDELETED', 'This record has been deleted.') . '</p>'
 				)),
 				new FieldSet()
 			);

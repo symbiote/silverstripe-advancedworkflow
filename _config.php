@@ -1,16 +1,15 @@
 <?php
 /**
- * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @license BSD License (http://silverstripe.org/bsd-license/)
+ * @package advancedworkflow
  */
 
 // Add the following to your config to enable workflow 
 // DataObject::add_extension('SiteTree', 'WorkflowApplicable');
 
 Object::add_extension('Member', 'Hierarchy');
-Object::add_extension('LeftAndMain', 'ActivityWorkflowExtension');
+Object::add_extension('LeftAndMain', 'AdvancedWorkflowExtension');
 
-
-if (($ACTIVITY_WORKFLOW_DIR = basename(dirname(__FILE__))) != 'activityworkflow') {
-	throw new Exception("The frontend editing module must be in a directory named 'frontend-editing', not $ACTIVITY_WORKFLOW_DIR");
+if(($MODULE_DIR = basename(dirname(__FILE__))) != 'advancedworkflow') {
+	throw new Exception("The advanced workflow module must be in a directory named 'advancedworkflow', not $MODULE_DIR");
 }

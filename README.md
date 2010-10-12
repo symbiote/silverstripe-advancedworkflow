@@ -1,4 +1,4 @@
-Activity Workflow Module
+Advanced Workflow Module
 ========================
 
 Overview

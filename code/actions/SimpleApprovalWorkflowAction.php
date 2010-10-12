@@ -8,12 +8,12 @@
  *
  * @author     marcus@silverstripe.com.au
  * @license    BSD License (http://silverstripe.org/bsd-license/)
- * @package    activityworkflow
+ * @package    advancedworkflow
  * @subpackage actions
  */
 class SimpleApprovalWorkflowAction extends WorkflowAction {
 	
-	public static $icon = 'activityworkflow/images/approval.png';
+	public static $icon = 'advancedworkflow/images/approval.png';
 
     public function execute() {
 		// we don't need to do anything for this execution,
