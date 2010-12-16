@@ -79,10 +79,10 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 	/**
 	 * Update a workflow based on user input. 
 	 *
-	 * @param <type> $data
+	 * @param array $data
 	 * @param Form $form
-	 * @param <type> $request
-	 * @return <type>
+	 * @param SS_HTTPRequest $request
+	 * @return String
 	 */
 	public function updateworkflow($data, Form $form, $request) {
 		$svc = singleton('WorkflowService');

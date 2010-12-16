@@ -1,6 +1,11 @@
 <?php
 /**
- * A WorkflowInstance is created whenever a user wants to 'publish' or
+ * A WorkflowInstance is created whenever a user 'starts' a workflow. 
+ * 
+ * This 'start' is triggered automatically when the user clicks the relevant 
+ * button (eg 'apply for approval'). This creates a standalone object
+ * that maintains the state of the workflow process. 
+ * 
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)

@@ -2,6 +2,10 @@
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
  * and is either currently running, or has finished.
+ * 
+ * Each step of the workflow has one of these created for it - it refers back
+ * to the original action definition, but is unique for each step of the
+ * workflow to ensure re-entrant behaviour. 
  *
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
@@ -49,5 +53,34 @@ class WorkflowActionInstance extends DataObject {
 
 		return $valid;
 	}
+	
+	/**
+	 * Can documents in the current workflow state be edited?
+	 *
+	 * @param  DataObject $target
+	 * @return bool
+	 */
+	public function canEditTarget(DataObject $target) {
+		return $this->BaseAction()->canEditTarget($target);
+	}
 
+	/**
+	 * Does this action restrict viewing of the document?
+	 *
+	 * @param  DataObject $target
+	 * @return bool
+	 */
+	public function canViewTarget(DataObject $target) {
+		return $this->BaseAction()->canViewTarget($target);
+	}
+
+	/**
+	 * Does this action restrict the publishing of a document?
+	 *
+	 * @param  DataObject $target
+	 * @return bool
+	 */
+	public function canPublishTarget(DataObject $target) {
+		return $this->BaseAction()->canPublishTarget($target);
+	}
 }

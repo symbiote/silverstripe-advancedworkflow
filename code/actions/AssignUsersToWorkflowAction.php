@@ -17,9 +17,10 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 	public static $icon = 'advancedworkflow/images/assign.png';
 
 	public function execute(WorkflowInstance $workflow) {
+		$workflow->Users()->removeAll();
+		$workflow->Groups()->removeAll();
 		$workflow->Users()->addMany($this->Users());
 		$workflow->Groups()->addMany($this->Groups());
-
 		return true;
 	}
 
