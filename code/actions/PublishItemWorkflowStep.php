@@ -21,4 +21,14 @@ class PublishItemWorkflowAction extends WorkflowAction {
 
 		return true;
 	}
+	
+	/**
+	 * Publish action allows a user who is currently assigned at this point of the workflow to 
+	 * 
+	 * @param  DataObject $target
+	 * @return bool
+	 */
+	public function canPublishTarget(DataObject $target) {
+		return true;
+	}
 }

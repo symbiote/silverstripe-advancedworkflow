@@ -79,7 +79,7 @@ class WorkflowAction extends DataObject {
 	 * Perform whatever needs to be done for this action. If this action can be considered executed, then
 	 * return true - if not (ie it needs some user input first), return false and 'execute' will be triggered
 	 * again at a later point in time after the user has provided more data, either directly or indirectly.
-	 *
+	 * 
 	 * @param  WorkflowInstance $workflow
 	 * @return bool Returns true if this action has finished.
 	 */
