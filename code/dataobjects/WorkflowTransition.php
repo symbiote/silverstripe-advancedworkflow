@@ -43,16 +43,30 @@ class WorkflowTransition extends DataObject {
 	/**
 	 * Before saving, make sure we're not in an infinite loop
 	 */
-	public function  onBeforeWrite() {
-		if($this->ActionID == $this->NextActionID) {
-			$this->NextActionID = 0;
-		}
-
+	public function onBeforeWrite() {
 		if(!$this->Sort) {
 			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowTransition"')->value();
 		}
 
 		parent::onBeforeWrite();
+	}
+
+	public function validate() {
+		$result = parent::validate();
+
+		if ($this->ActionID == $this->NextActionID) {
+			$result->error(_t(
+				'WorkflowTransition.TRANSITIONLOOP',
+				'A transition cannot lead back to its parent action.'));
+		}
+
+		if (!$this->ActionID || !$this->NextActionID) {
+			$result->error(_t(
+				'WorkflowTransition.MUSTSETACTIONS',
+				'You must set a parent and transition action.'));
+		}
+
+		return $result;
 	}
 
 	/* CMS FUNCTIONS */
@@ -72,8 +86,16 @@ class WorkflowTransition extends DataObject {
 			$options = $actions->map();
 		}
 
-		$fields->addFieldToTab('Root.Main', new DropdownField('ActionID', _t('WorkflowTransition.ACTION', 'Action'), $options));
-		$fields->addFieldToTab('Root.Main', new DropdownField('NextActionID', _t('WorkflowTransition.NEXT_ACTION', 'Next Action'), $options));
+		$fields->addFieldToTab('Root.Main', new DropdownField(
+			'ActionID',
+			_t('WorkflowTransition.ACTION', 'Action'),
+			$options));
+		$fields->addFieldToTab('Root.Main', new DropdownField(
+			'NextActionID',
+			_t('WorkflowTransition.NEXT_ACTION', 'Next Action'),
+			$options,
+			null, null,
+			_t('WorkflowTransition.SELECTONE', '(Select one)')));
 
 		return $fields;
 	}
