@@ -97,22 +97,18 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 * If there's an active instance, then it 'might' be publishable
 	 */
 	public function canPublish() {
-		$active = $this->getWorkflowInstance();
-		if ($active) {
+		if ($active = $this->getWorkflowInstance()) {
 			return $active->canPublishTarget($this->owner);
 		}
-		return false;
 	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
 	 */
 	public function canEdit() {
-		$active = $this->getWorkflowInstance();
-		if ($active) {
+		if ($active = $this->getWorkflowInstance()) {
 			return $active->canEditTarget($this->owner);
 		}
-		return true;
 	}
 
 	/**

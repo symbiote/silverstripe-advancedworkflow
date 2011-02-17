@@ -247,11 +247,9 @@ class WorkflowInstance extends DataObject {
 	 * Can documents in the current workflow state be edited?
 	 */
 	public function canEditTarget() {
-		$action = $this->CurrentAction();
-		if ($action) {
-			return $action->canEditTarget($this->getTarget());
+		if ($this->CurrentActionID) {
+			return $this->CurrentAction()->canEditTarget($this->getTarget());
 		}
-		return true;
 	}
 
 	/**
@@ -273,11 +271,9 @@ class WorkflowInstance extends DataObject {
 	 * @return boolean
 	 */
 	public function canPublishTarget() {
-		$action = $this->CurrentAction();
-		if ($action) {
-			return $action->canPublishTarget($this->getTarget());
+		if ($this->CurrentActionID) {
+			return $this->CurrentAction()->canPublishTarget($this->getTarget());
 		}
-		return true;
 	}
 
 }
