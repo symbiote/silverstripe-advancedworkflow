@@ -25,7 +25,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		'CreateActionForm',
 		'CreateTransitionForm'
 	);
-
+	
 	/**
 	 * @return string
 	 */
