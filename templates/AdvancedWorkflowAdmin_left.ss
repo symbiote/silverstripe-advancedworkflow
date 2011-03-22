@@ -1,3 +1,5 @@
+
+<% require javascript(sapphire/thirdparty/jquery-livequery/jquery.livequery.js) %>
 <% require javascript(advancedworkflow/thirdparty/jquery-jstree/jquery.jstree.js) %>
 <% require javascript(advancedworkflow/javascript/AdvancedWorkflowAdmin.js) %>
 <% require css(advancedworkflow/css/AdvancedWorkflowAdmin.css) %>

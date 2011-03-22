@@ -61,7 +61,7 @@ $(function() {
 		json_data: {
 			ajax: {
 				url:  function() { return this.get_container().attr('href'); },
-				data: function(n) { return { id : n.attr ? n.attr('data-id') : 0, class: n.attr ? n.attr('data-class') : '' }; }
+				data: function(n) { return { id : n.attr ? n.attr('data-id') : 0, "class": n.attr ? n.attr('data-class') : '' }; }
 			}
 		},
 		crrm: {move: {check_move: function(move) {
@@ -108,85 +108,93 @@ $(function() {
 	$('#Workflows').bind('reopen.jstree', function(event, args) {
 		$('#left').fn('changeWorkflowItem');
 	});
-});
+	
+		
+	$('#left form').livequery(function() {
+		var form = $(this);
+		form.submit(function () {
+			$('#ModelAdminPanel').fn('loadForm', form.attr('action'), form.formToArray(), function() {
+				// if the record has been written to the database, reload the relevant portion of the tree
+				if($('#Form_EditForm').length) {
+					switch(form.attr('id')) {
+						case 'Form_CreateDefinitionForm':
+							$('#Workflows').jstree('refresh');
+							break;
+						case 'Form_CreateActionForm':
+							$('#Workflows').jstree('refresh',
+								'#WorkflowDefinition_' + $('input[name=ParentID]', form).val());
+							break;
+						case 'Form_CreateTransitionForm':
+							$('#Workflows').jstree('refresh',
+								'#WorkflowAction_' + $('input[name=ParentID]', form).val());
+							break;
+					}
+				}
 
-$('#left form').live('submit', function() {
-	var form = $(this);
-
-	$('#ModelAdminPanel').fn('loadForm', form.attr('action'), form.formToArray(), function() {
-		// if the record has been written to the database, reload the relevant portion of the tree
-		if($('#Form_EditForm').length) {
-			switch(form.attr('id')) {
-			 	case 'Form_CreateDefinitionForm':
-					$('#Workflows').jstree('refresh');
-					break;
-				case 'Form_CreateActionForm':
-					$('#Workflows').jstree('refresh',
-						'#WorkflowDefinition_' + $('input[name=ParentID]', form).val());
-					break;
-				case 'Form_CreateTransitionForm':
-					$('#Workflows').jstree('refresh',
-						'#WorkflowAction_' + $('input[name=ParentID]', form).val());
-					break;
-			}
-		}
-
-		$('select', form).val('');
-		$('input[type=submit]', form).removeClass('loading');
+				$('select', form).val('');
+				$('input[type=submit]', form).removeClass('loading');
+			});
+			
+			return false;
+		});
 	});
 
-	return false;
-});
+	/**
+	 * Overloads the default ModelAdmin add/save/delete handler in order to refresh the tree when changes are made.
+	 *
+	 * @param {Event} event
+	 */
+	$('#form_actions_right input').livequery(function() {
+		$(this).click(function () {
+		
+			var button = $(this).addClass('loading');
+			var form = $('#right form');
+			var action = form.attr('action') + '?' + $(this).fieldSerialize();
+			var isDelete = ($(this).attr('name') == 'action_doDelete');
 
-/**
- * Overloads the default ModelAdmin add/save/delete handler in order to refresh the tree when changes are made.
- *
- * @param {Event} event
- */
-$('#form_actions_right input').live('click', function() {
-	var button = $(this).addClass('loading');
-	var form = $('#right form');
-	var action = form.attr('action') + '?' + $(this).fieldSerialize();
-	var isDelete = ($(this).attr('name') == 'action_doDelete');
+			if(isDelete) {
+				if(!confirm(ss.i18n._t('AdvancedWorkflow.REALLYDELETE', 'Do you really want to delete this?'))) {
+					button.removeClass('loading');
+					return false;
+				}
+			} else {
+				if(typeof tinyMCE != 'undefined') tinyMCE.triggerSave();
+			}
 
-	if(isDelete) {
-		if(!confirm(ss.i18n._t('AdvancedWorkflow.REALLYDELETE', 'Do you really want to delete this?'))) {
-			button.removeClass('loading');
+			$('#ModelAdminPanel').fn('loadForm', action, form.formToArray(), responseHandler(function() {
+				button.removeClass('loading');
+
+				if(!isDelete) {
+					if($('#right #ModelAdminPanel form').hasClass('validationerror')) {
+						errorMessage(ss.i18n._t('AdvancedWorkflow.VALIDATIONERROR', 'Validation Error'));
+						return;
+					} else {
+						statusMessage(ss.i18n._t('AdvancedWorkflow.SAVED', 'Saved'), 'good');
+					}
+				}
+
+				// figure out which section of the tree to reload
+				if(action.indexOf('WorkflowDefinition') != -1) {
+					var node = -1;
+				} else {
+					if(form.is('#Form_AddForm')) {
+						var node = '#WorkflowAction_' + form.find('select[name=ActionID]').val();
+					} else {
+						var match = form.attr('action').match(/admin\/workflows\/([a-zA-Z0-9_]+)\/([0-9]+)\/.*/);
+						var node  = $('#' + match[1] + '_' + match[2]).parent().parent();
+					}
+				}
+
+				$('#Workflows').jstree('refresh', node);
+			}));
+
 			return false;
-		}
-	} else {
-		if(typeof tinyMCE != 'undefined') tinyMCE.triggerSave();
-	}
-
-	$('#ModelAdminPanel').fn('loadForm', action, form.formToArray(), responseHandler(function() {
-		button.removeClass('loading');
-
-		if(!isDelete) {
-			if($('#right #ModelAdminPanel form').hasClass('validationerror')) {
-				errorMessage(ss.i18n._t('AdvancedWorkflow.VALIDATIONERROR', 'Validation Error'));
-				return;
-			} else {
-				statusMessage(ss.i18n._t('AdvancedWorkflow.SAVED', 'Saved'), 'good');
-			}
-		}
-
-		// figure out which section of the tree to reload
-		if(action.indexOf('WorkflowDefinition') != -1) {
-			var node = -1;
-		} else {
-			if(form.is('#Form_AddForm')) {
-				var node = '#WorkflowAction_' + form.find('select[name=ActionID]').val();
-			} else {
-				var match = form.attr('action').match(/admin\/workflows\/([a-zA-Z0-9_]+)\/([0-9]+)\/.*/);
-				var node  = $('#' + match[1] + '_' + match[2]).parent().parent();
-			}
-		}
-
-		$('#Workflows').jstree('refresh', node);
-	}));
-
-	return false;
+		});
+	});
+	
+	
 });
+
 
 /**
  * A simple wrapper around an AJAX request response handler function that also shows the status text attached to
