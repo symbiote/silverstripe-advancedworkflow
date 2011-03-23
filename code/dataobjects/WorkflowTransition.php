@@ -54,13 +54,13 @@ class WorkflowTransition extends DataObject {
 	public function validate() {
 		$result = parent::validate();
 
-		if ($this->ActionID == $this->NextActionID) {
+		if ($this->ActionID && ($this->ActionID == $this->NextActionID)) {
 			$result->error(_t(
 				'WorkflowTransition.TRANSITIONLOOP',
 				'A transition cannot lead back to its parent action.'));
 		}
 
-		if (!$this->ActionID || !$this->NextActionID) {
+		if ($this->ID && (!$this->ActionID || !$this->NextActionID)) {
 			$result->error(_t(
 				'WorkflowTransition.MUSTSETACTIONS',
 				'You must set a parent and transition action.'));
