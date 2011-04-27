@@ -40,8 +40,10 @@ class WorkflowApplicable extends DataObjectDecorator {
 		if($definitions = $service->getDefinitions()) {
 			$allDefinitions += $definitions->map();
 		}
-
-		$fields->addFieldsToTab('Root.Workflow', array(
+		
+		$tab = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
+		
+		$fields->addFieldsToTab($tab, array(
 			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')),
 			new DropdownField('WorkflowDefinitionID',
 				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions),
