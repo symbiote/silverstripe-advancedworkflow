@@ -11,11 +11,12 @@
 class WorkflowAction extends DataObject {
 
 	public static $db = array(
-		'Title'    => 'Varchar(255)',
-		'Comment'  => 'Text',
-		'Type'     => "Enum('Dynamic,Manual','Manual')",
-		'Executed' => 'Boolean',
-		'Sort'     => 'Int'
+		'Title'			=> 'Varchar(255)',
+		'Comment'		=> 'Text',
+		'Type'			=> "Enum('Dynamic,Manual','Manual')",
+		'Executed'		=> 'Boolean',
+		'AllowEditing'	=> "Enum('By Assignees,Content Settings,No','No')",		// can this item be edited?
+		'Sort'			=> 'Int'
 	);
 
 	public static $default_sort = 'Sort';
@@ -33,12 +34,16 @@ class WorkflowAction extends DataObject {
 
 	/**
 	 * Can documents in the current workflow state be edited?
+	 * 
+	 * Only return true or false if this is an absolute value; the WorkflowActionInstance
+	 * will try and figure out an appropriate value for the actively running workflow
+	 * if null is returned from this method. 
 	 *
 	 * @param  DataObject $target
 	 * @return bool
 	 */
 	public function canEditTarget(DataObject $target) {
-		return false;
+		return null;
 	}
 
 	/**
@@ -48,7 +53,7 @@ class WorkflowAction extends DataObject {
 	 * @return bool
 	 */
 	public function canViewTarget(DataObject $target) {
-		return true;
+		return null;
 	}
 
 	/**
@@ -58,7 +63,7 @@ class WorkflowAction extends DataObject {
 	 * @return bool
 	 */
 	public function canPublishTarget(DataObject $target) {
-		return false;
+		return null;
 	}
 
 	/**
@@ -111,7 +116,8 @@ class WorkflowAction extends DataObject {
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
-
+		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
+		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
 		return $fields;
 	}
 	

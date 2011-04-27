@@ -61,7 +61,19 @@ class WorkflowActionInstance extends DataObject {
 	 * @return bool
 	 */
 	public function canEditTarget(DataObject $target) {
-		return $this->BaseAction()->canEditTarget($target);
+		$absolute = $this->BaseAction()->canEditTarget($target);
+		if (!is_null($absolute)) {
+			return $absolute;
+		}
+		switch ($this->BaseAction()->AllowEditing) {
+			case 'By Assignees': 
+				return $this->Workflow()->canEdit();
+			case 'No':
+				return false;
+			case 'Content Settings':
+			default:
+				return null;
+		}
 	}
 
 	/**
