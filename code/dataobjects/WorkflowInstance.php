@@ -21,7 +21,8 @@ class WorkflowInstance extends DataObject {
 
 	public static $has_one = array(
 		'Definition'    => 'WorkflowDefinition',
-		'CurrentAction' => 'WorkflowActionInstance'
+		'CurrentAction' => 'WorkflowActionInstance',
+		'Initiator'		=> 'Member',
 	);
 
 	public static $has_many = array(
@@ -102,6 +103,7 @@ class WorkflowInstance extends DataObject {
 		$this->Title = sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 		$this->DefinitionID    = $definition->ID;
 		$this->CurrentActionID = $action->ID;
+		$this->InitiatorID = Member::currentUserID();
 		$this->write();
 
 		$this->Users()->addMany($definition->Users());

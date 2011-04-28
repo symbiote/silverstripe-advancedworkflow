@@ -9,6 +9,10 @@
  */
 class AssignUsersToWorkflowAction extends WorkflowAction {
 
+	public static $db = array(
+		'AssignInitiator'		=> 'Boolean',
+	);
+	
 	public static $many_many = array(
 		'Users'  => 'Member',
 		'Groups' => 'Group'
@@ -21,6 +25,9 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 		$workflow->Groups()->removeAll();
 		$workflow->Users()->addMany($this->Users());
 		$workflow->Groups()->addMany($this->Groups());
+		if ($this->AssignInitiator) {
+			$workflow->Users()->add($workflow->Initiator());
+		}
 		return true;
 	}
 
@@ -29,6 +36,7 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 		$fields->addFieldsToTab('Root.Main', array(
 			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
+			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
 			new TreeMultiselectField('Users', $this->fieldLabel('Users'), 'Member'),
 			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'Group')
 		));
@@ -38,10 +46,10 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 	public function fieldLabels() {
 		return array_merge(parent::fieldLabels(), array(
-			'AssignUsers' => _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
-			'Users'       => _t('AssignUsersToWorkflowAction.USERS', 'Users'),
-			'Groups'      => _t('AssignUsersToWorkflowAction.GROUPS', 'Groups')
+			'AssignUsers'		=> _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
+			'Users'				=> _t('AssignUsersToWorkflowAction.USERS', 'Users'),
+			'Groups'			=> _t('AssignUsersToWorkflowAction.GROUPS', 'Groups'),
+			'AssignInitiator'	=> _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
 		));
 	}
-
 }
