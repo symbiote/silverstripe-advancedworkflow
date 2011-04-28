@@ -1,0 +1,6 @@
+2011-04-28 v1.1.0
+-----------------
+
+* Added some level of support for objects other than Pages to work within 
+  workflows, using File objects as the case for the moment. 
+* Added tracking of the Initiator of a workflow
