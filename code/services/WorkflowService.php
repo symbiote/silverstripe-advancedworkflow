@@ -18,7 +18,7 @@ class WorkflowService {
 	 * @param DataObject $dataObject
 	 */
 	public function getDefinitionFor(DataObject $dataObject) {
-		if (Object::has_extension($dataObject->ClassName, 'WorkflowApplicable')) {
+		if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
 			if ($dataObject->WorkflowDefinitionID) {
 				return DataObject::get_by_id('WorkflowDefinition', $dataObject->WorkflowDefinitionID);
 			}
@@ -49,7 +49,7 @@ class WorkflowService {
 		if ($item instanceof WorkflowAction) {
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
-		} else if (is_object($item) && Object::has_extension($item->ClassName, 'WorkflowApplicable')) {
+		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
 			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $item->ClassName, $item->ID);
 			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\')');
 		}

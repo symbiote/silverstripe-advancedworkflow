@@ -89,7 +89,7 @@ class WorkflowInstance extends DataObject {
 			$this->write();
 		}
 
-		if ($for && Object::has_extension($for->ClassName, 'WorkflowApplicable')) {
+		if ($for && ($for->hasExtension('WorkflowApplicable') || $for->hasExtension('FileWorkflowApplicable'))) {
 			$this->TargetClass = $for->ClassName;
 			$this->TargetID = $for->ID;
 		}
@@ -275,5 +275,23 @@ class WorkflowInstance extends DataObject {
 			return $this->CurrentAction()->canPublishTarget($this->getTarget());
 		}
 	}
+	
+	
+	/* UI RELATED METHODS */
 
+	/**
+	 * Gets fields for managing this workflow instance in its current step
+	 */
+	public function getWorkflowFields() {
+		$action    = $this->CurrentAction();
+		$options   = $action->getValidTransitions();
+		$wfOptions = $options->map('ID', 'Title', ' ');
+		$fields    = new FieldSet();
+
+		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
+		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
+		$action->BaseAction()->updateWorkflowFields($fields);
+		
+		return $fields;
+	}
 }

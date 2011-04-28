@@ -1,6 +1,7 @@
 <?php
 /**
- * Handles interactions triggered by users in the backend. 
+ * Handles interactions triggered by users in the backend of the CMS. Replicate this
+ * type of functionality wherever you need UI interaction with workflow. 
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -39,7 +40,7 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
 			
-			$wfFields = $this->getWorkflowFieldsFor($active);
+			$wfFields = $active->getWorkflowFields(); 
 			
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
@@ -55,25 +56,6 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 				$form->makeReadonly();
 			}
 		}
-	}
-
-	/**
-	 * Gets the fields that should be shown for a given action
-	 *
-	 * @param WorkflowInstance $workflow
-	 */
-	protected function getWorkflowFieldsFor($workflow) {
-		$action    = $workflow->CurrentAction();
-		$options   = $action->getValidTransitions();
-		$wfOptions = $options->map('ID', 'Title', ' ');
-		$fields    = new FieldSet();
-
-		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
-
-		$action->BaseAction()->updateWorkflowFields($fields);
-
-		return $fields;
 	}
 
 	/**
@@ -94,7 +76,7 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 			return;
 		}
 
-		$allowedFields = $this->getWorkflowFieldsFor($workflow)->saveableFields();
+		$allowedFields = $workflow->getWorkflowFields()->saveableFields();
 		unset($allowedFields['TransitionID']);
 
 		$allowed = array_keys($allowedFields);
