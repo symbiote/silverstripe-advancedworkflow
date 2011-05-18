@@ -76,8 +76,14 @@ class WorkflowTransition extends DataObject {
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
 
 		$filter = '';
-		if ($this->ActionID) {
-			$filter = '"WorkflowDefID" = '.((int) $this->Action()->WorkflowDefID);
+        
+        $attachTo = $this->ActionID ? $this->ActionID : isset($_REQUEST['ParentID']) ? (int) $_REQUEST['ParentID'] : 0;
+        
+		if ($attachTo) {
+            $action = DataObject::get_by_id('WorkflowAction', $attachTo);
+            if ($action && $action->ID) {
+                $filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
+            }
 		}
 
 		$actions = DataObject::get('WorkflowAction', $filter);
