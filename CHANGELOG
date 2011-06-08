@@ -1,3 +1,8 @@
+2011-06-08 v1.1.2
+-----------------
+
+* Fixed undefined index error when restricting actions on existing transitions
+
 2011-05-18 v1.1.0
 -----------------
 
