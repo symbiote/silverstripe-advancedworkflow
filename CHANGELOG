@@ -1,3 +1,18 @@
+2011-06-08 v1.2.0
+-----------------
+
+* Refactored WorkflowAction and WorkflowActionInstance to
+  * Make it easier to specify action instance classes through the use of
+    a new static
+    `static $instance_class = 'WorkflowActionInstance';`
+  * updateWorkflowFields() moved to WorkflowActionInstance where it more
+    correctly belongs
+* Added `actionStart($transition)` and `actionComplete($transition)` methods to
+  WorkflowActionInstance which makes it easier to hook when a workflow action
+  is entered or left. 
+* Fixed issue where workflow transition being executed wasn't checked to ensure
+  it was a valid transition to take
+
 2011-06-08 v1.1.2
 -----------------
 

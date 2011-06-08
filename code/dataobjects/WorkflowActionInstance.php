@@ -22,8 +22,18 @@ class WorkflowActionInstance extends DataObject {
 		'BaseAction' => 'WorkflowAction',
 		'Member'     => 'Member'
 	);
+	
+	
+	/**
+	 * Gets fields for when this is part of an active workflow
+	 */
+	public function updateWorkflowFields($fields) {
+		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+	}
 
 	/**
+	 * Gets the title of this active action instance
+	 * 
 	 * @return string
 	 */
 	public function getTitle() {
@@ -53,6 +63,21 @@ class WorkflowActionInstance extends DataObject {
 
 		return $valid;
 	}
+
+	/**
+	 * Called when this instance is started within the workflow
+	 */
+	public function actionStart(WorkflowTransition $transition) {
+		$this->extend('onActionStart', $transition);
+	}
+
+	/**
+	 * Called when this action has been completed within the workflow
+	 */
+	public function actionComplete(WorkflowTransition $transition) {
+		$this->extend('onActionComplete', $transition);
+	}
+
 	
 	/**
 	 * Can documents in the current workflow state be edited?

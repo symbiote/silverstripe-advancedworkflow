@@ -30,6 +30,14 @@ class WorkflowAction extends DataObject {
 		'Transitions' => 'WorkflowTransition.Action'
 	);
 
+	/**
+	 * The type of class to use for instances of this workflow action that are used for storing the 
+	 * data of the instance. 
+	 *
+	 * @var string
+	 */
+	public static $instance_class = 'WorkflowActionInstance';
+	
 	public static $icon = 'advancedworkflow/images/action.png';
 
 	/**
@@ -70,12 +78,14 @@ class WorkflowAction extends DataObject {
 	 * Gets an object that is used for saving the actual state of things during
 	 * a running workflow. It still uses the workflow action def for managing the
 	 * functional execution, however if you need to store additional data for
-	 * the state, you can specify your own instance instead. 
+	 * the state, you can specify your own WorkflowActionInstance instead of
+	 * the default to capture these elements
 	 *
 	 * @return WorkflowActionInstance
 	 */
 	public function getInstanceForWorkflow() {
-		$instance = new WorkflowActionInstance();
+		$instanceClass = $this->stat('instance_class');
+		$instance = new $instanceClass();
 		$instance->BaseActionID = $this->ID;
 		return $instance;
 	}
@@ -102,12 +112,6 @@ class WorkflowAction extends DataObject {
 
 	/* CMS RELATED FUNCTIONALITY... */
 
-	/**
-	 * Gets fields for when this is part of an active workflow
-	 */
-	public function updateWorkflowFields($fields) {
-		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
-	}
 
 	public function numChildren() {
 		return count($this->Transitions());

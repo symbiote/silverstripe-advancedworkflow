@@ -112,7 +112,21 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 * Execute this workflow. In rare cases this will actually execute all actions,
-	 * but typically, it will stop and wait for
+	 * but typically, it will stop and wait for the user to input something
+	 * 
+	 * The basic process is to get the current action, and see whether it has been finished
+	 * by some process, if not it attempts to execute it. 
+	 * 
+	 * If it has been finished, we check to see if there's some transitions to follow. If there's
+	 * only one transition, then we execute that immediately. 
+	 * 
+	 * If there's multiple transitions, we just stop and wait for the user to manually
+	 * trigger a transition. 
+	 * 
+	 * If there's no transitions, we make the assumption that we've finished the workflow and
+	 * mark it as such. 
+	 * 
+	 * 
 	 */
 	public function execute() {
 		if (!$this->CurrentActionID) {
@@ -130,13 +144,12 @@ class WorkflowInstance extends DataObject {
 			$result = $action->BaseAction()->execute($this);
 
 			// if the action was successful, then the action has finished running and
-			// next transition should be run - otherwise wait for more time or user
+			// next transition should be run (if only one). 
 			// input.
 			if($result) {
-				$action->Finished = true;
 				$action->MemberID = Member::currentUserID();
+				$action->Finished = true;
 				$action->write();
-
 				$transition = $this->checkTransitions($action);
 			}
 		}
@@ -183,6 +196,17 @@ class WorkflowInstance extends DataObject {
 	 * @param WorkflowTransition $transition
 	 */
 	public function performTransition(WorkflowTransition $transition) {
+		// first make sure that the transition is valid to execute!
+		$action          = $this->CurrentAction();
+		$allTransitions  = $action->BaseAction()->Transitions();
+
+		$valid = $allTransitions->find('ID', $transition->ID);
+		if (!$valid) {
+			throw new Exception ("Invalid transition state for action #$action->ID");
+		}
+
+		$action->actionComplete($transition);
+
 		$definition = DataObject::get_by_id('WorkflowAction', $transition->NextActionID);
 		$action = $definition->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
@@ -191,6 +215,8 @@ class WorkflowInstance extends DataObject {
 		$this->CurrentActionID = $action->ID;
 		$this->write();
 		$this->components = array(); // manually clear the has_one cache
+
+		$action->actionStart($transition);
 
 		$transition->extend('onTransition');
 		$this->execute();
@@ -292,7 +318,10 @@ class WorkflowInstance extends DataObject {
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
 		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
-		$action->BaseAction()->updateWorkflowFields($fields);
+
+		// Let the Active Action update the fields that the user can interact with so that data can be
+		// stored for the workflow. 
+		$action->updateWorkflowFields($fields);
 		
 		return $fields;
 	}
