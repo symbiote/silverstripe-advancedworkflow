@@ -102,6 +102,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canPublishTarget($this->owner);
 		}
+		return false;
 	}
 
 	/**

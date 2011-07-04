@@ -118,6 +118,10 @@ class WorkflowActionInstance extends DataObject {
 	 * @return bool
 	 */
 	public function canPublishTarget(DataObject $target) {
-		return $this->BaseAction()->canPublishTarget($target);
+		$absolute = $this->BaseAction()->canPublishTarget($target);
+		if (!is_null($absolute)) {
+			return $absolute;
+		}
+		return false;
 	}
 }
