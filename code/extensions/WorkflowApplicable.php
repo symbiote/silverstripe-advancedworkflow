@@ -17,6 +17,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 * @var WorkflowInstance
 	 */
 	protected $currentInstance;
+	
 
 	public function extraStatics() {
 		return array(
@@ -92,6 +93,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 
 		return $this->currentInstance;
 	}
+	
 
 	/**
 	 * Content can never be directly publishable if there's a workflow applied.
@@ -102,7 +104,13 @@ class WorkflowApplicable extends DataObjectDecorator {
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canPublishTarget($this->owner);
 		}
-		return false;
+
+		// otherwise, see if there's any workflows applied. If there are, then we shouldn't be able
+		// to directly publish
+		if ($effective = singleton('WorkflowService')->getDefinitionFor($this->owner)) {
+			return false;
+		}
+		
 	}
 
 	/**
