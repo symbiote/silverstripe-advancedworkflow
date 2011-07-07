@@ -6,7 +6,7 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class WorkflowService {
+class WorkflowService implements PermissionProvider {
 	public function  __construct() {
 	}
 
@@ -26,7 +26,6 @@ class WorkflowService {
 				return $this->getDefinitionFor($dataObject->Parent());
 			}
 		}
-
 		return null;
 	}
 
@@ -136,6 +135,17 @@ class WorkflowService {
 			$object->Sort = $sortVals[$key];
 			$object->write();
 		}
+	}
+	
+	public function providePermissions() {
+		return array(
+			'APPLY_WORKFLOW' => array(
+				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'Apply workflow'),
+				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can apply workflow to items'),
+				'sort' => 0
+			),
+		);
 	}
 }
 

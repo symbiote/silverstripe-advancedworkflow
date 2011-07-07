@@ -44,18 +44,24 @@ class WorkflowApplicable extends DataObjectDecorator {
 		
 		$tab = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
 		
-		$fields->addFieldsToTab($tab, array(
-			new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')),
-			new DropdownField('WorkflowDefinitionID',
-				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions),
-			new ReadonlyField('EffectiveWorkflow',
-				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle),
-			new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')),
-			$logTable = new ComplexTableField(
+		$applyWorkflowField = null;
+		
+		
+		$fields->addFieldToTab($tab, new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')));
+
+		if (Permission::check('APPLY_WORKFLOW')) {
+			$fields->addFieldToTab($tab, new DropdownField('WorkflowDefinitionID',
+				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions));
+			
+		}
+		
+		$fields->addFieldToTab($tab, new ReadonlyField('EffectiveWorkflow',
+				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle));
+		$fields->addFieldToTab($tab, new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')));
+		$fields->addFieldToTab($tab, $logTable = new ComplexTableField(
 				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields',
 				sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $this->owner->class, $this->owner->ID)
-			)
-		));
+			));
 
 		$logTable->setRelationAutoSetting(false);
 		$logTable->setPermissions(array('show'));
