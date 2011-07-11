@@ -77,6 +77,13 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
+	 * @see getTarget
+	 */
+	public function Target() {
+		return $this->getTarget();
+	}
+
+	/**
 	 * Start a workflow based on a particular definition for a particular object.
 	 *
 	 * The object is optional; if not specified, it is assumed that this workflow

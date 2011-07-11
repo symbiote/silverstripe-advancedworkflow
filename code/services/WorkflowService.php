@@ -136,7 +136,7 @@ class WorkflowService implements PermissionProvider {
 			$object->write();
 		}
 	}
-	
+
 	public function providePermissions() {
 		return array(
 			'APPLY_WORKFLOW' => array(
@@ -145,6 +145,12 @@ class WorkflowService implements PermissionProvider {
 				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can apply workflow to items'),
 				'sort' => 0
 			),
+			'VIEW_ACTIVE_WORKFLOWS' => array(
+				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'View active workflows'),
+				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can view active workflows via the workflows admin panel'),
+				'sort' => 0
+			)
 		);
 	}
 }

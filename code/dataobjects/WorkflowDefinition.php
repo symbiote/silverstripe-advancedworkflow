@@ -81,6 +81,38 @@ class WorkflowDefinition extends DataObject {
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
 
+		if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
+			$filter = sprintf(
+				'"DefinitionID" = %d AND "WorkflowStatus" IN (%s)',
+				$this->ID, "'Active', 'Paused'"
+			);
+
+			$active = DB::query("SELECT COUNT(*) FROM \"WorkflowInstance\" WHERE $filter");
+			$active = $active->value();
+
+			if ($active) {
+				$instances = new TableListField(
+					'Instances',
+					'WorkflowInstance',
+					array(
+						'Title'               => 'Title',
+						'Target.Title'        => 'Target Title',
+						'WorkflowStatus'      => 'Status',
+						'CurrentAction.Title' => 'Current Action'
+					),
+					$filter
+				);
+				$instances = $instances->performReadonlyTransformation();
+
+				$fields->addFieldToTab('Root.ActiveInstances', $instances);
+			} else {
+				$none = _t('WorkflowDefinition.NOACTIVEINSTANCES', 'There are no active workflow instances.');
+				$fields->addFieldToTab('Root.ActiveInstances', new LiteralField(
+					'NoActiveInstances', "<p>$none</p>"
+				));
+			}
+		}
+
 		return $fields;
 	}
 }
