@@ -19,6 +19,7 @@ class WorkflowDefinition extends DataObject {
 	public static $db = array(
 		'Title'       => 'Varchar(128)',
 		'Description' => 'Text',
+		'RemindDays'  => 'Int',
 		'Sort'        => 'Int'
 	);
 
@@ -80,6 +81,16 @@ class WorkflowDefinition extends DataObject {
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
+
+		$before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
+		$after  = _t('WorkflowDefinition.SENDREMINDERDAYSAFTER', ' days without action.');
+
+		$fields->addFieldToTab('Root.Main', new FieldGroup(
+			_t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email'),
+			new LabelField('ReminderEmailBefore', $before),
+			new NumericField('RemindDays', ''),
+			new LabelField('ReminderEmailAfter', $after)
+		));
 
 		if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
 			$filter = sprintf(
