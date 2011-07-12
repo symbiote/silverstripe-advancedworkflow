@@ -146,10 +146,16 @@ class WorkflowService implements PermissionProvider {
 				'sort' => 0
 			),
 			'VIEW_ACTIVE_WORKFLOWS' => array(
-				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'View active workflows'),
+				'name'     => _t('AdvancedWorkflow.VIEWACTIVE', 'View active workflows'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can view active workflows via the workflows admin panel'),
-				'sort' => 0
+				'help'     => _t('AdvancedWorkflow.VIEWACTIVEHELP', 'Users can view active workflows via the workflows admin panel'),
+				'sort'     => 0
+			),
+			'REASSIGN_ACTIVE_WORKFLOWS' => array(
+				'name'     => _t('AdvancedWorkflow.REASSIGNACTIVE', 'Reassign active workflows'),
+				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+				'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Reassign active workflows to different users and groups'),
+				'sort'     => 0
 			)
 		);
 	}

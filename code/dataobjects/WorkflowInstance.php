@@ -65,6 +65,19 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
+	 * Returns fields to update who the workflow is assigned to.
+	 *
+	 * @return FieldSet
+	 */
+	public function getReassignFields() {
+		return new FieldSet(new TabSet('Root', new Tab('Main',
+			new HeaderField('AssignedToHeader', _t('WorkflowInstance.ASSIGNEDTO', 'Assigned To')),
+			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
+			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
+		)));
+	}
+
+	/**
 	 * Get the object that this workflow is active for.
 	 *
 	 * Because workflows might not just be on sitetree items, we

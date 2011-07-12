@@ -26,7 +26,8 @@ class WorkflowDefinition extends DataObject {
 	public static $default_sort = 'Sort';
 
 	public static $has_many = array(
-		'Actions' => 'WorkflowAction',
+		'Actions'   => 'WorkflowAction',
+		'Instances' => 'WorkflowInstance'
 	);
 
 	/**
@@ -95,34 +96,25 @@ class WorkflowDefinition extends DataObject {
 		}
 
 		if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
-			$filter = sprintf(
-				'"DefinitionID" = %d AND "WorkflowStatus" IN (%s)',
-				$this->ID, "'Active', 'Paused'"
-			);
+			$fields->addFieldToTab('Root.ActiveInstances', $active = new ComplexTableField(
+				$this,
+				'Instances',
+				'WorkflowInstance',
+				array(
+					'Title'               => 'Title',
+					'Target.Title'        => 'Target Title',
+					'WorkflowStatus'      => 'Status',
+					'CurrentAction.Title' => 'Current Action',
+					'LastEdited'          => 'Last Actioned'
+				),
+				'getReassignFields',
+				'"WorkflowStatus" IN (\'Active\', \'Paused\')'
+			));
 
-			$active = DB::query("SELECT COUNT(*) FROM \"WorkflowInstance\" WHERE $filter");
-			$active = $active->value();
-
-			if ($active) {
-				$instances = new TableListField(
-					'Instances',
-					'WorkflowInstance',
-					array(
-						'Title'               => 'Title',
-						'Target.Title'        => 'Target Title',
-						'WorkflowStatus'      => 'Status',
-						'CurrentAction.Title' => 'Current Action'
-					),
-					$filter
-				);
-				$instances = $instances->performReadonlyTransformation();
-
-				$fields->addFieldToTab('Root.ActiveInstances', $instances);
+			if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
+				$active->setPermissions(array('show', 'edit'));
 			} else {
-				$none = _t('WorkflowDefinition.NOACTIVEINSTANCES', 'There are no active workflow instances.');
-				$fields->addFieldToTab('Root.ActiveInstances', new LiteralField(
-					'NoActiveInstances', "<p>$none</p>"
-				));
+				$active->setPermissions(array('show'));
 			}
 		}
 
