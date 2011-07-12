@@ -9,26 +9,56 @@
  */
 class PublishItemWorkflowAction extends WorkflowAction {
 
+	public static $db = array(
+		'PublishDelay' => 'Int'
+	);
+
 	public static $icon = 'advancedworkflow/images/publish.png';
 
 	public function execute(WorkflowInstance $workflow) {
-		$target = $workflow->getTarget();
+		if (!$target = $workflow->getTarget()) {
+			return true;
+		}
 
-		if ($target) {
-			// publish it!
+		if (class_exists('AbstractQueuedJob') && $this->PublishDelay) {
+			$job   = new WorkflowPublishTargetJob($target->class, $target->ID);
+			$days  = $this->PublishDelay;
+			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
+
+			singleton('QueuedJobService')->queueJob($job, $after);
+		} else {
 			$target->doPublish();
 		}
 
 		return true;
 	}
-	
+
+	public function getCMSFields() {
+		$fields = parent::getCMSFields();
+
+		if (class_exists('AbstractQueuedJob')) {
+			$before = _t('PublishItemWorkflowAction.DELAYPUBDAYSBEFORE', 'Delay publication ');
+			$after  = _t('PublishItemWorkflowAction.DELAYPUBDAYSAFTER', ' days');
+
+			$fields->addFieldToTab('Root.Main', new FieldGroup(
+				_t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay'),
+				new LabelField('PublishDelayBefore', $before),
+				new NumericField('PublishDelay', ''),
+				new LabelField('PublishDelayAfter', $after)
+			));
+		}
+
+		return $fields;
+	}
+
 	/**
-	 * Publish action allows a user who is currently assigned at this point of the workflow to 
-	 * 
+	 * Publish action allows a user who is currently assigned at this point of the workflow to
+	 *
 	 * @param  DataObject $target
 	 * @return bool
 	 */
 	public function canPublishTarget(DataObject $target) {
 		return true;
 	}
+
 }

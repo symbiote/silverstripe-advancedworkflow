@@ -31,10 +31,10 @@ class WorkflowDefinition extends DataObject {
 
 	/**
 	 * By default, a workflow definition is bound to a particular set of users or groups.
-	 * 
+	 *
 	 * This is covered across to the workflow instance - it is up to subsequent
-	 * workflow actions to change this if needbe. 
-	 * 
+	 * workflow actions to change this if needbe.
+	 *
 	 * @var array
 	 */
 	public static $many_many = array(
@@ -47,7 +47,7 @@ class WorkflowDefinition extends DataObject {
 
 	/**
 	 * Gets the action that first triggers off the workflow
-	 * 
+	 *
 	 * @return WorkflowAction
 	 */
 	public function getInitialAction() {
@@ -82,15 +82,17 @@ class WorkflowDefinition extends DataObject {
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
 
-		$before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
-		$after  = _t('WorkflowDefinition.SENDREMINDERDAYSAFTER', ' days without action.');
+		if (class_exists('AbstractQueuedJob')) {
+			$before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
+			$after  = _t('WorkflowDefinition.SENDREMINDERDAYSAFTER', ' days without action.');
 
-		$fields->addFieldToTab('Root.Main', new FieldGroup(
-			_t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email'),
-			new LabelField('ReminderEmailBefore', $before),
-			new NumericField('RemindDays', ''),
-			new LabelField('ReminderEmailAfter', $after)
-		));
+			$fields->addFieldToTab('Root.Main', new FieldGroup(
+				_t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email'),
+				new LabelField('ReminderEmailBefore', $before),
+				new NumericField('RemindDays', ''),
+				new LabelField('ReminderEmailAfter', $after)
+			));
+		}
 
 		if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
 			$filter = sprintf(
@@ -126,4 +128,5 @@ class WorkflowDefinition extends DataObject {
 
 		return $fields;
 	}
+
 }
