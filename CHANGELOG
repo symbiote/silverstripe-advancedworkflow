@@ -1,3 +1,10 @@
+2011-08-26 v1.2.1
+-----------------
+
+* Added ability to use a listing template for the Email template of the 
+  NotifyUsersWorkflowAction. This allows full access to the workflow
+  and its history. 
+
 2011-06-08 v1.2.0
 -----------------
 

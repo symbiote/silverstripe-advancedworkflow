@@ -9,9 +9,10 @@
 class NotifyUsersWorkflowAction extends WorkflowAction {
 
 	public static $db = array(
-		'EmailSubject'  => 'Varchar(100)',
-		'EmailFrom'     => 'Varchar(50)',
-		'EmailTemplate' => 'Text'
+		'EmailSubject'			=> 'Varchar(100)',
+		'EmailFrom'				=> 'Varchar(50)',
+		'EmailTemplate'			=> 'Text',
+		'ListingTemplateID'		=> 'Int',
 	);
 
 	public static $icon = 'advancedworkflow/images/notify.png';
@@ -24,10 +25,27 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			new LiteralField('NotificationNote', '<p>' . $this->fieldLabel('NotificationNote') . '</p>'),
 			new TextField('EmailSubject', $this->fieldLabel('EmailSubject')),
 			new TextField('EmailFrom', $this->fieldLabel('EmailFrom')),
+			
 			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate'), 10),
 			new ToggleCompositeField('FormattingHelpContainer',
 				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
+		
+		if (class_exists('ListingPage')) {
+			// allow the user to select an existing 'listing template'. The "getItems()" for that template
+			// will be the list of items in the workflow
+			$templates = DataObject::get('ListingTemplate');
+			$opts = array();
+			if ($templates) {
+				$opts = $templates->map();
+			}
+		
+			$fields->addFieldToTab('Root.Main', new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, '', null, '(choose)'), 'EmailTemplate');
+		}
+		
+		if ($this->ListingTemplateID) {
+			$fields->removeFieldFromTab('Root.Main', 'EmailTemplate');
+		}
 
 		return $fields;
 	}
@@ -39,6 +57,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'All users attached to the workflow will be sent an email when this action is run.'),
 			'EmailSubject'      => _t('NotifyUsersWorkflowAction.EMAILSUBJECT', 'Email subject'),
 			'EmailFrom'         => _t('NotifyUsersWorkflowAction.EMAILFROM', 'Email from'),
+			'ListingTemplateID' => _t('NotifyUsersWorkflowAction.LISTING_TEMPLATE', 
+				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). 
+					Also available will be all properties of the current Workflow Instance'),
 			'EmailTemplate'     => _t('NotifyUsersWorkflowAction.EMAILTEMPLATE', 'Email template'),
 			'FormattingHelp'    => _t('NotifyUsersWorkflowAction.FORMATTINGHELP', 'Formatting Help')
 		));
@@ -54,16 +75,28 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		foreach($members as $member) {
 			if($member->Email) $emails .= "$member->Email, ";
 		}
-
+		
 		$context   = $this->getContextFields($workflow->getTarget());
 		$member    = $this->getMemberFields();
 		$variables = array();
-
+		
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
 
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
-		$body    = str_replace(array_keys($variables), array_values($variables), $this->EmailTemplate);
+		
+		if ($this->ListingTemplateID) {
+			$item = $workflow->customise(array(
+				'Items'		=> $workflow->Actions(),
+				'Member'	=> Member::currentUser()
+			));
+
+			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
+			$view = SSViewer::fromString($template->ItemTemplate);
+			$body = $view->process($item);
+		} else {
+			$body    = str_replace(array_keys($variables), array_values($variables), $this->EmailTemplate);
+		}
 
 		$email->setSubject($subject);
 		$email->setFrom($this->EmailFrom);
@@ -110,6 +143,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		return $result;
 	}
+	
 
 	/**
 	 * Returns a basic set of instructions on how email templates are populated with variables.

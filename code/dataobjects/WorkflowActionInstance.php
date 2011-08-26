@@ -23,6 +23,10 @@ class WorkflowActionInstance extends DataObject {
 		'Member'     => 'Member'
 	);
 	
+	public static $summary_fields = array(
+		'Comment',
+	);
+	
 	
 	/**
 	 * Gets fields for when this is part of an active workflow
