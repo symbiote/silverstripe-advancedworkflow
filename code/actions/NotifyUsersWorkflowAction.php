@@ -88,7 +88,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		if ($this->ListingTemplateID) {
 			$item = $workflow->customise(array(
 				'Items'		=> $workflow->Actions(),
-				'Member'	=> Member::currentUser()
+				'Member'	=> Member::currentUser(),
+				'Context'	=> $workflow->getTarget(),
 			));
 
 			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
