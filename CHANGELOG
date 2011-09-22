@@ -1,3 +1,11 @@
+2011-09-22 v1.3.0
+-----------------
+
+* Allow users to update workflow actions from the workflow screen to move items through the workflow
+* Added a targetUpdated method to WorkflowAction that gets called if there's a current workflow instance when a
+* Look for a WorkflowLink method on an object for linking back in outbound emails
+
+
 2011-08-26 v1.2.1
 -----------------
 
