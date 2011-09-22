@@ -92,7 +92,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 */
 	public function onAfterWrite() {
 		$instance = $this->getWorkflowInstance();
-		if ($instance->CurrentActionID) {
+		if ($instance && $instance->CurrentActionID) {
 			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
 		}
 	}
