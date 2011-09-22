@@ -107,7 +107,7 @@ class WorkflowDefinition extends DataObject {
 					'CurrentAction.Title' => 'Current Action',
 					'LastEdited'          => 'Last Actioned'
 				),
-				'getReassignFields',
+				'getInstanceManagementFields',
 				'"WorkflowStatus" IN (\'Active\', \'Paused\')'
 			));
 

@@ -65,16 +65,81 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * Returns fields to update who the workflow is assigned to.
+	 * See if we've been saved in context of managing the workflow directly
+	 */
+	public function onBeforeWrite() {
+		parent::onBeforeWrite();
+		
+		$vars = $this->record;
+		
+		if (isset($vars['DirectUpdate'])) {
+			// Unset now so that we don't end up in an infinite loop!
+			unset($this->record['DirectUpdate']);
+			$this->updateWorkflow($vars);
+		}
+	}
+	
+	/**
+	 * Update the current state of the workflow
+	 * 
+	 * Note that this is VERY similar to AdvancedWorkflowExtension::updateworkflow
+	 * but without the formy bits. These two implementations should PROBABLY
+	 * be merged
+	 * 
+	 * @todo refactor with AdvancedWorkflowExtension
 	 *
+	 * @param type $data
+	 * @return 
+	 */
+	public function updateWorkflow($data) {
+		$action = $this->CurrentAction();
+
+		if (!$this->getTarget() || !$this->getTarget()->canEditWorkflow()) {
+			return;
+		}
+
+		$allowedFields = $this->getWorkflowFields()->saveableFields();
+		unset($allowedFields['TransitionID']);
+		foreach ($allowedFields as $field) {
+			$fieldName = $field->Name();
+			$action->$fieldName = $data[$fieldName];
+		}
+		$action->write();
+
+		$svc = singleton('WorkflowService');
+		if (isset($data['TransitionID']) && $data['TransitionID']) {
+			$svc->executeTransition($this->getTarget(), $data['TransitionID']);
+		} else {
+			// otherwise, just try to execute the current workflow to see if it
+			// can now proceed based on user input
+			$this->execute();
+		}
+	}
+
+	/**
+	 * Get fields to update a workflow instance directly. Will attempt to allow the user to modify the current
+	 * step if possible
+	 * 
 	 * @return FieldSet
 	 */
-	public function getReassignFields() {
-		return new FieldSet(new TabSet('Root', new Tab('Main',
+	public function getInstanceManagementFields() {
+		$fields = new FieldSet(new TabSet('Root', new Tab('Main',
 			new HeaderField('AssignedToHeader', _t('WorkflowInstance.ASSIGNEDTO', 'Assigned To')),
 			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
 			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
 		)));
+
+		if ($this->getTarget()->canEditWorkflow()) {
+			$wfFields = $this->getWorkflowFields(); 
+			$tmpForm = new Form($this, 'dummy', $wfFields, new FieldSet());
+			$wfFields->push(new HiddenField('DirectUpdate', 'Direct Update', true));
+			$tmpForm->loadDataFrom($this->CurrentAction());
+			$wfFields = $tmpForm->Fields();
+			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+		}
+
+		
+		return $fields;
 	}
 
 	/**
@@ -329,6 +394,8 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 * Gets fields for managing this workflow instance in its current step
+	 * 
+	 * @return FieldSet
 	 */
 	public function getWorkflowFields() {
 		$action    = $this->CurrentAction();

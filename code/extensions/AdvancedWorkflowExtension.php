@@ -39,7 +39,6 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 			
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
-			
 			$wfFields = $active->getWorkflowFields(); 
 			
 			$allowed = array_keys($wfFields->saveableFields());
@@ -61,6 +60,8 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 	/**
 	 * Update a workflow based on user input. 
 	 *
+	 * @todo refactor with WorkflowInstance::updateWorkflow
+	 * 
 	 * @param array $data
 	 * @param Form $form
 	 * @param SS_HTTPRequest $request
