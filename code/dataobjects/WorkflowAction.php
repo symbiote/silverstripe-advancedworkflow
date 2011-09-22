@@ -109,6 +109,12 @@ class WorkflowAction extends DataObject {
 
 		parent::onBeforeWrite();
 	}
+	
+	/**
+	 * Called when the current target of the workflow has been updated
+	 */
+	public function targetUpdated(WorkflowInstance $workflow) {
+	}
 
 	/* CMS RELATED FUNCTIONALITY... */
 
@@ -129,4 +135,5 @@ class WorkflowAction extends DataObject {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
 
+	
 }

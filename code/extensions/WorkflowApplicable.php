@@ -85,6 +85,17 @@ class WorkflowApplicable extends DataObjectDecorator {
 			}
 		}
 	}
+	
+	/**
+	 * After a workflow item is written, we notify the
+	 * workflow so that it can take action if needbe
+	 */
+	public function onAfterWrite() {
+		$instance = $this->getWorkflowInstance();
+		if ($instance->CurrentActionID) {
+			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
+		}
+	}
 
 	/**
 	 * Gets the current instance of workflow
