@@ -122,6 +122,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		if($target instanceof SiteTree) {
 			$result['CMSLink'] = singleton('CMSMain')->Link("show/{$target->ID}");
+		} else if ($target->hasMethod('WorkflowLink')) {
+			$result['CMSLink'] = $target->WorkflowLink();
 		}
 
 		return $result;
