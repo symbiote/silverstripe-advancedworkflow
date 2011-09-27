@@ -108,7 +108,8 @@ class WorkflowDefinition extends DataObject {
 					'LastEdited'          => 'Last Actioned'
 				),
 				'getInstanceManagementFields',
-				'"WorkflowStatus" IN (\'Active\', \'Paused\')'
+				'"WorkflowStatus" IN (\'Active\', \'Paused\')',
+				'"LastEdited" DESC'
 			));
 
 			if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
@@ -116,6 +117,24 @@ class WorkflowDefinition extends DataObject {
 			} else {
 				$active->setPermissions(array('show'));
 			}
+			
+			$fields->addFieldToTab('Root.Completed', $complete = new ComplexTableField(
+				$this,
+				'CompletedInstances',
+				'WorkflowInstance',
+				array(
+					'Title'               => 'Title',
+					'Target.Title'        => 'Target Title',
+					'WorkflowStatus'      => 'Status',
+					'CurrentAction.Title' => 'Current Action',
+					'LastEdited'          => 'Last Actioned'
+				),
+				'getActionsSummaryFields',
+				'"WorkflowStatus" IN (\'Complete\', \'Cancelled\')',
+				'"LastEdited" DESC'
+			));
+
+			$complete->setPermissions(array('show'));
 		}
 
 		return $fields;
