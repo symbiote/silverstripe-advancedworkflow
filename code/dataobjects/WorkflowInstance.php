@@ -128,8 +128,10 @@ class WorkflowInstance extends DataObject {
 			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
 			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
 		)));
+		
+		$target = $this->getTarget();
 
-		if ($this->getTarget()->canEditWorkflow()) {
+		if ($target && $target->canEditWorkflow()) {
 			$wfFields = $this->getWorkflowFields(); 
 			$tmpForm = new Form($this, 'dummy', $wfFields, new FieldSet());
 			$wfFields->push(new HiddenField('DirectUpdate', 'Direct Update', true));
@@ -138,7 +140,6 @@ class WorkflowInstance extends DataObject {
 			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 		}
 
-		
 		return $fields;
 	}
 
