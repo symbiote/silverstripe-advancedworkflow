@@ -8,19 +8,18 @@
  * @package advancedworkflow
  */
 class AdvancedWorkflowExtension extends LeftAndMainDecorator {
-    public function startworkflow($data, $form, $request) {
-		$p = $this->owner->getRecord($this->owner->currentPageID());
-		if (!$p || !$p->canEdit()) {
+
+	public function startworkflow($data, $form, $request) {
+		$item = $form->getRecord();
+
+		if (!$item || !$item->canEdit()) {
 			return;
 		}
-		$item = DataObject::get_by_id('SiteTree', (int) $data['ID']);
 
-		if ($item) {
-			$svc = singleton('WorkflowService');
-			$svc->startWorkflow($item);
-		}
+		$svc = singleton('WorkflowService');
+		$svc->startWorkflow($item);
 
-		return $this->javascriptRefresh($data['ID']);
+		return $this->javascriptRefresh();
 	}
 
 	/**
@@ -30,11 +29,10 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 	 * @param Form $form
 	 */
 	public function updateEditForm(Form $form) {
-		$svc = singleton('WorkflowService');
-
-		$p = $this->owner->getRecord($this->owner->currentPageID());
-
+		$svc    = singleton('WorkflowService');
+		$p      = $form->getRecord();
 		$active = $svc->getWorkflowFor($p);
+
 		if ($active) {
 			
 			$fields = $form->Fields();
@@ -69,7 +67,7 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 	 */
 	public function updateworkflow($data, Form $form, $request) {
 		$svc = singleton('WorkflowService');
-		$p = $this->owner->getRecord($this->owner->currentPageID());
+		$p = $form->getRecord();
 		$workflow = $svc->getWorkflowFor($p);
 		$action = $workflow->CurrentAction();
 
@@ -92,11 +90,12 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 			$workflow->execute();
 		}
 
-		return $this->javascriptRefresh($data['ID']);
+		return $this->javascriptRefresh();
 	}
 
-	protected function javascriptRefresh($nodeId, $message = 'Please wait...') {
-		FormResponse::add("$('Form_EditForm').resetElements(); $('sitetree').getTreeNodeByIdx(\"$nodeId\").selectTreeNode();");
+	protected function javascriptRefresh($message = 'Please wait...') {
+		FormResponse::add("$('Form_EditForm').resetElements();");
+		FormResponse::add('$$("#sitetree li.current")[0].selectTreeNode();');
 		FormResponse::status_message($message, "good");
 		return FormResponse::respond();
 	}
