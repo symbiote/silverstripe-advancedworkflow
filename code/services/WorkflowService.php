@@ -25,6 +25,12 @@ class WorkflowService implements PermissionProvider {
 			if ($dataObject->ParentID) {
 				return $this->getDefinitionFor($dataObject->Parent());
 			}
+			if ($dataObject->hasMethod('workflowParent')) {
+				$obj = $dataObject->workflowParent();
+				if ($obj) {
+					return $this->getDefinitionFor($obj);
+				}
+			}
 		}
 		return null;
 	}

@@ -18,7 +18,6 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 */
 	protected $currentInstance;
 	
-
 	public function extraStatics() {
 		return array(
 			'has_one' => array(
