@@ -112,6 +112,7 @@ class WorkflowService implements PermissionProvider {
 		}
 
 		$definition = $this->getDefinitionFor($object);
+		Debug::show($definition);
 		if ($definition) {
 			$instance = new WorkflowInstance();
 			$instance->beginWorkflow($definition, $object);
