@@ -52,6 +52,7 @@ class WorkflowService implements PermissionProvider {
 		$id = $item;
 		
 		if ($item instanceof WorkflowAction) {
+			
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
 		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
@@ -112,7 +113,7 @@ class WorkflowService implements PermissionProvider {
 		}
 
 		$definition = $this->getDefinitionFor($object);
-		Debug::show($definition);
+
 		if ($definition) {
 			$instance = new WorkflowInstance();
 			$instance->beginWorkflow($definition, $object);

@@ -34,6 +34,10 @@ class WorkflowActionInstance extends DataObject {
 	public function updateWorkflowFields($fields) {
 		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
 	}
+	
+	public function updateFrontendWorkflowFields($fields){
+		$fields = $this->BaseAction()->updateFrontendWorkflowFields($fields, $this->Workflow());	
+	}
 
 	/**
 	 * Gets the title of this active action instance

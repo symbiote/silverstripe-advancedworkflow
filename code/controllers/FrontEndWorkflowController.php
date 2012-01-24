@@ -23,4 +23,8 @@ abstract class FrontEndWorkflowController extends Controller {
 	/* Provide method for possible different use cases */
 	abstract function getWorkflowDefinition();
 	
+	public function SiteConfig(){
+		return SiteConfig::current_site_config();
+	}
+	
 }

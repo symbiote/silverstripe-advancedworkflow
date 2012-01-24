@@ -134,6 +134,8 @@ class WorkflowAction extends DataObject {
 	public function summaryFields() {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
+	
+	
 
 	
 }

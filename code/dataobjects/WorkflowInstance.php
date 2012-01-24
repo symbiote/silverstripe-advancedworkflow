@@ -415,7 +415,7 @@ class WorkflowInstance extends DataObject {
 	}
 	
 	//@todo do this... (duplicated from above)
-		public function getFrontEndWorkflowFields() {
+	public function getFrontEndWorkflowFields() {
 		$action    = $this->CurrentAction();
 		$options   = $action->getValidTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
@@ -426,7 +426,7 @@ class WorkflowInstance extends DataObject {
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow. 
-		$action->updateWorkflowFields($fields);
+		$action->updateFrontEndWorkflowFields($fields);
 		
 		return $fields;
 	}

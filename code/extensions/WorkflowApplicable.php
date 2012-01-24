@@ -85,6 +85,24 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 	}
 	
+	public function updateFrontendActions($actions){
+		$svc = singleton('WorkflowService');
+		$active = $svc->getWorkflowFor($this->owner);
+
+		if ($active) {
+			if ($this->canEditWorkflow()) {
+				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+			}
+		} else {
+			$effective = $svc->getDefinitionFor($this->owner);
+			if ($effective) {
+				// we can add an action for starting off the workflow at least
+				$initial = $effective->getInitialAction();
+				$actions->push(new FormAction('startworkflow', $initial->Title));
+			}
+		}
+	}
+	
 	/**
 	 * After a workflow item is written, we notify the
 	 * workflow so that it can take action if needbe
