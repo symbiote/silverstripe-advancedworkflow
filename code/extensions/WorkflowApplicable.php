@@ -86,6 +86,7 @@ class WorkflowApplicable extends DataObjectDecorator {
 	}
 	
 	public function updateFrontendActions($actions){
+		Debug::show('here');
 		$svc = singleton('WorkflowService');
 		$active = $svc->getWorkflowFor($this->owner);
 

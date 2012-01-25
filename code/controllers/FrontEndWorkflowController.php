@@ -23,8 +23,25 @@ abstract class FrontEndWorkflowController extends Controller {
 	/* Provide method for possible different use cases */
 	abstract function getWorkflowDefinition();
 	
-	public function SiteConfig(){
-		return SiteConfig::current_site_config();
+	public function Form(){
+		$svc 			= singleton('WorkflowService');
+		$active 		= $svc->getWorkflowFor($this->getContextObject());
+		$current 		= $active->CurrentAction();
+		$wfFields 		= $active->getFrontEndWorkflowFields();
+		$wfActions 		= $active->getFrontEndWorkflowActions();
+		$wfValidator 	= $this->getContextObject()->getRequiredFields();
+                
+		$this->extend('updateFrontendActions', $wfActions);
+		$this->extend('updateFrontendFields', $wfFields);
+		$this->extend('updateFrontendValidator', $wfValidator);
+                
+		$form = new Form($this, 'Form', $wfFields, $wfActions, $wfValidator);
+		
+		if($data = $this->getContextObject()){
+			$form->loadDataFrom($data);
+		}
+        Debug::show('here at form');       
+		return $form;
 	}
 	
 }

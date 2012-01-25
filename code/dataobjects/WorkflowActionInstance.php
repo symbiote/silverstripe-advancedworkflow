@@ -38,6 +38,7 @@ class WorkflowActionInstance extends DataObject {
 	public function updateFrontendWorkflowFields($fields){
 		$fields = $this->BaseAction()->updateFrontendWorkflowFields($fields, $this->Workflow());	
 	}
+	
 
 	/**
 	 * Gets the title of this active action instance

@@ -421,14 +421,27 @@ class WorkflowInstance extends DataObject {
 		$wfOptions = $options->map('ID', 'Title', ' ');
 		$fields    = new FieldSet();
 
-		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
+		//$fields->push(new HeaderField('WorkflowHeader', $action->Title));
+		//$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow. 
 		$action->updateFrontEndWorkflowFields($fields);
 		
 		return $fields;
+	}
+	
+	public function getFrontEndWorkflowActions() {
+		$action    = $this->CurrentAction();
+		$options   = $action->getValidTransitions();
+		$wfOptions = $options->map('ID', 'Title');
+		$actions   = new FieldSet();
+		
+		foreach ($wfOptions as $id => $title) {
+			$actions->push(new FormAction("transition_$id", "$title"));
+		}
+		
+		return $actions;
 	}
 	
 	
