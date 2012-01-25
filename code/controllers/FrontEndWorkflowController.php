@@ -9,6 +9,8 @@
  */
 abstract class FrontEndWorkflowController extends Controller {
 
+	public $transitionID;
+
 	abstract function start();
 		// set workflowdefinitionID
 		// save DataObject 
@@ -35,12 +37,12 @@ abstract class FrontEndWorkflowController extends Controller {
 		$this->extend('updateFrontendFields', $wfFields);
 		$this->extend('updateFrontendValidator', $wfValidator);
                 
-		$form = new Form($this, 'Form', $wfFields, $wfActions, $wfValidator);
+		$form = new FrontendWorkflowForm($this, 'Form', $wfFields, $wfActions, $wfValidator);
 		
 		if($data = $this->getContextObject()){
 			$form->loadDataFrom($data);
 		}
-        Debug::show('here at form');       
+    
 		return $form;
 	}
 	
