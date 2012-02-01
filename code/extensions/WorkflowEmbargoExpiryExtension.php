@@ -20,7 +20,7 @@ class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
 			),
 		);
 	}
-	
+
 	/**
 	 * @param FieldSet $fields 
 	 */
@@ -50,7 +50,7 @@ class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
 				$this->owner->PublishJobID = 0;
 			}
 
-			if (!$this->owner->PublishJobID) {
+			if (!$this->owner->PublishJobID && strtotime($this->owner->PublishOnDate) > time()) {
 				$job = new WorkflowPublishTargetJob($this->owner, 'publish');
 				$this->owner->PublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->PublishOnDate);
 			}
@@ -67,7 +67,7 @@ class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
 				$this->owner->UnPublishJobID = 0;
 			}
 
-			if (!$this->owner->UnPublishJobID) {
+			if (!$this->owner->UnPublishJobID && strtotime($this->owner->UnPublishOnDate) > time()) {
 				$job = new WorkflowPublishTargetJob($this->owner, 'unpublish');
 				$this->owner->UnPublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->UnPublishOnDate);
 			}
