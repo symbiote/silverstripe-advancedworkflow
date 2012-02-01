@@ -16,8 +16,9 @@
 class WorkflowTransition extends DataObject {
 
 	public static $db = array(
-		'Title' => 'Varchar(128)',
-		'Sort'  => 'Int'
+		'Title' 	=> 'Varchar(128)',
+		'Sort'  	=> 'Int',
+		'Type' 		=> "Enum('Active, Passive', 'Active')"
 	);
 
 	public static $default_sort = 'Sort';
@@ -92,6 +93,8 @@ class WorkflowTransition extends DataObject {
 		if ($actions) {
 			$options = $actions->map();
 		}
+		
+		$typeOptions = $this->dbObject('Type')->enumValues();
 
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'ActionID',
@@ -103,6 +106,11 @@ class WorkflowTransition extends DataObject {
 			$options,
 			null, null,
 			_t('WorkflowTransition.SELECTONE', '(Select one)')));
+		$fields->addFieldToTab('Root.Main', new DropdownField(
+			'Type',
+			_t('WorkflowTransition.TYPE', 'Type'),
+			$typeOptions
+			));
 
 		return $fields;
 	}
