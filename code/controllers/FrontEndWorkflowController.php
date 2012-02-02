@@ -10,6 +10,8 @@
 abstract class FrontEndWorkflowController extends Controller {
 
 	public $transitionID;
+	
+	protected $contextObj;
 
 	abstract function start();
 	
@@ -43,5 +45,18 @@ abstract class FrontEndWorkflowController extends Controller {
     
 		return $form;
 	}
+	
+	public function getCurrentTransition() {
+		$trans = null;
+		
+		if ($this->transitionID) {
+			$trans = DataObject::get_by_id('WorkflowTransition',$this->transitionID);
+		}
+		
+		return $trans;
+	}
+	
+	/* Save the form Data */
+	abstract function save(array $data, Form $form, SS_HTTPRequest $request);
 	
 }
