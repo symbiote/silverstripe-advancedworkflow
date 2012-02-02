@@ -47,7 +47,7 @@ class FrontendWorkflowForm extends Form{
 				break;
 			}
 		}
-		Debug::show($funcName);
+
 		// If the action wasnt' set, choose the default on the form.
 		if(!isset($funcName) && $defaultAction = $this->defaultAction()){
 			$funcName = $defaultAction->actionName();
