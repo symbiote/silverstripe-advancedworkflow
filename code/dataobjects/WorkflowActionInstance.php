@@ -36,7 +36,8 @@ class WorkflowActionInstance extends DataObject {
 	}
 	
 	public function updateFrontendWorkflowFields($fields){
-		$fields = $this->BaseAction()->updateFrontendWorkflowFields($fields, $this->Workflow());	
+		$ba = $this->BaseAction();
+		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
 	}
 	
 

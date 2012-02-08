@@ -24,7 +24,9 @@ abstract class FrontEndWorkflowController extends Controller {
 		
 	public function Form(){
 		$svc 			= singleton('WorkflowService');
-		$active 		= $svc->getWorkflowFor($this->getContextObject());
+		if (!($active = $svc->getWorkflowFor($this->getContextObject()))) {
+			throw new Exception('Workflow not found, or not specified for Context Object');
+		}
 		$current 		= $active->CurrentAction();
 		$wfFields 		= $active->getFrontEndWorkflowFields();
 		$wfActions 		= $active->getFrontEndWorkflowActions();

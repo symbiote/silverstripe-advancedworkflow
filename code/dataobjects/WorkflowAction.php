@@ -135,7 +135,11 @@ class WorkflowAction extends DataObject {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
 	
-	
+	/*
+	 * Used for Front End Workflows
+	 */
+	public function updateFrontendWorkflowFields($fields, $workflow){
+	}
 
 	
 }
