@@ -25,7 +25,6 @@ class FrontendWorkflowForm extends Form{
 				
 				// Added for frontend workflow form - get / set transitionID on controller, 
 				// unset action and replace with save action
-				// @todo - check to see if this is a passive transition, if so, don't save
 				if(substr($paramName,0,18) == 'action_transition_') {
 					$this->controller->transitionID = substr($paramName,strrpos($paramName,'_') +1);
 					unset($vars['action_transition_' . $this->controller->transitionID]);
