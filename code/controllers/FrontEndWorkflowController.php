@@ -86,12 +86,19 @@ abstract class FrontEndWorkflowController extends Controller {
 		
 		// Let the DataObject control the required fields, rather than each form component/page/action
 		$wfValidator 	= $this->getContextObject()->getRequiredFields();
+		
+		// get any requirements spcific to this contextobject
+		if($this->getContextObject()->hasMethod('getFrontendFormRequirements')){
+			$this->getContextObject()->getFrontendFormRequirements();
+		}
                 
 		$this->extend('updateFrontendActions', $wfActions);
 		$this->extend('updateFrontendFields', $wfFields);
 		$this->extend('updateFrontendValidator', $wfValidator);
-                
+       
 		$form = new FrontendWorkflowForm($this, 'Form', $wfFields, $wfActions, $wfValidator);
+		
+		$form->addExtraClass("fwf");
 		
 		if($data = $this->getContextObject()){
 			$form->loadDataFrom($data);
