@@ -40,7 +40,56 @@ class WorkflowActionInstance extends DataObject {
 		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
 	}
 	
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * Use the DataObject as defined in the WorkflowAction, otherwise fall back to the
+	 * context object.
+	 * 
+	 * Useful for situations where front end workflow deals with multiple data objects
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndDataObject() {
+		$obj = null;
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('getFrontEndDataObject')) {
+			$obj = $ba->getFrontEndDataObject();
+		} else {
+			$obj = $this->Workflow()->getTarget();
+		}
+		
+		return $obj;
+	}
+	
+	public function getRequiredFields() {
+		$validator = null;
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('getRequiredFields')) {
+			$validator = $ba->getRequiredFields();
+		}
+		
+		return $validator;
+	}
 
+	public function setFrontendFormRequirements() {
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('setFrontendFormRequirements')) {
+			$ba->setFrontendFormRequirements();
+		}
+	}
+	
+	public function saveFrontEndForm(array $data, Form $form, SS_HTTPRequest $request) {
+		$ba = $this->BaseAction();
+		if ($ba->hasMethod('saveFrontEndForm')) {
+			$ba->saveFrontEndForm($data, $form, $request);
+		}
+	}
+	
+	
 	/**
 	 * Gets the title of this active action instance
 	 * 

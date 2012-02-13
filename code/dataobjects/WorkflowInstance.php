@@ -445,6 +445,39 @@ class WorkflowInstance extends DataObject {
 		
 		return $actions;
 	}
+
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndDataObject() {
+		$action = $this->CurrentAction();
+		$obj = $action->getFrontEndDataObject();
+		
+		return $obj;
+	}
 	
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndRequiredFields() {
+		$action = $this->CurrentAction();
+		$validator = $action->getRequiredFields();
+		
+		return $validator;
+	}
+	
+	public function setFrontendFormRequirements() {
+		$action = $this->CurrentAction();
+		$action->setFrontendFormRequirements();
+	}
+	
+	public function saveFrontEndForm(array $data, Form $form, SS_HTTPRequest $request) {
+		$action = $this->CurrentAction();
+		$action->saveFrontEndForm($data, $form, $request);
+	}
 	
 }

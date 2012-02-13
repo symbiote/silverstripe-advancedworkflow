@@ -80,18 +80,17 @@ abstract class FrontEndWorkflowController extends Controller {
 			throw new Exception('Workflow not found, or not specified for Context Object');
 		}
 		
-		$current 		= $active->CurrentAction();
 		$wfFields 		= $active->getFrontEndWorkflowFields();
 		$wfActions 		= $active->getFrontEndWorkflowActions();
+		$wfValidator 	= $active->getFrontEndRequiredFields();
 		
-		// Let the DataObject control the required fields, rather than each form component/page/action
-		$wfValidator 	= $this->getContextObject()->getRequiredFields();
-		
-		// get any requirements spcific to this contextobject
-		if($this->getContextObject()->hasMethod('getFrontendFormRequirements')){
-			$this->getContextObject()->getFrontendFormRequirements();
-		}
+		//Get DataObject for Form (falls back to ContextObject if not defined in WorkflowAction)
+		$wfDataObject	= $active->getFrontEndDataObject();
+						
+		// set any requirements spcific to this contextobject
+		$active->setFrontendFormRequirements();
                 
+		// @todo - are these required?
 		$this->extend('updateFrontendActions', $wfActions);
 		$this->extend('updateFrontendFields', $wfFields);
 		$this->extend('updateFrontendValidator', $wfValidator);
@@ -100,8 +99,8 @@ abstract class FrontEndWorkflowController extends Controller {
 		
 		$form->addExtraClass("fwf");
 		
-		if($data = $this->getContextObject()){
-			$form->loadDataFrom($data);
+		if($wfDataObject) {
+			$form->loadDataFrom($wfDataObject);
 		}
     
 		return $form;
@@ -126,17 +125,18 @@ abstract class FrontEndWorkflowController extends Controller {
 	 * @param SS_HTTPRequest $request
 	 * @throws Exception
 	 */
-	public function save(array $data, Form $form, SS_HTTPRequest $request) {		
+	public function save(array $data, Form $form, SS_HTTPRequest $request) {
 		if (!$obj = $this->getContextObject()) {
 			throw new Exception('Context Object Not Found');
 		}
 		
-		//Only Save data when Transition is 'Active'	
+		//Only Save data when Transition is 'Active'
 		if ($this->getCurrentTransition()->Type == 'Active') {
-			if ($obj->canEdit()) {
-				$form->saveInto($obj);
-				$obj->write();
-			}
+			//Hand off to WorkflowAction to perform Save
+			$svc 			= singleton('WorkflowService');
+			$active 		= $svc->getWorkflowFor($obj);
+			
+			$active->saveFrontEndForm($data, $form, $request);
 		}
 		
 		//run execute on WorkflowInstance instance		
