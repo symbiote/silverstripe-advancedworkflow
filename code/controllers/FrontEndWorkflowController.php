@@ -73,6 +73,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	 * @return Form
 	 */
 	public function Form(){
+		
 		$svc 			= singleton('WorkflowService');
 		$active 		= $svc->getWorkflowFor($this->getContextObject());
 		
@@ -90,10 +91,11 @@ abstract class FrontEndWorkflowController extends Controller {
 		// set any requirements spcific to this contextobject
 		$active->setFrontendFormRequirements();
                 
-		// @todo - are these required?
-		$this->extend('updateFrontendActions', $wfActions);
-		$this->extend('updateFrontendFields', $wfFields);
-		$this->extend('updateFrontendValidator', $wfValidator);
+		// hooks for decorators
+		$this->extend('updateFrontEndWorkflowFields', $wfActions);
+		$this->extend('updateFrontEndWorkflowActions', $wfFields);
+		$this->extend('updateFrontEndRequiredFields', $wfValidator);
+		$this->extend('updateFrontendFormRequirements');
        
 		$form = new FrontendWorkflowForm($this, 'Form', $wfFields, $wfActions, $wfValidator);
 		
