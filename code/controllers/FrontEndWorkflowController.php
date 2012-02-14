@@ -97,7 +97,7 @@ abstract class FrontEndWorkflowController extends Controller {
 		$this->extend('updateFrontEndRequiredFields', $wfValidator);
 		$this->extend('updateFrontendFormRequirements');
        
-		$form = new FrontendWorkflowForm($this, 'Form', $wfFields, $wfActions, $wfValidator);
+		$form = new FrontendWorkflowForm($this, 'Form/' . $this->getContextID(), $wfFields, $wfActions, $wfValidator);
 		
 		$form->addExtraClass("fwf");
 		
