@@ -475,9 +475,9 @@ class WorkflowInstance extends DataObject {
 		$action->setFrontendFormRequirements();
 	}
 	
-	public function saveFrontEndForm(array $data, Form $form, SS_HTTPRequest $request) {
+	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		$action = $this->CurrentAction();
-		$action->saveFrontEndForm($data, $form, $request);
+		$action->doFrontEndAction($data, $form, $request);
 	}
 	
 }

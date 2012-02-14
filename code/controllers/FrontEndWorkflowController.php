@@ -127,7 +127,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	 * @param SS_HTTPRequest $request
 	 * @throws Exception
 	 */
-	public function save(array $data, Form $form, SS_HTTPRequest $request) {
+	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		if (!$obj = $this->getContextObject()) {
 			throw new Exception('Context Object Not Found');
 		}
@@ -138,7 +138,7 @@ abstract class FrontEndWorkflowController extends Controller {
 			$svc 			= singleton('WorkflowService');
 			$active 		= $svc->getWorkflowFor($obj);
 			
-			$active->saveFrontEndForm($data, $form, $request);
+			$active->doFrontEndAction($data, $form, $request);
 		}
 		
 		//run execute on WorkflowInstance instance		

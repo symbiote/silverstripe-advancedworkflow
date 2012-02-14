@@ -82,10 +82,10 @@ class WorkflowActionInstance extends DataObject {
 		}
 	}
 	
-	public function saveFrontEndForm(array $data, Form $form, SS_HTTPRequest $request) {
+	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		$ba = $this->BaseAction();
-		if ($ba->hasMethod('saveFrontEndForm')) {
-			$ba->saveFrontEndForm($data, $form, $request);
+		if ($ba->hasMethod('doFrontEndAction')) {
+			$ba->doFrontEndAction($data, $form, $request);
 		}
 	}
 	

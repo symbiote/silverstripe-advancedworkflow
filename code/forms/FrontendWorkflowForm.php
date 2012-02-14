@@ -24,13 +24,13 @@ class FrontendWorkflowForm extends Form{
 				
 				
 				// Added for frontend workflow form - get / set transitionID on controller, 
-				// unset action and replace with save action
+				// unset action and replace with doFrontEndAction action
 				if(substr($paramName,0,18) == 'action_transition_') {
 					$this->controller->transitionID = substr($paramName,strrpos($paramName,'_') +1);
 					unset($vars['action_transition_' . $this->controller->transitionID]);
-					$vars['action_save'] = 'Save';
-					$paramName = 'action_save';
-					$paramVal = 'Save';
+					$vars['action_doFrontEndAction'] = 'doFrontEndAction';
+					$paramName = 'action_doFrontEndAction';
+					$paramVal = 'doFrontEndAction';
 				}
 			
 				// Break off querystring arguments included in the action
