@@ -14,7 +14,9 @@
 	/**
 	 * @return string ClassName of object that Workflow is applied to
 	 */
-	/*abstract*/  function getContextType() { throw new Exception('Abstract function');}
+
+	function getContextType() {throw new Exception('abstract method');}
+
 	
 	/**
 	 * @return object Context Object
@@ -51,7 +53,9 @@
 	 * 
 	 * @return WorkflowDefinition
 	 */
-	/*abstract*/  function getWorkflowDefinition() { throw new Exception('Abstract function');}
+
+	function getWorkflowDefinition() {throw new Exception('abstract method');}
+
 		
 	/**
 	 * Handle the Form Action
