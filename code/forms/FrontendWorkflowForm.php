@@ -22,7 +22,6 @@ class FrontendWorkflowForm extends Form{
 		foreach($vars as $paramName => $paramVal) {
 			if(substr($paramName,0,7) == 'action_') {
 				
-				
 				// Added for frontend workflow form - get / set transitionID on controller, 
 				// unset action and replace with doFrontEndAction action
 				if(substr($paramName,0,18) == 'action_transition_') {
@@ -81,8 +80,10 @@ class FrontendWorkflowForm extends Form{
 			);
 		}
 	
+		$wfTransitionType = $this->controller->getCurrentTransition()->Type;
+		
 		// Validate the form
-		if(!$this->validate()) {
+		if(!$this->validate() && $wfTransitionType == 'Active') {
 			if(Director::is_ajax()) {
 				// Special case for legacy Validator.js implementation (assumes eval'ed javascript collected through FormResponse)
 				if($this->validator->getJavascriptValidationHandler() == 'prototype') {

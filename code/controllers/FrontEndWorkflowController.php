@@ -111,7 +111,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	/**
 	 * @return WorkflowTransition
 	 */
-	protected function getCurrentTransition() {
+	public function getCurrentTransition() {
 		$trans = null;
 		if ($this->transitionID) {
 			$trans = DataObject::get_by_id('WorkflowTransition',$this->transitionID);
