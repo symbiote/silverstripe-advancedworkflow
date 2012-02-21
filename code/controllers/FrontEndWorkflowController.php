@@ -6,7 +6,7 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-/*abstract*/ class FrontEndWorkflowController extends Controller {
+abstract class FrontEndWorkflowController extends Controller {
 
 	protected	$transitionID;
 	protected 	$contextObj;
@@ -14,9 +14,7 @@
 	/**
 	 * @return string ClassName of object that Workflow is applied to
 	 */
-
-	function getContextType() {throw new Exception('abstract method');}
-
+	abstract function getContextType();
 	
 	/**
 	 * @return object Context Object
@@ -53,9 +51,7 @@
 	 * 
 	 * @return WorkflowDefinition
 	 */
-
-	function getWorkflowDefinition() {throw new Exception('abstract method');}
-
+	 abstract function getWorkflowDefinition();
 		
 	/**
 	 * Handle the Form Action
