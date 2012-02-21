@@ -443,6 +443,8 @@ class WorkflowInstance extends DataObject {
 			$actions->push(new FormAction("transition_$id", "$title"));
 		}
 		
+		$action->updateFrontEndWorkflowActions($actions);
+		
 		return $actions;
 	}
 

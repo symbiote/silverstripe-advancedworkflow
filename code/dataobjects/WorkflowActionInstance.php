@@ -63,6 +63,14 @@ class WorkflowActionInstance extends DataObject {
 		return $obj;
 	}
 	
+	public function updateFrontEndWorkflowActions($actions) {
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('updateFrontEndWorkflowActions')) {
+			$ba->updateFrontEndWorkflowActions($actions);
+		}
+	}
+	
 	public function getRequiredFields() {
 		$validator = null;
 		$ba = $this->BaseAction();
