@@ -80,10 +80,14 @@ class FrontendWorkflowForm extends Form{
 			);
 		}
 	
-		$wfTransitionType = $this->controller->getCurrentTransition()->Type;
+		if ($wfTransition = $this->controller->getCurrentTransition()) {
+			$wfTransType = $wfTransition->Type;
+		} else {
+			$wfTransType = null; //ie. when a custom Form Action is defined in WorkflowAction
+		}
 		
 		// Validate the form
-		if(!$this->validate() && $wfTransitionType == 'Active') {
+		if(!$this->validate() && $wfTransType == 'Active') {
 			if(Director::is_ajax()) {
 				// Special case for legacy Validator.js implementation (assumes eval'ed javascript collected through FormResponse)
 				if($this->validator->getJavascriptValidationHandler() == 'prototype') {
