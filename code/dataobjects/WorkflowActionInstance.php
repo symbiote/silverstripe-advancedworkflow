@@ -36,6 +36,8 @@ class WorkflowActionInstance extends DataObject {
 	}
 	
 	public function updateFrontendWorkflowFields($fields){
+		$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
+		
 		$ba = $this->BaseAction();
 		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
 	}
@@ -91,6 +93,12 @@ class WorkflowActionInstance extends DataObject {
 	}
 	
 	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
+		//Save Front End Workflow notes, then hand over to Workflow Action
+		if (isset($data["WorkflowActionInstanceComment"])) {
+			$this->Comment = $data["WorkflowActionInstanceComment"];
+			$this->write();
+		}
+		
 		$ba = $this->BaseAction();
 		if ($ba->hasMethod('doFrontEndAction')) {
 			$ba->doFrontEndAction($data, $form, $request);
