@@ -125,6 +125,8 @@ class WorkflowAction extends DataObject {
 
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
+		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
+		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
 		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
 		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
@@ -138,7 +140,7 @@ class WorkflowAction extends DataObject {
 	/**
 	 * Used for Front End Workflows
 	 */
-	public function updateFrontendWorkflowFields($fields, $workflow){
+	public function updateFrontendWorkflowFields($fields, $workflow){	
 	}	
 	
 }
