@@ -19,7 +19,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	/**
 	 * @return object Context Object
 	 */
-	protected function getContextObject() {
+	public function getContextObject() {
 		if (!$this->contextObj) {
 			if ($id = $this->getContextID()) {
 				$cType = $this->getContextType();
@@ -154,4 +154,10 @@ abstract class FrontEndWorkflowController extends Controller {
 		}
 	}
 	
+	public function WorkflowHistory(){
+		$svc 			= singleton('WorkflowService');
+		$active 		= $svc->getWorkflowFor($this->getContextObject());
+		return $active->Actions('', 'Created DESC');
+	}
+		
 }
