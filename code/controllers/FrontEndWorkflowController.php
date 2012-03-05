@@ -10,6 +10,13 @@ abstract class FrontEndWorkflowController extends Controller {
 
 	protected	$transitionID;
 	protected 	$contextObj;
+
+	/**
+	 * The title to be displayed on the page
+	 * @var string
+	 */
+	public $Title;
+
 	
 	/**
 	 * @return string ClassName of object that Workflow is applied to
@@ -153,11 +160,28 @@ abstract class FrontEndWorkflowController extends Controller {
 			$this->contextObj->getWorkflowInstance()->performTransition($this->getCurrentTransition());
 		}
 	}
+
 	
+	/**
+	 * Grabs the workflow action history for the ContextObject
+	 */
 	public function WorkflowHistory(){
 		$svc 			= singleton('WorkflowService');
 		$active 		= $svc->getWorkflowFor($this->getContextObject());
 		return $active->Actions('', 'Created DESC');
+	}
+
+
+	/**
+	 * checks to see if there is a title set on the current workflow action
+	 * uses that or falls back to controller->Title
+	 */
+	public function Title(){
+		if($this->getContextObject()){
+			$action = $this->contextObj->getWorkflowInstance()->currentAction()->BaseAction();
+			return $action->PageTitle ? $action->PageTitle : $this->Title;	
+		}
+		return $this->Title;
 	}
 		
 }
