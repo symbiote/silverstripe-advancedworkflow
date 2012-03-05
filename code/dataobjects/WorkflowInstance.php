@@ -436,11 +436,15 @@ class WorkflowInstance extends DataObject {
 	public function getFrontEndWorkflowActions() {
 		$action    = $this->CurrentAction();
 		$options   = $action->getValidTransitions();
-		$wfOptions = $options->map('ID', 'Title');
 		$actions   = new FieldSet();
 		
-		foreach ($wfOptions as $id => $title) {
-			$actions->push(new FormAction("transition_$id", "$title"));
+		foreach ($options as $option) {
+			$actions->push($btn = new FormAction("transition_{$option->ID}", $option->Title));
+			
+			// add cancel class to passive actions, this prevents js validation
+			if($option->Type == 'Passive'){
+				$btn->addExtraClass('cancel');
+			}
 		}
 		
 		$action->updateFrontEndWorkflowActions($actions);
