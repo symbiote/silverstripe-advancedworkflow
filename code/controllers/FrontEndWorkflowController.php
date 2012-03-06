@@ -31,7 +31,9 @@ abstract class FrontEndWorkflowController extends Controller {
 			if ($id = $this->getContextID()) {
 				$cType = $this->getContextType();
 				$cObj = DataObject::get_by_id($cType, $id);
-				$this->contextObj = $cObj->canView() ? $cObj : null;
+				if ($cObj) {
+					$this->contextObj = $cObj->canView() ? $cObj : null;
+				}
 			}
 		}		
 		return $this->contextObj;
