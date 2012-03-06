@@ -167,11 +167,31 @@ abstract class FrontEndWorkflowController extends Controller {
 	/**
 	 * Grabs the workflow action history for the ContextObject
 	 */
-	public function WorkflowHistory(){
+	public function WorkflowHistory(int $numActions=null){
 		$svc 			= singleton('WorkflowService');
 		$active 		= $svc->getWorkflowFor($this->getContextObject());
-		return $active->Actions('', 'Created DESC');
+		
+		if ($numActions) {
+			return $active->Actions('', 'ID DESC LIMIT '.$numActions);
+		} else {
+			return $active->Actions('', 'ID DESC');
+		}
 	}
+	
+	/**
+	 * Check all recent WorkflowActionIntances for a Comment - returning the most recent
+	 */
+	public function RecentWorkflowHistory($depth = 4){
+		$actions = $this->WorkflowHistory($depth);
+		
+		foreach ($actions as $action) {
+			if ($action->Comment != '') {
+				return $action;
+			}
+		}
+		return null;
+	}
+	
 
 
 	/**
