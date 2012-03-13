@@ -85,9 +85,10 @@ abstract class FrontEndWorkflowController extends Controller {
 		
 		$svc 			= singleton('WorkflowService');
 		$active 		= $svc->getWorkflowFor($this->getContextObject());
-		
-		if (!$active) {
-			throw new Exception('Workflow not found, or not specified for Context Object');
+
+		if (!$active){
+			return;
+			//throw new Exception('Workflow not found, or not specified for Context Object');
 		}
 		
 		$wfFields 		= $active->getFrontEndWorkflowFields();
@@ -161,38 +162,7 @@ abstract class FrontEndWorkflowController extends Controller {
 		if ($transitions->find('ID',$this->transitionID)) {
 			$this->contextObj->getWorkflowInstance()->performTransition($this->getCurrentTransition());
 		}
-	}
-
-	
-	/**
-	 * Grabs the workflow action history for the ContextObject
-	 */
-	public function WorkflowHistory(int $numActions=null){
-		$svc 			= singleton('WorkflowService');
-		$active 		= $svc->getWorkflowFor($this->getContextObject());
-		
-		if ($numActions) {
-			return $active->Actions('', 'ID DESC LIMIT '.$numActions);
-		} else {
-			return $active->Actions('', 'ID DESC');
-		}
-	}
-	
-	/**
-	 * Check all recent WorkflowActionIntances for a Comment - returning the most recent
-	 */
-	public function RecentWorkflowHistory($depth = 4){
-		$actions = $this->WorkflowHistory($depth);
-		
-		foreach ($actions as $action) {
-			if ($action->Comment != '') {
-				return $action;
-			}
-		}
-		return null;
-	}
-	
-
+	}	
 
 	/**
 	 * checks to see if there is a title set on the current workflow action

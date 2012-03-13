@@ -48,7 +48,7 @@ class WorkflowService implements PermissionProvider {
 	 *
 	 * @return WorkflowInstance
 	 */
-	public function getWorkflowFor($item) {
+	public function getWorkflowFor($item, $includeComplete = false) {
 		$id = $item;
 		
 		if ($item instanceof WorkflowAction) {
@@ -57,8 +57,22 @@ class WorkflowService implements PermissionProvider {
 			return DataObject::get_by_id('WorkflowInstance', $id);
 		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
 			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $item->ClassName, $item->ID);
-			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\')');
+			
+			$complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
+			
+			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
 		}
+	}
+
+	/**
+	 * Get all the workflow action instances for an item
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getWorkflowHistoryFor($item, $limit = null){
+		$active = $this->getWorkflowFor($item, true);
+		$limit = $limit ? "0,$limit" : '';
+		return $active->Actions('', 'ID DESC ', null, $limit);
 	}
 
 	/**
@@ -167,6 +181,9 @@ class WorkflowService implements PermissionProvider {
 			)
 		);
 	}
+
+
+	
 }
 
 class ExistingWorkflowException extends Exception {};

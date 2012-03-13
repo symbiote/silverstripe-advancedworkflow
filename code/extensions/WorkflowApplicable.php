@@ -128,6 +128,32 @@ class WorkflowApplicable extends DataObjectDecorator {
 
 		return $this->currentInstance;
 	}
+
+
+	/**
+	 * Gets the history of a workflow instance
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getWorkflowHistory($limit = null) {
+		$svc = singleton('WorkflowService');
+		return $svc->getWorkflowHistoryFor($this->owner, $limit);
+	}
+
+
+	/**
+	 * Check all recent WorkflowActionIntances and return the most recent one with a Comment
+	 *
+	 * @return WorkflowActionInstance
+	 */
+	public function RecentWorkflowComment($limit = 10){
+		$actions = $this->getWorkflowHistory($limit);
+		foreach ($actions as $action) {
+			if ($action->Comment != '') {
+				return $action;
+			}
+		}
+	}
 	
 
 	/**
