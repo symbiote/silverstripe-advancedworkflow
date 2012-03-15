@@ -1,3 +1,9 @@
+
+2012-03-15 1.5.2
+----------------
+
+* Make sure to only add the queuedjobs when in Stage editing mode
+
 2012-02-02 1.5.1
 ----------------
 

@@ -39,37 +39,40 @@ class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
 
-		if (strlen($this->owner->PublishOnDate)) {
-			$changed = $this->owner->getChangedFields();
-			$changed = isset($changed['PublishOnDate']);
+		// only operate on staging content 
+		if (Versioned::current_stage() != 'Live') {
+			if (strlen($this->owner->PublishOnDate)) {
+				$changed = $this->owner->getChangedFields();
+				$changed = isset($changed['PublishOnDate']);
 
-			if ($changed && $this->owner->PublishJobID) {
-				if ($this->owner->PublishJob()->exists()) {
-					$this->owner->PublishJob()->delete();
+				if ($changed && $this->owner->PublishJobID) {
+					if ($this->owner->PublishJob()->exists()) {
+						$this->owner->PublishJob()->delete();
+					}
+					$this->owner->PublishJobID = 0;
 				}
-				$this->owner->PublishJobID = 0;
-			}
 
-			if (!$this->owner->PublishJobID && strtotime($this->owner->PublishOnDate) > time()) {
-				$job = new WorkflowPublishTargetJob($this->owner, 'publish');
-				$this->owner->PublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->PublishOnDate);
-			}
-		}
-
-		if (strlen($this->owner->UnPublishOnDate)) {
-			$changed = $this->owner->getChangedFields();
-			$changed = isset($changed['UnPublishOnDate']);
-
-			if ($changed && $this->owner->UnPublishJobID) {
-				if ($this->owner->UnPublishJob()->exists()) {
-					$this->owner->UnPublishJob()->delete();
+				if (!$this->owner->PublishJobID && strtotime($this->owner->PublishOnDate) > time()) {
+					$job = new WorkflowPublishTargetJob($this->owner, 'publish');
+					$this->owner->PublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->PublishOnDate);
 				}
-				$this->owner->UnPublishJobID = 0;
 			}
 
-			if (!$this->owner->UnPublishJobID && strtotime($this->owner->UnPublishOnDate) > time()) {
-				$job = new WorkflowPublishTargetJob($this->owner, 'unpublish');
-				$this->owner->UnPublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->UnPublishOnDate);
+			if (strlen($this->owner->UnPublishOnDate)) {
+				$changed = $this->owner->getChangedFields();
+				$changed = isset($changed['UnPublishOnDate']);
+
+				if ($changed && $this->owner->UnPublishJobID) {
+					if ($this->owner->UnPublishJob()->exists()) {
+						$this->owner->UnPublishJob()->delete();
+					}
+					$this->owner->UnPublishJobID = 0;
+				}
+
+				if (!$this->owner->UnPublishJobID && strtotime($this->owner->UnPublishOnDate) > time()) {
+					$job = new WorkflowPublishTargetJob($this->owner, 'unpublish');
+					$this->owner->UnPublishJobID = singleton('QueuedJobService')->queueJob($job, $this->owner->UnPublishOnDate);
+				}
 			}
 		}
 	}
