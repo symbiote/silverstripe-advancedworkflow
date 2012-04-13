@@ -147,10 +147,11 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 * @return WorkflowActionInstance
 	 */
 	public function RecentWorkflowComment($limit = 10){
-		$actions = $this->getWorkflowHistory($limit);
-		foreach ($actions as $action) {
-			if ($action->Comment != '') {
-				return $action;
+		if($actions = $this->getWorkflowHistory($limit)){
+			foreach ($actions as $action) {
+				if ($action->Comment != '') {
+					return $action;
+				}
 			}
 		}
 	}

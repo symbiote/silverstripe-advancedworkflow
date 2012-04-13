@@ -70,9 +70,10 @@ class WorkflowService implements PermissionProvider {
 	 * @return DataObjectSet
 	 */
 	public function getWorkflowHistoryFor($item, $limit = null){
-		$active = $this->getWorkflowFor($item, true);
-		$limit = $limit ? "0,$limit" : '';
-		return $active->Actions('', 'ID DESC ', null, $limit);
+		if($active = $this->getWorkflowFor($item, true)){
+			$limit = $limit ? "0,$limit" : '';
+			return $active->Actions('', 'ID DESC ', null, $limit);	
+		}
 	}
 
 	/**
