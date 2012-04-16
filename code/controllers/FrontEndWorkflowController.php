@@ -141,6 +141,10 @@ abstract class FrontEndWorkflowController extends Controller {
 		if (!$obj = $this->getContextObject()) {
 			throw new Exception('Context Object Not Found');
 		}
+
+		if(!$this->getCurrentTransition()->canExecute()){
+			throw new Exception('You do not have permission to execute this action');
+		}
 		
 		//Only Save data when Transition is 'Active'
 		if ($this->getCurrentTransition()->Type == 'Active') {

@@ -439,12 +439,20 @@ class WorkflowInstance extends DataObject {
 		$actions   = new FieldSet();
 		
 		foreach ($options as $option) {
-			$actions->push($btn = new FormAction("transition_{$option->ID}", $option->Title));
+			$btn = new FormAction("transition_{$option->ID}", $option->Title);
 			
-			// add cancel class to passive actions, this prevents js validation
+			// add cancel class to passive actions, this prevents js validation (using jquery.validate)
 			if($option->Type == 'Passive'){
 				$btn->addExtraClass('cancel');
 			}
+
+			// disable the button if canExecute() returns false
+			if(!$option->canExecute()){
+				$btn = $btn->performReadonlyTransformation();
+				$btn->addExtraClass('hide');
+			}
+
+			$actions->push($btn);
 		}
 		
 		$action->updateFrontEndWorkflowActions($actions);

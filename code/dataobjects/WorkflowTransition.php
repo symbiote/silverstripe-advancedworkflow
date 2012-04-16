@@ -28,6 +28,12 @@ class WorkflowTransition extends DataObject {
 		'NextAction' => 'WorkflowAction',
 	);
 
+	public static $many_many = array(
+		'Users'  => 'Member',
+		'Groups' => 'Group'
+	);
+
+
 	public static $icon = 'advancedworkflow/images/transition.png';
 
 	/**
@@ -112,6 +118,9 @@ class WorkflowTransition extends DataObject {
 			$typeOptions
 			));
 
+		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), 'Member'));
+		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
+
 		return $fields;
 	}
 
@@ -121,6 +130,41 @@ class WorkflowTransition extends DataObject {
 
 	public function summaryFields() {
 		return array('Title' => 'Title');
+	}
+
+
+	/**
+	 * Check if the current user can execute this transition
+	 *
+	 * @return bool
+	 **/
+	public function canExecute(){
+		$members = $this->getAssignedMembers();
+		
+		if($members->exists()){
+			if(!$members->find('ID', Member::currentUserID())){
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * Returns a set of all Members that are assigned to this transition, either directly or via a group.
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getAssignedMembers() {
+		$members = $this->Users();
+		$groups  = $this->Groups();
+
+		foreach($groups as $group) {
+			$members->merge($group->Members());
+		}
+
+		$members->removeDuplicates();
+		return $members;
 	}
 
 }
