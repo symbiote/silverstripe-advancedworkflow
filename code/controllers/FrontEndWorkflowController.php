@@ -142,7 +142,7 @@ abstract class FrontEndWorkflowController extends Controller {
 			throw new Exception('Context Object Not Found');
 		}
 
-		if(!$this->getCurrentTransition()->canExecute()){
+		if(!$this->getCurrentTransition()->canExecute($this->contextObj->getWorkflowInstance())){
 			throw new Exception('You do not have permission to execute this action');
 		}
 		

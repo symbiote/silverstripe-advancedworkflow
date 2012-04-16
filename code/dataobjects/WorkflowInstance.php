@@ -447,7 +447,7 @@ class WorkflowInstance extends DataObject {
 			}
 
 			// disable the button if canExecute() returns false
-			if(!$option->canExecute()){
+			if(!$option->canExecute($this)){
 				$btn = $btn->performReadonlyTransformation();
 				$btn->addExtraClass('hide');
 			}

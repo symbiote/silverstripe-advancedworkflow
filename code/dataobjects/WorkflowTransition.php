@@ -118,8 +118,10 @@ class WorkflowTransition extends DataObject {
 			$typeOptions
 			));
 
-		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), 'Member'));
-		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
+		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), 'Member'));
+		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
+
+		$this->extend('updateCMSFields', $fields);
 
 		return $fields;
 	}
@@ -138,16 +140,30 @@ class WorkflowTransition extends DataObject {
 	 *
 	 * @return bool
 	 **/
-	public function canExecute(){
+	public function canExecute(WorkflowInstance $workflow){
+		$return = true; 
+
 		$members = $this->getAssignedMembers();
-		
+
+		// check if the member is in the list of assigned members
 		if($members->exists()){
 			if(!$members->find('ID', Member::currentUserID())){
-				return false;
+				$return = false;
 			}
 		}
 
-		return true;
+		if($return){
+			$return = $this->extend('extendCanExecute', $workflow);	
+			if(is_array($return)) $return = $return[0]; // @todo work out why this is returning an array...
+		}
+		
+		if($return !== false){
+			return true;
+		}else{
+			return $return;
+		}
+
+
 	}
 
 	/**
