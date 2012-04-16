@@ -32,11 +32,15 @@ class WorkflowActionInstance extends DataObject {
 	 * Gets fields for when this is part of an active workflow
 	 */
 	public function updateWorkflowFields($fields) {
-		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+		if ($this->BaseAction()->AllowCommenting) {	
+			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+		}
 	}
 	
 	public function updateFrontendWorkflowFields($fields){
-		$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
+		if ($this->BaseAction()->AllowCommenting) {		
+			$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
+		}
 		
 		$ba = $this->BaseAction();
 		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
