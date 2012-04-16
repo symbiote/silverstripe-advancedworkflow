@@ -171,7 +171,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	public function Title(){
 		if($this->getContextObject()){
 			if($workflow = $this->contextObj->getWorkflowInstance()){
-				return $workflow->currentAction()->BaseAction()->PageTitle ? $workflow->currentAction()->BaseAction()->PageTitle : $this->Title;	
+				return $workflow->currentAction()->BaseAction()->PageTitle ? $workflow->currentAction()->BaseAction()->PageTitle : $workflow->currentAction()->Title;	
 			}
 		}
 		return $this->Title;
