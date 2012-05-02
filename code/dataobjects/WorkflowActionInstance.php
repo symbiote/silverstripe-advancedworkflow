@@ -154,6 +154,8 @@ class WorkflowActionInstance extends DataObject {
 	 * Called when this action has been completed within the workflow
 	 */
 	public function actionComplete(WorkflowTransition $transition) {
+		$this->MemberID = Member::currentUserID();
+		$this->write();
 		$this->extend('onActionComplete', $transition);
 	}
 
