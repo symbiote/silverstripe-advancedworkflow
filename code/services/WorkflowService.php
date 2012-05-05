@@ -66,7 +66,7 @@ class WorkflowService implements PermissionProvider {
 	 * @return DataObjectSet
 	 */
 	public function getDefinitions() {
-		return DataObject::get('WorkflowDefinition');
+		return DataList::create('WorkflowDefinition');
 	}
 
 	/**

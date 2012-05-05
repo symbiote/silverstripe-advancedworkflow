@@ -6,8 +6,8 @@
  * @author marcus@silverstripe.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
-class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
-	
+class WorkflowEmbargoExpiryExtension extends DataExtension {
+
 	public function extraStatics() {
 		return array(
 			'db'			=> array(

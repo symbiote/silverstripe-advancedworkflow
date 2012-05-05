@@ -7,7 +7,7 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class AdvancedWorkflowExtension extends LeftAndMainDecorator {
+class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
 	public function startworkflow($data, $form, $request) {
 		$item = $form->getRecord();

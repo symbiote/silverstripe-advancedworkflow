@@ -8,8 +8,8 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class WorkflowApplicable extends DataObjectDecorator {
-	
+class WorkflowApplicable extends DataExtension {
+
 	/**
 	 * 
 	 * A cache var for the current workflow instance
@@ -17,8 +17,8 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 * @var WorkflowInstance
 	 */
 	protected $currentInstance;
-	
-	public function extraStatics() {
+
+	public function extraStatics($class = null, $extension = null) {
 		return array(
 			'has_one' => array(
 				'WorkflowDefinition' => 'WorkflowDefinition',

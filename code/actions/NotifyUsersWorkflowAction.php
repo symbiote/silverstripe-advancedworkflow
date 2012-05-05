@@ -50,8 +50,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		return $fields;
 	}
 
-	public function fieldLabels() {
-		return array_merge(parent::fieldLabels(), array(
+	public function fieldLabels($relations = true) {
+		return array_merge(parent::fieldLabels($relations), array(
 			'NotificationEmail' => _t('NotifyUsersWorkflowAction.NOTIFICATIONEMAIL', 'Notification Email'),
 			'NotificationNote'  => _t('NotifyUsersWorkflowAction.NOTIFICATIONNOTE',
 				'All users attached to the workflow will be sent an email when this action is run.'),

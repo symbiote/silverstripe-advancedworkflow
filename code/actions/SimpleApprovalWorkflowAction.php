@@ -15,7 +15,7 @@ class SimpleApprovalWorkflowAction extends WorkflowAction {
 	
 	public static $icon = 'advancedworkflow/images/approval.png';
 
-    public function execute() {
+    public function execute(WorkflowInstance $workflow) {
 		// we don't need to do anything for this execution,
 		// as we're relying on the fact that there's at least 2 outbound transitions
 		// which will cause the workflow to block and wait. 

@@ -12,7 +12,7 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 	public static $db = array(
 		'AssignInitiator'		=> 'Boolean',
 	);
-	
+
 	public static $many_many = array(
 		'Users'  => 'Member',
 		'Groups' => 'Group'
@@ -44,8 +44,8 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 		return $fields;
 	}
 
-	public function fieldLabels() {
-		return array_merge(parent::fieldLabels(), array(
+	public function fieldLabels($relations = true) {
+		return array_merge(parent::fieldLabels($relations), array(
 			'AssignUsers'		=> _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
 			'Users'				=> _t('AssignUsersToWorkflowAction.USERS', 'Users'),
 			'Groups'			=> _t('AssignUsersToWorkflowAction.GROUPS', 'Groups'),
