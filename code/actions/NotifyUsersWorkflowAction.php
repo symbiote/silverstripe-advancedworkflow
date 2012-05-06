@@ -25,12 +25,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			new LiteralField('NotificationNote', '<p>' . $this->fieldLabel('NotificationNote') . '</p>'),
 			new TextField('EmailSubject', $this->fieldLabel('EmailSubject')),
 			new TextField('EmailFrom', $this->fieldLabel('EmailFrom')),
-			
-			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate'), 10),
+
+			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate')),
 			new ToggleCompositeField('FormattingHelpContainer',
 				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
-		
+
 		if (class_exists('ListingPage')) {
 			// allow the user to select an existing 'listing template'. The "getItems()" for that template
 			// will be the list of items in the workflow
@@ -39,10 +39,10 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			if ($templates) {
 				$opts = $templates->map();
 			}
-		
+
 			$fields->addFieldToTab('Root.Main', new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, '', null, '(choose)'), 'EmailTemplate');
 		}
-		
+
 		if ($this->ListingTemplateID) {
 			$fields->removeFieldFromTab('Root.Main', 'EmailTemplate');
 		}

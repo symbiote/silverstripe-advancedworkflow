@@ -4,12 +4,18 @@
  * @package advancedworkflow
  */
 
-// Add the following to your config to enable workflow 
+// Add the following to your config to enable workflow
 // DataObject::add_extension('SiteTree', 'WorkflowApplicable');
 
 Object::add_extension('Member', 'Hierarchy');
 Object::add_extension('LeftAndMain', 'AdvancedWorkflowExtension');
 
-if(($MODULE_DIR = basename(dirname(__FILE__))) != 'advancedworkflow') {
-	throw new Exception("The advanced workflow module must be in a directory named 'advancedworkflow', not $MODULE_DIR");
+define('ADVANCED_WORKFLOW_DIR', basename(dirname(__FILE__)));
+
+if(ADVANCED_WORKFLOW_DIR != 'advancedworkflow') {
+	throw new Exception(
+		"The advanced workflow module must be in a directory named 'advancedworkflow', not " . ADVANCED_WORKFLOW_DIR
+	);
 }
+
+LeftAndMain::require_css(ADVANCED_WORKFLOW_DIR . '/css/AdvancedWorkflowAdmin.css');

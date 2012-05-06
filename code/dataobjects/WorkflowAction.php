@@ -124,16 +124,22 @@ class WorkflowAction extends DataObject {
 	}
 
 	public function getCMSFields() {
-		$fields = new FieldSet(new TabSet('Root'));
+		$fields = new FieldList(new TabSet('Root'));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
 		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
 		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
 		return $fields;
 	}
-	
+
+	public function getValidator() {
+		return new RequiredFields('Title');
+	}
+
 	public function summaryFields() {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
 
-	
+	public function Icon() {
+		return $this->stat('icon');
+	}
 }

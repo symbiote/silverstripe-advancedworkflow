@@ -26,48 +26,42 @@ class WorkflowApplicable extends DataExtension {
 		);
 	}
 
-	public function updateCMSFields(FieldSet $fields) {
-		$service = singleton('WorkflowService');
-
-		if($effective = $service->getDefinitionFor($this->owner)) {
-			$effectiveTitle = $effective->Title;
-		} else {
-			$effectiveTitle = _t('WorkflowApplicable.NONE', '(none)');
-		}
-
-		$allDefinitions = array(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
-
-		if($definitions = $service->getDefinitions()) {
-			$allDefinitions += $definitions->map();
-		}
-		
-		$tab = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
-		
-		$applyWorkflowField = null;
-		
-		
-		$fields->addFieldToTab($tab, new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')));
-
-		if (Permission::check('APPLY_WORKFLOW')) {
-			$fields->addFieldToTab($tab, new DropdownField('WorkflowDefinitionID',
-				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions));
-			
-		}
-		
-		$fields->addFieldToTab($tab, new ReadonlyField('EffectiveWorkflow',
-				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle));
-		$fields->addFieldToTab($tab, new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')));
-		$fields->addFieldToTab($tab, $logTable = new ComplexTableField(
-				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields',
-				sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $this->owner->class, $this->owner->ID)
-			));
-
-		$logTable->setRelationAutoSetting(false);
-		$logTable->setPermissions(array('show'));
-		$logTable->setPopupSize(760, 420);
+	public function updateSettingsFields(FieldList $fields) {
+		$this->updateFields($fields);
 	}
 
-	public function updateCMSActions($actions) {
+	public function updateCMSFields(FieldList $fields) {
+		if(!$this->owner->hasMethod('getSettingsFields')) $this->updateFields($fields);
+	}
+
+	public function updateFields(FieldList $fields) {
+		$service   = singleton('WorkflowService');
+		$effective = $service->getDefinitionFor($this->owner);
+		$tab       = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
+
+		if(Permission::check('APPLY_WORKFLOW')) {
+			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
+			$definition->setSource($service->getDefinitions()->map());
+			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
+
+			$fields->addFieldToTab($tab, $definition);
+		}
+
+		$fields->addFieldToTab($tab, new ReadonlyField(
+			'EffectiveWorkflow',
+			_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
+			$effective ? $effective->Title : _t('WorkflowApplicable.NONE', '(none)')
+		));
+
+		if($this->owner->ID) {
+			$insts = $this->owner->WorkflowInstances();
+			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts);
+
+			$fields->addFieldToTab($tab, $log);
+		}
+	}
+
+	public function updateCMSActions(FieldList $actions) {
 		$svc = singleton('WorkflowService');
 		$active = $svc->getWorkflowFor($this->owner);
 
@@ -94,6 +88,13 @@ class WorkflowApplicable extends DataExtension {
 		if ($instance && $instance->CurrentActionID) {
 			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
 		}
+	}
+
+	public function WorkflowInstances() {
+		return DataList::create('WorkflowInstance')->filter(array(
+			'TargetClass' => $this->ownerBaseClass,
+			'TargetID'    => $this->owner->ID
+		));
 	}
 
 	/**
@@ -126,13 +127,13 @@ class WorkflowApplicable extends DataExtension {
 		if ($effective = singleton('WorkflowService')->getDefinitionFor($this->owner)) {
 			return false;
 		}
-		
+
 	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
 	 */
-	public function canEdit() {
+	public function canEdit($member) {
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canEditTarget($this->owner);
 		}
