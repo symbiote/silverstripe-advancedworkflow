@@ -19,7 +19,7 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 		$svc = singleton('WorkflowService');
 		$svc->startWorkflow($item);
 
-		return $this->javascriptRefresh();
+		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
 
 	/**
@@ -34,11 +34,11 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 		$active = $svc->getWorkflowFor($p);
 
 		if ($active) {
-			
+
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
-			$wfFields = $active->getWorkflowFields(); 
-			
+			$wfFields = $active->getWorkflowFields();
+
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
 			foreach ($allowed as $fieldName) {
@@ -90,13 +90,7 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			$workflow->execute();
 		}
 
-		return $this->javascriptRefresh();
+		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
 
-	protected function javascriptRefresh($message = 'Please wait...') {
-		FormResponse::add("$('Form_EditForm').resetElements();");
-		FormResponse::add('$$("#sitetree li.current")[0].selectTreeNode();');
-		FormResponse::status_message($message, "good");
-		return FormResponse::respond();
-	}
 }

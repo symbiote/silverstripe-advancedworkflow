@@ -91,7 +91,7 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function WorkflowInstances() {
-		return DataList::create('WorkflowInstance')->filter(array(
+		return WorkflowInstance::get()->filter(array(
 			'TargetClass' => $this->ownerBaseClass,
 			'TargetID'    => $this->owner->ID
 		));

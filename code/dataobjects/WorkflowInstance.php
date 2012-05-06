@@ -51,7 +51,7 @@ class WorkflowInstance extends DataObject {
 	 * @return FieldSet
 	 */
 	public function getActionsSummaryFields() {
-		return new FieldSet(new TabSet('Root', new Tab('Actions', new TableListField(
+		return new FieldList(new TabSet('Root', new Tab('Actions', new TableListField(
 			'WorkflowActions',
 			'WorkflowActionInstance',
 			array(
@@ -119,20 +119,20 @@ class WorkflowInstance extends DataObject {
 	/**
 	 * Get fields to update a workflow instance directly. Will attempt to allow the user to modify the current
 	 * step if possible
-	 * 
+	 *
 	 * @return FieldSet
 	 */
 	public function getInstanceManagementFields() {
-		$fields = new FieldSet(new TabSet('Root', new Tab('Main',
+		$fields = new FieldList(new TabSet('Root', new Tab('Main',
 			new HeaderField('AssignedToHeader', _t('WorkflowInstance.ASSIGNEDTO', 'Assigned To')),
 			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
 			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
 		)));
-		
+
 		$target = $this->getTarget();
 
 		if ($target && $target->canEditWorkflow()) {
-			$wfFields = $this->getWorkflowFields(); 
+			$wfFields = $this->getWorkflowFields();
 			$tmpForm = new Form($this, 'dummy', $wfFields, new FieldSet());
 			$wfFields->push(new HiddenField('DirectUpdate', 'Direct Update', true));
 			$tmpForm->loadDataFrom($this->CurrentAction());
@@ -177,11 +177,11 @@ class WorkflowInstance extends DataObject {
 		}
 
 		if ($for && ($for->hasExtension('WorkflowApplicable') || $for->hasExtension('FileWorkflowApplicable'))) {
-			$this->TargetClass = $for->ClassName;
+			$this->TargetClass = ClassInfo::baseDataClass($for);
 			$this->TargetID = $for->ID;
 		}
 
-		// lets create the first WorkflowActionInstance. 
+		// lets create the first WorkflowActionInstance.
 		$action = $definition->getInitialAction()->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
@@ -315,15 +315,17 @@ class WorkflowInstance extends DataObject {
 	 * @return DataObjectSet
 	 */
 	public function getAssignedMembers() {
-		$members = $this->Users();
+		$list    = new ArrayList();
 		$groups  = $this->Groups();
 
+		$list->merge($this->Users());
+
 		foreach($groups as $group) {
-			$members->merge($group->Members());
+			$list->merge($group->Members());
 		}
 
-		$members->removeDuplicates();
-		return $members;
+		$list->removeDuplicates();
+		return $list;
 	}
 
 	public function canView($member=null) {
@@ -389,28 +391,28 @@ class WorkflowInstance extends DataObject {
 			return $this->CurrentAction()->canPublishTarget($this->getTarget());
 		}
 	}
-	
-	
+
+
 	/* UI RELATED METHODS */
 
 	/**
 	 * Gets fields for managing this workflow instance in its current step
-	 * 
+	 *
 	 * @return FieldSet
 	 */
 	public function getWorkflowFields() {
 		$action    = $this->CurrentAction();
 		$options   = $action->getValidTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
-		$fields    = new FieldSet();
+		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
 		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
-		// stored for the workflow. 
+		// stored for the workflow.
 		$action->updateWorkflowFields($fields);
-		
+
 		return $fields;
 	}
 }

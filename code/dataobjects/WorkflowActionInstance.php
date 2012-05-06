@@ -57,7 +57,7 @@ class WorkflowActionInstance extends DataObject {
 	 */
 	public function getValidTransitions() {
 		$available = $this->BaseAction()->Transitions();
-		$valid     = new DataObjectSet();
+		$valid     = new ArrayList();
 
 		// iterate through the transitions and see if they're valid for the current state of the item being
 		// workflowed

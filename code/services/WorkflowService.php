@@ -50,12 +50,12 @@ class WorkflowService implements PermissionProvider {
 	 */
 	public function getWorkflowFor($item) {
 		$id = $item;
-		
+
 		if ($item instanceof WorkflowAction) {
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
 		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
-			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $item->ClassName, $item->ID);
+			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
 			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\')');
 		}
 	}
