@@ -413,4 +413,85 @@ class WorkflowInstance extends DataObject {
 		
 		return $fields;
 	}
+	
+	/**
+	 * Gets Front-End form fields from current Action
+	 * 
+	 * @return FieldSet
+	 */
+	public function getFrontEndWorkflowFields() {
+		$action = $this->CurrentAction();
+		
+		$fields = new FieldSet();
+		$action->updateFrontEndWorkflowFields($fields);
+		
+		return $fields;
+	}
+	
+	/**
+	 * Gets Transitions for display as Front-End Form Actions
+	 * 
+	 * @return FieldSet
+	 */
+	public function getFrontEndWorkflowActions() {
+		$action    = $this->CurrentAction();
+		$options   = $action->getValidTransitions();
+		$actions   = new FieldSet();
+		
+		foreach ($options as $option) {
+			$btn = new FormAction("transition_{$option->ID}", $option->Title);
+			
+			// add cancel class to passive actions, this prevents js validation (using jquery.validate)
+			if($option->Type == 'Passive'){
+				$btn->addExtraClass('cancel');
+			}
+
+			// disable the button if canExecute() returns false
+			if(!$option->canExecute($this)){
+				$btn = $btn->performReadonlyTransformation();
+				$btn->addExtraClass('hide');
+			}
+
+			$actions->push($btn);
+		}
+		
+		$action->updateFrontEndWorkflowActions($actions);
+		
+		return $actions;
+	}
+
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndDataObject() {
+		$action = $this->CurrentAction();
+		$obj = $action->getFrontEndDataObject();
+		
+		return $obj;
+	}
+	
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndRequiredFields() {
+		$action = $this->CurrentAction();
+		$validator = $action->getRequiredFields();
+		
+		return $validator;
+	}
+	
+	public function setFrontendFormRequirements() {
+		$action = $this->CurrentAction();
+		$action->setFrontendFormRequirements();
+	}
+	
+	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
+		$action = $this->CurrentAction();
+		$action->doFrontEndAction($data, $form, $request);
+	}
+	
 }

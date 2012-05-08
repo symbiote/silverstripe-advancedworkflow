@@ -32,9 +32,84 @@ class WorkflowActionInstance extends DataObject {
 	 * Gets fields for when this is part of an active workflow
 	 */
 	public function updateWorkflowFields($fields) {
-		$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+		if ($this->BaseAction()->AllowCommenting) {	
+			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+		}
+	}
+	
+	public function updateFrontendWorkflowFields($fields){
+		if ($this->BaseAction()->AllowCommenting) {		
+			$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
+		}
+		
+		$ba = $this->BaseAction();
+		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
+	}
+	
+	/**
+	 * Gets Front-End DataObject
+	 * 
+	 * Use the DataObject as defined in the WorkflowAction, otherwise fall back to the
+	 * context object.
+	 * 
+	 * Useful for situations where front end workflow deals with multiple data objects
+	 * 
+	 * @return DataObject
+	 */
+	public function getFrontEndDataObject() {
+		$obj = null;
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('getFrontEndDataObject')) {
+			$obj = $ba->getFrontEndDataObject();
+		} else {
+			$obj = $this->Workflow()->getTarget();
+		}
+		
+		return $obj;
+	}
+	
+	public function updateFrontEndWorkflowActions($actions) {
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('updateFrontEndWorkflowActions')) {
+			$ba->updateFrontEndWorkflowActions($actions);
+		}
+	}
+	
+	public function getRequiredFields() {
+		$validator = null;
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('getRequiredFields')) {
+			$validator = $ba->getRequiredFields();
+		}
+		
+		return $validator;
 	}
 
+	public function setFrontendFormRequirements() {
+		$ba = $this->BaseAction();
+		
+		if ($ba->hasMethod('setFrontendFormRequirements')) {
+			$ba->setFrontendFormRequirements();
+		}
+	}
+	
+	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
+		//Save Front End Workflow notes, then hand over to Workflow Action
+		if (isset($data["WorkflowActionInstanceComment"])) {
+			$this->Comment = $data["WorkflowActionInstanceComment"];
+			$this->write();
+		}
+		
+		$ba = $this->BaseAction();
+		if ($ba->hasMethod('doFrontEndAction')) {
+			$ba->doFrontEndAction($data, $form, $request);
+		}
+	}
+	
+	
 	/**
 	 * Gets the title of this active action instance
 	 * 
@@ -79,6 +154,8 @@ class WorkflowActionInstance extends DataObject {
 	 * Called when this action has been completed within the workflow
 	 */
 	public function actionComplete(WorkflowTransition $transition) {
+		$this->MemberID = Member::currentUserID();
+		$this->write();
 		$this->extend('onActionComplete', $transition);
 	}
 
