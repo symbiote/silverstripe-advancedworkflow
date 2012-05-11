@@ -14,7 +14,7 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 		$fields['ParentID'] = 'ParentID';
 	}
 
-	public function updateCMSFields(FieldSet $fields) {
+	public function updateCMSFields(FieldList $fields) {
 		parent::updateCMSFields($fields);
 		
 		$svc = singleton('WorkflowService');
