@@ -8,7 +8,7 @@
 // DataObject::add_extension('SiteTree', 'WorkflowApplicable');
 
 Object::add_extension('Member', 'Hierarchy');
-Object::add_extension('LeftAndMain', 'AdvancedWorkflowExtension');
+Object::add_extension('CMSPageEditController', 'AdvancedWorkflowExtension');
 
 define('ADVANCED_WORKFLOW_DIR', basename(dirname(__FILE__)));
 
