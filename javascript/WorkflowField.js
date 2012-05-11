@@ -1,81 +1,88 @@
-(function($) {
+jQuery.entwine("workflow", function($) {
 	$(".workflow-field").entwine({
-		DialogEl:   null,
-		ClassSel:   null,
-		CreateBtn:  null,
-		LoadingInd: null,
+		Loading: null,
+		Dialog:  null,
 		onmatch: function() {
 			var self = this;
 
-			this.setDialogEl($("<div></div>").addClass("ss-ui-dialog").appendTo("body"));
-			this.setClassSel(this.find(".workflow-field-create-class"));
-			this.setCreateBtn(this.find(".workflow-field-do-create"));
-			this.setLoadingInd(this.find(".workflow-field-loading"));
+			this.setLoading(this.find(".workflow-field-loading"));
+			this.setDialog(this.find(".workflow-field-dialog"));
 
-			this.getDialogEl().delegate("button", "click", function() {
-				$(this).addClass("loading ui-state-disabled").attr("disabled", "disabled");
+			this.getDialog().data("workflow-field", this).dialog({
+				autoOpen: false,
+				width:    800,
+				height:   600,
+				modal:    true
 			});
 
-			this.getDialogEl().delegate("form", "submit", function() {
+			this.getDialog().on("click", "button", function() {
+				$(this).addClass("loading ui-state-disabled");
+			});
+
+			this.getDialog().on("submit", "form", function() {
 				$(this).ajaxSubmit(function(response) {
 					if($(response).is(".workflow-field")) {
-						self.getDialogEl().empty().dialog("close");
+						self.getDialog().empty().dialog("close");
 						self.replaceWith(response);
 					} else {
-						self.getDialogEl().html(response);
+						self.getDialog().html(response);
 					}
 				});
 
 				return false;
 			});
-
-			this.getClassSel().chosen().addClass("has-chzn").change(function() {
-				self.getCreateBtn().toggleClass("ui-state-disabled", !this.value);
-			});
-	
-			this.getCreateBtn().click(function() {
-				if(self.getClassSel().val()) {
-					self.dialog(self.getClassSel().val());
-				}
-				return false;
-			});
-
-			this.find("a.workflow-field-dialog").click(function() {
-				self.dialog(this.href);
-				return false;
-			});
-
-			this.find(".workflow-field-delete").click(function() {
-				if(confirm("Are you sure you want to permanently delete this?")) {
-					self.getLoadingInd().show();
-					$.post(this.href).done(function(field) {
-						self.replaceWith(field);
-					});
-				}
-				return false;
-			});
 		},
-		onunmatch: function() {
-			this.getDialogEl().dialog("destroy").remove();
-		},
-		dialog: function(url) {
-			var el = this.getDialogEl();
+		showDialog: function(url) {
+			var dlg = this.getDialog();
 
-			el.empty().dialog({
-				width:  800,
-				height: 600,
-				modal:  true
-			});
-			el.parent().addClass("loading");
+			dlg.empty().dialog("open");
+			dlg.parent().addClass("loading");
 
 			$.get(url).done(function(body) {
-				el.html(body).parent().removeClass("loading");
+				dlg.html(body).parent().removeClass("loading");
 			});
+		},
+		loading: function(toggle) {
+			this.getLoading().toggle(typeof(toggle) == "undefined" || toggle);
 		}
 	});
 
-	$(".workflow-field-action").entwine({
+	$(".workflow-field .workflow-field-create-class").entwine({
 		onmatch: function() {
+			this.chosen().addClass("has-chnz");
+		},
+		onchange: function() {
+			this.siblings(".workflow-field-do-create").toggleClass("ui-state-disabled", !this.val());
 		}
 	});
-})(jQuery);
+
+	$(".workflow-field .workflow-field-do-create").entwine({
+		onclick: function() {
+			var sel   = this.siblings(".workflow-field-create-class");
+			var field = this.closest(".workflow-field");
+	
+			if(sel.val()) {
+				field.showDialog(sel.val());
+			}
+
+			return false;
+		}
+	});
+	
+	$(".workflow-field .workflow-field-open-dialog").entwine({
+		onclick: function() {
+			this.closest(".workflow-field").showDialog(this.prop("href"));
+			return false;
+		}
+	});
+
+	$(".workflow-field .workflow-field-delete").entwine({
+		onclick: function() {
+			if(confirm("Are you sure you want to permanently delete this?")) {
+				
+			}
+
+			return false;
+		}
+	});
+});

@@ -8,14 +8,14 @@
 					<option value="$Top.Link("action")/new/$Class/edit">$Title</option>
 				<% end_loop %>
 			</select>
-			<button class="ss-ui-button workflow-field-do-create" data-icon="add">
+			<button class="ss-ui-button ui-state-disabled workflow-field-do-create" data-icon="add">
 				Create
 			</button>
 		</div>
 	</div>
 	<div class="workflow-field-actions" data-href-order="$Link(order)">
-		<div class="workflow-field-loading">
-		</div>
+		<div class="workflow-field-dialog"></div>
+		<div class="workflow-field-loading"></div>
 
 		<% loop $Definition.Actions %>
 			<div class="workflow-field-action" data-id="$ID">
@@ -26,10 +26,10 @@
 					<h4>$Title</h4>
 
 					<div class="workflow-field-action-buttons">
-						<a class="ss-ui-button workflow-field-dialog" href="$Top.Link("action")/item/$ID/edit" data-icon="pencil">
+						<a class="ss-ui-button workflow-field-open-dialog" href="$Top.Link("action")/item/$ID/edit" data-icon="pencil">
 							Edit
 						</a>
-						<a class="ss-ui-button workflow-field-dialog" href="$Top.Link("transition")/new/$ID/edit" data-icon="chain--arrow">
+						<a class="ss-ui-button workflow-field-open-dialog" href="$Top.Link("transition")/new/$ID/edit" data-icon="chain--arrow">
 							Add Transition
 						</a>
 						<a href="$Top.Link("action")/item/$ID/delete?SecurityID=$SecurityID" class="ss-ui-button workflow-field-delete" data-icon="cross-circle">
@@ -49,7 +49,7 @@
 									<span class="ui-icon btn-icon-chain-small"></span>
 									<span class="next-title">$NextAction.Title</span>
 								</div>
-								<a href="$Top.Link("transition")/item/$ID/edit" class="ui-icon btn-icon-pencil workflow-field-dialog">Edit</a>
+								<a href="$Top.Link("transition")/item/$ID/edit" class="ui-icon btn-icon-pencil workflow-field-open-dialog">Edit</a>
 								<a href="$Top.Link("transition")/item/$ID/delete?SecurityID=$SecurityID" class="ui-icon btn-icon-cross-circle workflow-field-delete">Delete</a>
 							</li>
 						<% end_loop %>
