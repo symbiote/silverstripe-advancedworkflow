@@ -113,17 +113,31 @@ class WorkflowDefinition extends DataObject {
 			$active = $this->Instances()->filter(array(
 				'WorkflowStatus' => array('Active', 'Paused')
 			));
-			$active = new GridField('Active', 'Active Workflow Instances', $active);
+
+			$active = new GridField(
+				'Active',
+				'Active Workflow Instances',
+				$active,
+				new GridFieldConfig_RecordEditor());
+
+			$active->getConfig()->removeComponentsByType('GridFieldAddNewButton');
+			$active->getConfig()->removeComponentsByType('GridFieldDeleteAction');
 
 			if(!Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
-				$active->removeComponentsByType('GridFieldEditButton');
-				$active->removeComponentsByType('GridFieldDeleteAction');
+				$active->getConfig()->removeComponentsByType('GridFieldEditButton');
+				$active->getConfig()->addComponent(new GridFieldViewButton());
+				$active->getConfig()->addComponent(new GridFieldDetailForm());
 			}
 
 			$completed = $this->Instances()->filter(array(
 				'WorkflowStatus' => array('Complete', 'Cancelled')
 			));
-			$completed = new GridField('Completed', 'Completed Workflow Instances', $completed);
+
+			$completed = new GridField(
+				'Completed',
+				'Completed Workflow Instances',
+				$completed,
+				new GridFieldConfig_RecordViewer());
 
 			$fields->addFieldToTab('Root.Active', $active);
 			$fields->addFieldToTab('Root.Completed', $completed);
