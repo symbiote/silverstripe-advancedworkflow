@@ -67,14 +67,17 @@ class WorkflowApplicable extends DataExtension {
 
 		if ($active) {
 			if ($this->canEditWorkflow()) {
-				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+				$action = new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
+				$action->setAttribute('data-icon', 'navigation');
+				$actions->push($action);
 			}
 		} else {
 			$effective = $svc->getDefinitionFor($this->owner);
 			if ($effective) {
 				// we can add an action for starting off the workflow at least
-				$initial = $effective->getInitialAction();
-				$actions->push(new FormAction('startworkflow', $initial->Title));
+				$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
+				$action->setAttribute('data-icon', 'navigation');
+				$actions->push($action);
 			}
 		}
 	}
