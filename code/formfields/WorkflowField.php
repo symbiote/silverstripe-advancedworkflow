@@ -9,7 +9,8 @@ class WorkflowField extends FormField {
 
 	public static $allowed_actions = array(
 		'action',
-		'transition'
+		'transition',
+		'sort'
 	);
 
 	protected $definition;
@@ -27,6 +28,40 @@ class WorkflowField extends FormField {
 
 	public function transition() {
 		return new WorkflowFieldTransitionController($this, 'transition');
+	}
+
+	public function sort($request) {
+		if(!SecurityToken::inst()->checkRequest($request)) {
+			$this->httpError(404);
+		}
+
+		$class = $request->postVar('class');
+		$ids   = $request->postVar('id');
+
+		if($class == 'WorkflowAction') {
+			$objects = $this->Definition()->Actions();
+		} elseif($class == 'WorkflowTransition') {
+			$parent = $request->postVar('parent');
+			$action = $this->Definition()->Actions()->byID($parent);
+
+			if(!$action) {
+				$this->httpError(400, 'An invalid parent ID was specified.');
+			}
+
+			$objects = $action->Transitions();
+		} else {
+			$this->httpError(400, 'An invalid class to order was specified.');
+		}
+
+		if(array_diff($ids, $objects->column('ID'))) {
+			$this->httpError(400, 'An invalid list of IDs was provided.');
+		}
+
+		singleton('WorkflowService')->reorder($objects, $ids);
+
+		return new SS_HTTPResponse(
+			null, 200, _t('AdvancedWorkflowAdmin.SORTORDERSAVED', 'The sort order has been saved.')
+		);
 	}
 
 	public function getTemplate() {

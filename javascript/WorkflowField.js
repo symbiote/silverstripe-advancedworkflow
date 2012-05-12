@@ -47,6 +47,62 @@ jQuery.entwine("workflow", function($) {
 		}
 	});
 
+	function helper() {
+		return $("<div />").addClass("ui-state-highlight").appendTo("body");
+	}
+
+	$(".workflow-field .workflow-field-actions").entwine({
+		onmatch: function() {
+			this.sortable({
+				axis:        "y",
+				containment: this,
+				placeholder: "ui-state-highlight workflow-placeholder",
+				handle:      ".workflow-field-action-drag",
+				tolerance:   "pointer",
+				update: function() {
+					var actions = $(this).find(".workflow-field-action");
+					var field   = $(this).closest(".workflow-field");
+					var link    = field.data("sort-link");
+					var ids     = actions.map(function() { return $(this).data("id"); });
+
+					var data = {
+						"id[]":  ids.get(),
+						"class": "WorkflowAction"
+					};
+
+					field.loading();
+					$.post(link, data).done(function() { field.loading(false); });
+				}
+			});
+		}
+	});
+
+	$(".workflow-field .workflow-field-action-transitions").entwine({
+		onmatch: function() {
+			this.sortable({
+				axis:        "y",
+				containment: this,
+				handle:      ".workflow-field-action-drag",
+				tolerance:   "pointer",
+				update: function() {
+					var trans = $(this).find("li");
+					var field = $(this).closest(".workflow-field");
+					var link  = field.data("sort-link");
+					var ids   = trans.map(function() { return $(this).data("id"); });
+
+					var data = {
+						"id[]":   ids.get(),
+						"class":  "WorkflowTransition",
+						"parent": $(this).closest(".workflow-field-action").data("id")
+					};
+
+					field.loading();
+					$.post(link, data).done(function() { field.loading(false); });
+				}
+			});
+		}
+	});
+
 	$(".workflow-field .workflow-field-create-class").entwine({
 		onmatch: function() {
 			this.chosen().addClass("has-chnz");

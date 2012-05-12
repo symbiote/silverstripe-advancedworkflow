@@ -128,7 +128,7 @@ class WorkflowService implements PermissionProvider {
 	 *				An array of IDs of the actions in the order they should be.
 	 */
 	public function reorder($objects, $newOrder) {
-		$sortVals = array_values($objects->map('ID', 'Sort'));
+		$sortVals = array_values($objects->map('ID', 'Sort')->toArray());
 		sort($sortVals);
 
 		// save the new ID values - but only use existing sort values to prevent

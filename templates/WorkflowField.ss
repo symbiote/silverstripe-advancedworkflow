@@ -1,4 +1,7 @@
-<div id="$ID" class="field workflow-field">
+<div id="$ID" class="field workflow-field" data-sort-link="$Link('sort')?SecurityID=$SecurityID">
+	<div class="workflow-field-dialog"></div>
+	<div class="workflow-field-loading"></div>
+
 	<div class="workflow-field-header">
 		<h3>$Title</h3>
 		<div class="workflow-field-create">
@@ -14,9 +17,6 @@
 		</div>
 	</div>
 	<div class="workflow-field-actions" data-href-order="$Link(order)">
-		<div class="workflow-field-dialog"></div>
-		<div class="workflow-field-loading"></div>
-
 		<% loop $Definition.Actions %>
 			<div class="workflow-field-action" data-id="$ID">
 				<div class="workflow-field-action-header">
@@ -41,7 +41,7 @@
 				<% if $Transitions %>
 					<ol class="workflow-field-action-transitions">
 						<% loop $Transitions %>
-							<li>
+							<li data-id="$ID">
 								<div class="workflow-field-action-drag"></div>
 								<span class="ui-icon ui-icon-arrowreturnthick-1-e"></span>
 								<div class="workflow-field-transition-title">
