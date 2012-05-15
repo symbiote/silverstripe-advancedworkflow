@@ -11,14 +11,19 @@
 class WorkflowAction extends DataObject {
 
 	public static $db = array(
-		'Title'			=> 'Varchar(255)',
-		'Comment'		=> 'Text',
-		'Type'			=> "Enum('Dynamic,Manual','Manual')",
-		'Executed'		=> 'Boolean',
-		'AllowEditing'	=> "Enum('By Assignees,Content Settings,No','No')",		// can this item be edited?
-		'Sort'			=> 'Int'
+		'Title'				=> 'Varchar(255)',
+		'Comment'			=> 'Text',
+		'Type'				=> "Enum('Dynamic,Manual','Manual')",
+		'Executed'			=> 'Boolean',
+		'AllowEditing'		=> "Enum('By Assignees,Content Settings,No','No')",		// can this item be edited?
+		'Sort'				=> 'Int',
+		'AllowCommenting'	=> 'Boolean'
 	);
 
+	public static $defaults = array(
+		'AllowCommenting'	=> '1',
+	);
+	
 	public static $default_sort = 'Sort';
 
 	public static $has_one = array(
@@ -125,15 +130,24 @@ class WorkflowAction extends DataObject {
 
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
+		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
+		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
 		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
 		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
+		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', _t('WorkflowAction.ALLOW_COMMENTING','Allow Commenting?'),$this->AllowCommenting));
+		
 		return $fields;
 	}
 	
 	public function summaryFields() {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
-
+	
+	/**
+	 * Used for Front End Workflows
+	 */
+	public function updateFrontendWorkflowFields($fields, $workflow){	
+	}	
 	
 }

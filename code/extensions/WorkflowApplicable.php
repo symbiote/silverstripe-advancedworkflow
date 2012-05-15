@@ -85,6 +85,25 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 	}
 	
+	public function updateFrontendActions($actions){
+		Debug::show('here');
+		$svc = singleton('WorkflowService');
+		$active = $svc->getWorkflowFor($this->owner);
+
+		if ($active) {
+			if ($this->canEditWorkflow()) {
+				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+			}
+		} else {
+			$effective = $svc->getDefinitionFor($this->owner);
+			if ($effective) {
+				// we can add an action for starting off the workflow at least
+				$initial = $effective->getInitialAction();
+				$actions->push(new FormAction('startworkflow', $initial->Title));
+			}
+		}
+	}
+	
 	/**
 	 * After a workflow item is written, we notify the
 	 * workflow so that it can take action if needbe
@@ -108,6 +127,33 @@ class WorkflowApplicable extends DataObjectDecorator {
 		}
 
 		return $this->currentInstance;
+	}
+
+
+	/**
+	 * Gets the history of a workflow instance
+	 *
+	 * @return DataObjectSet
+	 */
+	public function getWorkflowHistory($limit = null) {
+		$svc = singleton('WorkflowService');
+		return $svc->getWorkflowHistoryFor($this->owner, $limit);
+	}
+
+
+	/**
+	 * Check all recent WorkflowActionIntances and return the most recent one with a Comment
+	 *
+	 * @return WorkflowActionInstance
+	 */
+	public function RecentWorkflowComment($limit = 10){
+		if($actions = $this->getWorkflowHistory($limit)){
+			foreach ($actions as $action) {
+				if ($action->Comment != '') {
+					return $action;
+				}
+			}
+		}
 	}
 	
 

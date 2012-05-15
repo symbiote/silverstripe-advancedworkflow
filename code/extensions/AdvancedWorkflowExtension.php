@@ -79,8 +79,10 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 		unset($allowedFields['TransitionID']);
 
 		$allowed = array_keys($allowedFields);
-		$form->saveInto($action, $allowed);
-		$action->write();
+		if (count($allowed)) {
+			$form->saveInto($action, $allowed);
+			$action->write();
+		}
 
 		if (isset($data['TransitionID']) && $data['TransitionID']) {
 			$svc->executeTransition($p, $data['TransitionID']);
