@@ -33,11 +33,18 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
+		
+		$cmsUsers = Member::mapInCMSGroups()->getItems();
+		if ($cmsUsers && $cmsUsers->count()) {
+			$cmsUsers = $cmsUsers->map();
+		} else {
+			$cmsUsers = array();
+		}
 
 		$fields->addFieldsToTab('Root.Main', array(
 			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
 			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
-			new TreeMultiselectField('Users', $this->fieldLabel('Users'), 'Member'),
+			new CheckboxSetField('Users', $this->fieldLabel('Users'), $cmsUsers),
 			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'Group')
 		));
 
