@@ -135,6 +135,41 @@ class WorkflowService implements PermissionProvider {
 			$instance->execute();
 		}
 	}
+	
+	/**
+	 * Get all the workflows that this user is responsible for
+	 * 
+	 * @param Member $user 
+	 *				The user to get workflows for
+	 * 
+	 * @return DataObjectSet
+	 *				The list of workflow instances this user owns
+	 */
+	public function usersWorkflows(Member $user) {
+		
+		$all = new DataObjectSet();
+		
+		$groupIds = $user->Groups()->column('ID');
+		$groupJoin = ' INNER JOIN "WorkflowInstance_Groups" "wig" ON "wig"."WorkflowInstanceID" = "WorkflowInstance"."ID"';
+		
+		if (is_array($groupIds)) {
+			$filter = '("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\') AND "wig"."GroupID" IN (' . implode(',', $groupIds).')';
+			$groupAssigned = DataObject::get('WorkflowInstance', $filter, '"Created" DESC', $groupJoin);
+			if ($groupAssigned) {
+				$all->merge($groupAssigned);
+			}
+		}
+
+		$userJoin = ' INNER JOIN "WorkflowInstance_Users" "wiu" ON "wiu"."WorkflowInstanceID" = "WorkflowInstance"."ID"';
+		$filter = '("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\') AND "wiu"."MemberID" = ' . $user->ID;
+		$userAssigned = DataObject::get('WorkflowInstance', $filter, '"Created" DESC', $userJoin);
+		if ($userAssigned) {
+			$all->merge($userAssigned);
+		}
+		
+		return $all;
+	}
+	
 
 	/**
 	 * Reorders actions within a definition

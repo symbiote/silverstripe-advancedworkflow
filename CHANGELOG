@@ -1,4 +1,20 @@
 
+2012-05-10 v1.6.0
+-----------------
+
+* Added functionality to have a table listing all of a user's assigned
+  workflows  displayed with actions to trigger the appropriate transitions
+  for those workflows. It implies the following code exists in a Controller
+  somewhere to be able to retrieve the list of workflows assigned to the user. 
+	
+	/**
+	 * Get the current user's list of workflows 
+	 */
+	public function UserWorkflows() {
+		$workflows = singleton('WorkflowService')->usersWorkflows(Member::currentUser());
+		return $workflows;
+	}
+
 2012-03-15 1.5.2
 ----------------
 

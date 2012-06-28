@@ -116,7 +116,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$fields = $target->summaryFields();
 		$result = array();
 
-		foreach($fields as $field) {
+		foreach($fields as $field => $fieldDesc) {
 			$result[$field] = $target->$field;
 		}
 

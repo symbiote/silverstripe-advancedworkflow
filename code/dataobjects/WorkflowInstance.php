@@ -390,6 +390,15 @@ class WorkflowInstance extends DataObject {
 		}
 	}
 	
+	/**
+	 * Get the current set of transitions that are valid for the current workflow state
+	 * 
+	 * @return array 
+	 */
+	public function validTransitions() {
+		$action    = $this->CurrentAction();
+		return $action->getValidTransitions();
+	}
 	
 	/* UI RELATED METHODS */
 
@@ -400,7 +409,7 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function getWorkflowFields() {
 		$action    = $this->CurrentAction();
-		$options   = $action->getValidTransitions();
+		$options   = $this->validTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
 		$fields    = new FieldSet();
 

@@ -77,10 +77,17 @@ class WorkflowDefinition extends DataObject {
 	 */
 	public function getCMSFields() {
 		$fields = new FieldSet(new TabSet('Root'));
+		
+		$cmsUsers = Member::mapInCMSGroups()->getItems();
+		if ($cmsUsers && $cmsUsers->count()) {
+			$cmsUsers = $cmsUsers->map();
+		} else {
+			$cmsUsers = array();
+		}
 
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowDefinition.TITLE', 'Title')));
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
-		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'));
+		$fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
 		$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
 
 		if (class_exists('AbstractQueuedJob')) {
