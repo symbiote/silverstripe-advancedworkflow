@@ -83,6 +83,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
 
+		$pastActions = $workflow->Actions()->sort('Created DESC');
+		$variables["\$CommentHistory"] = $this->customise(array(
+			'PastActions'=>$pastActions,
+			'Now'=>SS_Datetime::now()
+		))->renderWith('CommentHistory');
+
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
 		
 		if ($this->ListingTemplateID) {
@@ -163,12 +169,14 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'Any summary fields from the workflow target will be available. Additionally, the CMSLink variable will
 			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
 		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
+		$commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
 
 		$memberFields = implode(', ', array_keys($this->getMemberFields()));
 
 		return "<p>$note</p>
 			<p><strong>\$Member.($memberFields)</strong><br>$member</p>
-			<p><strong>\$Context.($fieldName)</strong><br>$context</p>";
+			<p><strong>\$Context.($fieldName)</strong><br>$context</p>
+			<p><strong>\$CommentHistory</strong><br>$commentHistory</p>";
 	}
 
 }

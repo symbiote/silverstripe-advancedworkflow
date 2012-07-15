@@ -25,7 +25,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @param FieldSet $fields 
 	 */
 	public function updateCMSFields(FieldList $fields) {
-		$fields->addFieldsToTab('Root.Content.PublishingSchedule', array(
+		$fields->addFieldsToTab('Root.PublishingSchedule', array(
 			$dt = new Datetimefield('PublishOnDate', _t('AdvancedWorkflow.PUBLISH_ON', 'Publish on')),
 			$ut = new Datetimefield('UnPublishOnDate', _t('AdvancedWorkflow.UNPUBLISH_ON', 'Un-publish on')),
 		));
