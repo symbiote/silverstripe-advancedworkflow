@@ -7,7 +7,7 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class AdvancedWorkflowExtension extends LeftAndMainDecorator {
+class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
 	public function startworkflow($data, $form, $request) {
 		$item = $form->getRecord();
@@ -19,7 +19,7 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 		$svc = singleton('WorkflowService');
 		$svc->startWorkflow($item);
 
-		return $this->javascriptRefresh();
+		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
 
 	/**
@@ -34,11 +34,11 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 		$active = $svc->getWorkflowFor($p);
 
 		if ($active) {
-			
+
 			$fields = $form->Fields();
 			$current = $active->CurrentAction();
-			$wfFields = $active->getWorkflowFields(); 
-			
+			$wfFields = $active->getWorkflowFields();
+
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
 			foreach ($allowed as $fieldName) {
@@ -92,13 +92,7 @@ class AdvancedWorkflowExtension extends LeftAndMainDecorator {
 			$workflow->execute();
 		}
 
-		return $this->javascriptRefresh();
+		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
 
-	protected function javascriptRefresh($message = 'Please wait...') {
-		FormResponse::add("$('Form_EditForm').resetElements();");
-		FormResponse::add('$$("#sitetree li.current")[0].selectTreeNode();');
-		FormResponse::status_message($message, "good");
-		return FormResponse::respond();
-	}
 }

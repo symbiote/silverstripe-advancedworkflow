@@ -13,10 +13,10 @@
  */
 class WorkflowInstance extends DataObject {
     public static $db = array(
-		'Title' => 'Varchar(128)',
-		'WorkflowStatus' => "Enum('Active,Paused,Complete,Cancelled','Active')",
-		'TargetClass' => 'Varchar(64)',
-		'TargetID' => 'Int',
+		'Title'				=> 'Varchar(128)',
+		'WorkflowStatus'	=> "Enum('Active,Paused,Complete,Cancelled','Active')",
+		'TargetClass'		=> 'Varchar(64)',
+		'TargetID'			=> 'Int',
 	);
 
 	public static $has_one = array(
@@ -26,7 +26,7 @@ class WorkflowInstance extends DataObject {
 	);
 
 	public static $has_many = array(
-		'Actions' => 'WorkflowActionInstance',
+		'Actions'		=> 'WorkflowActionInstance',
 	);
 
 	/**
@@ -35,8 +35,8 @@ class WorkflowInstance extends DataObject {
 	 * @var array
 	 */
 	public static $many_many = array(
-		'Users' => 'Member',
-		'Groups' => 'Group'
+		'Users'			=> 'Member',
+		'Groups'		=> 'Group'
 	);
 
 	public static $summary_fields = array(
@@ -44,24 +44,27 @@ class WorkflowInstance extends DataObject {
 		'WorkflowStatus',
 		'Created'
 	);
+	
+	public function getCMSFields() {
+		$fields = new FieldList();
 
-	/**
-	 * Returns a table that summarises all the actions performed as part of this instance.
-	 *
-	 * @return FieldSet
-	 */
-	public function getActionsSummaryFields() {
-		return new FieldSet(new TabSet('Root', new Tab('Actions', new TableListField(
-			'WorkflowActions',
-			'WorkflowActionInstance',
-			array(
-				'BaseAction.Title' => 'Title',
-				'Comment'          => 'Comment',
-				'Created'          => 'Date',
-				'Member.Name'      => 'Author'
-			),
-			'"Finished" = 1 AND "WorkflowID" = ' . $this->ID
-		))));
+		$items = WorkflowActionInstance::get()->filter(array(
+			'Finished'		=> 1,
+			'WorkflowID'	=> $this->ID
+		));
+		
+		$grid = new GridField('Actions', 'Log', $items);
+		$all = $items->toArray();
+
+		$fields->push($grid); 
+		
+		return $fields;
+	}
+	
+	public function updateCMSActions($actions) {
+		if ($actions) {
+			$one = 'one';
+		}
 	}
 
 	/**
@@ -81,6 +84,9 @@ class WorkflowInstance extends DataObject {
 	
 	/**
 	 * Update the current state of the workflow
+	 * 
+	 * Typically, this is triggered by someone modifiying the workflow instance via the modeladmin form
+	 * side of things when administering things, such as re-assigning or manually approving a stuck workflow
 	 * 
 	 * Note that this is VERY similar to AdvancedWorkflowExtension::updateworkflow
 	 * but without the formy bits. These two implementations should PROBABLY
@@ -119,20 +125,20 @@ class WorkflowInstance extends DataObject {
 	/**
 	 * Get fields to update a workflow instance directly. Will attempt to allow the user to modify the current
 	 * step if possible
-	 * 
-	 * @return FieldSet
+	 *
+	 * @return FieldList
 	 */
 	public function getInstanceManagementFields() {
-		$fields = new FieldSet(new TabSet('Root', new Tab('Main',
+		$fields = new FieldList(new TabSet('Root', new Tab('Main',
 			new HeaderField('AssignedToHeader', _t('WorkflowInstance.ASSIGNEDTO', 'Assigned To')),
 			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
 			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
 		)));
-		
+
 		$target = $this->getTarget();
 
 		if ($target && $target->canEditWorkflow()) {
-			$wfFields = $this->getWorkflowFields(); 
+			$wfFields = $this->getWorkflowFields();
 			$tmpForm = new Form($this, 'dummy', $wfFields, new FieldSet());
 			$wfFields->push(new HiddenField('DirectUpdate', 'Direct Update', true));
 			$tmpForm->loadDataFrom($this->CurrentAction());
@@ -177,11 +183,11 @@ class WorkflowInstance extends DataObject {
 		}
 
 		if ($for && ($for->hasExtension('WorkflowApplicable') || $for->hasExtension('FileWorkflowApplicable'))) {
-			$this->TargetClass = $for->ClassName;
+			$this->TargetClass = ClassInfo::baseDataClass($for);
 			$this->TargetID = $for->ID;
 		}
 
-		// lets create the first WorkflowActionInstance. 
+		// lets create the first WorkflowActionInstance.
 		$action = $definition->getInitialAction()->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
@@ -315,15 +321,17 @@ class WorkflowInstance extends DataObject {
 	 * @return DataObjectSet
 	 */
 	public function getAssignedMembers() {
-		$members = $this->Users();
+		$list    = new ArrayList();
 		$groups  = $this->Groups();
 
+		$list->merge($this->Users());
+
 		foreach($groups as $group) {
-			$members->merge($group->Members());
+			$list->merge($group->Members());
 		}
 
-		$members->removeDuplicates();
-		return $members;
+		$list->removeDuplicates();
+		return $list;
 	}
 
 	public function canView($member=null) {
@@ -404,34 +412,34 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 * Gets fields for managing this workflow instance in its current step
-	 * 
-	 * @return FieldSet
+	 *
+	 * @return FieldList
 	 */
 	public function getWorkflowFields() {
 		$action    = $this->CurrentAction();
 		$options   = $this->validTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
-		$fields    = new FieldSet();
+		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
 		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
-		// stored for the workflow. 
+		// stored for the workflow.
 		$action->updateWorkflowFields($fields);
-		
+
 		return $fields;
 	}
 	
 	/**
 	 * Gets Front-End form fields from current Action
 	 * 
-	 * @return FieldSet
+	 * @return FieldList
 	 */
 	public function getFrontEndWorkflowFields() {
 		$action = $this->CurrentAction();
 		
-		$fields = new FieldSet();
+		$fields = new FieldList();
 		$action->updateFrontEndWorkflowFields($fields);
 		
 		return $fields;
@@ -440,12 +448,12 @@ class WorkflowInstance extends DataObject {
 	/**
 	 * Gets Transitions for display as Front-End Form Actions
 	 * 
-	 * @return FieldSet
+	 * @return FieldList
 	 */
 	public function getFrontEndWorkflowActions() {
 		$action    = $this->CurrentAction();
 		$options   = $action->getValidTransitions();
-		$actions   = new FieldSet();
+		$actions   = new FieldList();
 		
 		foreach ($options as $option) {
 			$btn = new FormAction("transition_{$option->ID}", $option->Title);

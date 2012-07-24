@@ -1,0 +1,145 @@
+$dark-blue:  #7F9198;
+$med-blue:   #95A5AB;
+$light-blue: #D7DDE0;
+$light-grey: #F8F8F8;
+
+$grid:   8px;
+$radius: 3px;
+
+.workflow-field {
+	position: relative;
+	padding-bottom: 0;
+
+	.workflow-field-header {
+		background: $med-blue;
+		border: 1px solid rgba(0, 0, 0, 0.1);
+		border-radius: $radius $radius 0 0;
+
+		h3 {
+			background: $dark-blue;
+			border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+			color: #FFF;
+			text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1);
+			margin: 0;
+			padding: $grid;
+		}
+	}
+
+	.workflow-field-create {
+		padding: $grid/2 $grid;
+	
+		.chzn-container {
+			float: left;
+			margin-right: 4px;
+			width: 250px !important;
+		
+			.chzn-single {
+				border-color: rgba(0, 0, 0, 0.2);
+				border-radius: $radius;
+				box-shadow: none;
+			}
+			.chzn-single-with-drop {
+				border-radius: $radius $radius 0 0;
+			}
+		}
+
+		.ss-ui-button {
+			border-color: rgba(0, 0, 0, 0.2);
+		}
+	}
+
+	.workflow-field-actions {
+		$height:    28px;
+		$min-width: 360px;
+
+		background: #FFF;
+		border: 1px solid rgba(0, 0, 0, 0.2);
+		border-top: none;
+		border-radius: 0 0 $radius $radius;
+		padding: $grid;
+
+		.workflow-field-action {
+			margin-bottom: $grid/2;
+
+			&:last-child {
+				margin-bottom: 0;
+			}
+		}
+
+		.workflow-field-action-header {
+			background: $light-blue;
+			border: 1px solid $med-blue;
+			border-left: none;
+			overflow: auto;
+			padding: $grid/4 $grid $grid/4 0;
+
+			.workflow-field-action-icon, .workflow-field-action-drag {
+				display: block;
+				float: left;
+			}
+			.workflow-field-action-drag {
+				background: $med-blue;
+				cursor: move;
+				margin: -$grid/4 0;
+				width: 4px;
+				height: $height + $grid/2 + 1;
+			}
+			.workflow-field-action-icon {
+				width: 16px;
+				height: 16px;
+				margin: $height/4 $grid 0 $grid;
+			}
+			h4 {
+				float: left;
+				margin: $height/4 $grid 0 0;
+				min-width: $min-width;
+				text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+			}
+		}
+
+		.workflow-field-action-transitions {
+			li {
+				background: $light-grey;
+				border: 1px solid $light-blue;
+				border-left: none;
+				border-top: none;
+				overflow: auto;
+				padding: $grid/2 $grid/2 $grid/2 0;
+
+				.workflow-field-action-drag {
+					background: $light-blue;
+					cursor: move;
+					float: left;
+					margin: -$grid/2 0;
+					width: 4px;
+					height: 24px;
+				}
+				.workflow-field-transition-title {
+					float: left;
+					min-width: $min-width + 30px;
+					overflow: auto;
+				}
+				.ui-icon, span {
+					float: left;
+				}
+			}
+		}
+	}
+
+	.workflow-placeholder {
+		margin-bottom: $grid / 2;
+		height: $grid * 4;
+	}
+
+	.workflow-field-loading {
+		background: rgba(0, 0, 0, 0.15) url(../../sapphire/admin/images/spinner.gif) no-repeat center center;
+		border-radius: 0 0 $radius $radius;
+		bottom: 0;
+		display: none;
+		left: 0;
+		position: absolute;
+		right: 0;
+		top: 0;
+		z-index: 999;
+	}
+}

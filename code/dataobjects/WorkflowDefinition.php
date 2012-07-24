@@ -76,14 +76,10 @@ class WorkflowDefinition extends DataObject {
 	/**
 	 */
 	public function getCMSFields() {
-		$fields = new FieldSet(new TabSet('Root'));
 		
-		$cmsUsers = Member::mapInCMSGroups()->getItems();
-		if ($cmsUsers && $cmsUsers->count()) {
-			$cmsUsers = $cmsUsers->map();
-		} else {
-			$cmsUsers = array();
-		}
+		$cmsUsers = Member::mapInCMSGroups(); // ->toArray();
+		
+		$fields = new FieldList(new TabSet('Root'));
 
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowDefinition.TITLE', 'Title')));
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
@@ -102,46 +98,56 @@ class WorkflowDefinition extends DataObject {
 			));
 		}
 
-		if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
-			$fields->addFieldToTab('Root.ActiveInstances', $active = new ComplexTableField(
-				$this,
-				'Instances',
-				'WorkflowInstance',
-				array(
-					'Title'               => 'Title',
-					'Target.Title'        => 'Target Title',
-					'WorkflowStatus'      => 'Status',
-					'CurrentAction.Title' => 'Current Action',
-					'LastEdited'          => 'Last Actioned'
-				),
-				'getInstanceManagementFields',
-				'"WorkflowStatus" IN (\'Active\', \'Paused\')',
-				'"LastEdited" DESC'
+		if($this->ID) {
+			$fields->addFieldToTab('Root.Main', new WorkflowField(
+				'Workflow', _t('WorkflowDefinition.WORKFLOW', 'Workflow'), $this 
+			));
+		} else {
+			$message = _t(
+				'WorkflowDefinition.ADDAFTERSAVING',
+				'You can add workflow steps after you save for the first time.'
+			);
+			$fields->addFieldToTab('Root.Main', new LiteralField(
+				'AddAfterSaving', "<p class='message notice'>$message</p>"
+			));
+		}
+
+		if($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
+			$active = $this->Instances()->filter(array(
+				'WorkflowStatus' => array('Active', 'Paused')
 			));
 
-			if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
-				$active->setPermissions(array('show', 'edit'));
-			} else {
-				$active->setPermissions(array('show'));
+			$active = new GridField(
+				'Active',
+				'Active Workflow Instances',
+				$active,
+				new GridFieldConfig_RecordEditor());
+
+			$active->getConfig()->removeComponentsByType('GridFieldAddNewButton');
+			$active->getConfig()->removeComponentsByType('GridFieldDeleteAction');
+
+			if(!Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
+				$active->getConfig()->removeComponentsByType('GridFieldEditButton');
+				$active->getConfig()->addComponent(new GridFieldViewButton());
+				$active->getConfig()->addComponent(new GridFieldDetailForm());
 			}
-			
-			$fields->addFieldToTab('Root.Completed', $complete = new ComplexTableField(
-				$this,
-				'CompletedInstances',
-				'WorkflowInstance',
-				array(
-					'Title'               => 'Title',
-					'Target.Title'        => 'Target Title',
-					'WorkflowStatus'      => 'Status',
-					'CurrentAction.Title' => 'Current Action',
-					'LastEdited'          => 'Last Actioned'
-				),
-				'getActionsSummaryFields',
-				'"WorkflowStatus" IN (\'Complete\', \'Cancelled\')',
-				'"LastEdited" DESC'
+
+			$completed = $this->Instances()->filter(array(
+				'WorkflowStatus' => array('Complete', 'Cancelled')
 			));
 
-			$complete->setPermissions(array('show'));
+			$config = new GridFieldConfig_Base();
+			$config->addComponent(new GridFieldEditButton());
+			$config->addComponent(new GridFieldDetailForm());
+			
+			$completed = new GridField(
+				'Completed',
+				'Completed Workflow Instances',
+				$completed,
+				$config);
+
+			$fields->addFieldToTab('Root.Active', $active);
+			$fields->addFieldToTab('Root.Completed', $completed);
 		}
 
 		return $fields;

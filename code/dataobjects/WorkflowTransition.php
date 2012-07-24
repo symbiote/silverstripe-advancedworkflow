@@ -79,11 +79,11 @@ class WorkflowTransition extends DataObject {
 	/* CMS FUNCTIONS */
 
 	public function getCMSFields() {
-		$fields = new FieldSet(new TabSet('Root'));
+		$fields = new FieldList(new TabSet('Root'));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
 
 		$filter = '';
-		
+
 		$reqParent = isset($_REQUEST['ParentID']) ? (int) $_REQUEST['ParentID'] : 0;
         $attachTo = $this->ActionID ? $this->ActionID : $reqParent;
 
@@ -124,6 +124,10 @@ class WorkflowTransition extends DataObject {
 		$this->extend('updateCMSFields', $fields);
 
 		return $fields;
+	}
+
+	public function getValidator() {
+		return new RequiredFields('Title', 'ActionID', 'NextActionID');
 	}
 
 	public function numChildren() {

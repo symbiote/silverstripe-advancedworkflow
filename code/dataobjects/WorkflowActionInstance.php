@@ -24,9 +24,11 @@ class WorkflowActionInstance extends DataObject {
 	);
 	
 	public static $summary_fields = array(
-		'Comment',
+		'BaseAction.Title'		=> 'Title',
+		'Comment'				=> 'Comment',
+		'Created'				=> 'Date',
+		'Member.Name'			=> 'Author'
 	);
-	
 	
 	/**
 	 * Gets fields for when this is part of an active workflow
@@ -45,7 +47,7 @@ class WorkflowActionInstance extends DataObject {
 		$ba = $this->BaseAction();
 		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
 	}
-	
+
 	/**
 	 * Gets Front-End DataObject
 	 * 
@@ -132,7 +134,7 @@ class WorkflowActionInstance extends DataObject {
 	 */
 	public function getValidTransitions() {
 		$available = $this->BaseAction()->Transitions();
-		$valid     = new DataObjectSet();
+		$valid     = new ArrayList();
 
 		// iterate through the transitions and see if they're valid for the current state of the item being
 		// workflowed

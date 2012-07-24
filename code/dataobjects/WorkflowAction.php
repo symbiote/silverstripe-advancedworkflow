@@ -129,7 +129,8 @@ class WorkflowAction extends DataObject {
 	}
 
 	public function getCMSFields() {
-		$fields = new FieldSet(new TabSet('Root'));
+		
+		$fields = new FieldList(new TabSet('Root'));
 		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
 		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
 		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
@@ -139,7 +140,11 @@ class WorkflowAction extends DataObject {
 		
 		return $fields;
 	}
-	
+
+	public function getValidator() {
+		return new RequiredFields('Title');
+	}
+
 	public function summaryFields() {
 		return array('Title' => 'Title', 'Transitions' => 'Transitions');
 	}
@@ -148,6 +153,11 @@ class WorkflowAction extends DataObject {
 	 * Used for Front End Workflows
 	 */
 	public function updateFrontendWorkflowFields($fields, $workflow){	
+		
 	}	
 	
+
+	public function Icon() {
+		return $this->stat('icon');
+	}
 }

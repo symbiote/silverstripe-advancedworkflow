@@ -6,9 +6,9 @@
  * @author marcus@silverstripe.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
-class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
-	
-	public function extraStatics() {
+class WorkflowEmbargoExpiryExtension extends DataExtension {
+
+	public function extraStatics($class = null, $extension = null) {
 		return array(
 			'db'			=> array(
 				'PublishOnDate'			=> 'SS_Datetime',
@@ -22,10 +22,10 @@ class WorkflowEmbargoExpiryExtension extends DataObjectDecorator {
 	}
 
 	/**
-	 * @param FieldSet $fields 
+	 * @param FieldList $fields 
 	 */
-	public function updateCMSFields($fields) {
-		$fields->addFieldsToTab('Root.Content.PublishingSchedule', array(
+	public function updateCMSFields(FieldList $fields) {
+		$fields->addFieldsToTab('Root.PublishingSchedule', array(
 			$dt = new Datetimefield('PublishOnDate', _t('AdvancedWorkflow.PUBLISH_ON', 'Publish on')),
 			$ut = new Datetimefield('UnPublishOnDate', _t('AdvancedWorkflow.UNPUBLISH_ON', 'Un-publish on')),
 		));

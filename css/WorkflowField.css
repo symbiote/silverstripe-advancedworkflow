@@ -1,0 +1,22 @@
+.workflow-field { position: relative; padding-bottom: 0; }
+.workflow-field .workflow-field-header { background: #95a5ab; border: 1px solid rgba(0, 0, 0, 0.1); border-radius: 3px 3px 0 0; }
+.workflow-field .workflow-field-header h3 { background: #7f9198; border-bottom: 1px solid rgba(0, 0, 0, 0.1); color: #FFF; text-shadow: 0 1px 0 rgba(0, 0, 0, 0.1); margin: 0; padding: 8px; }
+.workflow-field .workflow-field-create { padding: 4px 8px; }
+.workflow-field .workflow-field-create .chzn-container { float: left; margin-right: 4px; width: 250px !important; }
+.workflow-field .workflow-field-create .chzn-container .chzn-single { border-color: rgba(0, 0, 0, 0.2); border-radius: 3px; box-shadow: none; }
+.workflow-field .workflow-field-create .chzn-container .chzn-single-with-drop { border-radius: 3px 3px 0 0; }
+.workflow-field .workflow-field-create .ss-ui-button { border-color: rgba(0, 0, 0, 0.2); }
+.workflow-field .workflow-field-actions { background: #FFF; border: 1px solid rgba(0, 0, 0, 0.2); border-top: none; border-radius: 0 0 3px 3px; padding: 8px; }
+.workflow-field .workflow-field-actions .workflow-field-action { margin-bottom: 4px; }
+.workflow-field .workflow-field-actions .workflow-field-action:last-child { margin-bottom: 0; }
+.workflow-field .workflow-field-actions .workflow-field-action-header { background: #d7dde0; border: 1px solid #95a5ab; border-left: none; overflow: auto; padding: 2px 8px 2px 0; }
+.workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-icon, .workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-drag { display: block; float: left; }
+.workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-drag { background: #95a5ab; cursor: move; margin: -2px 0; width: 4px; height: 33px; }
+.workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-icon { width: 16px; height: 16px; margin: 7px 8px 0 8px; }
+.workflow-field .workflow-field-actions .workflow-field-action-header h4 { float: left; margin: 7px 8px 0 0; min-width: 360px; text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4); }
+.workflow-field .workflow-field-actions .workflow-field-action-transitions li { background: #f8f8f8; border: 1px solid #d7dde0; border-left: none; border-top: none; overflow: auto; padding: 4px 4px 4px 0; }
+.workflow-field .workflow-field-actions .workflow-field-action-transitions li .workflow-field-action-drag { background: #d7dde0; cursor: move; float: left; margin: -4px 0; width: 4px; height: 24px; }
+.workflow-field .workflow-field-actions .workflow-field-action-transitions li .workflow-field-transition-title { float: left; min-width: 390px; overflow: auto; }
+.workflow-field .workflow-field-actions .workflow-field-action-transitions li .ui-icon, .workflow-field .workflow-field-actions .workflow-field-action-transitions li span { float: left; }
+.workflow-field .workflow-placeholder { margin-bottom: 4px; height: 32px; }
+.workflow-field .workflow-field-loading { background: rgba(0, 0, 0, 0.15) url(../../sapphire/admin/images/spinner.gif) no-repeat center center; border-radius: 0 0 3px 3px; bottom: 0; display: none; left: 0; position: absolute; right: 0; top: 0; z-index: 999; }

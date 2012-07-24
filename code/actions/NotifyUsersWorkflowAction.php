@@ -25,12 +25,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			new LiteralField('NotificationNote', '<p>' . $this->fieldLabel('NotificationNote') . '</p>'),
 			new TextField('EmailSubject', $this->fieldLabel('EmailSubject')),
 			new TextField('EmailFrom', $this->fieldLabel('EmailFrom')),
-			
-			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate'), 10),
+
+			new TextareaField('EmailTemplate', $this->fieldLabel('EmailTemplate')),
 			new ToggleCompositeField('FormattingHelpContainer',
 				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
-		
+
 		if (class_exists('ListingPage')) {
 			// allow the user to select an existing 'listing template'. The "getItems()" for that template
 			// will be the list of items in the workflow
@@ -39,10 +39,10 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			if ($templates) {
 				$opts = $templates->map();
 			}
-		
+
 			$fields->addFieldToTab('Root.Main', new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, '', null, '(choose)'), 'EmailTemplate');
 		}
-		
+
 		if ($this->ListingTemplateID) {
 			$fields->removeFieldFromTab('Root.Main', 'EmailTemplate');
 		}
@@ -50,8 +50,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		return $fields;
 	}
 
-	public function fieldLabels() {
-		return array_merge(parent::fieldLabels(), array(
+	public function fieldLabels($relations = true) {
+		return array_merge(parent::fieldLabels($relations), array(
 			'NotificationEmail' => _t('NotifyUsersWorkflowAction.NOTIFICATIONEMAIL', 'Notification Email'),
 			'NotificationNote'  => _t('NotifyUsersWorkflowAction.NOTIFICATIONNOTE',
 				'All users attached to the workflow will be sent an email when this action is run.'),
@@ -82,6 +82,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
+
+		$pastActions = $workflow->Actions()->sort('Created DESC');
+		$variables["\$CommentHistory"] = $this->customise(array(
+			'PastActions'=>$pastActions,
+			'Now'=>SS_Datetime::now()
+		))->renderWith('CommentHistory');
 
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
 		
@@ -120,8 +126,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			$result[$field] = $target->$field;
 		}
 
-		if($target instanceof SiteTree) {
-			$result['CMSLink'] = singleton('CMSMain')->Link("show/{$target->ID}");
+		if($target instanceof CMSPreviewable) {
+			$result['CMSLink'] = $target->CMSEditLink();
 		} else if ($target->hasMethod('WorkflowLink')) {
 			$result['CMSLink'] = $target->WorkflowLink();
 		}
@@ -163,12 +169,14 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'Any summary fields from the workflow target will be available. Additionally, the CMSLink variable will
 			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
 		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
+		$commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
 
 		$memberFields = implode(', ', array_keys($this->getMemberFields()));
 
 		return "<p>$note</p>
 			<p><strong>\$Member.($memberFields)</strong><br>$member</p>
-			<p><strong>\$Context.($fieldName)</strong><br>$context</p>";
+			<p><strong>\$Context.($fieldName)</strong><br>$context</p>
+			<p><strong>\$CommentHistory</strong><br>$commentHistory</p>";
 	}
 
 }

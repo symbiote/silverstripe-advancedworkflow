@@ -8,7 +8,12 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class WorkflowApplicable extends DataObjectDecorator {
+class WorkflowApplicable extends DataExtension {
+
+	
+	public static $has_one = array(
+		'WorkflowDefinition' => 'WorkflowDefinition',
+	);
 	
 	/**
 	 * 
@@ -18,69 +23,64 @@ class WorkflowApplicable extends DataObjectDecorator {
 	 */
 	protected $currentInstance;
 	
-	public function extraStatics() {
-		return array(
-			'has_one' => array(
-				'WorkflowDefinition' => 'WorkflowDefinition',
-			)
-		);
+	public function updateSettingsFields(FieldList $fields) {
+		$this->updateFields($fields);
 	}
 
-	public function updateCMSFields(FieldSet $fields) {
-		$service = singleton('WorkflowService');
+	public function updateCMSFields(FieldList $fields) {
+		if(!$this->owner->hasMethod('getSettingsFields')) $this->updateFields($fields);
+	}
 
-		if($effective = $service->getDefinitionFor($this->owner)) {
-			$effectiveTitle = $effective->Title;
-		} else {
-			$effectiveTitle = _t('WorkflowApplicable.NONE', '(none)');
+	public function updateFields(FieldList $fields) {
+		$service   = singleton('WorkflowService');
+		$effective = $service->getDefinitionFor($this->owner);
+		$tab       = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
+
+		if(Permission::check('APPLY_WORKFLOW')) {
+			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
+			$definition->setSource($service->getDefinitions()->map());
+			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
+
+			$fields->addFieldToTab($tab, $definition);
 		}
 
-		$allDefinitions = array(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
+		$fields->addFieldToTab($tab, new ReadonlyField(
+			'EffectiveWorkflow',
+			_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
+			$effective ? $effective->Title : _t('WorkflowApplicable.NONE', '(none)')
+		));
 
-		if($definitions = $service->getDefinitions()) {
-			$allDefinitions += $definitions->map();
-		}
-		
-		$tab = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
-		
-		$applyWorkflowField = null;
-		
-		
-		$fields->addFieldToTab($tab, new HeaderField('AppliedWorkflowHeader', _t('WorkflowApplicable.APPLIEDWORKFLOW', 'Applied Workflow')));
-
-		if (Permission::check('APPLY_WORKFLOW')) {
-			$fields->addFieldToTab($tab, new DropdownField('WorkflowDefinitionID',
-				_t('WorkflowApplicable.DEFINITION', 'Applied Workflow'), $allDefinitions));
+		if($this->owner->ID) {
+			$config = new GridFieldConfig_Base();
+			$config->addComponent(new GridFieldEditButton());
+			$config->addComponent(new GridFieldDetailForm());
 			
-		}
-		
-		$fields->addFieldToTab($tab, new ReadonlyField('EffectiveWorkflow',
-				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'), $effectiveTitle));
-		$fields->addFieldToTab($tab, new HeaderField('WorkflowLogHeader', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log')));
-		$fields->addFieldToTab($tab, $logTable = new ComplexTableField(
-				$this->owner, 'WorkflowLog', 'WorkflowInstance', null, 'getActionsSummaryFields',
-				sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $this->owner->class, $this->owner->ID)
-			));
+//			$config = GridFieldConfig_RecordEditor::create();
+			
+			$insts = $this->owner->WorkflowInstances();
+			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
 
-		$logTable->setRelationAutoSetting(false);
-		$logTable->setPermissions(array('show'));
-		$logTable->setPopupSize(760, 420);
+			$fields->addFieldToTab($tab, $log);
+		}
 	}
 
-	public function updateCMSActions($actions) {
+	public function updateCMSActions(FieldList $actions) {
 		$svc = singleton('WorkflowService');
 		$active = $svc->getWorkflowFor($this->owner);
 
 		if ($active) {
 			if ($this->canEditWorkflow()) {
-				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+				$action = new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
+				$action->setAttribute('data-icon', 'navigation');
+				$actions->push($action);
 			}
 		} else {
 			$effective = $svc->getDefinitionFor($this->owner);
 			if ($effective) {
 				// we can add an action for starting off the workflow at least
-				$initial = $effective->getInitialAction();
-				$actions->push(new FormAction('startworkflow', $initial->Title));
+				$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
+				$action->setAttribute('data-icon', 'navigation');
+				$actions->push($action);
 			}
 		}
 	}
@@ -113,6 +113,13 @@ class WorkflowApplicable extends DataObjectDecorator {
 		if ($instance && $instance->CurrentActionID) {
 			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
 		}
+	}
+
+	public function WorkflowInstances() {
+		return WorkflowInstance::get()->filter(array(
+			'TargetClass' => $this->ownerBaseClass,
+			'TargetID'    => $this->owner->ID
+		));
 	}
 
 	/**
@@ -172,13 +179,13 @@ class WorkflowApplicable extends DataObjectDecorator {
 		if ($effective = singleton('WorkflowService')->getDefinitionFor($this->owner)) {
 			return false;
 		}
-		
+
 	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
 	 */
-	public function canEdit() {
+	public function canEdit($member) {
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canEditTarget($this->owner);
 		}

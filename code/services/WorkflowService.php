@@ -50,16 +50,16 @@ class WorkflowService implements PermissionProvider {
 	 */
 	public function getWorkflowFor($item, $includeComplete = false) {
 		$id = $item;
-		
+
 		if ($item instanceof WorkflowAction) {
 			
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
 		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
-			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', $item->ClassName, $item->ID);
-			
+			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
+
 			$complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
-			
+
 			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
 		}
 	}
@@ -82,7 +82,7 @@ class WorkflowService implements PermissionProvider {
 	 * @return DataObjectSet
 	 */
 	public function getDefinitions() {
-		return DataObject::get('WorkflowDefinition');
+		return DataList::create('WorkflowDefinition');
 	}
 
 	/**
@@ -180,7 +180,7 @@ class WorkflowService implements PermissionProvider {
 	 *				An array of IDs of the actions in the order they should be.
 	 */
 	public function reorder($objects, $newOrder) {
-		$sortVals = array_values($objects->map('ID', 'Sort'));
+		$sortVals = array_values($objects->map('ID', 'Sort')->toArray());
 		sort($sortVals);
 
 		// save the new ID values - but only use existing sort values to prevent

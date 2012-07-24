@@ -14,7 +14,7 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 		$fields['ParentID'] = 'ParentID';
 	}
 
-	public function updateCMSFields(FieldSet $fields) {
+	public function updateCMSFields(FieldList $fields) {
 		parent::updateCMSFields($fields);
 		
 		$svc = singleton('WorkflowService');
@@ -27,7 +27,7 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 			$wfFields = $active->getWorkflowFields();
 			
 			// loading data in a somewhat hack way
-			$form = new Form($this, 'DummyForm', $wfFields, new FieldSet());
+			$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
 			$form->loadDataFrom($current);
 
 			$fields->addFieldsToTab('BottomRoot.WorkflowActions', $wfFields);
