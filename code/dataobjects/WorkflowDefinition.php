@@ -77,7 +77,7 @@ class WorkflowDefinition extends DataObject {
 	 */
 	public function getCMSFields() {
 		
-		$cmsUsers = Member::mapInCMSGroups(); // ->toArray();
+		$cmsUsers = Member::mapInCMSGroups();
 		
 		$fields = new FieldList(new TabSet('Root'));
 

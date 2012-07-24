@@ -45,28 +45,47 @@ class WorkflowInstance extends DataObject {
 		'Created'
 	);
 	
+	/**
+	 * Get the CMS view of the instance. This is used to display the log of 
+	 * this workflow, and options to reassign if the workflow hasn't been 
+	 * finished yet
+	 * 
+	 * @return \FieldList 
+	 */
 	public function getCMSFields() {
 		$fields = new FieldList();
+		
+		if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
+			if ($this->WorkflowStatus == 'Paused' || $this->WorkflowStatus == 'Active') {
+				$cmsUsers = Member::mapInCMSGroups();
 
+				$fields->push(new HiddenField('DirectUpdate', '', 1));
+
+				$fields->push(new HeaderField('InstanceReassignHeader',_t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')));
+				$fields->push(new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
+				$fields->push(new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
+
+				$action = $this->CurrentAction();
+				if ($action->exists()) {
+					$actionFields = $this->getWorkflowFields();
+
+					$fields->merge($actionFields);
+				}
+			}
+		}
+		
 		$items = WorkflowActionInstance::get()->filter(array(
 			'Finished'		=> 1,
 			'WorkflowID'	=> $this->ID
 		));
-		
-		$grid = new GridField('Actions', 'Log', $items);
-		$all = $items->toArray();
 
-		$fields->push($grid); 
-		
+		$grid = new GridField('Actions', 'Log', $items);
+
+		$fields->push($grid);
+
 		return $fields;
 	}
 	
-	public function updateCMSActions($actions) {
-		if ($actions) {
-			$one = 'one';
-		}
-	}
-
 	/**
 	 * See if we've been saved in context of managing the workflow directly
 	 */
@@ -74,7 +93,7 @@ class WorkflowInstance extends DataObject {
 		parent::onBeforeWrite();
 		
 		$vars = $this->record;
-		
+
 		if (isset($vars['DirectUpdate'])) {
 			// Unset now so that we don't end up in an infinite loop!
 			unset($this->record['DirectUpdate']);
@@ -120,33 +139,6 @@ class WorkflowInstance extends DataObject {
 			// can now proceed based on user input
 			$this->execute();
 		}
-	}
-
-	/**
-	 * Get fields to update a workflow instance directly. Will attempt to allow the user to modify the current
-	 * step if possible
-	 *
-	 * @return FieldList
-	 */
-	public function getInstanceManagementFields() {
-		$fields = new FieldList(new TabSet('Root', new Tab('Main',
-			new HeaderField('AssignedToHeader', _t('WorkflowInstance.ASSIGNEDTO', 'Assigned To')),
-			new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Users'), 'Member'),
-			new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
-		)));
-
-		$target = $this->getTarget();
-
-		if ($target && $target->canEditWorkflow()) {
-			$wfFields = $this->getWorkflowFields();
-			$tmpForm = new Form($this, 'dummy', $wfFields, new FieldSet());
-			$wfFields->push(new HiddenField('DirectUpdate', 'Direct Update', true));
-			$tmpForm->loadDataFrom($this->CurrentAction());
-			$wfFields = $tmpForm->Fields();
-			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
-		}
-
-		return $fields;
 	}
 
 	/**
@@ -422,7 +414,7 @@ class WorkflowInstance extends DataObject {
 		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new DropdownField('TransitionID', _t('WorkflowApplicable.NEXT_ACTION', 'Next Action'), $wfOptions));
+		$fields->push(new DropdownField('TransitionID', _t('WorkflowInstance.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.
