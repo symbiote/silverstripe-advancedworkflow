@@ -1,20 +1,23 @@
-Advanced Workflow Module
-========================
+# Advanced Workflow Module
 
-Overview
---------
+Note: The SilverStripe 2.4 version of the module is available from the ss24
+branch of the repository.
+
+## Overview
 
 A module that provides an action / transition approach to workflow, where a
 single workflow process is split into multiple configurable states (Actions)
 with multiple possible transitions between the actions.
 
-Requirements
-------------
-* SilverStripe 2.4+
-* [Queued Jobs module][1]
+Please see the wiki at [https://github.com/silverstripe-australia/advancedworkflow/wiki] 
+for more info!
 
-Installation
-------------
+## Requirements
+
+* SilverStripe 2.4+
+* [Queued Jobs module][1] Required if you use the embargo/expiry functionality
+
+## Installation
 
 Add 
 
