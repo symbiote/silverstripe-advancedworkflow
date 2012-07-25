@@ -1,7 +1,9 @@
 <?php
 /**
  * WorkflowApplicable extension specifically for File objects, which don't have the same CMS
- * UI structure so need to be handled a little differently
+ * UI structure so need to be handled a little differently. Additionally, it doesn't really 
+ * work without custom code to handle the triggering of workflow, and in general is not
+ * ready for production use just yet. 
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -15,13 +17,14 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 	}
 
 	public function updateCMSFields(FieldList $fields) {
+		if (!$this->owner->ID) {
+			return $fields;
+		}
 		parent::updateCMSFields($fields);
-		
-		$svc = singleton('WorkflowService');
-		
+
 		// add the workflow fields directly. It's a requirement of workflow on file objects
 		// that CMS admins mark the workflow step as being editable for files to be administerable
-		$active = $svc->getWorkflowFor($this->owner);
+		$active = $this->workflowService->getWorkflowFor($this->owner);
 		if ($active) {
 			$current = $active->CurrentAction();
 			$wfFields = $active->getWorkflowFields();
@@ -30,15 +33,14 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 			$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
 			$form->loadDataFrom($current);
 
-			$fields->addFieldsToTab('BottomRoot.WorkflowActions', $wfFields);
+			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 		}
 	}
 
 	public function onAfterWrite() {
 		parent::onAfterWrite();
 		
-		$svc = singleton('WorkflowService');
-		$workflow = $svc->getWorkflowFor($this->owner);
+		$workflow = $this->workflowService->getWorkflowFor($this->owner);
 		$rawData = $this->owner->toMap();
 		if ($workflow && $this->owner->TransitionID) {
 			// we want to transition, so do so if that's a valid transition to take. 
@@ -63,7 +65,7 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 			if (isset($rawData['TransitionID']) && $rawData['TransitionID']) {
 				// unset the transition ID so this doesn't get re-executed
 				$this->owner->TransitionID = null;
-				$svc->executeTransition($this->owner, $rawData['TransitionID']);
+				$this->workflowService->executeTransition($this->owner, $rawData['TransitionID']);
 			} else {
 				// otherwise, just try to execute the current workflow to see if it
 				// can now proceed based on user input

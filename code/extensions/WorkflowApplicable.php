@@ -10,10 +10,18 @@
  */
 class WorkflowApplicable extends DataExtension {
 
-	
 	public static $has_one = array(
 		'WorkflowDefinition' => 'WorkflowDefinition',
 	);
+	
+	public static $dependencies = array(
+		'workflowService'		=> '%$WorkflowService',
+	);
+
+	/**
+	 * @var WorkflowService
+	 */
+	public $workflowService;
 	
 	/**
 	 * 
@@ -32,19 +40,24 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateFields(FieldList $fields) {
-		$service   = singleton('WorkflowService');
-		$effective = $service->getDefinitionFor($this->owner);
-		$tab       = $fields->fieldByName('Root') ? 'Root.Workflow' : 'BottomRoot.Workflow';
+		if (!$this->owner->ID) {
+			return $fields;
+		}
+		$effective = $this->workflowService->getDefinitionFor($this->owner);
+		
+		$tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
 		if(Permission::check('APPLY_WORKFLOW')) {
 			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
-			$definition->setSource($service->getDefinitions()->map());
+			$definition->setSource($this->workflowService->getDefinitions()->map());
 			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
 
-			$fields->addFieldToTab($tab, $definition);
+			$tab->push($definition);
+			
+//			$fields->addFieldToTab($tab, $definition);
 		}
 
-		$fields->addFieldToTab($tab, new ReadonlyField(
+		$tab->push(new ReadonlyField(
 			'EffectiveWorkflow',
 			_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
 			$effective ? $effective->Title : _t('WorkflowApplicable.NONE', '(none)')
@@ -55,18 +68,15 @@ class WorkflowApplicable extends DataExtension {
 			$config->addComponent(new GridFieldEditButton());
 			$config->addComponent(new GridFieldDetailForm());
 			
-//			$config = GridFieldConfig_RecordEditor::create();
-			
 			$insts = $this->owner->WorkflowInstances();
 			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
 
-			$fields->addFieldToTab($tab, $log);
+			$tab->push($log);
 		}
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$svc = singleton('WorkflowService');
-		$active = $svc->getWorkflowFor($this->owner);
+		$active = $this->workflowService->getWorkflowFor($this->owner);
 
 		if ($active) {
 			if ($this->canEditWorkflow()) {
@@ -75,7 +85,7 @@ class WorkflowApplicable extends DataExtension {
 				$actions->push($action);
 			}
 		} else {
-			$effective = $svc->getDefinitionFor($this->owner);
+			$effective = $this->workflowService->getDefinitionFor($this->owner);
 			if ($effective) {
 				// we can add an action for starting off the workflow at least
 				$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
@@ -86,16 +96,14 @@ class WorkflowApplicable extends DataExtension {
 	}
 	
 	public function updateFrontendActions($actions){
-		Debug::show('here');
-		$svc = singleton('WorkflowService');
-		$active = $svc->getWorkflowFor($this->owner);
+		$active = $this->workflowService->getWorkflowFor($this->owner);
 
 		if ($active) {
 			if ($this->canEditWorkflow()) {
 				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
 			}
 		} else {
-			$effective = $svc->getDefinitionFor($this->owner);
+			$effective = $this->workflowService->getDefinitionFor($this->owner);
 			if ($effective) {
 				// we can add an action for starting off the workflow at least
 				$initial = $effective->getInitialAction();
@@ -129,8 +137,7 @@ class WorkflowApplicable extends DataExtension {
 	 */
 	public function getWorkflowInstance() {
 		if (!$this->currentInstance) {
-			$svc = singleton('WorkflowService');
-			$this->currentInstance = $svc->getWorkflowFor($this->owner);
+			$this->currentInstance = $this->workflowService->getWorkflowFor($this->owner);
 		}
 
 		return $this->currentInstance;
@@ -143,10 +150,8 @@ class WorkflowApplicable extends DataExtension {
 	 * @return DataObjectSet
 	 */
 	public function getWorkflowHistory($limit = null) {
-		$svc = singleton('WorkflowService');
-		return $svc->getWorkflowHistoryFor($this->owner, $limit);
+		return $this->workflowService->getWorkflowHistoryFor($this->owner, $limit);
 	}
-
 
 	/**
 	 * Check all recent WorkflowActionIntances and return the most recent one with a Comment
@@ -162,7 +167,6 @@ class WorkflowApplicable extends DataExtension {
 			}
 		}
 	}
-	
 
 	/**
 	 * Content can never be directly publishable if there's a workflow applied.
@@ -176,7 +180,7 @@ class WorkflowApplicable extends DataExtension {
 
 		// otherwise, see if there's any workflows applied. If there are, then we shouldn't be able
 		// to directly publish
-		if ($effective = singleton('WorkflowService')->getDefinitionFor($this->owner)) {
+		if ($effective = $this->workflowService->getDefinitionFor($this->owner)) {
 			return false;
 		}
 
