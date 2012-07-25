@@ -7,9 +7,10 @@
  * @package    advancedworkflow
  * @subpackage tests
  */
-class WorkflowEngineTests extends SapphireTest {
+class WorkflowEngineTest extends SapphireTest {
 
 	public function testCreateWorkflowInstance() {
+		
 		$definition = new WorkflowDefinition();
 		$definition->Title = "Create Workflow Instance";
 		$definition->write();
@@ -63,6 +64,30 @@ class WorkflowEngineTests extends SapphireTest {
 		foreach($actions as $action) {
 			$this->assertTrue((bool) $action->Finished);
 		}
+	}
+	
+	public function testPublishAction() {
+		$this->logInWithPermission();
+		
+		$action = new PublishItemWorkflowAction;
+		$instance = new WorkflowInstance();
+
+		$page = new Page();
+		$page->Title = 'stuff';
+		$page->write();
+
+		$instance->TargetClass = 'Page';
+		$instance->TargetID = $page->ID;
+
+		$this->assertFalse($page->isPublished());
+
+//		$this->assertTrue($page->Status == 'New');
+
+		$action->execute($instance);
+
+		$page = DataObject::get_by_id('Page', $page->ID);
+		$this->assertTrue($page->isPublished());
+		
 	}
 
 	protected function createDefinition() {

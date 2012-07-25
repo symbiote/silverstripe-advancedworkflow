@@ -24,8 +24,20 @@ class PublishItemWorkflowAction extends WorkflowAction {
 			$job   = new WorkflowPublishTargetJob($target);
 			$days  = $this->PublishDelay;
 			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
-
 			singleton('QueuedJobService')->queueJob($job, $after);
+		} else if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+			// setting future date stuff if needbe
+
+			// set this value regardless
+			$target->UnPublishOnDate = $target->DesiredUnPublishDate;
+			$target->DesiredUnPublishDate = '';
+			if ($target->DesiredPublishDate) {
+				$target->PublishOnDate = $target->DesiredPublishDate;
+				$target->DesiredPublishDate = '';
+				$target->write();
+			} else {
+				$target->doPublish();
+			}
 		} else {
 			$target->doPublish();
 		}
