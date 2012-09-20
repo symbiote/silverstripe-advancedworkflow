@@ -30,6 +30,13 @@ class WorkflowActionInstance extends DataObject {
 		'Member.Name'			=> 'Author'
 	);
 	
+	public static $field_labels = array(
+		'BaseAction.Title'		=> 'Title',
+		'Comment'				=> 'Comment',
+		'Created'				=> 'Date',
+		'Member.Name'			=> 'Author'
+	);
+	
 	/**
 	 * Gets fields for when this is part of an active workflow
 	 */
