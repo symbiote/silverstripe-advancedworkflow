@@ -106,7 +106,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		}
 
 		$email->setSubject($subject);
-		$email->setFrom($this->EmailFrom);
+		$email->setFrom(str_replace(array_keys($variables), array_values($variables), $this->EmailFrom));
 		$email->setBcc(substr($emails, 0, -2));
 		$email->setBody($body);
 		$email->send();
