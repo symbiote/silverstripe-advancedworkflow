@@ -78,7 +78,7 @@ class WorkflowApplicable extends DataExtension {
 	public function updateCMSActions(FieldList $actions) {
 		$active = $this->workflowService->getWorkflowFor($this->owner);
 
-		if (Controller::curr() instanceof CMSPageEditController){
+		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')){
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$action = new FormAction('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
