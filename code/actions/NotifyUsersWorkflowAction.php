@@ -91,20 +91,21 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
 		
+		$item = $workflow->customise(array(
+			'Items'		=> $workflow->Actions(),
+			'Member'	=> Member::currentUser(),
+			'Context'	=> $workflow->getTarget(),
+			'CommentHistory' => $variables["\$CommentHistory"]
+		));
+		
 		if ($this->ListingTemplateID) {
-			$item = $workflow->customise(array(
-				'Items'		=> $workflow->Actions(),
-				'Member'	=> Member::currentUser(),
-				'Context'	=> $workflow->getTarget(),
-			));
-
 			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
 			$view = SSViewer::fromString($template->ItemTemplate);
-			$body = $view->process($item);
 		} else {
-			$body    = str_replace(array_keys($variables), array_values($variables), $this->EmailTemplate);
+			$view = SSViewer::fromString($this->EmailTemplate);			
 		}
-
+		$body = $view->process($item);
+		
 		$email->setSubject($subject);
 		$email->setFrom($this->EmailFrom);
 		$email->setBcc(substr($emails, 0, -2));
