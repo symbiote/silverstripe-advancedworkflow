@@ -126,7 +126,7 @@ class WorkflowInstance extends DataObject {
 		$allowedFields = $this->getWorkflowFields()->saveableFields();
 		unset($allowedFields['TransitionID']);
 		foreach ($allowedFields as $field) {
-			$fieldName = $field->Name();
+			$fieldName = $field->getName();
 			$action->$fieldName = $data[$fieldName];
 		}
 		$action->write();
