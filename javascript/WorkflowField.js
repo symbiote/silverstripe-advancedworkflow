@@ -135,7 +135,9 @@ jQuery.entwine("workflow", function($) {
 	$(".workflow-field .workflow-field-delete").entwine({
 		onclick: function() {
 			if(confirm("Are you sure you want to permanently delete this?")) {
-				
+				$.post(this.prop('href')).done(function(body) {
+					$(".workflow-field").replaceWith(body);
+				});
 			}
 
 			return false;
