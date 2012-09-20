@@ -162,7 +162,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	public function getFormattingHelp() {
 		$note = _t('NotifyUsersWorkflowAction.FORMATTINGNOTE',
 			'Notification emails can contain HTML formatting. The following special variables are replaced with their
-			respective values in both the email subject and template/body.');
+			respective values in the email subject, email from and template/body.');
 		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
 			'These fields will be populated from the member that initiates the notification action.');
 		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
