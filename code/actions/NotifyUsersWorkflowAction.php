@@ -78,10 +78,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		
 		$context   = $this->getContextFields($workflow->getTarget());
 		$member    = $this->getMemberFields();
+		$initiator    = $this->getMemberFields($workflow->Initiator());
 		$variables = array();
 		
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
+		foreach($initiator as $field => $val)  $variables["\$Initiator.$field"] = $val;
 
 		$pastActions = $workflow->Actions()->sort('Created DESC');
 		$variables["\$CommentHistory"] = $this->customise(array(
@@ -95,6 +97,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			$item = $workflow->customise(array(
 				'Items'		=> $workflow->Actions(),
 				'Member'	=> Member::currentUser(),
+				'Initiator' => $workflow->Initiator(),
 				'Context'	=> $workflow->getTarget(),
 			));
 
@@ -136,10 +139,14 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	}
 
 	/**
+	 * Builds an array with the member information
+	 * @param Member $member An optional member to use. If null, will use the current logged in member
 	 * @return array
 	 */
-	public function getMemberFields() {
-		$member = Member::currentUser();
+	public function getMemberFields(Member $member = null) {
+		if (!$member){
+			$member = Member::currentUser();
+		}
 		$result = array();
 
 		if($member) foreach($member->summaryFields() as $field => $title) {
@@ -165,6 +172,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			respective values in both the email subject and template/body.');
 		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
 			'These fields will be populated from the member that initiates the notification action.');
+		$initiator = _t('NotifyUsersWorkflowAction.INITIATORNOTE',
+			'These fields will be populated from the member that initiates the workflow request.');
 		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
 			'Any summary fields from the workflow target will be available. Additionally, the CMSLink variable will
 			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
@@ -175,6 +184,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		return "<p>$note</p>
 			<p><strong>\$Member.($memberFields)</strong><br>$member</p>
+			<p><strong>\$Initiator.($memberFields)</strong><br>$initiator</p>
 			<p><strong>\$Context.($fieldName)</strong><br>$context</p>
 			<p><strong>\$CommentHistory</strong><br>$commentHistory</p>";
 	}
