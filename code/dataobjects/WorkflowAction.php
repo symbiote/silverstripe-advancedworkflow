@@ -116,6 +116,34 @@ class WorkflowAction extends DataObject {
 	}
 	
 	/**
+	 * When deleting an action from a workflow definition, make sure that workflows currently paused on that action
+	 * are deleted
+	 * Also removes all outbound transitions
+	 */
+	public function onAfterDelete() {
+		parent::onAfterDelete();
+		$wfActionInstances = WorkflowActionInstance::get()
+				->leftJoin("WorkflowInstance",'"WorkflowInstance"."ID" = "WorkflowActionInstance"."WorkflowID"')
+				->where(sprintf('"BaseActionID" = %d AND ("WorkflowStatus" IN (\'Active\',\'Paused\'))', $this->ID));
+		foreach ($wfActionInstances as $wfActionInstance){
+			$wfInstances = WorkflowInstance::get()->filter('CurrentActionID', $wfActionInstance->ID);
+			foreach ($wfInstances as $wfInstance){
+				$wfInstance->Groups()->removeAll();
+				$wfInstance->Users()->removeAll();
+				$wfInstance->delete();
+			}
+			$wfActionInstance->delete();
+		}
+		// Delete outbound transitions
+		$transitions = WorkflowTransition::get()->filter('ActionID', $this->ID);
+		foreach ($transitions as $transition){
+			$transition->Groups()->removeAll();
+			$transition->Users()->removeAll();
+			$transition->delete();
+		}
+	}
+	
+	/**
 	 * Called when the current target of the workflow has been updated
 	 */
 	public function targetUpdated(WorkflowInstance $workflow) {
