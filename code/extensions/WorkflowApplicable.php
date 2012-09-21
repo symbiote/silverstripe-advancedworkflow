@@ -78,19 +78,21 @@ class WorkflowApplicable extends DataExtension {
 	public function updateCMSActions(FieldList $actions) {
 		$active = $this->workflowService->getWorkflowFor($this->owner);
 
-		if ($active) {
-			if ($this->canEditWorkflow()) {
-				$action = new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
-				$action->setAttribute('data-icon', 'navigation');
-				$actions->push($action);
-			}
-		} else {
-			$effective = $this->workflowService->getDefinitionFor($this->owner);
-			if ($effective) {
-				// we can add an action for starting off the workflow at least
-				$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
-				$action->setAttribute('data-icon', 'navigation');
-				$actions->push($action);
+		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')){
+			if ($active) {
+				if ($this->canEditWorkflow()) {
+					$action = new FormAction('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
+					$action->setAttribute('data-icon', 'navigation');
+					$actions->push($action);
+				}
+			} else {
+				$effective = $this->workflowService->getDefinitionFor($this->owner);
+				if ($effective && $effective->getInitialAction()) {
+					// we can add an action for starting off the workflow at least
+					$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
+					$action->setAttribute('data-icon', 'navigation');
+					$actions->push($action);
+				}
 			}
 		}
 	}
