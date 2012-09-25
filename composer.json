@@ -1,0 +1,17 @@
+{
+	"name": "silverstripe-australia/advancedworkflow",
+	"description": "Adds configurable workflow support to the CMS, with a GUI
+		for creating custom workflow definitions.",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe-australia", "advancedworkflow"],
+	"authors": [
+	{
+		"name": "Andrew Short",
+		"email": "andrewjshort@gmail.com"
+	}
+	],
+	"require":
+	{
+		"silverstripe/framework": "2.4.*"
+	}
+}
