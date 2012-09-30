@@ -116,7 +116,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$body = $view->process($item);
 		
 		$email->setSubject($subject);
-		$email->setFrom($this->EmailFrom);
+		$email->setFrom(str_replace(array_keys($variables), array_values($variables), $this->EmailFrom));
 		$email->setBcc(substr($emails, 0, -2));
 		$email->setBody($body);
 		$email->send();
@@ -176,7 +176,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	public function getFormattingHelp() {
 		$note = _t('NotifyUsersWorkflowAction.FORMATTINGNOTE',
 			'Notification emails can contain HTML formatting. The following special variables are replaced with their
-			respective values in both the email subject and template/body.');
+			respective values in the email subject, email from and template/body.');
 		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
 			'These fields will be populated from the member that initiates the notification action.');
 		$initiator = _t('NotifyUsersWorkflowAction.INITIATORNOTE',
