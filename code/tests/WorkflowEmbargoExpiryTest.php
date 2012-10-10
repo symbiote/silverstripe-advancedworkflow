@@ -7,6 +7,10 @@
 class WorkflowEmbargoExpiryTest extends SapphireTest {
 	
 	public function __construct() {
+		if(!class_exists('AbstractQueuedJob')) {
+			return;
+		}
+
 		parent::__construct();
 		
 		$this->requiredExtensions = array(
