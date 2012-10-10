@@ -45,6 +45,11 @@ class WorkflowDefinition extends DataObject {
 
 	public static $icon = 'advancedworkflow/images/definition.png';
 
+	public static $default_workflow_title_base = 'My Workflow';
+	
+	public static $default_workflow_title_incr = 1;
+
+	public static $workflow_defs = array();
 
 	/**
 	 * Gets the action that first triggers off the workflow
@@ -62,7 +67,10 @@ class WorkflowDefinition extends DataObject {
 		if(!$this->Sort) {
 			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowDefinition"')->value();
 		}
-
+		// Use default title if no title
+		if(!$this->ID) {
+			$this->getDefaultWorkflowTitle();
+		}
 		parent::onBeforeWrite();
 	}
 
@@ -155,4 +163,47 @@ class WorkflowDefinition extends DataObject {
 		return $fields;
 	}
 
+	/*
+	 * Checks if a workflow-title already exists and offers a suitable default when users attempt to create a title-less workflow
+	 *
+	 * @see @link self::$default_workflow_title_base
+	 * @see @link self::$default_workflow_title_incr
+	 * @return string A new default workflow title
+	 * @todo Filter/alter query for only current-user's workflows. Avoids confusion when other users already have 'My Workflow 1' and user sees 'My Workflow 2'
+	 */
+	public function getDefaultWorkflowTitle() {
+		$this->setWorkflowDefinitions();
+		if($this->Title) {
+			return;
+		}
+		$base = self::$default_workflow_title_base;
+		$defs = $this->getWorkflowDefinitions();
+		$tmp = array();
+		foreach($defs as $def) {
+			if(preg_match("#$base#",$def)) {
+				$last_part = preg_split("#\s#",$def,-1,PREG_SPLIT_NO_EMPTY);
+				$last_part = end($last_part);
+				if(in_array($base.' '.$last_part,$defs)) {
+					array_push($tmp,$last_part);
+				}
+			}
+		}
+		if(count($tmp)>0) {
+			sort($tmp,SORT_NUMERIC);
+			self::$default_workflow_title_incr = end($tmp)+1;
+		}
+		$this->Title = self::$default_workflow_title_base.' '.self::$default_workflow_title_incr;
+	}
+
+	public function getWorkflowDefinitions() {
+		return self::$workflow_defs;
+	}
+
+	/*
+	 * Setter to "cache" some basic workflow definiton data
+	 */
+	private function setWorkflowDefinitions() {
+		$workflow_defs = DataObject::get('WorkflowDefinition');
+		self::$workflow_defs = $workflow_defs->map()->toArray();
+	}
 }
