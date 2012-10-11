@@ -64,6 +64,11 @@ $radius: 3px;
 			&:last-child {
 				margin-bottom: 0;
 			}
+			.workflow-field-action-disabled {
+				opacity: 0.35;
+				filter: Alpha(Opacity=35);
+				cursor: default;
+			}
 		}
 
 		.workflow-field-action-header {
