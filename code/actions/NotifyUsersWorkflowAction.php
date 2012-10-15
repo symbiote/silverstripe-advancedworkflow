@@ -107,7 +107,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		$email->setSubject($subject);
 		$email->setFrom($this->EmailFrom);
-		$email->setBcc(substr($emails, 0, -2));
+		$email->setTo(substr($emails, 0, -2));
+		if($member->Email) $email->setCc($member->Email);
 		$email->setBody($body);
 		$email->send();
 
@@ -119,10 +120,10 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	 * @return array
 	 */
 	public function getContextFields(DataObject $target) {
-		$fields = $target->summaryFields();
+		$fields = $target->inheritedDatabaseFields();
 		$result = array();
 
-		foreach($fields as $field) {
+		foreach($fields as $field=>$fieldType) {
 			$result[$field] = $target->$field;
 		}
 
@@ -166,7 +167,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
 			'These fields will be populated from the member that initiates the notification action.');
 		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
-			'Any summary fields from the workflow target will be available. Additionally, the CMSLink variable will
+			'Any database fields from the workflow target will be available. Additionally, the CMSLink variable will
 			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
 		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
 		$commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
