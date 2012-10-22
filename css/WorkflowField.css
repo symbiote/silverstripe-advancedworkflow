@@ -9,6 +9,7 @@
 .workflow-field .workflow-field-actions { background: #FFF; border: 1px solid rgba(0, 0, 0, 0.2); border-top: none; border-radius: 0 0 3px 3px; padding: 8px; }
 .workflow-field .workflow-field-actions .workflow-field-action { margin-bottom: 4px; }
 .workflow-field .workflow-field-actions .workflow-field-action:last-child { margin-bottom: 0; }
+.workflow-field .workflow-field-actions .workflow-field-action .workflow-field-action-disabled { opacity: 0.35; filter: Alpha(Opacity=35); cursor: default; }
 .workflow-field .workflow-field-actions .workflow-field-action-header { background: #d7dde0; border: 1px solid #95a5ab; border-left: none; overflow: auto; padding: 2px 8px 2px 0; }
 .workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-icon, .workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-drag { display: block; float: left; }
 .workflow-field .workflow-field-actions .workflow-field-action-header .workflow-field-action-drag { background: #95a5ab; cursor: move; margin: -2px 0; width: 4px; height: 33px; }

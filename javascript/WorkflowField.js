@@ -53,6 +53,9 @@ jQuery.entwine("workflow", function($) {
 
 	$(".workflow-field .workflow-field-actions").entwine({
 		onmatch: function() {
+			$(".workflow-field .workflow-field-action-disabled").on('click',function() {
+				return false;
+			});
 			this.sortable({
 				axis:        "y",
 				containment: this,
