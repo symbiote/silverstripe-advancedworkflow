@@ -188,4 +188,17 @@ class WorkflowAction extends DataObject {
 	public function Icon() {
 		return $this->stat('icon');
 	}
+
+	/*
+	 * If there is only a single action defined for a workflow, there is no sense in allowing users to add a transition to it (and causing errors).
+	 * Hide the "Add Transition" button in this case
+	 *
+	 * @return boolean true if we should disable the button, false otherwise
+	 */
+	public function disableTransitionButton() {
+		if($this->WorkflowDef()->numChildren() == 1) {
+			return true;
+		}
+		return false;
+	}
 }
