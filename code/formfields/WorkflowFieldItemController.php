@@ -55,11 +55,21 @@ class WorkflowFieldItemController extends Controller {
 		}
 
 		if(!$record->isInDb()) {
-			$record->write();
+			try {
+				$record->write();
+			} catch(ValidationException $ex) {
+				$form->sessionMessage($ex->getResult()->message(), 'bad');
+				return $this->Form()->forTemplate();
+			}
 		}
 
 		$form->saveInto($record);
-		$record->write();
+		try {
+			$record->write();
+		} catch(ValidationException $ex) {
+			$form->sessionMessage($ex->getResult()->message(), 'bad');
+			return $this->Form()->forTemplate();
+		}
 
 		return $this->RootField()->forTemplate();
 	}
