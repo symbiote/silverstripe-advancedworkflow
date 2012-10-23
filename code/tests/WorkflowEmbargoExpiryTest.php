@@ -8,7 +8,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	
 	public function __construct() {
 		if(!class_exists('AbstractQueuedJob')) {
-			return;
+			$this->skipTest = true;
 		}
 
 		parent::__construct();
