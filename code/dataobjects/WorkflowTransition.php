@@ -37,6 +37,17 @@ class WorkflowTransition extends DataObject {
 	public static $icon = 'advancedworkflow/images/transition.png';
 
 	/**
+	 *
+	 * @var array $extendedMethodReturn A basic extended validation routine method return format
+	 */
+	public static $extendedMethodReturn = array(
+		'fieldName'	=>null,
+		'fieldField'=>null,
+		'fieldMsg'	=>null,
+		'fieldValid'=>true
+	);
+
+	/**
 	 * Returns true if it is valid for this transition to be followed given the
 	 * current state of a workflow.
 	 *
@@ -60,21 +71,6 @@ class WorkflowTransition extends DataObject {
 
 	public function validate() {
 		$result = parent::validate();
-
-		$reqAction = isset($_REQUEST['ActionID']) ? (int) $_REQUEST['ActionID'] : null;
-		$reqActionNext = isset($_REQUEST['NextActionID']) ? (int) $_REQUEST['NextActionID'] : null;
-		if (($reqAction && $reqActionNext) && ($reqAction == $reqActionNext)) {
-			$result->error(_t(
-				'WorkflowTransition.TRANSITIONLOOP',
-				'A transition cannot lead back to its parent action.'));
-		}
-
-		if ($this->ID && (!$this->ActionID || !$this->NextActionID)) {
-			$result->error(_t(
-				'WorkflowTransition.MUSTSETACTIONS',
-				'You must set a parent and transition action.'));
-		}
-
 		return $result;
 	}
 
@@ -129,7 +125,9 @@ class WorkflowTransition extends DataObject {
 	}
 
 	public function getValidator() {
-		return new RequiredFields('Title', 'ActionID', 'NextActionID');
+		$required = new AWRequiredFields('Title', 'ActionID', 'NextActionID');
+		$required->setCaller($this);
+		return $required;
 	}
 
 	public function numChildren() {
@@ -189,4 +187,28 @@ class WorkflowTransition extends DataObject {
 		return $members;
 	}
 
+	/*
+	 * A simple field same-value checker.
+	 *
+	 * @param array $data
+	 * @return array
+	 * @see {@link AWRequiredFields}
+	 */
+	public function extendedRequiredFieldsNotSame($data=null) {
+		$check = array('ActionID','NextActionID');
+		foreach($check as $fieldName) {
+			if(!isset($data[$fieldName])) {
+				return self::$extendedMethodReturn;
+			}
+		}
+		// Have we found some identical values?
+		if($data[$check[0]] == $data[$check[1]]) {
+			self::$extendedMethodReturn['fieldName'] = $check[0]; // Used to display to the user, so the first of the array is fine
+			self::$extendedMethodReturn['fieldValid'] = false;
+			self::$extendedMethodReturn['fieldMsg'] = _t(
+				'WorkflowTransition.TRANSITIONLOOP',
+				'A transition cannot lead back to its parent action.');
+		}
+		return self::$extendedMethodReturn;
+	}
 }
