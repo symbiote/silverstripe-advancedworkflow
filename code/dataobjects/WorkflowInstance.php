@@ -65,15 +65,17 @@ class WorkflowInstance extends DataObject {
 				$fields->push(new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
 				$fields->push(new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
 
-				$action = $this->CurrentAction();
-				if ($action->exists()) {
-					$actionFields = $this->getWorkflowFields();
-
-					$fields->merge($actionFields);
-				}
 			}
 		}
 		
+		if ($this->canEdit()) {
+			$action = $this->CurrentAction();
+			if ($action->exists()) {
+				$actionFields = $this->getWorkflowFields();
+				$fields->merge($actionFields);
+			}
+		}
+
 		$items = WorkflowActionInstance::get()->filter(array(
 			'Finished'		=> 1,
 			'WorkflowID'	=> $this->ID
@@ -183,11 +185,15 @@ class WorkflowInstance extends DataObject {
 		$action = $definition->getInitialAction()->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
+		
+		$title = $for && $for->hasField('Title') ? 
+				sprintf(_t('WorkflowInstance.TITLE_FOR_DO', '%s - %s'), $definition->Title, $for->Title) :
+				sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 
-		$this->Title = sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
+		$this->Title		   = $title;
 		$this->DefinitionID    = $definition->ID;
 		$this->CurrentActionID = $action->ID;
-		$this->InitiatorID = Member::currentUserID();
+		$this->InitiatorID     = Member::currentUserID();
 		$this->write();
 
 		$this->Users()->addMany($definition->Users());
@@ -307,10 +313,10 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * Returns a set of all Members that are assigned to this instance, either directly or via a group.
+	 * Returns a list of all Members that are assigned to this instance, either directly or via a group.
 	 *
 	 * @todo   This could be made more efficient.
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function getAssignedMembers() {
 		$list    = new ArrayList();
@@ -349,12 +355,22 @@ class WorkflowInstance extends DataObject {
 			}
 			$member = Member::currentUser();
 		}
-
+		
 		if(Permission::checkMember($member, "ADMIN")) {
 			return true;
 		}
 
-		return $member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID);
+		// This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to users assigned-to that WorkflowInstance.
+		// However; lowly authors (users entering items into a workflow) are not assigned - but we still wish them to see their submitted content.
+		$inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
+		// This method is used in more than just the ModelAdmin. Check for the current controller to determine where canView() expectations differ
+		if(Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
+			if($this->getVersionedConnection($this->getTarget()->ID,$member->ID,$this->DefinitionID)) {
+				return true;
+			}
+			return false;
+		}
+		return $inWorkflowGroupOrUserTables;
 	}
 
 	/**
@@ -502,5 +518,42 @@ class WorkflowInstance extends DataObject {
 		$action = $this->CurrentAction();
 		$action->doFrontEndAction($data, $form, $request);
 	}
-	
+
+	/*
+	 * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
+	 * @see {@link $this->userHasAccess()}
+	 *
+	 * @param number $recordID
+	 * @param number $userID
+	 * @param number $definitionID
+	 * @param number $wasPublished
+	 * @return boolean
+	 */
+	public function getVersionedConnection($recordID,$userID,$definitionID,$wasPublished=0) {
+		// Turn this into an array and run through implode()
+		$filter = "\"AuthorID\" = '".$userID."' AND \"RecordID\" = '".$recordID."' AND \"WorkflowDefinitionID\" = '".$definitionID."' AND WasPublished = '".$wasPublished."'";
+		$query = new SQLQuery();
+		$query->setFrom('SiteTree_versions')->setSelect('COUNT(ID)')->setWhere($filter);
+		$query->firstRow();
+		$hasAuthored = $query->execute();
+		if($hasAuthored) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * Simple method to retrieve the current action, on the current WorkflowInstance
+	 */
+	public function getCurrentAction() {
+		$join = '"WorkflowAction"."ID" = "WorkflowActionInstance"."BaseActionID"';
+		$action = WorkflowAction::get()
+					->leftJoin('WorkflowActionInstance',$join)
+					->where('"WorkflowActionInstance"."ID" = '.$this->CurrentActionID)
+					->first();
+		if(!$action) {
+			return 'N/A';
+		}
+		return $action->getField('Title');
+	}
 }
