@@ -214,4 +214,16 @@ class WorkflowActionInstance extends DataObject {
 		}
 		return false;
 	}
+	
+	public function canView($member = null) {
+		return $this->Workflow()->canView($member);
+	}
+	
+	public function canEdit($member = null) {
+		return $this->Workflow()->canEdit($member);
+	}
+	
+	public function canDelete($member = null) {
+		return $this->Workflow()->canDelete($member);
+	}
 }
