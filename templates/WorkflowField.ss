@@ -29,7 +29,7 @@
 						<a class="ss-ui-button workflow-field-open-dialog" href="$Top.Link("action")/item/$ID/edit" data-icon="pencil">
 							Edit
 						</a>
-						<a class="ss-ui-button workflow-field-open-dialog" href="$Top.Link("transition")/new/$ID/edit" data-icon="chain--arrow">
+						<a class="ss-ui-button workflow-field-open-dialog<% if $disableTransitionButton %> workflow-field-action-disabled<% end_if %>" href="$Top.Link("transition")/new/$ID/edit" data-icon="chain--arrow">
 							Add Transition
 						</a>
 						<a href="$Top.Link("action")/item/$ID/delete?SecurityID=$SecurityID" class="ss-ui-button workflow-field-delete" data-icon="cross-circle">
