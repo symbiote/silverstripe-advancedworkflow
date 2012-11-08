@@ -90,6 +90,13 @@ class WorkflowEngineTest extends SapphireTest {
 		
 	}
 
+	public function testCreateDefinitionWithEmptyTitle() {
+		$definition = new WorkflowDefinition();
+		$definition->Title = "";
+		$definition->write();
+		$this->assertContains('My Workflow',$definition->Title,'Workflow created without title is assigned a default title.');
+	}
+
 	protected function createDefinition() {
 		$definition = new WorkflowDefinition();
 		$definition->Title = "Dummy Workflow Definition";
