@@ -95,6 +95,19 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			$formFieldBottom->setForm($form);
 			$form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
 		}
+		
+		$grid = $form->Fields()->dataFieldByName('WorkflowDefinition');
+		if ($grid) {
+			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemEditFormCallback(function ($form) {
+				$record = $form->getRecord();
+				if ($record) {
+					$record->updateAdminActions($form->Actions());
+				}
+			});
+			
+			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemRequestClass('WorkflowDefinitionItemRequestClass');
+		}
+		
 		return $form;
 	}
 
@@ -196,5 +209,15 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		if($fieldName == 'SubmittedObjects') {
 			return $this->workflowService->userSubmittedItems($user);
 		}
+	}
+}
+
+class WorkflowDefinitionItemRequestClass extends GridFieldDetailForm_ItemRequest {
+	public function updatetemplateversion($data, Form $form, $request) {
+		$record = $form->getRecord();
+		if ($record) {
+			$record->updateFromTemplate();
+		}
+		return $form->loadDataFrom($form->getRecord())->forAjaxTemplate();
 	}
 }

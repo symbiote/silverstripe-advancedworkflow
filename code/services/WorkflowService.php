@@ -7,7 +7,50 @@
  * @package advancedworkflow
  */
 class WorkflowService implements PermissionProvider {
+	
+	/**
+	 * An array of templates that we can create from
+	 * 
+	 * @var array
+	 */
+	protected $templates;
+	
 	public function  __construct() {
+	}
+
+	
+	/**
+	 * Set the list of templates that can be created
+	 * 
+	 * @param type $templates 
+	 */
+	public function setTemplates($templates) {
+		$this->templates = $templates;
+	}
+	
+	/**
+	 * Return the list of available templates
+	 * @return type 
+	 */
+	public function getTemplates() {
+		return $this->templates;
+	}
+	
+	/**
+	 * Get a template by name
+	 * 
+	 * @param string $name 
+	 * @return WorkflowTemplate
+	 */
+	public function getNamedTemplate($name) {
+		if (!is_array($this->templates)) {
+			return;
+		}
+		foreach ($this->templates as $template) {
+			if ($template->getName() == $name) {
+				return $template;
+			}
+		}
 	}
 
 	/**
@@ -213,6 +256,33 @@ class WorkflowService implements PermissionProvider {
 		$userInstances = DataList::create('WorkflowInstance')->filter($filter)->sort('LastEdited DESC');
 
 		return $userInstances;
+	}
+	
+	/**
+	 * Generate a workflow definition based on a tempate
+	 * 
+	 * @param WorkflowDefinition $definition
+	 * @param string $templateName 
+	 */
+	public function defineFromTemplate(WorkflowDefinition $definition, $templateName) {
+		$template = null;
+		/* @var $template WorkflowTemplate */
+		
+		if (!is_array($this->templates)) {
+			return;
+		}
+		
+		$template = $this->getNamedTemplate($templateName);
+		
+		if (!$template) {
+			return;
+		}
+
+		$template->createActions($definition);
+		
+		// Set the version and do the write at the end so that we don't trigger an infinite loop!!
+		$definition->TemplateVersion = $template->getVersion();
+		$definition->write();
 	}
 
 	/**
