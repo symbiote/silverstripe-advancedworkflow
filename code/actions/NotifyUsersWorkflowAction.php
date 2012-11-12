@@ -66,19 +66,13 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	}
 
 	public function execute(WorkflowInstance $workflow) {
-		$email   = new Email;
 		$members = $workflow->getAssignedMembers();
-		$emails  = '';
 
 		if(!$members || !count($members)) return;
 
-		foreach($members as $member) {
-			if($member->Email) $emails .= "$member->Email, ";
-		}
-		
 		$context   = $this->getContextFields($workflow->getTarget());
 		$member    = $this->getMemberFields();
-		$initiator    = $this->getMemberFields($workflow->Initiator());
+		$initiator = $this->getMemberFields($workflow->Initiator());
 		$variables = array();
 		
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
@@ -92,7 +86,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		))->renderWith('CommentHistory');
 
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
-		
+
 		$item = $workflow->customise(array(
 			'Items'		=> $workflow->Actions(),
 			'Member'	=> Member::currentUser(),
@@ -113,13 +107,20 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		} else {
 			$view = SSViewer::fromString($this->EmailTemplate);			
 		}
-		$body = $view->process($item);
 		
-		$email->setSubject($subject);
-		$email->setFrom(str_replace(array_keys($variables), array_values($variables), $this->EmailFrom));
-		$email->setBcc(substr($emails, 0, -2));
-		$email->setBody($body);
-		$email->send();
+		$body = $view->process($item);
+		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
+
+		foreach($members as $member) {
+			if($member->Email) {
+				$email = new Email;
+				$email->setTo($member->Email);
+				$email->setSubject($subject);
+				$email->setFrom($from);
+				$email->setBody($body);
+				$email->send();
+			}
+		}
 
 		return true;
 	}
