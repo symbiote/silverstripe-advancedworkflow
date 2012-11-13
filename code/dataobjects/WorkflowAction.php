@@ -161,7 +161,9 @@ class WorkflowAction extends DataObject {
 		$fields = new FieldList(new TabSet('Root'));
 		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
 		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
-		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
+		$titleField = new TextField('Title', _t('WorkflowAction.TITLE', 'Title'));
+		$titleField->setDescription('The Title is used as the button label for this Workflow Action');
+		$fields->addFieldToTab('Root.Main', $titleField);
 		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
 		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
 		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', _t('WorkflowAction.ALLOW_COMMENTING','Allow Commenting?'),$this->AllowCommenting));
