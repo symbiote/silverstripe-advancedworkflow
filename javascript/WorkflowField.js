@@ -146,4 +146,31 @@ jQuery.entwine("workflow", function($) {
 			return false;
 		}
 	});
+
+	/*
+	 * Simple implementation of very feature-heave jQuery-UI timepicker widget
+	 * @see: http://trentrichardson.com/examples/timepicker/ for more config options
+	 *
+	 * This will need some more work when it comes to implementing i18n functionality. Fortunately, the library handles these as option-settings quite well.
+	 */
+	$("#Root_PublishingSchedule").entwine({
+		onclick: function() {
+			if(typeof $.fn.timepicker() !== 'object') {
+				return false;
+			}
+			var field = $('input.hasTimePicker');
+			var defaultTime = function() {
+				var date = new Date();
+				return date.getHours()+':'+date.getMinutes();
+			}
+			var pickerOpts = {
+				useLocalTimezone: true,
+				defaultValue: defaultTime,
+				controlType: 'select',
+				timeFormat: 'HH:mm'
+			};
+			field.timepicker(pickerOpts);
+			return false;
+		}
+	});
 });
