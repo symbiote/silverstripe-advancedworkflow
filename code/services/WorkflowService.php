@@ -144,29 +144,76 @@ class WorkflowService implements PermissionProvider {
 	 */
 	public function usersWorkflows(Member $user) {
 		
-		$all = new DataObjectSet();
-		
 		$groupIds = $user->Groups()->column('ID');
-		$groupJoin = ' INNER JOIN "WorkflowInstance_Groups" "wig" ON "wig"."WorkflowInstanceID" = "WorkflowInstance"."ID"';
+		
+		$groupInstances = null;
+		
+		$filter = array('');
 		
 		if (is_array($groupIds)) {
-			$filter = '("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\') AND "wig"."GroupID" IN (' . implode(',', $groupIds).')';
-			$groupAssigned = DataObject::get('WorkflowInstance', $filter, '"Created" DESC', $groupJoin);
-			if ($groupAssigned) {
-				$all->merge($groupAssigned);
-			}
+			$groupInstances = DataList::create('WorkflowInstance')->filter(array('WorkflowStatus:Negation' => 'Complete',  'Group.ID:ExactMatchMulti' => $groupIds));
 		}
 
-		$userJoin = ' INNER JOIN "WorkflowInstance_Users" "wiu" ON "wiu"."WorkflowInstanceID" = "WorkflowInstance"."ID"';
-		$filter = '("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\') AND "wiu"."MemberID" = ' . $user->ID;
-		$userAssigned = DataObject::get('WorkflowInstance', $filter, '"Created" DESC', $userJoin);
-		if ($userAssigned) {
-			$all->merge($userAssigned);
+		$userInstances = DataList::create('WorkflowInstance')->filter(array('WorkflowStatus:Negation' => 'Complete', 'Users.ID:ExactMatch' => $user->ID));
+		
+		if ($userInstances) {
+			$userInstances = $userInstances->toArray();
+		} else {
+			$userInstances = array();
 		}
 		
-		return $all;
+		if ($groupInstances) {
+			$groupInstances = $groupInstances->toArray();
+		} else {
+			$groupInstances = array();
+		}
+
+		$all = array_merge($groupInstances, $userInstances);
+		
+		return ArrayList::create($all);
 	}
-	
+
+	/**
+	 * Get items that the passed-in user has awaiting for them to action
+	 * 
+	 * @param Member $member
+	 * @return DataList $userInstances
+	 */
+	public function userPendingItems(Member $user) {
+		$filter = array('WorkflowStatus:Negation' => 'Complete');
+		// Don't restrict anything for ADMIN users
+		$userInstances = DataList::create('WorkflowInstance')->filter($filter)->sort('LastEdited DESC');
+		if(Permission::checkMember($user, 'ADMIN')) {
+			return $userInstances;
+		}
+		$instances = new ArrayList();
+		foreach($userInstances as $inst) {
+			$instToArray = $inst->getAssignedMembers();
+			if(!count($instToArray)>0 || !in_array($user->ID,$instToArray->column())) {
+				continue;
+			}
+			$instances->push($inst);
+		}
+		
+		return $instances;
+	}
+
+	/**
+	 * Get items that the passed-in user has submitted for workflow review
+	 *
+	 * @param Member $member
+	 * @return DataList $userInstances
+	 */
+	public function userSubmittedItems(Member $user) {
+		$filter = array('WorkflowStatus:Negation' => 'Complete', 'InitiatorID' => $user->ID);
+		// Don't restrict anything for ADMIN users
+		if(Permission::checkMember($user, 'ADMIN')) {
+			array_pop($filter);
+		}
+		$userInstances = DataList::create('WorkflowInstance')->filter($filter)->sort('LastEdited DESC');
+
+		return $userInstances;
+	}
 
 	/**
 	 * Reorders actions within a definition
@@ -197,7 +244,7 @@ class WorkflowService implements PermissionProvider {
 			'APPLY_WORKFLOW' => array(
 				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'Apply workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can apply workflow to items'),
+				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can apply workflows to items'),
 				'sort' => 0
 			),
 			'VIEW_ACTIVE_WORKFLOWS' => array(
@@ -209,13 +256,11 @@ class WorkflowService implements PermissionProvider {
 			'REASSIGN_ACTIVE_WORKFLOWS' => array(
 				'name'     => _t('AdvancedWorkflow.REASSIGNACTIVE', 'Reassign active workflows'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-				'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Reassign active workflows to different users and groups'),
+				'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Users can reassign active workflows to different users and groups'),
 				'sort'     => 0
 			)
 		);
 	}
-
-
 	
 }
 

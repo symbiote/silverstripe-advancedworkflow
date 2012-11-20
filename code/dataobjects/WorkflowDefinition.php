@@ -206,4 +206,32 @@ class WorkflowDefinition extends DataObject {
 		$workflow_defs = DataObject::get('WorkflowDefinition');
 		self::$workflow_defs = $workflow_defs->map()->toArray();
 	}
+
+	public function canView($member=null) {
+		return $this->userHasAccess($member);
+	}
+	public function canEdit($member=null) {
+		return $this->userHasAccess($member);
+	}
+	public function canDelete($member=null) {
+		return $this->userHasAccess($member);
+	}
+
+	/**
+	 * Checks whether the passed user is able to view this ModelAdmin
+	 *
+	 * @param $memberID
+	 */
+	protected function userHasAccess($member) {
+		if (!$member) {
+			if (!Member::currentUserID()) {
+				return false;
+			}
+			$member = Member::currentUser();
+		}
+
+		if(Permission::checkMember($member, "VIEW_ACTIVE_WORKFLOWS")) {
+			return true;
+		}
+	}
 }
