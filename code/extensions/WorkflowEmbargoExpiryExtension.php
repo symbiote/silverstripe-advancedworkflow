@@ -39,8 +39,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		
 		if ($effective) {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
-				$dt = new Datetimefield('DesiredPublishDate', _t('AdvancedWorkflow.REQUESTED_PUBLISH_DATE', 'Requested dublish date and time')),
+				$dt = new Datetimefield('DesiredPublishDate', _t('AdvancedWorkflow.REQUESTED_PUBLISH_DATE', 'Requested publish date and time')),
 				$ut = new Datetimefield('DesiredUnPublishDate', _t('AdvancedWorkflow.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date and time')),
+			));
+
+			$fields->addFieldsToTab('Root.PublishingSchedule', array(
+				Datetimefield::create('PublishOnDate', _t('AdvancedWorkflow.PUBLISH_ON', 'Publish date and time'))->setDisabled(true),
+				Datetimefield::create('UnPublishOnDate', _t('AdvancedWorkflow.UNPUBLISH_ON', 'Un-publish date and time'))->setDisabled(true),
 			));
 		} else {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
