@@ -24,5 +24,3 @@ en:
     GridFieldTitleSubmittedAll: All submitted items
     GridFieldTitleAssignedYour: Your pending items
     GridFieldTitleSubmittedYour: Your submitted items
-    GridFieldTextPendingNoData: You're not currently assigned to any workflow-dependent content.
-    GridFieldTextSubmittedNoData: You have't yet submitted any content into a workflow.
