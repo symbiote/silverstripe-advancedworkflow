@@ -8,7 +8,6 @@
 DataObject::add_extension('SiteTree', 'WorkflowApplicable');
 
 Object::add_extension('CMSPageEditController', 'AdvancedWorkflowExtension');
-Object::add_extension('SiteTree', 'WorkflowEmbargoExpiryExtension');
 
 define('ADVANCED_WORKFLOW_DIR', basename(dirname(__FILE__)));
 

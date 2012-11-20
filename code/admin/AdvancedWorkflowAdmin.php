@@ -39,7 +39,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		
 		// Show items submitted into a workflow for current user to action
 		$fieldName = 'PendingObjects';
-		$pending = $this->workflowService->userObjects(Member::currentUser(), $fieldName);
+		$pending = $this->userObjects(Member::currentUser(), $fieldName);
 
 		// Pending/Submitted items GridField Config
 		$config = new GridFieldConfig_Base();
@@ -73,7 +73,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 
 		// Show items submitted into a workflow by current user
 		$fieldName = 'SubmittedObjects';
-		$submitted = $this->workflowService->userObjects(Member::currentUser(), $fieldName);
+		$submitted = $this->userObjects(Member::currentUser(), $fieldName);
 		if($submitted->count()) {
 			$formFieldBottom = GridField::create(
 				$fieldName,
@@ -149,5 +149,52 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			}
 		}
 		return $fieldFormatting;
+	}
+
+	/**
+	 * Get WorkflowInstance Target objects to show for users in initial gridfield(s)
+	 *
+	 * @param Member $member
+	 * @param string $fieldName The name of the gridfield that determines which dataset to return
+	 * @return DataList
+	 * @todo Add the ability to see embargo/expiry dates in report-gridfields at-a-glance if QueuedJobs module installed
+	 */
+	public function userObjects(Member $user, $fieldName) {
+		$list = new ArrayList();
+		$userWorkflowInstances = $this->getFieldDependentData($user, $fieldName);
+		foreach($userWorkflowInstances as $instance) {
+			if(!$instance->TargetID || !$instance->DefinitionID) {
+				continue;
+			}
+			// @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe define $this->workflowParent()
+			$effectiveWorkflow = DataObject::get_by_id('WorkflowDefinition', $instance->DefinitionID);
+			$target = $instance->getTarget();
+			if(!is_object($effectiveWorkflow) || !$target) {
+				continue;
+			}
+			$instance->setField('WorkflowTitle',$effectiveWorkflow->getField('Title'));
+			$instance->setField('WorkflowCurrentAction',$instance->getCurrentAction());
+			// Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
+			$instance->setField('Title',$target->getField('Title'));
+			$instance->setField('LastEdited',$target->getField('LastEdited'));
+			$instance->setField('ObjectRecordID',$target->getField('ID')); // Forces a different default ID for linking to the pagesAdmin from a GridField
+			$list->push($instance);
+		}
+		return $list;
+	}
+
+	/*
+	 * Return content-object data depending on which gridfeld is calling for it
+	 *
+	 * @param Member $user
+	 * @param string $fieldName
+	 */
+	public function getFieldDependentData(Member $user, $fieldName) {
+		if($fieldName == 'PendingObjects') {
+			return $this->workflowService->userPendingItems($user);
+		}
+		if($fieldName == 'SubmittedObjects') {
+			return $this->workflowService->userSubmittedItems($user);
+		}
 	}
 }
