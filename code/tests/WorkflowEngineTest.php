@@ -42,6 +42,15 @@ class WorkflowEngineTest extends SapphireTest {
 		$transitions = $actions->find('Title', 'Step One')->Transitions();
 		$this->assertEquals(1, $transitions->Count());
 	}
+	
+	public function testGetUserWorkflows() {
+		
+		// @TODO Complete soon
+
+		$instance = new WorkflowInstance();
+		$instance->write();
+
+	}
 
 	public function testExecuteImmediateWorkflow() {
 		$def = $this->createDefinition();

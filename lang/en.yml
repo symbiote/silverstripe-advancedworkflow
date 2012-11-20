@@ -1,0 +1,26 @@
+en:
+  WorkflowDefinition:
+    INTROMAIN: 'A basic name and description for your workflow. You can add more detail in the next step. See {helpText} for more information.'
+    INTROWORKFLOW: Create new or edit existing workflow actions and transitions.
+    TITLE: Title
+    DESCRIPTION: Description
+    USERS: Users
+    GROUPS: Groups
+    SENDREMINDERDAYSBEFORE: 'Send reminder email after '
+    SENDREMINDERDAYSAFTER: ' days without action.'
+    REMINDEREMAIL: Reminder Email
+    WORKFLOW: Workflow
+    ADDAFTERSAVING: You can add workflow steps after you save for the first time.
+  WorkflowAction:
+    THEACTION: The Action
+    THEACTIONINTRO: Administer an action as a part of your workflow
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: Assign Users
+    USERS: Users
+    GROUPS: Groups
+    INITIATOR: Assign Initiator
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: All pending items
+    GridFieldTitleSubmittedAll: All submitted items
+    GridFieldTitleAssignedYour: Your pending items
+    GridFieldTitleSubmittedYour: Your submitted items
