@@ -137,7 +137,7 @@ class WorkflowActionInstance extends DataObject {
 	 * If this action returns only one valid transition it will be immediately
 	 * followed; otherwise the user will decide which transition to follow.
 	 *
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function getValidTransitions() {
 		$available = $this->BaseAction()->Transitions();
