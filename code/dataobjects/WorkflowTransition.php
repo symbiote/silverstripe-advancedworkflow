@@ -116,7 +116,8 @@ class WorkflowTransition extends DataObject {
 			$typeOptions
 			));
 
-		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), 'Member'));
+		$members = Member::get();
+		$fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
 		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
 
 		$this->extend('updateCMSFields', $fields);
