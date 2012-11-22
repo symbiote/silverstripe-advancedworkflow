@@ -24,6 +24,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'workflowService'		=> '%$WorkflowService',
 	);
 
+	// This "config" option, might better be handled in _config
 	public static $showTimePicker = true;
 
 	/**

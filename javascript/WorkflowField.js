@@ -148,14 +148,14 @@ jQuery.entwine("workflow", function($) {
 	});
 
 	/*
-	 * Simple implementation of very feature-heave jQuery-UI timepicker widget
+	 * Simple implementation of the jQuery-UI timepicker widget
 	 * @see: http://trentrichardson.com/examples/timepicker/ for more config options
 	 *
 	 * This will need some more work when it comes to implementing i18n functionality. Fortunately, the library handles these as option-settings quite well.
 	 */
 	$("#Root_PublishingSchedule").entwine({
 		onclick: function() {
-			if(typeof $.fn.timepicker() !== 'object') {
+			if(typeof $.fn.timepicker() !== 'object' || !$('input.hasTimePicker').length >0) {
 				return false;
 			}
 			var field = $('input.hasTimePicker');
