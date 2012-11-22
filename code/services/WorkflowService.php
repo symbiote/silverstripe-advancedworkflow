@@ -76,7 +76,7 @@ class WorkflowService implements PermissionProvider {
 	/**
 	 * Get all the available workflow definitions
 	 *
-	 * @return DataObjectSet
+	 * @return DataList
 	 */
 	public function getDefinitions() {
 		return DataList::create('WorkflowDefinition');
@@ -139,7 +139,7 @@ class WorkflowService implements PermissionProvider {
 	 * @param Member $user 
 	 *				The user to get workflows for
 	 * 
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 *				The list of workflow instances this user owns
 	 */
 	public function usersWorkflows(Member $user) {

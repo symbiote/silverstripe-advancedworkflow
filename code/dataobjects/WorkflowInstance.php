@@ -272,7 +272,7 @@ class WorkflowInstance extends DataObject {
 		$transitions = $action->getValidTransitions();
 		// if there's JUST ONE transition, then we need should
 		// immediately follow it.
-		if ($transitions && $transitions->Count() == 1) {
+		if ($transitions && $transitions->count() == 1) {
 			return $transitions->First();
 		}
 	}
