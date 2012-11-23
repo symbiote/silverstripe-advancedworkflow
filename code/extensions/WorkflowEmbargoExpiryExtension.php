@@ -196,7 +196,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
 		$msg = '';
 		if(strlen($data['DesiredPublishDate']) && $scheduledEmbargo > time()) {
-			$scheduledEmbargo = date('d/m/Y H:i',$scheduledEmbargo);
+			$scheduledEmbargo = date('Y-m-d H:i',$scheduledEmbargo);
 			$msg = _t(
 				'WorkflowEmbargoExpiryExtension.EMBARGO_ERROR_PT1',
 				"This content is already under embargo, expiring at: ")
