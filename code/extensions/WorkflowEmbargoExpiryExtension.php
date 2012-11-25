@@ -196,7 +196,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
 		$msg = '';
 		if(strlen($data['DesiredPublishDate']) && $scheduledEmbargo > time()) {
-			$scheduledEmbargo = date('Y-m-d H:i',$scheduledEmbargo);
+			$scheduledEmbargo = $this->getUserDate($data['PublishOnDateOwner']);
 			$msg = _t(
 				'WorkflowEmbargoExpiryExtension.EMBARGO_ERROR_PT1',
 				"This content is already under embargo, expiring at: ")
@@ -226,5 +226,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			self::$extendedMethodReturn['fieldMsg'] = $msg;
 		}
 		return self::$extendedMethodReturn;
+	}
+
+	/*
+	 * Format a date according to member/user preferences
+	 *
+	 * @param string $date
+	 * @return string $date
+	 */
+	public function getUserDate($date) {
+		$date = new Zend_Date($date);
+		$member = Member::currentUser();
+		return $date->toString($member->getDateFormat().' '.$member->getTimeFormat());
 	}
 }
