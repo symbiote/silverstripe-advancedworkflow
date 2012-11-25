@@ -1,3 +1,13 @@
+2012-11-26 v2.1.0
+-----------------
+
+* Augmented logic from 1.6.0 and implemented basic UI to show user's submitted and pending target content-objects
+* Added descriptions, validation and jQuery UI timepicker widget to future publish/unpublish date UI and functionality
+* Bugfixes for errors shown in CMS UI when creating/editing workflow definitions
+* Bugfix for users not receiving correctly formatted "To" headers for NotifyUsersWorkflowAction
+* Minor inline doc corrections leftover from v2.4 --> v3.0 upgrade
+* For a detailed list of changes, please visit: https://github.com/silverstripe-australia/advancedworkflow/issues
+
 2012-07-25 v2.0.0
 -----------------
 
