@@ -197,9 +197,32 @@ class WorkflowAction extends DataObject {
 	 *
 	 * @return boolean true if we should disable the button, false otherwise
 	 */
-	public function disableTransitionButton() {
-		if($this->WorkflowDef()->numChildren() == 1) {
+	public function disableButtonAddTransition() {
+		if($this->WorkflowDef()->numChildren() == 1 || $this->disableButton()) {
 			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * Returns true if a button should be disabled due to a low level of user-permissions on the current WorkflowAction.
+	 * Ultimately relies on WorkflowInstance->userHasAccess() to decide if a user has permission to edit a transition or action, on their workflowInstance.
+	 *
+	 * @todo Should we be taking account of $this->AllowEditing()??
+	 * @todo Might this be better defined on WorkflowService? There is an almost identical method defined on WorkflowTransition
+	 *
+	 * @param Member $member
+	 * @return boolean
+	 */
+	public function disableButton($member = null) {
+		if(Permission::checkMember($member, 'ADMIN')) {
+			return false;
+		}
+		if(!$member) {
+			$member = Member::currentUser();
+		}
+		if(!$this->WorkflowDef()->canEdit($member)) {
+			return true; // disable
 		}
 		return false;
 	}
