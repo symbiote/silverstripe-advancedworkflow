@@ -25,7 +25,14 @@ en:
     GridFieldTitleAssignedYour: Your pending items
     GridFieldTitleSubmittedYour: Your submitted items
   WorkflowEmbargoExpiryExtension:
+    REQUESTED_PUBLISH_DATE: Requested publish date
+    REQUESTED_UNPUBLISH_DATE: Requested un-publish date
+    PUBLISH_ON: Scheduled publish date
+    UNPUBLISH_ON: Scheduled un-publish date
     REQUESTED_PUBLISH_DATE_H3: Expiry and Embargo
     REQUESTED_PUBLISH_DATE_INTRO: Enter a date and/or time to specify embargo and expiry dates.
-    WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: These settings won't take effect until any approval actions are run
-    WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: If an embargo is already set, adding a new one prior to that date's passing will overwrite it
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: These settings won't take effect until any approval actions are run
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: If an embargo is already set, adding a new one prior to that date's passing will overwrite it
+    EMBARGO_SCHED_ERROR_PT1: 'This content is already under embargo, expiring at:'
+    EMBARGO_SCHED_ERROR_PT2: please wait until this date has passed, before applying a new embargo date.
+    EMBARGO_DSIRD_ERROR: This date has already passed, please enter a valid future date.
