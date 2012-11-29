@@ -33,6 +33,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public $workflowService;
 
 	/**
+	 * @var Is a workflow in effect?
+	 */
+	public $isWorkflowInEffect = false;
+
+	/**
 	 *
 	 * @var array $extendedMethodReturn A basic extended validation routine method return format
 	 */
@@ -56,12 +61,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js');
 		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
 
+		$this->setIsWorkflowInEffect();
 
-		// if there is a workflow applied, we can't set the publishing date directly, only the 'desired'
-		// publishing date
-		$effective = $this->workflowService->getDefinitionFor($this->owner);
-		
-		if ($effective) {
+		if ($this->getIsWorkflowInEffect()) {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
 				new HeaderField('PublishDateHeader', _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_H3', 'Expiry and Embargo'), 3),
 				new LiteralField('PublishDateIntro', $this->getIntroMessage('PublishDateIntro')),
@@ -72,8 +74,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				// Readonly fields do not store any value, so add a hidden-field and set its value to the current PublishOnDate so we can perform some validation
 				$uth = new HiddenField('PublishOnDateOwner')
 			));
+			// Set a value to our hidden field
+			$uth->setValue($this->owner->PublishOnDate);
 		} else {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
+				new HeaderField('PublishDateHeader', _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_H3', 'Expiry and Embargo'), 3),
+				new LiteralField('PublishDateIntro', $this->getIntroMessage('PublishDateIntro')),
 				$dt = new Datetimefield('PublishOnDate', _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date')),
 				$ut = new Datetimefield('UnPublishOnDate', _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date')),
 			));
@@ -81,8 +87,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 		$dt->getDateField()->setConfig('showcalendar', true);
 		$ut->getDateField()->setConfig('showcalendar', true);
-		// Set a value to our hidden field
-		$uth->setValue($this->owner->PublishOnDate);
 
 		// Enable a jQuery-UI timepicker widget
 		if(self::$showTimePicker) {
@@ -157,6 +161,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				'BULLET_2'=>_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_2','If an embargo is already set, adding a new one prior to that date\'s passing will overwrite it')
 			)
 		);
+		// If there's no effective workflow, no need for the first bullet-point
+		if(!$this->getIsWorkflowInEffect()) {
+			$parts['PublishDateIntro']['BULLET_1'] = false;
+		}
 		return $parts[$key];
 	}
 
@@ -191,6 +199,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @return array
 	 */
 	public function extendedRequiredFieldsCheckEmbargoDates($data = null) {
+		if(!$this->getIsWorkflowInEffect() || !isset($data['PublishOnDateOwner'])) {
+			return self::$extendedMethodReturn;
+		}
 		$desiredEmbargo = strtotime($data['DesiredPublishDate']);
 		$scheduledEmbargo = strtotime($data['PublishOnDateOwner']);
 		$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
@@ -238,5 +249,18 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$date = new Zend_Date($date);
 		$member = Member::currentUser();
 		return $date->toString($member->getDateFormat().' '.$member->getTimeFormat());
+	}
+
+	/*
+	 * Sets property as boolean true|false if an effective workflow is found or not
+	 */
+	public function setIsWorkflowInEffect() {
+		// if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date
+		$effective = $this->workflowService->getDefinitionFor($this->owner);
+		$this->isWorkflowInEffect = $effective?true:false;
+	}
+
+	public function getIsWorkflowInEffect() {
+		return $this->isWorkflowInEffect;
 	}
 }

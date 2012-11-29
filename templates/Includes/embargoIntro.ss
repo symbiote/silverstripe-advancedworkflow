@@ -1,7 +1,9 @@
 
 <p>$INTRO</p>
 <ul>
-	<li>$BULLET_1</li>
+	<% if BULLET_1 %>
+		<li>$BULLET_1</li>
+	<% end_if %>
 	<li>$BULLET_2</li>
 </ul>
 <br/>
