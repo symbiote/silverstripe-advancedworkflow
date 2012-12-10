@@ -129,5 +129,41 @@ class WorkflowEngineTest extends SapphireTest {
 
 		return $definition;
 	}
+	
+	
+	public function testCreateFromTemplate() {
+		$structure = array(
+			'First step'	=> array(
+				'type'		=> 'AssignUsersToWorkflowAction',
+				'transitions'	=> array(
+					'second'	=> 'Second step'
+				)
+			),
+			'Second step'	=> array(
+				'type'		=> 'NotifyUsersWorkflowAction',
+				'transitions'	=> array(
+					'Approve'	=> 'Third step'
+				)
+			),
+		);
+		
+		$template = new WorkflowTemplate('Test');
+		
+		$template->setStructure($structure);
+		
+		$actions = $template->createActions();
+		
+		$this->assertEquals(2, count($actions));
+		$this->assertTrue(isset($actions['First step']));
+		$this->assertTrue(isset($actions['Second step']));
+		
+		$this->assertTrue($actions['First step']->exists());
+		
+		$transitions = $actions['First step']->Transitions();
+
+		$this->assertTrue($transitions->count() == 1);
+		
+		
+	}
 
 }

@@ -1,0 +1,49 @@
+---
+Name: defaultworkflows
+---
+Injector:
+  SimpleReviewApprove:
+    class: WorkflowTemplate
+    constructor:
+      - Review and Approve
+      - Single step review and approve. Make sure to update the Apply for approval and Notify users steps!
+      - 0.2
+    properties:
+      structure:
+        Apply for approval:
+          type: AssignUsersToWorkflowAction
+          transitions: 
+            notify: Notify users
+        Notify users:
+          type: NotifyUsersWorkflowAction
+          transitions:
+            approval: Approval
+        Approval:
+          type: SimpleApprovalWorkflowAction
+          transitions:
+            Approve: Publish
+            Reject: Reject changes
+        Publish:
+          type: PublishItemWorkflowAction
+          transitions: 
+            assign: Assign Initiator Publish
+        Assign Initiator Publish:
+          type: AssignUsersToWorkflowAction
+          transitions: 
+            notify: Notify Initiator Publish
+        Notify Initiator Publish:
+          type: NotifyUsersWorkflowAction
+        Reject changes:
+          type: CancelWorkflowAction
+          transitions: 
+            assign: Assign Initiator Cancel
+        Assign Initiator Cancel:
+          type: AssignUsersToWorkflowAction
+          transitions: 
+            notify: Notify Initiator Cancel
+        Notify Initiator Cancel:
+          type: NotifyUsersWorkflowAction
+  WorkflowService:
+    properties:
+      templates:
+        - %$SimpleReviewApprove
