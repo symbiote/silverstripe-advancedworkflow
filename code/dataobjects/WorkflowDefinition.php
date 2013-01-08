@@ -17,10 +17,12 @@
  */
 class WorkflowDefinition extends DataObject {
 	public static $db = array(
-		'Title'       => 'Varchar(128)',
-		'Description' => 'Text',
-		'RemindDays'  => 'Int',
-		'Sort'        => 'Int'
+		'Title'				=> 'Varchar(128)',
+		'Description'		=> 'Text',
+		'Template'			=> 'Varchar',
+		'TemplateVersion'	=> 'Varchar',
+		'RemindDays'		=> 'Int',
+		'Sort'				=> 'Int'
 	);
 
 	public static $default_sort = 'Sort';
@@ -51,6 +53,15 @@ class WorkflowDefinition extends DataObject {
 
 	public static $workflow_defs = array();
 
+	public static $dependencies = array(
+		'workflowService'		=> '%$WorkflowService',
+	);
+	
+	/**
+	 * @var WorkflowService
+	 */
+	public $workflowService;
+
 	/**
 	 * Gets the action that first triggers off the workflow
 	 *
@@ -72,6 +83,18 @@ class WorkflowDefinition extends DataObject {
 			$this->getDefaultWorkflowTitle();
 		}
 		parent::onBeforeWrite();
+	}
+	
+	/**
+	 * After we've been written, check whether we've got a template and to then
+	 * create the relevant actions etc.  
+	 */
+	public function onAfterWrite() {
+		parent::onAfterWrite();
+
+		if ($this->numChildren() == 0 && $this->Template && !$this->TemplateVersion) {
+			$this->workflowService->defineFromTemplate($this, $this->Template);
+		}
 	}
 
 	/**
@@ -109,10 +132,31 @@ class WorkflowDefinition extends DataObject {
 		}
 
 		if($this->ID) {
+			if ($this->Template) {
+				$template = $this->workflowService->getNamedTemplate($this->Template);
+				$fields->addFieldToTab('Root.Main', new ReadonlyField('Template', _t('WorkflowDefinition.TEMPLATE_NAME', 'Source Template'), $this->Template));
+				$fields->addFieldToTab('Root.Main', new ReadonlyField('TemplateDesc', _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'), $template ? $template->getDescription() : ''));
+				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', _t('WorkflowDefinition:TEMPLATE_VERSION', 'Template Version')));
+				$tv->setRightTitle(sprintf(_t('WorkflowDefinition.LATEST_VERSION', 'Latest version is %s'), $template->getVersion()));
+				
+			}
+
 			$fields->addFieldToTab('Root.Main', new WorkflowField(
 				'Workflow', _t('WorkflowDefinition.WORKFLOW', 'Workflow'), $this 
 			));
 		} else {
+			// add in the 'template' info
+			$templates = $this->workflowService->getTemplates();
+			if (is_array($templates)) {
+				$items = array('' => '');
+				foreach ($templates as $template) {
+					$items[$template->getName()] = $template->getName();
+				}
+				$templates = array_combine(array_keys($templates), array_keys($templates));
+				$fields->addFieldToTab('Root.Main', $dd = new DropdownField('Template', _t('WorkflowDefinition.CHOOSE_TEMPLATE', 'Choose template (optional)'), $items));
+				$dd->setRightTitle('If set, this workflow definition will be automatically updated if the template is changed');
+			}
+			
 			$message = _t(
 				'WorkflowDefinition.ADDAFTERSAVING',
 				'You can add workflow steps after you save for the first time.'
@@ -161,6 +205,24 @@ class WorkflowDefinition extends DataObject {
 		}
 
 		return $fields;
+	}
+	
+	public function updateAdminActions($actions) {
+		if ($this->Template) {
+			$template = $this->workflowService->getNamedTemplate($this->Template);
+			
+			if ($this->TemplateVersion != $template->getVersion()) {
+				$label = sprintf(_t('WorkflowDefinition.UPDATE_FROM_TEMLPATE', 'Update to latest template version (%s)'), $template->getVersion());
+				$actions->push($action = FormAction::create('updatetemplateversion', $label));
+			}
+		}
+	}
+	
+	public function updateFromTemplate() {
+		if ($this->Template) {
+			$template = $this->workflowService->getNamedTemplate($this->Template);
+			$template->updateDefinition($this);
+		}
 	}
 
 	/*
