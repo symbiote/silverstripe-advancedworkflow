@@ -29,6 +29,14 @@ To apply workflow to files, add this to _config.php:
 
 	Object::add_extension('File', 'FileWorkflowApplicable');
 
+Periodically run the Workflow Reminder Task by adding a task like this one to the crontab:
+
+	*/1 * * * * cd /var/www && sudo -u www ./sapphire/sake dev/tasks/WorkflowReminderTask
+
+This is an example only. The key is to run the task as the same user as the web server.
+
+You can run the task manually for testing by visiting the `/dev/tasks/WorkflowReminderTask` URL of your site.
+
 To enable embargo/expiry (scheduled publish/unpublish), use this:
 
 	Object::add_extension('SiteTree', 'WorkflowEmbargoExpiryExtension');
