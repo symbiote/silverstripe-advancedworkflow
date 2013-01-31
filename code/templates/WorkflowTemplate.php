@@ -140,7 +140,7 @@ class WorkflowTemplate {
 	 * @param WorkflowDefinition $definition
 	 * @return WorkflowAction
 	 */
-	protected function createAction($name, $actionTemplate, WorkflowDefinition $definition) {
+	protected function createAction($name, $actionTemplate, WorkflowDefinition $definition = null) {
 		$type = $actionTemplate['type'];
 		if (!$type || !class_exists($type)) {
 			throw new Exception('Invalid action class specified in template');
