@@ -24,6 +24,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$page->PublishOnDate = '2020-01-01 00:00:00';
 		$page->UnPublishOnDate = '2020-01-01 01:00:00';
 		
+		// Two writes are necessary for this to work on new objects
+		$page->write();
 		$page->write();
 		
 		$this->assertTrue($page->PublishJobID > 0);
@@ -37,6 +39,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$page->PublishOnDate = '2020-01-01 00:00:00';
 		$page->UnPublishOnDate = '2020-01-01 01:00:00';
 		
+		// Two writes are necessary for this to work on new objects
+		$page->write();
 		$page->write();
 		
 		$this->assertTrue($page->PublishJobID > 0);
