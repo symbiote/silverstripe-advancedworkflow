@@ -22,7 +22,14 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 
 	public function execute(WorkflowInstance $workflow) {
 		$workflow->Users()->removeAll();
-		$workflow->Groups()->removeAll();
+		//Due to http://open.silverstripe.org/ticket/8258, there are errors occuring if Group has been extended
+		//We use a direct delete query here before ticket 8258 fixed
+		//$workflow->Groups()->removeAll();
+		$workflowID = $workflow->ID;
+		$query = <<<SQL
+		DELETE FROM "WorkflowInstance_Groups" WHERE ("WorkflowInstance_Groups"."WorkflowInstanceID" = '$workflowID');
+SQL;
+		DB::query($query);
 		$workflow->Users()->addMany($this->Users());
 		$workflow->Groups()->addMany($this->Groups());
 		if ($this->AssignInitiator) {
