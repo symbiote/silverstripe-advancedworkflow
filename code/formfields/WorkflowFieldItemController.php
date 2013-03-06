@@ -43,7 +43,9 @@ class WorkflowFieldItemController extends Controller {
 		     ->setUseButtonTag(true);
 
 		$form = new Form($this, 'Form', $fields, new FieldList($save), $validator);
-		$form->loadDataFrom($record);
+		if($record && $record instanceof DataObject && $record->exists()){
+			$form->loadDataFrom($record);
+		}
 		return $form;
 	}
 
