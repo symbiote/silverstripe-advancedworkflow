@@ -52,6 +52,10 @@ class WorkflowFieldItemController extends Controller {
 	public function doSave($data, $form) {
 		$record = $form->getRecord();
 
+		if(!$record || !$record->exists()){
+			$record = $this->record;
+		}
+
 		if(!$record->canEdit()) {
 			$this->httpError(403);
 		}
