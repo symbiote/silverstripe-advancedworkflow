@@ -96,13 +96,15 @@ class WorkflowTransition extends DataObject {
 		if ($actions) {
 			$options = $actions->map();
 		}
+
+		$defaultAction = $action?$action->ID:"";
 		
 		$typeOptions = $this->dbObject('Type')->enumValues();
 
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'ActionID',
 			_t('WorkflowTransition.ACTION', 'Action'),
-			$options));
+			$options, $defaultAction));
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'NextActionID',
 			_t('WorkflowTransition.NEXT_ACTION', 'Next Action'),
