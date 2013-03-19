@@ -81,17 +81,16 @@ class WorkflowApplicable extends DataExtension {
 		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')){
 			if ($active) {
 				if ($this->canEditWorkflow()) {
-					$action = new FormAction('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
-					$action->setAttribute('data-icon', 'navigation');
-					$actions->push($action);
+					$action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+						->setAttribute('data-icon', 'navigation');
+					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
 				$effective = $this->workflowService->getDefinitionFor($this->owner);
 				if ($effective && $effective->getInitialAction()) {
-					// we can add an action for starting off the workflow at least
-					$action = new FormAction('startworkflow', $effective->getInitialAction()->Title);
-					$action->setAttribute('data-icon', 'navigation');
-					$actions->push($action);
+					$action = FormAction::create('startworkflow', $effective->getInitialAction()->Title)
+						->setAttribute('data-icon', 'navigation');
+					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			}
 		}
@@ -99,17 +98,19 @@ class WorkflowApplicable extends DataExtension {
 	
 	public function updateFrontendActions($actions){
 		$active = $this->workflowService->getWorkflowFor($this->owner);
-
+		
 		if ($active) {
 			if ($this->canEditWorkflow()) {
-				$actions->push(new FormAction('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow')));
+				$action = FormAction::create('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
+				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 			}
 		} else {
 			$effective = $this->workflowService->getDefinitionFor($this->owner);
 			if ($effective) {
 				// we can add an action for starting off the workflow at least
 				$initial = $effective->getInitialAction();
-				$actions->push(new FormAction('startworkflow', $initial->Title));
+				$action = FormAction::create('startworkflow', $initial->Title);
+				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 			}
 		}
 	}
