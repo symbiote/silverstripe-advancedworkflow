@@ -1,0 +1,10 @@
+---
+Name: workflowconfig
+After: 'framework/*','cms/*'
+---
+SiteTree:
+    extensions:
+        - WorkflowApplicable
+CMSPageEditController:
+    extensions:
+        - AdvancedWorkflowExtension
