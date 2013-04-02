@@ -21,17 +21,17 @@ for more info!
 
 Add 
 
-	Object::add_extension('SiteTree', 'WorkflowApplicable');
+	SiteTree::add_extension('WorkflowApplicable');
 
 to your site's _config.php file
 
 To apply workflow to files, add this to _config.php:
 
-	Object::add_extension('File', 'FileWorkflowApplicable');
+	File::add_extension('FileWorkflowApplicable');
 
 To enable embargo/expiry (scheduled publish/unpublish), use this:
 
-	Object::add_extension('SiteTree', 'WorkflowEmbargoExpiryExtension');
+	SiteTree::add_extension('WorkflowEmbargoExpiryExtension');
 
 Make sure the QueuedJobs module is installed and configured correctly - 
 you should have a cronjob similar to the following in place
