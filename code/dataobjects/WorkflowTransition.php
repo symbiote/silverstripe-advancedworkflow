@@ -105,12 +105,11 @@ class WorkflowTransition extends DataObject {
 			'ActionID',
 			_t('WorkflowTransition.ACTION', 'Action'),
 			$options, $defaultAction));
-		$fields->addFieldToTab('Root.Main', new DropdownField(
+		$fields->addFieldToTab('Root.Main', $nextActionDropdownField = new DropdownField(
 			'NextActionID',
 			_t('WorkflowTransition.NEXT_ACTION', 'Next Action'),
-			$options,
-			null, null,
-			_t('WorkflowTransition.SELECTONE', '(Select one)')));
+			$options));
+		$nextActionDropdownField->setEmptyString(_t('WorkflowTransition.SELECTONE', '(Select one)'));
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'Type',
 			_t('WorkflowTransition.TYPE', 'Type'),
