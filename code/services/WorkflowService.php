@@ -194,11 +194,15 @@ class WorkflowService implements PermissionProvider {
 		$filter = array('');
 		
 		if (is_array($groupIds)) {
-			$groupInstances = DataList::create('WorkflowInstance')->filter(array('WorkflowStatus:Negation' => 'Complete',  'Group.ID:ExactMatchMulti' => $groupIds));
+			$groupInstances = DataList::create('WorkflowInstance')
+				->filter(array('Group.ID:ExactMatchMulti' => $groupIds))
+				->where('"WorkflowStatus" != \'Complete\'');
 		}
 
-		$userInstances = DataList::create('WorkflowInstance')->filter(array('WorkflowStatus:Negation' => 'Complete', 'Users.ID:ExactMatch' => $user->ID));
-		
+		$userInstances = DataList::create('WorkflowInstance')
+			->filter(array('Users.ID:ExactMatch' => $user->ID))
+			->where('"WorkflowStatus" != \'Complete\'');
+
 		if ($userInstances) {
 			$userInstances = $userInstances->toArray();
 		} else {
@@ -223,9 +227,11 @@ class WorkflowService implements PermissionProvider {
 	 * @return DataList $userInstances
 	 */
 	public function userPendingItems(Member $user) {
-		$filter = array('WorkflowStatus:Negation' => 'Complete');
 		// Don't restrict anything for ADMIN users
-		$userInstances = DataList::create('WorkflowInstance')->filter($filter)->sort('LastEdited DESC');
+		$userInstances = DataList::create('WorkflowInstance')
+			->where('"WorkflowStatus" != \'Complete\'')
+			->sort('LastEdited DESC');
+
 		if(Permission::checkMember($user, 'ADMIN')) {
 			return $userInstances;
 		}
@@ -248,12 +254,14 @@ class WorkflowService implements PermissionProvider {
 	 * @return DataList $userInstances
 	 */
 	public function userSubmittedItems(Member $user) {
-		$filter = array('WorkflowStatus:Negation' => 'Complete', 'InitiatorID' => $user->ID);
-		// Don't restrict anything for ADMIN users
-		if(Permission::checkMember($user, 'ADMIN')) {
-			array_pop($filter);
+		$userInstances = DataList::create('WorkflowInstance')
+			->where('"WorkflowStatus" != \'Complete\'')
+			->sort('LastEdited DESC');
+
+		// Restrict the user if they're not an ADMIN.
+		if(!Permission::checkMember($user, 'ADMIN')) {
+			$userInstances = $userInstances->filter('InitiatorID:ExactMatch', $user->ID);
 		}
-		$userInstances = DataList::create('WorkflowInstance')->filter($filter)->sort('LastEdited DESC');
 
 		return $userInstances;
 	}

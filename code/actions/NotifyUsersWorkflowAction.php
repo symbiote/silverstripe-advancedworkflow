@@ -40,7 +40,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				$opts = $templates->map();
 			}
 
-			$fields->addFieldToTab('Root.Main', new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, '', null, '(choose)'), 'EmailTemplate');
+			$fields->addFieldToTab('Root.Main', $listingTemplateDropdownField = new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, ''), 'EmailTemplate');
+			$listingTemplateDropdownField->setEmptyString('(choose)');
 		}
 
 		if ($this->ListingTemplateID) {
