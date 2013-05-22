@@ -114,6 +114,22 @@ class WorkflowApplicable extends DataExtension {
 			}
 		}
 	}
+
+	public function AbsoluteEditLink() {
+		$CMSEditLink = null;
+
+		if($this->owner instanceof CMSPreviewable) {
+			$CMSEditLink = $this->owner->CMSEditLink();
+		} else if ($this->owner->hasMethod('WorkflowLink')) {
+			$CMSEditLink = $this->owner->WorkflowLink();
+		}
+
+		if ($CMSEditLink === null) {
+			return null;
+		}
+
+		return Controller::join_links(Director::absoluteBaseURL(), $CMSEditLink);
+	}
 	
 	/**
 	 * After a workflow item is written, we notify the
