@@ -10,8 +10,8 @@
  */
 class WorkflowApplicable extends DataExtension {
 
-	public static $has_one = array(
-		'WorkflowDefinition' => 'WorkflowDefinition',
+	public static $many_many = array(
+		'WorkflowDefinitions' => 'WorkflowDefinition',
 	);
 	
 	public static $dependencies = array(
@@ -43,18 +43,19 @@ class WorkflowApplicable extends DataExtension {
 		if (!$this->owner->ID) {
 			return $fields;
 		}
-		$effective = $this->workflowService->getDefinitionFor($this->owner);
-		
-		$tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
+		$effective = $this->workflowService->getDefinitionsFor($this->owner);
+
+		$tab = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
 		if(Permission::check('APPLY_WORKFLOW')) {
-			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
-			$definition->setSource($this->workflowService->getDefinitions()->map());
-			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
-
+			$config = new GridFieldConfig();
+			$config->addComponent(new GridFieldToolbarHeader());
+			$config->addComponent(new GridFieldButtonRow('before'));
+			$config->addComponent(new GridFieldAddExistingAutocompleter('buttons-before-left'));
+			$config->addComponent(new GridFieldDataColumns());
+			$config->addComponent(new GridFieldDeleteAction(true));
+			$definition = new GridField('WorkflowDefinitions', 'Workflows', $this->owner->WorkflowDefinitions(), $config);
 			$tab->push($definition);
-			
-//			$fields->addFieldToTab($tab, $definition);
 		}
 
 		$tab->push(new ReadonlyField(
@@ -76,20 +77,33 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
-
-		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')){
-			if ($active) {
-				if ($this->canEditWorkflow()) {
-					$action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
-						->setAttribute('data-icon', 'navigation');
-					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+		if(!(Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension'))) {
+			return;
+		}
+		$workflows = $this->workflowService->getWorkflowsFor($this->owner);
+		
+		$startedWorkflows = array();
+		if($workflows->count()) {
+			foreach($workflows as $workflow) {
+				if(!$this->canEditWorkflow($workflow)) {
+					continue;
 				}
-			} else {
-				$effective = $this->workflowService->getDefinitionFor($this->owner);
-				if ($effective && $effective->getInitialAction()) {
-					$action = FormAction::create('startworkflow', $effective->getInitialAction()->Title)
+				$action = FormAction::create('updateworkflow[' . $workflow->ID . ']', $workflow->CurrentAction() ? $workflow->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
 						->setAttribute('data-icon', 'navigation');
+				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+				$startedWorkflows[] = $workflow->DefinitionID;
+			}
+			
+		}
+		$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+		if($definitions->count()) {
+			foreach($definitions as $definition) {
+				if(in_array($definition->ID, $startedWorkflows)) {
+					continue;
+				}
+				if($definition->getInitialAction()) {
+					$action = FormAction::create('startworkflow[' . $definition->ID . ']', $definition->getInitialAction()->Title)
+							->setAttribute('data-icon', 'navigation');
 					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			}
@@ -97,20 +111,31 @@ class WorkflowApplicable extends DataExtension {
 	}
 	
 	public function updateFrontendActions($actions){
-		$active = $this->workflowService->getWorkflowFor($this->owner);
-		
-		if ($active) {
-			if ($this->canEditWorkflow()) {
-				$action = FormAction::create('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
+		$workflows = $this->workflowService->getWorkflowsFor($this->owner);
+
+		$startedWorkflows = array();
+		if($workflows->count()) {
+			foreach($workflows as $workflow) {
+				if(!$this->canEditWorkflow($workflow)) {
+					continue;
+				}
+				$action = FormAction::create('updateworkflow[' . $workflow->ID . ']', $workflow->CurrentAction() ? $workflow->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+						->setAttribute('data-icon', 'navigation');
 				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+				$startedWorkflows[] = $workflow->DefinitionID;
 			}
-		} else {
-			$effective = $this->workflowService->getDefinitionFor($this->owner);
-			if ($effective) {
-				// we can add an action for starting off the workflow at least
-				$initial = $effective->getInitialAction();
-				$action = FormAction::create('startworkflow', $initial->Title);
-				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+		}
+		$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+		if($definitions->count()) {
+			foreach($definitions as $definition) {
+				if(in_array($definition->ID, $startedWorkflows)) {
+					continue;
+				}
+				if($definition->getInitialAction()) {
+					$action = FormAction::create('startworkflow[' . $definition->ID . ']', $definition->getInitialAction()->Title)
+							->setAttribute('data-icon', 'navigation');
+					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+				}
 			}
 		}
 	}
@@ -136,9 +161,16 @@ class WorkflowApplicable extends DataExtension {
 	 * workflow so that it can take action if needbe
 	 */
 	public function onAfterWrite() {
-		$instance = $this->getWorkflowInstance();
-		if ($instance && $instance->CurrentActionID) {
-			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
+		$instances = $this->getWorkflowInstances();
+
+		if(!$instances->count()) {
+			return;
+		}
+		foreach($instances as $instance) {
+			if(!$instances->CurrentActionID) {
+				continue;
+			}
+			$instances->CurrentAction()->BaseAction()->targetUpdated($instance);
 		}
 	}
 
@@ -152,16 +184,23 @@ class WorkflowApplicable extends DataExtension {
 	/**
 	 * Gets the current instance of workflow
 	 *
+	 * @param bool $includeComplete 
 	 * @return WorkflowInstance
 	 */
-	public function getWorkflowInstance() {
+	public function getWorkflowInstances($includeComplete = false) {
 		if (!$this->currentInstance) {
-			$this->currentInstance = $this->workflowService->getWorkflowFor($this->owner);
+			$this->currentInstance = $this->workflowService->getWorkflowsFor($this->owner, $includeComplete);
 		}
 
 		return $this->currentInstance;
 	}
 
+	/**
+	 * 
+	 */
+	public function clearWorkflowCache() {
+		$this->currentInstance = null;
+	}
 
 	/**
 	 * Gets the history of a workflow instance
@@ -191,37 +230,56 @@ class WorkflowApplicable extends DataExtension {
 	 * Content can never be directly publishable if there's a workflow applied.
 	 *
 	 * If there's an active instance, then it 'might' be publishable
+	 * 
 	 */
 	public function canPublish() {
-		if ($active = $this->getWorkflowInstance()) {
-			return $active->canPublishTarget($this->owner);
+		foreach($this->getWorkflowInstances() as $instance) {
+			if(!$instance->canPublishTarget($this->owner)) {
+				return false;
+			}
 		}
 
 		// otherwise, see if there's any workflows applied. If there are, then we shouldn't be able
 		// to directly publish
-		if ($effective = $this->workflowService->getDefinitionFor($this->owner)) {
+		if($effective = $this->workflowService->getDefinitionsFor($this->owner)) {
 			return false;
 		}
-
+		return true;
 	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
+	 * 
 	 */
 	public function canEdit($member) {
-		if ($active = $this->getWorkflowInstance()) {
-			return $active->canEditTarget($this->owner);
+		$instances = $this->getWorkflowInstances();
+		$allowedEdits = 0;
+		foreach($instances as $instance) {
+			$canEdit = $instance->canEditTarget($this->owner);
+			if($canEdit === true) {
+				$allowedEdits += 1;
+			}
+			if($canEdit === false) {
+				return false;
+			}
 		}
+
+		if($allowedEdits == $instances->count()) {
+			return true;
+		}
+		
+		return null;
 	}
 
 	/**
 	 * Can a user edit the current workflow attached to this item?
+	 * 
+	 * @param $instance
 	 */
-	public function canEditWorkflow() {
-		$active = $this->getWorkflowInstance();
-		if ($active) {
-			return $active->canEdit();
+	public function canEditWorkflow(WorkflowInstance $instance) {
+		if(!$instance->canEdit()) {
+			return false;
 		}
-		return false;
+		return true;
 	}
 }

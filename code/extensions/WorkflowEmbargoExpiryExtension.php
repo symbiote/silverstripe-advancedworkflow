@@ -261,8 +261,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 */
 	public function setIsWorkflowInEffect() {
 		// if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date
-		$effective = $this->workflowService->getDefinitionFor($this->owner);
-		$this->isWorkflowInEffect = $effective?true:false;
+		$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+		$this->isWorkflowInEffect = $definitions->count() ? true : false;
 	}
 
 	public function getIsWorkflowInEffect() {

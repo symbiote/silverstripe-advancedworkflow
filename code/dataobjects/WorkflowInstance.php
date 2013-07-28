@@ -121,7 +121,7 @@ class WorkflowInstance extends DataObject {
 	public function updateWorkflow($data) {
 		$action = $this->CurrentAction();
 
-		if (!$this->getTarget() || !$this->getTarget()->canEditWorkflow()) {
+		if(!$this->getTarget() || !$this->getTarget()->canEditWorkflow($this)) {
 			return;
 		}
 
@@ -171,7 +171,7 @@ class WorkflowInstance extends DataObject {
 	 * @param WorkflowDefinition $definition
 	 * @param DataObject $for
 	 */
-	public function beginWorkflow(WorkflowDefinition $definition, DataObject $for=null) {
+	public function beginWorkflow(WorkflowDefinition $definition, DataObject $for = null) {
 		if(!$this->ID) {
 			$this->write();
 		}
@@ -424,13 +424,13 @@ class WorkflowInstance extends DataObject {
 	 * @return FieldList
 	 */
 	public function getWorkflowFields() {
-		$action    = $this->CurrentAction();
+		$action = $this->CurrentAction();
 		$options   = $this->validTransitions();
 		$wfOptions = $options->map('ID', 'Title', ' ');
 		$fields    = new FieldList();
 
-		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new DropdownField('TransitionID', _t('WorkflowInstance.NEXT_ACTION', 'Next Action'), $wfOptions));
+		$fields->push(new HeaderField('WorkflowHeader[' . $this->ID . ']', $action->Title));
+		$fields->push(new DropdownField('TransitionID[' . $this->ID . ']', _t('WorkflowInstance.NEXT_ACTION', 'Next Action'), $wfOptions));
 
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.

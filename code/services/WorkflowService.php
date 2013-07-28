@@ -59,23 +59,26 @@ class WorkflowService implements PermissionProvider {
 	 * Will recursively query parent elements until it finds one, if available
 	 *
 	 * @param DataObject $dataObject
+	 * @return ArrayList
 	 */
-	public function getDefinitionFor(DataObject $dataObject) {
-		if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
-			if ($dataObject->WorkflowDefinitionID) {
-				return DataObject::get_by_id('WorkflowDefinition', $dataObject->WorkflowDefinitionID);
-			}
-			if ($dataObject->ParentID) {
-				return $this->getDefinitionFor($dataObject->Parent());
-			}
-			if ($dataObject->hasMethod('workflowParent')) {
-				$obj = $dataObject->workflowParent();
-				if ($obj) {
-					return $this->getDefinitionFor($obj);
-				}
+	public function getDefinitionsFor(DataObject $dataObject) {
+		if(!($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable'))) {
+			return;
+		}
+
+		if($dataObject->WorkflowDefinitions()->count()) {
+			return $dataObject->WorkflowDefinitions();
+		}
+		if($dataObject->ParentID) {
+			return $this->getDefinitionsFor($dataObject->Parent());
+		}
+		if($dataObject->hasMethod('workflowParent')) {
+			$obj = $dataObject->workflowParent();
+			if($obj) {
+				return $this->getDefinitionsFor($obj);
 			}
 		}
-		return null;
+		return new ArrayList();
 	}
 
 	/**
@@ -88,19 +91,25 @@ class WorkflowService implements PermissionProvider {
 	 * an integer, in which case the workflow with that ID will be returned
 	 *
 	 * @param mixed $item
+	 * @param bool $includeComplete 
 	 *
-	 * @return WorkflowInstance
+	 * @return DataList
 	 */
-	public function getWorkflowFor($item, $includeComplete = false) {
+	public function getWorkflowsFor($item, $includeComplete = false) {
 		$id = $item;
-
-		if ($item instanceof WorkflowAction) {
+		if($item instanceof WorkflowAction) {
 			$id = $item->WorkflowID;
 			return DataObject::get_by_id('WorkflowInstance', $id);
-		} else if (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
-			$filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
-			$complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
-			return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
+		} elseif(is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
+			$wfInstances = WorkflowInstance::get()->filter(array(
+				'TargetClass' => ClassInfo::baseDataClass($item),
+				'TargetID' => $item->ID
+			));
+			$statuses = array("Active", "Paused");
+			if($includeComplete) {
+				$statuses[] = 'Complete';
+			}
+			return $wfInstances->filter('WorkflowStatus', $statuses);
 		}
 	}
 
@@ -109,8 +118,8 @@ class WorkflowService implements PermissionProvider {
 	 *
 	 * @return DataObjectSet
 	 */
-	public function getWorkflowHistoryFor($item, $limit = null){
-		if($active = $this->getWorkflowFor($item, true)){
+	public function getWorkflowHistoryFor($item, $limit = null) {
+		if($active = $this->getWorkflowsFor($item, true)) {
 			$limit = $limit ? "0,$limit" : '';
 			return $active->Actions('', 'ID DESC ', null, $limit);	
 		}
@@ -136,8 +145,7 @@ class WorkflowService implements PermissionProvider {
 	 * @param DataObject $target
 	 * @param int $transitionId
 	 */
-	public function executeTransition(DataObject $target, $transitionId) {
-		$workflow   = $this->getWorkflowFor($target);
+	public function executeTransition(DataObject $target, WorkflowInstance $workflow, $transitionId) {
 		$transition = DataObject::get_by_id('WorkflowTransition', $transitionId);
 
 		if(!$transition) {
@@ -156,26 +164,17 @@ class WorkflowService implements PermissionProvider {
 	}
 
 	/**
-	 * Starts the workflow for the given data object, assuming it or a parent has
-	 * a definition specified. 
+	 * Starts the workflow for the given data object
 	 * 
 	 * @param DataObject $object
+	 * @param Workflow $workflowDef
 	 */
-	public function startWorkflow(DataObject $object) {
-		$existing = $this->getWorkflowFor($object);
-		if ($existing) {
-			throw new ExistingWorkflowException("That object already has a workflow running");
-		}
-
-		$definition = $this->getDefinitionFor($object);
-
-		if ($definition) {
-			$instance = new WorkflowInstance();
-			$instance->beginWorkflow($definition, $object);
-			$instance->execute();
-		}
+	public function startWorkflow(DataObject $object, WorkflowDefinition $workflowDef) {
+		$instance = new WorkflowInstance();
+		$instance->beginWorkflow($workflowDef, $object);
+		$instance->execute();
 	}
-	
+
 	/**
 	 * Get all the workflows that this user is responsible for
 	 * 

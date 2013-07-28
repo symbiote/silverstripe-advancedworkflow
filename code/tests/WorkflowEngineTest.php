@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Tests for the workflow engine.
  *
@@ -9,46 +10,54 @@
  */
 class WorkflowEngineTest extends SapphireTest {
 
+	/**
+	 *
+	 * @var array
+	 */
+	protected $extraDataObjects = array(
+		'FlowableTestObject'
+	);
+
 	public function testCreateWorkflowInstance() {
-		
+
 		$definition = new WorkflowDefinition();
-		$definition->Title = "Create Workflow Instance";
-		$definition->write();
+	  $definition->Title = "Create Workflow Instance";
+	  $definition->write();
 
-		$stepOne = new WorkflowAction();
-		$stepOne->Title = "Step One";
-		$stepOne->WorkflowDefID = $definition->ID;
-		$stepOne->write();
+	  $stepOne = new WorkflowAction();
+	  $stepOne->Title = "Step One";
+	  $stepOne->WorkflowDefID = $definition->ID;
+	  $stepOne->write();
 
-		$stepTwo = new WorkflowAction();
-		$stepTwo->Title = "Step Two";
-		$stepTwo->WorkflowDefID = $definition->ID;
-		$stepTwo->write();
+	  $stepTwo = new WorkflowAction();
+	  $stepTwo->Title = "Step Two";
+	  $stepTwo->WorkflowDefID = $definition->ID;
+	  $stepTwo->write();
 
-		$transitionOne = new WorkflowTransition();
-		$transitionOne->Title = 'Step One T1';
-		$transitionOne->ActionID = $stepOne->ID;
-		$transitionOne->NextActionID = $stepTwo->ID;
-		$transitionOne->write();
+	  $transitionOne = new WorkflowTransition();
+	  $transitionOne->Title = 'Step One T1';
+	  $transitionOne->ActionID = $stepOne->ID;
+	  $transitionOne->NextActionID = $stepTwo->ID;
+	  $transitionOne->write();
 
-		$instance = new WorkflowInstance();
-		$instance->write();
+	  $instance = new WorkflowInstance();
+	  $instance->write();
 
-		$instance->beginWorkflow($definition);
+	  $instance->beginWorkflow($definition);
 
-		$actions = $definition->Actions();
-		$this->assertEquals(2, $actions->Count());
+	  $actions = $definition->Actions();
+	  $this->assertEquals(2, $actions->Count());
 
-		$transitions = $actions->find('Title', 'Step One')->Transitions();
-		$this->assertEquals(1, $transitions->Count());
+	  $transitions = $actions->find('Title', 'Step One')->Transitions();
+	  $this->assertEquals(1, $transitions->Count());
 	}
-	
-	public function testGetUserWorkflows() {
-		
-		// @TODO Complete soon
 
-		$instance = new WorkflowInstance();
-		$instance->write();
+	public function testGetUserWorkflows() {
+
+	  // @TODO Complete soon
+
+	  $instance = new WorkflowInstance();
+	  $instance->write();
 
 	}
 
@@ -74,10 +83,10 @@ class WorkflowEngineTest extends SapphireTest {
 			$this->assertTrue((bool) $action->Finished);
 		}
 	}
-	
+
 	public function testPublishAction() {
 		$this->logInWithPermission();
-		
+
 		$action = new PublishItemWorkflowAction;
 		$instance = new WorkflowInstance();
 
@@ -90,20 +99,19 @@ class WorkflowEngineTest extends SapphireTest {
 
 		$this->assertFalse($page->isPublished());
 
-//		$this->assertTrue($page->Status == 'New');
+		//		$this->assertTrue($page->Status == 'New');
 
 		$action->execute($instance);
 
 		$page = DataObject::get_by_id('Page', $page->ID);
 		$this->assertTrue($page->isPublished());
-		
 	}
 
 	public function testCreateDefinitionWithEmptyTitle() {
 		$definition = new WorkflowDefinition();
 		$definition->Title = "";
 		$definition->write();
-		$this->assertContains('My Workflow',$definition->Title,'Workflow created without title is assigned a default title.');
+		$this->assertContains('My Workflow', $definition->Title, 'Workflow created without title is assigned a default title.');
 	}
 
 	protected function createDefinition() {
@@ -129,41 +137,113 @@ class WorkflowEngineTest extends SapphireTest {
 
 		return $definition;
 	}
-	
-	
+
 	public function testCreateFromTemplate() {
 		$structure = array(
-			'First step'	=> array(
-				'type'		=> 'AssignUsersToWorkflowAction',
-				'transitions'	=> array(
-					'second'	=> 'Second step'
+			'First step' => array(
+				'type' => 'AssignUsersToWorkflowAction',
+				'transitions' => array(
+					'second' => 'Second step'
 				)
 			),
-			'Second step'	=> array(
-				'type'		=> 'NotifyUsersWorkflowAction',
-				'transitions'	=> array(
-					'Approve'	=> 'Third step'
+			'Second step' => array(
+				'type' => 'NotifyUsersWorkflowAction',
+				'transitions' => array(
+					'Approve' => 'Third step'
 				)
 			),
 		);
-		
+
 		$template = new WorkflowTemplate('Test');
-		
+
 		$template->setStructure($structure);
-		
+
 		$actions = $template->createActions();
-		
+
 		$this->assertEquals(2, count($actions));
 		$this->assertTrue(isset($actions['First step']));
 		$this->assertTrue(isset($actions['Second step']));
-		
+
 		$this->assertTrue($actions['First step']->exists());
-		
+
 		$transitions = $actions['First step']->Transitions();
 
 		$this->assertTrue($transitions->count() == 1);
-		
-		
 	}
 
+	public function testDefaultWorkflow() {
+		$page = $this->setUpTestWorkflow();
+
+		$this->assertEquals(2, $page->WorkflowDefinitions()->count());
+
+		// Start the first workflow
+		$firstWorkflow = $page->WorkflowDefinitions()->offsetGet(0);
+		singleton('WorkflowService')->startWorkflow($page, $firstWorkflow);
+
+		$page->clearWorkflowCache();
+		$wfInstances = $page->getWorkflowInstances(true);
+		$this->assertEquals(1, $wfInstances->count());
+		
+		// Start the second workflow
+		$secondWorkflow = $page->WorkflowDefinitions()->offsetGet(1);
+		singleton('WorkflowService')->startWorkflow($page, $secondWorkflow);
+
+		$page->clearWorkflowCache();
+		$wfInstances = $page->getWorkflowInstances(true);
+		$this->assertEquals(2, $wfInstances->count());
+
+		$firstWorkflowInstance = $wfInstances->offsetGet(0);
+		$this->assertEquals('SiteTree', $firstWorkflowInstance->TargetClass);
+		$this->assertEquals('Complete', $firstWorkflowInstance->WorkflowStatus);
+
+		$secondWorkflowInstance = $wfInstances->offsetGet(1);
+		$this->assertEquals('SiteTree', $secondWorkflowInstance->TargetClass);
+		$this->assertEquals('Complete', $secondWorkflowInstance->WorkflowStatus);
+		$this->assertNotEquals($firstWorkflowInstance->ID, $secondWorkflowInstance->ID);
+	}
+
+	protected function setUpTestWorkflow() {
+		FlowableTestObject::add_extension('WorkflowApplicable');
+		$dataobject = new FlowableTestObject();
+		$dataobject->write();
+
+		$this->assertTrue($dataobject->getExtensionInstance('WorkflowApplicable') instanceof WorkflowApplicable);
+
+		$firstWorkflow = new WorkflowDefinition();
+		$firstWorkflow->Title = "First Workflow";
+		$firstWorkflow->write();
+
+		$stepOne = new WorkflowAction();
+		$stepOne->Title = "Step One";
+		$stepOne->WorkflowDefID = $firstWorkflow->ID;
+		$stepOne->write();
+
+		$secondWorkflow = new WorkflowDefinition();
+		$secondWorkflow->Title = "Second Workflow";
+		$secondWorkflow->write();
+
+		$otherStep = new WorkflowAction();
+		$otherStep->Title = "Other Step";
+		$otherStep->WorkflowDefID = $secondWorkflow->ID;
+		$otherStep->write();
+
+		$dataobject->WorkflowDefinitions()->add($firstWorkflow);
+		$dataobject->WorkflowDefinitions()->add($secondWorkflow);
+		$dataobject->Title = 'Banana?';
+		$dataobject->write();
+		return $dataobject;
+	}
 }
+
+class FlowableTestObject extends SiteTree implements TestOnly {
+
+	/**
+	 *
+	 * @var array
+	 */
+	public static $db = array(
+		'Title' => 'Varchar(255)'
+	);
+
+}
+

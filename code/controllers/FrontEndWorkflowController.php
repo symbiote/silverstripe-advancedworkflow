@@ -142,7 +142,7 @@ abstract class FrontEndWorkflowController extends Controller {
 			throw new Exception('Context Object Not Found');
 		}
 
-		if(!$this->getCurrentTransition()->canExecute($this->contextObj->getWorkflowInstance())){
+		if(!$this->getCurrentTransition()->canExecute($this->contextObj->getWorkflowInstances())){
 			throw new Exception('You do not have permission to execute this action');
 		}
 		
@@ -156,15 +156,15 @@ abstract class FrontEndWorkflowController extends Controller {
 		}
 		
 		//run execute on WorkflowInstance instance		
-		$action = $this->contextObj->getWorkflowInstance()->currentAction();
-		$action->BaseAction()->execute($this->contextObj->getWorkflowInstance());
+		$action = $this->contextObj->getWorkflowInstances()->currentAction();
+		$action->BaseAction()->execute($this->contextObj->getWorkflowInstances());
 		
 		//get valid transitions
 		$transitions = $action->getValidTransitions();
 		
 		//tell instance to execute transition if it's in the permitted list
 		if ($transitions->find('ID',$this->transitionID)) {
-			$this->contextObj->getWorkflowInstance()->performTransition($this->getCurrentTransition());
+			$this->contextObj->getWorkflowInstances()->performTransition($this->getCurrentTransition());
 		}
 	}	
 
@@ -175,7 +175,7 @@ abstract class FrontEndWorkflowController extends Controller {
 	public function Title(){
 		if (!$this->Title) {
 			if($this->getContextObject()){
-				if($workflow = $this->contextObj->getWorkflowInstance()){
+				if($workflow = $this->contextObj->getWorkflowInstances()){
 					$this->Title = $workflow->currentAction()->BaseAction()->PageTitle ? $workflow->currentAction()->BaseAction()->PageTitle : $workflow->currentAction()->Title;	
 				}
 			}
