@@ -36,7 +36,7 @@ To enable embargo/expiry (scheduled publish/unpublish), use this:
 Make sure the QueuedJobs module is installed and configured correctly - 
 you should have a cronjob similar to the following in place
 
-	*/1 * * * * cd  && sudo -u www php /var/www/sapphire/cli-script.php dev/tasks/ProcessJobQueueTask
+	*/1 * * * * cd  && sudo -u www php /var/www/framework/cli-script.php dev/tasks/ProcessJobQueueTask
 
 This is an example only. The key is to run the task as the same user as the web server.
 

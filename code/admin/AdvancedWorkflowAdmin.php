@@ -8,6 +8,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	public static $menu_title    = 'Workflows';
 	public static $menu_priority = -1;
 	public static $url_segment   = 'workflows';
+	private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
+
 
 	public static $managed_models  = 'WorkflowDefinition';
 	public static $model_importers = array();
