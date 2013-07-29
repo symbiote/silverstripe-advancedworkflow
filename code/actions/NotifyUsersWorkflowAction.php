@@ -180,22 +180,25 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'Notification emails can contain HTML formatting. The following special variables are replaced with their
 			respective values in the email subject, email from and template/body.');
 		$member = _t('NotifyUsersWorkflowAction.MEMBERNOTE',
-			'These fields will be populated from the member that initiates the notification action.');
+			'These fields will be populated from the member that initiates the notification action. For example,
+			{$Member.FirstName}.');
 		$initiator = _t('NotifyUsersWorkflowAction.INITIATORNOTE',
-			'These fields will be populated from the member that initiates the workflow request.');
+			'These fields will be populated from the member that initiates the workflow request. For example,
+			{$Initiator.Email}.');
 		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
-			'Any summary fields from the workflow target will be available. Additionally, the $Context.CMSEditLink variable will
-			contain a link to edit the workflow target in the CMS (if it is a SiteTree object).');
+			'Any summary fields from the workflow target will be available. For example, {$Context.Title}.
+			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in
+			the CMS (if it is a Page).');
 		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
 		$commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
 
 		$memberFields = implode(', ', array_keys($this->getMemberFields()));
 
 		return "<p>$note</p>
-			<p><strong>\$Member.($memberFields)</strong><br>$member</p>
-			<p><strong>\$Initiator.($memberFields)</strong><br>$initiator</p>
-			<p><strong>\$Context.($fieldName)</strong><br>$context</p>
-			<p><strong>\$CommentHistory</strong><br>$commentHistory</p>";
+			<p><strong>{\$Member.($memberFields)}</strong><br>$member</p>
+			<p><strong>{\$Initiator.($memberFields)}</strong><br>$initiator</p>
+			<p><strong>{\$Context.($fieldName)}</strong><br>$context</p>
+			<p><strong>{\$CommentHistory}</strong><br>$commentHistory</p>";
 	}
 
 }

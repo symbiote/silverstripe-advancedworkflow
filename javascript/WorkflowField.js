@@ -96,7 +96,8 @@ jQuery.entwine("workflow", function($) {
 					var data = {
 						"id[]":   ids.get(),
 						"class":  "WorkflowTransition",
-						"parent": $(this).closest(".workflow-field-action").data("id")
+						"parent": $(this).closest(".workflow-field-action").data("id"),
+						"SecurityID": field.data("securityid")
 					};
 
 					field.loading();
@@ -138,7 +139,10 @@ jQuery.entwine("workflow", function($) {
 	$(".workflow-field .workflow-field-delete").entwine({
 		onclick: function() {
 			if(confirm("Are you sure you want to permanently delete this?")) {
-				$.post(this.prop('href')).done(function(body) {
+				var data = {
+					"SecurityID" : this.data("securityid")
+				};
+				$.post(this.prop('href'), data).done(function(body) {
 					$(".workflow-field").replaceWith(body);
 				});
 			}
