@@ -175,6 +175,95 @@ jQuery.entwine("workflow", function($) {
 			};
 			field.timepicker(pickerOpts);
 			return false;
+		},
+		onmatch: function(){
+			var self = this,
+				publishDate = this.find('#PublishOnDate input.date'),
+				publishTime = this.find('#PublishOnDate input.time'),
+				parent = this.find('#PublishOnDate');
+				
+
+			if(!$('#Form_EditForm_action_publish').attr('disabled')){
+				self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
+
+				publishDate.change(function(){
+					self.checkEmbargo($(publishDate).val(),$(publishTime).val(), parent);
+				});
+
+				publishTime.change(function(){
+					self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
+				});
+			}
+
+			this._super();
+		},
+		/*
+		 * Helper function opens publishing schedule tab when link clicked
+		 */
+		linkScheduled: function(parent){
+			$('#workflow-schedule').click(function(){
+				var tabID = parent.closest('.ui-tabs-panel.tab').attr('id');
+				$('#tab-'+tabID).trigger('click');
+				return false;
+			});
+		},
+		/*
+		 * Checks whether an embargo is present.
+		 * If an embargo is present, display an altered actions panel, 
+		 * with a message notifying the user 
+		 */
+		checkEmbargo: function(publishDate, publishTime, parent){
+
+			// Something has changed, remove any existing embargo message
+			$('.Actions #embargo-message').remove();
+
+			if(publishDate == '' && publishTime == '' ){
+				//No Embargo, remove customizations
+				$('#Form_EditForm_action_publish').removeClass('embargo');
+				$('#Form_EditForm_action_publish').prev('button').removeClass('ui-corner-right');
+			} else {
+
+				var link,
+					message;
+
+				$('#Form_EditForm_action_publish').addClass('embargo');
+				$('#Form_EditForm_action_publish').prev('button').addClass('ui-corner-right');
+				
+				if(publishDate === ''){
+					//Has time, not date
+					message = ss.i18n.sprintf(
+						ss.i18n._t(
+							'Workflow.EMBARGOMESSAGETIME', 
+							'Saved drafts of this page will auto publish today at <a>%s</a>'
+						), publishTime);
+
+				}else if(publishTime === ''){
+					//has date no time
+					message = ss.i18n.sprintf(
+						ss.i18n._t(
+							'Workflow.EMBARGOMESSAGEDATE', 
+							'Saved drafts of this page will auto publish on <a>%s</a>'
+						), publishDate);
+				}else{
+					//has date and time
+					message = ss.i18n.sprintf(
+					ss.i18n._t(
+						'Workflow.EMBARGOMESSAGEDATETIME', 
+						'Saved drafts of this page will auto publish on <a>%s at %s</a>'
+					), publishDate, publishTime);
+				}
+
+				message = message.replace('<a>','<a href="#" id="workflow-schedule">');
+
+				//Append message with link
+				$('.Actions #ActionMenus').after('<p class="edit-info" id="embargo-message">' + message + '</p>');
+				
+				//Active link
+				this.linkScheduled(parent);
+			}
+
+			return false;
 		}
 	});
 });
+
