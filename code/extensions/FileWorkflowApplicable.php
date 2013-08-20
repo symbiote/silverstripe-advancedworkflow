@@ -24,52 +24,57 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 
 		// add the workflow fields directly. It's a requirement of workflow on file objects
 		// that CMS admins mark the workflow step as being editable for files to be administerable
-		$active = $this->workflowService->getWorkflowFor($this->owner);
-		if ($active) {
-			$current = $active->CurrentAction();
-			$wfFields = $active->getWorkflowFields();
-			
-			// loading data in a somewhat hack way
-			$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
-			$form->loadDataFrom($current);
-
-			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+		$actives = $this->workflowService->getWorkflowsFor($this->owner);
+		if($actives) {
+			foreach($actives as $active) {
+				$current = $active->CurrentAction();
+				$wfFields = $active->getWorkflowFields();
+				// loading data in a somewhat hack way
+				$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
+				$form->loadDataFrom($current);
+				$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+			}
 		}
 	}
 
 	public function onAfterWrite() {
 		parent::onAfterWrite();
 		
-		$workflow = $this->workflowService->getWorkflowFor($this->owner);
+		$workflows = $this->workflowService->getWorkflowsFor($this->owner);
 		$rawData = $this->owner->toMap();
-		if ($workflow && $this->owner->TransitionID) {
-			// we want to transition, so do so if that's a valid transition to take. 
-			$action = $workflow->CurrentAction();
-			if (!$this->canEditWorkflow()) {
-				return;
-			}
-
-			$allowedFields = $workflow->getWorkflowFields()->saveableFields();
-			unset($allowedFields['TransitionID']);
-
-			$allowed = array_keys($allowedFields);
-			
-			foreach ($allowed as $field) {
-				if (isset($rawData[$field])) {
-					$action->$field = $rawData[$field];
+		foreach($workflows as $workflow) {
+			if($workflow && $this->owner->TransitionID) {
+				// we want to transition, so do so if that's a valid transition to take. 
+				$action = $workflow->CurrentAction();
+				if(!$this->canEditWorkflow($workflow)) {
+					continue;
 				}
-			}
-			
-			$action->write();
 
-			if (isset($rawData['TransitionID']) && $rawData['TransitionID']) {
-				// unset the transition ID so this doesn't get re-executed
-				$this->owner->TransitionID = null;
-				$this->workflowService->executeTransition($this->owner, $rawData['TransitionID']);
-			} else {
-				// otherwise, just try to execute the current workflow to see if it
-				// can now proceed based on user input
-				$workflow->execute();
+				$allowedFields = $workflow->getWorkflowFields()->saveableFields();
+				// Strip the workflow id's from formfields and save them into the Action
+				// example: Comment[66] will be $action->Comment
+				$allowed = array_keys($allowedFields);
+				if(count($allowed)) {
+					foreach($allowed as $allowField) {
+						$actionFieldName = preg_replace('|\[[^]]*\]|', '', $allowField, -1, $replacementCount);
+						if(isset($data[$actionFieldName]) && $actionFieldName != 'TransitionID') {
+							if($replacementCount) {
+								$action->$actionFieldName = $data[$actionFieldName][$workflow->ID];
+							} else {
+								$action->$actionFieldName = $data[$actionFieldName];
+							}
+						}
+					}
+					$action->write();
+				}
+
+				if(isset($data['TransitionID']) && $data['TransitionID'][$wfInstance->ID]) {
+					singleton('WorkflowService')->executeTransition($p, $wfInstance, $data['TransitionID'][$wfInstance->ID]);
+				} else {
+					// otherwise, just try to execute the current workflow to see if it
+					// can now proceed based on user input
+					$wfInstance->execute();
+				}
 			}
 		}
 	}

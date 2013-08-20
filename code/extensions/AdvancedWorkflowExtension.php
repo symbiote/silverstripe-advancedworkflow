@@ -9,6 +9,14 @@
  */
 class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
+	/**
+	 * Start a workflow
+	 * 
+	 * @param array $data
+	 * @param Form $form
+	 * @param SS_HTTPRequest $request
+	 * @return void
+	 */
 	public function startworkflow($data, $form, $request) {
 		$item = $form->getRecord();
 
@@ -16,9 +24,12 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			return;
 		}
 
-		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($item);
-
+		$allWorkflows = singleton('WorkflowService')->getDefinitionsFor($item);
+		$workflowIDs = array_keys($data['action_startworkflow']);
+		$workflows = $allWorkflows->filter('ID', $workflowIDs);
+		foreach($workflows as $workflow) {
+			singleton('WorkflowService')->startWorkflow($item, $workflow);
+		}
 		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
 
@@ -29,29 +40,34 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @param Form $form
 	 */
 	public function updateEditForm(Form $form) {
-		$svc    = singleton('WorkflowService');
-		$p      = $form->getRecord();
-		$active = $svc->getWorkflowFor($p);
+		$p = $form->getRecord();
+		$workflows = singleton('WorkflowService')->getWorkflowsFor($p);
 
-		if ($active) {
+		if(!$workflows->count()) {
+			return;
+		}
 
-			$fields = $form->Fields();
+		$fields = $form->Fields();
+
+		$canEdit = true;
+		foreach($workflows as $active) {
+			if(!$p->canEditWorkflow($active)) {
+				$canEdit = false;
+			}
 			$current = $active->CurrentAction();
 			$wfFields = $active->getWorkflowFields();
 
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
-			foreach ($allowed as $fieldName) {
+			foreach($allowed as $fieldName) {
 				$data[$fieldName] = $current->$fieldName;
 			}
-
 			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+		}
+		$form->loadDataFrom($data);
 
-			$form->loadDataFrom($data);
-
-			if (!$p->canEditWorkflow()) {
-				$form->makeReadonly();
-			}
+		if(!$canEdit) {
+			$form->makeReadonly();
 		}
 	}
 
@@ -66,30 +82,44 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @return String
 	 */
 	public function updateworkflow($data, Form $form, $request) {
-		$svc = singleton('WorkflowService');
 		$p = $form->getRecord();
-		$workflow = $svc->getWorkflowFor($p);
-		$action = $workflow->CurrentAction();
-
-		if (!$p || !$p->canEditWorkflow()) {
+		if(!$p) {
 			return;
 		}
 
-		$allowedFields = $workflow->getWorkflowFields()->saveableFields();
-		unset($allowedFields['TransitionID']);
+		$allWorkflows = singleton('WorkflowService')->getWorkflowsFor($p);
+		$workflowInstanceIDs = array_keys($data['action_updateworkflow']);
+		$wfInstances = $allWorkflows->filter('ID', $workflowInstanceIDs);
+		foreach($wfInstances as $wfInstance) {
+			if(!$p->canEditWorkflow($wfInstance)) {
+				continue;
+			}
+			$action = $wfInstance->CurrentAction();
+			$allowedFields = $wfInstance->getWorkflowFields()->saveableFields();
+			// Strip the workflow id's from formfields and save them into the Action
+			// example: Comment[66] will be $action->Comment
+			$allowed = array_keys($allowedFields);
+			if(count($allowed)) {
+				foreach($allowed as $allowField) {
+					$actionFieldName = preg_replace('|\[[^]]*\]|', '', $allowField, -1, $replacementCount);
+					if(isset($data[$actionFieldName]) && $actionFieldName != 'TransitionID') {
+						if($replacementCount) {
+							$action->$actionFieldName = $data[$actionFieldName][$wfInstance->ID];
+						} else {
+							$action->$actionFieldName = $data[$actionFieldName];
+						}
+					}
+				}
+				$action->write();
+			}
 
-		$allowed = array_keys($allowedFields);
-		if (count($allowed)) {
-			$form->saveInto($action, $allowed);
-			$action->write();
-		}
-
-		if (isset($data['TransitionID']) && $data['TransitionID']) {
-			$svc->executeTransition($p, $data['TransitionID']);
-		} else {
-			// otherwise, just try to execute the current workflow to see if it
-			// can now proceed based on user input
-			$workflow->execute();
+			if(isset($data['TransitionID']) && $data['TransitionID'][$wfInstance->ID]) {
+				singleton('WorkflowService')->executeTransition($p, $wfInstance, $data['TransitionID'][$wfInstance->ID]);
+			} else {
+				// otherwise, just try to execute the current workflow to see if it
+				// can now proceed based on user input
+				$wfInstance->execute();
+			}
 		}
 
 		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());

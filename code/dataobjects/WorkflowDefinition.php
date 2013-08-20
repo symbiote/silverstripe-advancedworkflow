@@ -31,6 +31,14 @@ class WorkflowDefinition extends DataObject {
 		'Actions'   => 'WorkflowAction',
 		'Instances' => 'WorkflowInstance'
 	);
+	
+	/**
+	 *
+	 * @var array
+	 */
+	public static $belongs_many_many = array(
+		'WorkflowApplicable' => 'DataObject'
+	);
 
 	/**
 	 * By default, a workflow definition is bound to a particular set of users or groups.

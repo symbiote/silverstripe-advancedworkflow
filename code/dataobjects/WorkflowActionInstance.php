@@ -42,7 +42,7 @@ class WorkflowActionInstance extends DataObject {
 	 */
 	public function updateWorkflowFields($fields) {
 		if ($this->BaseAction()->AllowCommenting) {	
-			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
+			$fields->push(new TextareaField('Comment[' . $this->WorkflowID . ']', _t('WorkflowAction.COMMENT', 'Comment')));
 		}
 	}
 	
