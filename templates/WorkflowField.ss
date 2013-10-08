@@ -8,7 +8,7 @@
 			<select class="workflow-field-create-class no-change-track">
 				<option value="">Create an action&hellip;</option>
 				<% loop $CreateableActions %>
-					<option value="$Top.Link("action")/new/$Class/edit">$Title</option>
+					<option value="$Top.ActionLink('new',$Class,'edit')">$Title</option>
 				<% end_loop %>
 			</select>
 			<button class="ss-ui-button ui-state-disabled workflow-field-do-create" data-icon="add">
@@ -26,13 +26,13 @@
 					<h4>$Title</h4>
 
 					<div class="workflow-field-action-buttons">
-						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>" href="$Top.Link("action")/item/$ID/edit" data-icon="pencil">
+						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>" href="$Top.ActionLink('item',$ID,'edit')" data-icon="pencil">
 							Edit
 						</a>
-						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButtonAddTransition %> workflow-field-action-disabled<% end_if %>" href="$Top.Link("transition")/new/$ID/edit" data-icon="chain--arrow">
+						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButtonAddTransition %> workflow-field-action-disabled<% end_if %>" href="$Top.TransitionLink('new',$ID,'edit')" data-icon="chain--arrow">
 							Add Transition
 						</a>
-						<a href="$Top.Link("action")/item/$ID/delete" data-securityid="$SecurityID" class="ss-ui-button workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>" data-icon="cross-circle">
+						<a href="$Top.ActionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="ss-ui-button workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>" data-icon="cross-circle">
 							Delete
 						</a>
 					</div>
@@ -49,8 +49,8 @@
 									<span class="ui-icon btn-icon-chain-small"></span>
 									<span class="next-title">$NextAction.Title</span>
 								</div>
-								<a href="$Top.Link("transition")/item/$ID/edit" class="ui-icon btn-icon-pencil workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Edit</a>
-								<a href="$Top.Link("transition")/item/$ID/delete" data-securityid="$SecurityID" class="ui-icon btn-icon-cross-circle workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Delete</a>
+								<a href="$Top.TransitionLink('item',$ID,'edit')" class="ui-icon btn-icon-pencil workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Edit</a>
+								<a href="$Top.TransitionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="ui-icon btn-icon-cross-circle workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Delete</a>
 							</li>
 						<% end_loop %>
 					</ol>
