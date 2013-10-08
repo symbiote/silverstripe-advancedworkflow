@@ -81,6 +81,20 @@ class WorkflowField extends FormField {
 		return $this->definition;
 	}
 
+	public function ActionLink() {
+		$parts = func_get_args();
+		array_unshift($parts, 'action');
+
+		return $this->Link(implode('/', $parts));
+	}
+
+	public function TransitionLink() {
+		$parts = func_get_args();
+		array_unshift($parts, 'transition');
+
+		return $this->Link(implode('/', $parts));
+	}
+
 	public function CreateableActions() {
 		$list    = new ArrayList();
 		$classes = ClassInfo::subclassesFor('WorkflowAction');
