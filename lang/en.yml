@@ -1,38 +1,144 @@
 en:
-  WorkflowDefinition:
-    INTROMAIN: 'A basic name and description for your workflow. You can add more detail in the next step. See {helpText} for more information.'
-    INTROWORKFLOW: Create new or edit existing workflow actions and transitions.
-    TITLE: Title
-    DESCRIPTION: Description
-    USERS: Users
-    GROUPS: Groups
-    SENDREMINDERDAYSBEFORE: 'Send reminder email after '
-    SENDREMINDERDAYSAFTER: ' days without action.'
-    REMINDEREMAIL: Reminder Email
-    WORKFLOW: Workflow
-    ADDAFTERSAVING: You can add workflow steps after you save for the first time.
-  WorkflowAction:
-    THEACTION: The Action
-    THEACTIONINTRO: Administer an action as a part of your workflow
-  AssignUsersToWorkflowAction:
-    ASSIGNUSERS: Assign Users
-    USERS: Users
-    GROUPS: Groups
-    INITIATOR: Assign Initiator
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Advanced Workflow'
+    APPLY_WORKFLOW: 'Apply workflow'
+    APPLY_WORKFLOW_HELP: 'Users can apply workflows to items'
+    REASSIGNACTIVE: 'Reassign active workflows'
+    REASSIGNACTIVEHELP: 'Users can reassign active workflows to different users and groups'
+    VIEWACTIVE: 'View active workflows'
+    VIEWACTIVEHELP: 'Users can view active workflows via the workflows admin panel'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'You must be logged in'
   AdvancedWorkflowAdmin:
-    GridFieldTitleAssignedAll: All pending items
-    GridFieldTitleSubmittedAll: All submitted items
-    GridFieldTitleAssignedYour: Your pending items
-    GridFieldTitleSubmittedYour: Your submitted items
+    GridFieldTitleAssignedAll: 'All pending items'
+    GridFieldTitleAssignedYour: 'Your pending items'
+    GridFieldTitleSubmittedAll: 'All submitted items'
+    GridFieldTitleSubmittedYour: 'Your submitted items'
+    INVALIDCLASSTOORDER: 'An invalid class to order was specified.'
+    INVALIDIDLIST: 'An invalid list of IDs was provided.'
+    INVALIDPARENTID: 'An invalid parent ID was specified.'
+    SORTORDERSAVED: 'The sort order has been saved.'
+    MENUTITLE: Workflows
+  AdvancedWorkflowFrontendForm:
+    ACTIONCONTROLLERCHECK: 'Action "%s" not allowed on controller (Class: %s)'
+    ACTIONFORMCHECK: 'Action "%s" not allowed on form (Name: "%s")'
+    SECURITYTOKENCHECK: 'Security token doesn''t match, possible CSRF attack.'
+  AllowEditing:
+    ByAssignees: 'By Assignees'
+    ContentSettings: 'Content Settings'
+    NoString: No
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Assign Users'
+    GROUPS: Groups
+    INITIATOR: 'Assign Initiator'
+    PLURALNAME: 'Assign Users To Workflow Actions'
+    SINGULARNAME: 'Assign Users To Workflow Action'
+    USERS: Users
+  CancelWorkflowAction:
+    PLURALNAME: 'Cancel Workflow Actions'
+    SINGULARNAME: 'Cancel Workflow Action'
+  FrontEndWorkflowController:
+    FRONTENDACTION_CONTEXT_EXCEPTION: 'Context Object Not Found'
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'You do not have permission to execute this action'
+  NotifyUsersWorkflowAction:
+    COMMENTHISTORY: 'Comment history up to this notification.'
+    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n			the CMS (if it is a Page)."
+    EMAILFROM: 'Email from'
+    EMAILSUBJECT: 'Email subject'
+    EMAILTEMPLATE: 'Email template'
+    FIELDNAME: 'Field name'
+    FORMATTINGHELP: 'Formatting Help'
+    FORMATTINGNOTE: "Notification emails can contain HTML formatting. The following special variables are replaced with their\n			respective values in the email subject, email from and template/body."
+    INITIATORNOTE: "These fields will be populated from the member that initiates the workflow request. For example,\n			{$Initiator.Email}."
+    LISTING_TEMPLATE: "Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). \n					Also available will be all properties of the current Workflow Instance"
+    MEMBERNOTE: "These fields will be populated from the member that initiates the notification action. For example,\n			{$Member.FirstName}."
+    NOTIFICATIONEMAIL: 'Notification Email'
+    NOTIFICATIONNOTE: 'All users attached to the workflow will be sent an email when this action is run.'
+    PLURALNAME: 'Notify Users Workflow Actions'
+    SINGULARNAME: 'Notify Users Workflow Action'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: ' days'
+    DELAYPUBDAYSBEFORE: 'Delay publication '
+    PLURALNAME: 'Publish Item Workflow Actions'
+    PUBLICATIONDELAY: 'Publication Delay'
+    SINGULARNAME: 'Publish Item Workflow Action'
+  SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Simple Approval Workflow Actions'
+    SINGULARNAME: 'Simple Approval Workflow Action'
+  WorkflowAction:
+    ALLOW_COMMENTING: 'Allow Commenting?'
+    ALLOW_EDITING: 'Allow editing during this step?'
+    CLASS_LABEL: 'Action Class'
+    COMMENT: Comment
+    FRONTENDCOMMENT: Comment
+    PLURALNAME: 'Workflow Actions'
+    SINGULARNAME: 'Workflow Action'
+    TITLE: Title
+  WorkflowActionInstance:
+    PLURALNAME: 'Workflow Action Instancs'
+    SINGULARNAME: 'Workflow Action Instance'
+  WorkflowApplicable:
+    DEFINITION: 'Applied Workflow'
+    EFFECTIVE_WORKFLOW: 'Effective Workflow'
+    INHERIT: 'Inherit from parent'
+    NONE: (none)
+    UPDATE_WORKFLOW: 'Update Workflow'
+    WORKFLOWLOG: 'Workflow Log'
+  WorkflowDefinition:
+    ADDAFTERSAVING: 'You can add workflow steps after you save for the first time.'
+    CHOOSE_TEMPLATE: 'Choose template (optional)'
+    CHOOSE_TEMPLATE_RIGHT: 'If set, this workflow definition will be automatically updated if the template is changed'
+    DESCRIPTION: Description
+    GROUPS: 'Restrict to Groups'
+    LATEST_VERSION: 'Latest version is %s'
+    PLURALNAME: 'Workflow Definitions'
+    REMINDEREMAIL: 'Reminder Email'
+    SENDREMINDERDAYSAFTER: ' days without action.'
+    SENDREMINDERDAYSBEFORE: 'Send reminder email after '
+    SINGULARNAME: 'Workflow Definition'
+    TEMPLATE_INFO: 'Template Info'
+    TEMPLATE_NAME: 'Source Template'
+    TEMPLATE_VERSION: 'Template Version'
+    TITLE: Title
+    UPDATE_FROM_TEMLPATE: 'Update to latest template version (%s)'
+    USERS: 'Restrict to Users'
+    WORKFLOW: Workflow
+    WORKFLOWACTIVEIINSTANCES: 'Active Workflow Instances'
+    WORKFLOWCOMPLETEDIINSTANCES: 'Completed Workflow Instances'
   WorkflowEmbargoExpiryExtension:
-    REQUESTED_PUBLISH_DATE: Requested publish date
-    REQUESTED_UNPUBLISH_DATE: Requested un-publish date
-    PUBLISH_ON: Scheduled publish date
-    UNPUBLISH_ON: Scheduled un-publish date
-    REQUESTED_PUBLISH_DATE_H3: Expiry and Embargo
-    REQUESTED_PUBLISH_DATE_INTRO: Enter a date and/or time to specify embargo and expiry dates.
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: These settings won't take effect until any approval actions are run
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: If an embargo is already set, adding a new one prior to that date's passing will overwrite it
-    EMBARGO_SCHED_ERROR_PT1: 'This content is already under embargo, expiring at:'
-    EMBARGO_SCHED_ERROR_PT2: please wait until this date has passed, before applying a new embargo date.
-    EMBARGO_DSIRD_ERROR: This date has already passed, please enter a valid future date.
+    EMBARGO_ERROR_PT1: 'This content is already under embargo, expiring at: '
+    EMBARGO_ERROR_PT2: ' please wait until this date has passed, before applying a new embargo date.'
+    PUBLISH_ON: 'Scheduled publish date'
+    REQUESTED_PUBLISH_DATE: 'Requested publish date'
+    REQUESTED_PUBLISH_DATE_H3: 'Expiry and Embargo'
+    REQUESTED_PUBLISH_DATE_INTRO: 'Enter a date and/or time to specify embargo and expiry dates.'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'These settings won''t take effect until any approval actions are run'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'If an embargo is already set, adding a new one prior to that date''s passing will overwrite it'
+    REQUESTED_UNPUBLISH_DATE: 'Requested un-publish date'
+    UNPUBLISH_ON: 'Scheduled un-publish date'
+  WorkflowInstance:
+    EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
+    NEXT_ACTION: 'Next Action'
+    PLURALNAME: 'Workflow Instancs'
+    REASSIGN_HEADER: 'Reassign workflow'
+    SINGULARNAME: 'Workflow Instance'
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Instance #%s of %s'
+    WORKFLOW_TRANSITION_EXCEPTION: 'Invalid transition state for action #%s'
+  WorkflowReminderTask:
+    SAVE: Save
+  WorkflowService:
+    EXISTING_WORKFLOW_ERROR: 'That object already has a workflow running'
+    INVALID_WORKFLOW_TARGET: 'A transition was executed on a target that does not have a workflow.'
+  WorkflowTemplate:
+    INVALID_TEMPLATE_ACTION: 'Invalid action class specified in template'
+  WorkflowTransition:
+    ACTION: Action
+    NEXT_ACTION: 'Next Action'
+    PLURALNAME: 'Workflow Transitions'
+    SELECTONE: '(Select one)'
+    SINGULARNAME: 'Workflow Transition'
+    TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
+    TYPE: Type
+  advancedworkflow:
+    EMBARGO_DSIRD_ERROR: 'This date has already passed, please enter a valid future date.'

@@ -13,7 +13,7 @@ class WorkflowAction extends DataObject {
 	public static $db = array(
 		'Title'				=> 'Varchar(255)',
 		'Comment'			=> 'Text',
-		'Type'				=> "Enum('Dynamic,Manual','Manual')",
+		'Type'				=> "Enum('Dynamic,Manual','Manual')",  // is this used?
 		'Executed'			=> 'Boolean',
 		'AllowEditing'		=> "Enum('By Assignees,Content Settings,No','No')",		// can this item be edited?
 		'Sort'				=> 'Int',
@@ -165,7 +165,14 @@ class WorkflowAction extends DataObject {
 		$titleField->setDescription('The Title is used as the button label for this Workflow Action');
 		$fields->addFieldToTab('Root.Main', $titleField);
 		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
-		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, $this->dbObject('AllowEditing')->enumValues(), 'No'));
+		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, 
+			array(
+				'By Assignees' => _t('AllowEditing.ByAssignees', 'By Assignees'),
+				'Content Settings' => _t('AllowEditing.ContentSettings', 'Content Settings'),
+				'No' => _t('AllowEditing.NoString', 'No')
+			),
+		 	_t('AllowEditing.NoString', 'No')
+		));
 		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', _t('WorkflowAction.ALLOW_COMMENTING','Allow Commenting?'),$this->AllowCommenting));
 		
 		return $fields;

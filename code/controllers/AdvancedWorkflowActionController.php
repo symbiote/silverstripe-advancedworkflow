@@ -10,7 +10,12 @@ class AdvancedWorkflowActionController extends Controller {
 	
 	public function transition($request) {
 		if (!Member::currentUserID()) {
-			return Security::permissionFailure($this, "You must be logged in");
+			return Security::permissionFailure($this, 
+				_t(
+					'AdvancedWorkflowActionController.ACTION_ERROR',
+					"You must be logged in"
+					)
+			);
 		}
 
 		$id = $this->request->requestVar('id');
