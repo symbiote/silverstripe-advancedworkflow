@@ -43,3 +43,10 @@ This is an example only. The key is to run the task as the same user as the web 
 [1]:https://github.com/nyeholt/silverstripe-queuedjobs
 
 
+## Contributing
+
+### Translations
+
+Translations of the natural language strings are managed through a third party translation interface, transifex.com. Newly added strings will be periodically uploaded there for translation, and any new translations will be merged back to the project source code.
+
+Please use [https://www.transifex.com/projects/p/silverstripe-advancedworkflow](https://www.transifex.com/projects/p/silverstripe-advancedworkflow) to contribute translations, rather than sending pull requests with YAML files.
