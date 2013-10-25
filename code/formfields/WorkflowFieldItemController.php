@@ -37,7 +37,7 @@ class WorkflowFieldItemController extends Controller {
 		$fields    = $record->getCMSFields();
 		$validator = $record->hasMethod('getValidator') ? $record->getValidator() : null;
 
-		$save = FormAction::create('doSave', 'Save');
+		$save = FormAction::create('doSave', _t('WorkflowReminderTask.SAVE', 'Save'));
 		$save->addExtraClass('ss-ui-button ss-ui-action-constructive')
 		     ->setAttribute('data-icon', 'accept')
 		     ->setUseButtonTag(true);

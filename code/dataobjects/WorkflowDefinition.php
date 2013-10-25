@@ -136,7 +136,7 @@ class WorkflowDefinition extends DataObject {
 				$template = $this->workflowService->getNamedTemplate($this->Template);
 				$fields->addFieldToTab('Root.Main', new ReadonlyField('Template', _t('WorkflowDefinition.TEMPLATE_NAME', 'Source Template'), $this->Template));
 				$fields->addFieldToTab('Root.Main', new ReadonlyField('TemplateDesc', _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'), $template ? $template->getDescription() : ''));
-				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', _t('WorkflowDefinition:TEMPLATE_VERSION', 'Template Version')));
+				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', _t('WorkflowDefinition.TEMPLATE_VERSION', 'Template Version')));
 				$tv->setRightTitle(sprintf(_t('WorkflowDefinition.LATEST_VERSION', 'Latest version is %s'), $template->getVersion()));
 				
 			}
@@ -154,7 +154,7 @@ class WorkflowDefinition extends DataObject {
 				}
 				$templates = array_combine(array_keys($templates), array_keys($templates));
 				$fields->addFieldToTab('Root.Main', $dd = new DropdownField('Template', _t('WorkflowDefinition.CHOOSE_TEMPLATE', 'Choose template (optional)'), $items));
-				$dd->setRightTitle('If set, this workflow definition will be automatically updated if the template is changed');
+				$dd->setRightTitle(_t('WorkflowDefinition.CHOOSE_TEMPLATE_RIGHT', 'If set, this workflow definition will be automatically updated if the template is changed'));
 			}
 			
 			$message = _t(
@@ -173,7 +173,7 @@ class WorkflowDefinition extends DataObject {
 
 			$active = new GridField(
 				'Active',
-				'Active Workflow Instances',
+				_t('WorkflowDefinition.WORKFLOWACTIVEIINSTANCES', 'Active Workflow Instances'),
 				$active,
 				new GridFieldConfig_RecordEditor());
 
@@ -196,7 +196,7 @@ class WorkflowDefinition extends DataObject {
 			
 			$completed = new GridField(
 				'Completed',
-				'Completed Workflow Instances',
+				_t('WorkflowDefinition.WORKFLOWCOMPLETEDIINSTANCES', 'Completed Workflow Instances'),
 				$completed,
 				$config);
 

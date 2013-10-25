@@ -220,7 +220,9 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function execute() {
 		if (!$this->CurrentActionID) {
-			throw new Exception("Attempted to start an invalid workflow instance #$this->ID!");
+			throw new Exception(
+				sprintf(_t('WorkflowInstance.EXECUTE_EXCEPTION', 'Attempted to start an invalid workflow instance #%s!'), $this->ID)
+			);
 		}
 
 		$action     = $this->CurrentAction();
@@ -292,7 +294,10 @@ class WorkflowInstance extends DataObject {
 
 		$valid = $allTransitions->find('ID', $transition->ID);
 		if (!$valid) {
-			throw new Exception ("Invalid transition state for action #$action->ID");
+			throw new Exception (
+				sprintf(_t('WorkflowInstance.WORKFLOW_TRANSITION_EXCEPTION', 'Invalid transition state for action #%s'), $action->ID)
+			);
+
 		}
 
 		$action->actionComplete($transition);

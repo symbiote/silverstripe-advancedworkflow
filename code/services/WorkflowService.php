@@ -141,15 +141,15 @@ class WorkflowService implements PermissionProvider {
 		$transition = DataObject::get_by_id('WorkflowTransition', $transitionId);
 
 		if(!$transition) {
-			throw new Exception("Invalid transition ID $transitionId");
+			throw new Exception(_t('WorkflowService.INVALID_TRANSITION_ID', "Invalid transition ID $transitionId"));
 		}
 
 		if(!$workflow) {
-			throw new Exception('A transition was executed on a target that does not have a workflow.');
+			throw new Exception(_t('WorkflowService.INVALID_WORKFLOW_TARGET', "A transition was executed on a target that does not have a workflow."));
 		}
 
 		if($transition->Action()->WorkflowDefID != $workflow->DefinitionID) {
-			throw new Exception("Transition #$transition->ID is not attached to workflow #$workflow->ID.");
+			throw new Exception(_t('WorkflowService.INVALID_TRANSITION_WORKFLOW', "Transition #$transition->ID is not attached to workflow #$workflow->ID."));
 		}
 
 		$workflow->performTransition($transition);
@@ -164,7 +164,7 @@ class WorkflowService implements PermissionProvider {
 	public function startWorkflow(DataObject $object) {
 		$existing = $this->getWorkflowFor($object);
 		if ($existing) {
-			throw new ExistingWorkflowException("That object already has a workflow running");
+			throw new ExistingWorkflowException(_t('WorkflowService.EXISTING_WORKFLOW_ERROR', "That object already has a workflow running"));
 		}
 
 		$definition = $this->getDefinitionFor($object);

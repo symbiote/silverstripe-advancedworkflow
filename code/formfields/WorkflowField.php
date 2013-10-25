@@ -45,16 +45,16 @@ class WorkflowField extends FormField {
 			$action = $this->Definition()->Actions()->byID($parent);
 
 			if(!$action) {
-				$this->httpError(400, 'An invalid parent ID was specified.');
+				$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDPARENTID', 'An invalid parent ID was specified.'));
 			}
 
 			$objects = $action->Transitions();
 		} else {
-			$this->httpError(400, 'An invalid class to order was specified.');
+			$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDCLASSTOORDER', 'An invalid class to order was specified.'));
 		}
 
 		if(array_diff($ids, $objects->column('ID'))) {
-			$this->httpError(400, 'An invalid list of IDs was provided.');
+			$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDIDLIST', 'An invalid list of IDs was provided.'));
 		}
 
 		singleton('WorkflowService')->reorder($objects, $ids);

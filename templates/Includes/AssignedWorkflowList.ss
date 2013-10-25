@@ -13,7 +13,7 @@
 		</tr>
 	</thead>
 	<tbody>
-<% control UserWorkflows %>
+<% loop UserWorkflows %>
 	<tr>
 		<td><a href="$Target.Link?stage=Stage">$Target.Title.XML</a></td>
 		<td>$Initiator.getTitle</td>
@@ -21,14 +21,14 @@
 		<td>
 			<% if validTransitions %>
 			<ul data-instance-id="$ID" class="workflowActionsList">
-				<% control validTransitions %>
+				<% loop validTransitions %>
 				<li><a href="#" class="advancedWorkflowTransition" data-transition-id="$ID">$Title.XML</a></li>
-				<% end_control %>
+				<% end_loop %>
 			</ul>
 			<% end_if %>
 		</td>
 	</tr>
-<% end_control %>
+<% end_loop %>
 	</tbody>
 
 </table>

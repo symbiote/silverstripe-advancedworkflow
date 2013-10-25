@@ -69,8 +69,8 @@ abstract class FrontEndWorkflowController extends Controller {
 	 * @param SS_HTTPRequest $request
 	 * @todo - is this even required???
 	 */
-	public function handleAction($request){
-		return parent::handleAction($request);
+	public function handleAction($request, $action){
+		return parent::handleAction($request, $action);
 	}
 	
 	/**
@@ -139,11 +139,21 @@ abstract class FrontEndWorkflowController extends Controller {
 	 */
 	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		if (!$obj = $this->getContextObject()) {
-			throw new Exception('Context Object Not Found');
+			throw new Exception(
+				_t(
+					'FrontEndWorkflowController.FRONTENDACTION_CONTEXT_EXCEPTION',
+					'Context Object Not Found'
+					)
+			);
 		}
 
 		if(!$this->getCurrentTransition()->canExecute($this->contextObj->getWorkflowInstance())){
-			throw new Exception('You do not have permission to execute this action');
+			throw new Exception(
+				_t(
+					'FrontEndWorkflowController.FRONTENDACTION_TRANSITION_EXCEPTION',
+					'You do not have permission to execute this action'
+					)
+			);
 		}
 		
 		//Only Save data when Transition is 'Active'

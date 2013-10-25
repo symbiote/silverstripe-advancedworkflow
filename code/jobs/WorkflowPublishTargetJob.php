@@ -15,7 +15,7 @@ class WorkflowPublishTargetJob extends AbstractQueuedJob {
 	}
 
 	public function getTitle() {
-		return "Scheduled $this->publishType of " . $this->getObject()->Title;
+		return _t('AdvancedWorkflowPublishJob.SCHEDULEJOBTITLE', "Scheduled $this->publishType of " . $this->getObject()->Title);
 	}
 
 	public function process() {
