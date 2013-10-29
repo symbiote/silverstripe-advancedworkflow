@@ -45,6 +45,10 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 				$data[$fieldName] = $current->$fieldName;
 			}
 
+			$fields->findOrMakeTab(
+				'Root.WorkflowActions',
+				_t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
+			);
 			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 
 			$form->loadDataFrom($data);

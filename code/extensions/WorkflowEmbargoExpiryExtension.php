@@ -63,6 +63,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 		$this->setIsWorkflowInEffect();
 
+		$fields->findOrMakeTab(
+			'Root.PublishingSchedule',
+			_t('WorkflowEmbargoExpiryExtension.TabTitle', 'Publishing Schedule')
+		);
 		if ($this->getIsWorkflowInEffect()) {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
 				new HeaderField('PublishDateHeader', _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_H3', 'Expiry and Embargo'), 3),

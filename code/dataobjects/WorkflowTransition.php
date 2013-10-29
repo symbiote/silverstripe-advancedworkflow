@@ -117,6 +117,10 @@ class WorkflowTransition extends DataObject {
 			));
 
 		$members = Member::get();
+		$fields->findOrMakeTab(
+			'Root.RestrictToUsers',
+			_t('WorkflowTransition.TabTitle', 'Restrict to users')
+		);
 		$fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
 		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
 
