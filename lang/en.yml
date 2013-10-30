@@ -65,6 +65,8 @@ en:
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple Approval Workflow Actions'
     SINGULARNAME: 'Simple Approval Workflow Action'
+  Workflow:
+    WorkflowActionsTabTitle: 'Workflow Actions'
   WorkflowAction:
     ALLOW_COMMENTING: 'Allow Commenting?'
     ALLOW_EDITING: 'Allow editing during this step?'
@@ -106,6 +108,8 @@ en:
     WORKFLOWACTIVEIINSTANCES: 'Active Workflow Instances'
     WORKFLOWCOMPLETEDIINSTANCES: 'Completed Workflow Instances'
   WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Active
+    CompletedWorkflowStateTitle: Completed
     EMBARGO_ERROR_PT1: 'This content is already under embargo, expiring at: '
     EMBARGO_ERROR_PT2: ' please wait until this date has passed, before applying a new embargo date.'
     PUBLISH_ON: 'Scheduled publish date'
@@ -115,6 +119,7 @@ en:
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'These settings won''t take effect until any approval actions are run'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'If an embargo is already set, adding a new one prior to that date''s passing will overwrite it'
     REQUESTED_UNPUBLISH_DATE: 'Requested un-publish date'
+    TabTitle: 'Publishing Schedule'
     UNPUBLISH_ON: 'Scheduled un-publish date'
   WorkflowInstance:
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
@@ -140,5 +145,6 @@ en:
     SINGULARNAME: 'Workflow Transition'
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
     TYPE: Type
+    TabTitle: 'Restrict to users'
   advancedworkflow:
     EMBARGO_DSIRD_ERROR: 'This date has already passed, please enter a valid future date.'

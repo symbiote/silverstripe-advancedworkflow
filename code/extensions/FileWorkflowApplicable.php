@@ -33,6 +33,10 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 			$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
 			$form->loadDataFrom($current);
 
+			$fields->findOrMakeTab(
+				'Root.WorkflowActions',
+				_t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
+			);
 			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 		}
 	}

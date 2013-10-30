@@ -1,0 +1,143 @@
+mi:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Reremahi Ara Atu Anō'
+    APPLY_WORKFLOW: 'Hoatu reremahi'
+    APPLY_WORKFLOW_HELP: 'Ka taea e ngā kaiwhakamahi te hoatu reremahi ki ngā tuemi'
+    REASSIGNACTIVE: 'Tautapatia anō ngā reremahi hohe'
+    REASSIGNACTIVEHELP: 'Ka taea e ngā kaiwhakamahi te tautapa reremahi hohe anō ki ngā kaiwhakamahi me ngā rōpū kē'
+    VIEWACTIVE: 'Tirohia ngā reremahi hohe'
+    VIEWACTIVEHELP: 'Ka taea e ngā kaiwhakamahi te tiro reremahi hohe mā te paepae whakahaere reremahi'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'Me takiuru rawa koe'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Ngā tuemi tārewa katoa'
+    GridFieldTitleAssignedYour: 'Ō tuemi tārewa'
+    GridFieldTitleSubmittedAll: 'Ngā tuemi katoa kua tukuna'
+    GridFieldTitleSubmittedYour: 'Ō tuemi kua tukuna'
+    INVALIDCLASSTOORDER: 'I tāurua he tauaha muhu ki te raupapa.'
+    INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
+    INVALIDPARENTID: 'I tāurua he TT matua muhu.'
+    SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
+    MENUTITLE: Ngā reremahi
+  AdvancedWorkflowFrontendForm:
+    ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
+    ACTIONFORMCHECK: 'Kāore e whakaaetia te hohenga "%s" i te puka (Ingoa: %s)'
+    SECURITYTOKENCHECK: 'Kāore e rite te maimai haumaru, he whakaekenga kino CSRF pea.'
+  AllowEditing:
+    ByAssignees: 'Nā Ngā Māngai'
+    ContentSettings: 'Ngā Tautuhinga Ihirangi'
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Tautapa Kaiwhakamahi'
+    GROUPS: Ngā Rōpū
+    INITIATOR: 'Tautapa Kaitīmata'
+    PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+    USERS: Ngā Kaiwhakamahi
+  CancelWorkflowAction:
+    PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
+  FrontEndWorkflowController:
+    FRONTENDACTION_CONTEXT_EXCEPTION: 'Kāore I Kitea Te Ahanoa Horopaki'
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'Kāore ō whakaaetanga kia kawe i tēnei hohenga'
+  NotifyUsersWorkflowAction:
+    COMMENTHISTORY: 'Hītori tākupu tae mai ki tēnei whakamōhiotanga.'
+    CONTEXTNOTE: "Ka wātea ngā āpure rāpopoto mai i te ūnga reremahi. Hei tauira, {$Context.Title}.\n\t\t\tI tua atu, ka whai hononga te taurangi {$Context.AbsoluteEditLink} hei whakatikatika i te ūnga i te\n\t\t\tCMS (mēnā he Whārangi tēnā)."
+    EMAILFROM: 'Īmēra mai'
+    EMAILSUBJECT: 'Kaupapa īmēra'
+    EMAILTEMPLATE: 'Tātauira īmēra'
+    FIELDNAME: 'Ingoa āpure'
+    FORMATTINGHELP: 'Āwhina Whakahōputu'
+    FORMATTINGNOTE: "Ka whai hōputu HTML pea ngā īmēra whakamōhio. Ka whakakapia ēnei taurangi motuhake ki ngā\n\t\t\tuara hāngai i roto i te kaupapa īmerā, i te īmērā mai, me te tātauira/tinana."
+    INITIATORNOTE: "Ka whakakīa ēnei āpure i te mema ka tīmata i te tono reremahi. Hei tauira,\n\t\t\t{$Initiator.Email}."
+    LISTING_TEMPLATE: "Tātauira Whakarārangi- Ko ngā tuemi te rārangi o ngā hohenga katoa i te reremahi (kupu haurite ki ngā Hohenga). \n\t\t\t\t\tKa wātea hoki ngā āhuatanga katoa o te Tauira Reremahi o nāianei"
+    MEMBERNOTE: "Ka whakakīa ēnei āpure i te mema ka tīmata i te hohenga whakamōhio. Hei tauira,\n\t\t\t{$Member.FirstName}."
+    NOTIFICATIONEMAIL: 'Īmēra Whakamōhio'
+    NOTIFICATIONNOTE: 'Ka tukuna he īmēra ki ngā kaiwhakamahi katoa e tāpiritia ana ki te reremahi ina whakahaeretia tēnei hohenga.'
+    PLURALNAME: 'Whakamōhiotia Ngā Hohenga Reremahi Kaiwhakamahi'
+    SINGULARNAME: 'Whakamōhiotia Te Hohenga Reremahi Kaiwhakamahi'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'ngā rā'
+    DELAYPUBDAYSBEFORE: 'Takaware whakaputanga'
+    PLURALNAME: 'Whakaputaina Ngā Hohenga Reremahi Tuemi'
+    PUBLICATIONDELAY: 'Takawarenga Whakaputa'
+    SINGULARNAME: 'Whakaputaina Te Hohenga Reremahi Tuemi'
+  SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
+    SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
+  WorkflowAction:
+    ALLOW_COMMENTING: 'Tuku Tākupu?'
+    ALLOW_EDITING: 'Tuku whakatika i tēnei hipanga?'
+    CLASS_LABEL: 'Tauaha Hohenga'
+    COMMENT: Tākupu
+    FRONTENDCOMMENT: Tākupu
+    PLURALNAME: 'Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Hohenga Reremahi'
+    TITLE: Taitara
+  WorkflowActionInstance:
+    PLURALNAME: 'Ngā Tauira Hohenga Reremahi'
+    SINGULARNAME: 'Tauira Hohenga Reremahi'
+  WorkflowApplicable:
+    DEFINITION: 'Reremahi Kua Hoatu'
+    EFFECTIVE_WORKFLOW: 'Reremahi Tōtika'
+    INHERIT: 'Tukuna iho i te matua'
+    NONE: (kore)
+    UPDATE_WORKFLOW: 'Whakahou Reremahi'
+    WORKFLOWLOG: 'Rangitaki Reremahi'
+  WorkflowDefinition:
+    ADDAFTERSAVING: 'Ka taea  te tāpiri hipanga reremahi i muri i te tiakinga tuatahitanga.'
+    CHOOSE_TEMPLATE: 'Kōwhiria te tātauira (he kōwhiringa noa)'
+    CHOOSE_TEMPLATE_RIGHT: 'Mēnā kua tautuhia, ka whakahou aunoatia tēnei whakamārama reremahi mēnā ka hurihia te tātauira'
+    DESCRIPTION: Whakamāramatanga
+    GROUPS: 'Whakawhāitihia ki ngā Rōpū'
+    LATEST_VERSION: 'Ko %s te putanga hou rawa'
+    PLURALNAME: 'Ngā Whakamāramatanga Reremahi'
+    REMINDEREMAIL: 'Īmēra Whakamaumahara'
+    SENDREMINDERDAYSAFTER: 'ngā rā kore hohenga.'
+    SENDREMINDERDAYSBEFORE: 'Tuku īmēra whakamaumahara i muri i'
+    SINGULARNAME: 'Whakamāramatanga Reremahi'
+    TEMPLATE_INFO: 'Mōhiohio Tātauira'
+    TEMPLATE_NAME: 'Tātauira Pūtake'
+    TEMPLATE_VERSION: 'Putanga Tātauira'
+    TITLE: Taitara
+    UPDATE_FROM_TEMLPATE: 'Whakahou ki te putanga tātauira hou rawa (%s)'
+    USERS: 'Whakawhāitihia ki ngā Kaiwhakamahi'
+    WORKFLOW: Reremahi
+    WORKFLOWACTIVEIINSTANCES: 'Ngā Tauira Reremahi Hohe'
+    WORKFLOWCOMPLETEDIINSTANCES: 'Ngā Tauira Reremahi Oti'
+  WorkflowEmbargoExpiryExtension:
+    EMBARGO_ERROR_PT1: 'Kei te rāhui kētia tēnei ihirangi, ka mōnehu ā te:'
+    EMBARGO_ERROR_PT2: 'me tātari kia hipa rā anō taua rā i mua i te hoatu i te rā rāhui hou.'
+    PUBLISH_ON: 'Rā whakaputa kua whakaritea'
+    REQUESTED_PUBLISH_DATE: 'I tonoa te rā whakaputa'
+    REQUESTED_PUBLISH_DATE_H3: 'Mōnehutanga me te Rāhui'
+    REQUESTED_PUBLISH_DATE_INTRO: 'Tāurua he rā, he wā hoki/rānei hei whakarite rā rāhui me te mōnehu.'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Kāore ēnei tautuhinga e whai mana kia whakahaeretia rā anō ngā hohenga whakaaetanga'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Mēnā kua tautuhi kētia tētahi rāhuitanga, ka tuhiruatia mā te tāpiri i te mea hou i mua i te hipa o taua rā'
+    REQUESTED_UNPUBLISH_DATE: 'I tonoa te rā wetewhakaputa'
+    UNPUBLISH_ON: 'Rā wetewhakaputa kua whakaritea'
+  WorkflowInstance:
+    EXECUTE_EXCEPTION: 'I whakamātauria te tīmatanga o tētahi tauira reremahi muhu #%s!'
+    NEXT_ACTION: 'Hohenga Panuku'
+    PLURALNAME: 'Ngā Tauira Reremahi'
+    REASSIGN_HEADER: 'Tautapatia anō te reremahi'
+    SINGULARNAME: 'Tauira Reremahi'
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Tauira #%s o te %s'
+    WORKFLOW_TRANSITION_EXCEPTION: 'Tūnga whakawhiti muhu mō te hohenga #%s'
+  WorkflowReminderTask:
+    SAVE: Tiaki
+  WorkflowService:
+    EXISTING_WORKFLOW_ERROR: 'Kei taua ahanoa he reremahi e haere kē ana'
+    INVALID_WORKFLOW_TARGET: 'I kawea he whakawhitinga ki tētahi ūnga kāore tōna reremahi.'
+  WorkflowTemplate:
+    INVALID_TEMPLATE_ACTION: 'I tāurua he tauaha hohenga muhu i te tātauira'
+  WorkflowTransition:
+    ACTION: Hohenga
+    NEXT_ACTION: 'Hohenga Panuku'
+    PLURALNAME: 'Ngā Whakawhiti Reremahi'
+    SELECTONE: '(Tīpakohia kotahi)'
+    SINGULARNAME: 'Whakawhitinga Reremahi'
+    TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
+    TYPE: Momo
+  advancedworkflow:
+    EMBARGO_DSIRD_ERROR: 'Kua hipa kē te rā, tāurua he rā pono o muri ake.'
