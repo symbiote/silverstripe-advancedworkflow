@@ -36,6 +36,16 @@ class WorkflowActionInstance extends DataObject {
 		'Created'				=> 'Date',
 		'Member.Name'			=> 'Author'
 	);
+
+	public function fieldLabels($includerelations = true) {
+		$labels = parent::fieldLabels($includerelations);
+		$labels['Comment'] = _t('WorkflowAction.CommentLabel', 'Comment');
+		$labels['Member.Name'] = _t('WorkflowAction.Author', 'Author');
+		$labels['Finished'] = _t('WorkflowAction.FinishedLabel', 'Finished');
+		$labels['BaseAction.Title'] = _t('WorkflowAction.TITLE', 'Title');
+
+		return $labels;
+	}
 	
 	/**
 	 * Gets fields for when this is part of an active workflow

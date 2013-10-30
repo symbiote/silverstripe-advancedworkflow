@@ -161,11 +161,13 @@ class WorkflowAction extends DataObject {
 		$fields = new FieldList(new TabSet('Root'));
 		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
 		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
-		$titleField = new TextField('Title', _t('WorkflowAction.TITLE', 'Title'));
-		$titleField->setDescription('The Title is used as the button label for this Workflow Action');
+		$titleField = new TextField('Title', $this->fieldLabel('Title'));
+		$titleField->setDescription(_t(
+			'WorkflowAction.TitleDescription',
+			'The Title is used as the button label for this Workflow Action'
+		));
 		$fields->addFieldToTab('Root.Main', $titleField);
-		$label = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
-		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $label, 
+		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $this->fieldLabel('AllowEditing'), 
 			array(
 				'By Assignees' => _t('AllowEditing.ByAssignees', 'By Assignees'),
 				'Content Settings' => _t('AllowEditing.ContentSettings', 'Content Settings'),
@@ -173,7 +175,7 @@ class WorkflowAction extends DataObject {
 			),
 		 	_t('AllowEditing.NoString', 'No')
 		));
-		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', _t('WorkflowAction.ALLOW_COMMENTING','Allow Commenting?'),$this->AllowCommenting));
+		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'),$this->AllowCommenting));
 		
 		return $fields;
 	}
@@ -183,7 +185,23 @@ class WorkflowAction extends DataObject {
 	}
 
 	public function summaryFields() {
-		return array('Title' => 'Title', 'Transitions' => 'Transitions');
+		return array(
+			'Title' => $this->fieldLabel('Title'), 
+			'Transitions' => $this->fieldLabel('Transitions'),
+		);
+	}
+
+	public function fieldLabels($includerelations = true) {
+		$labels = parent::fieldLabels($includerelations);
+		$labels['Comment'] = _t('WorkflowAction.CommentLabel', 'Comment');
+		$labels['Type'] = _t('WorkflowAction.TypeLabel', 'Type');
+		$labels['Executed'] = _t('WorkflowAction.ExecutedLabel', 'Executed');
+		$labels['AllowEditing'] = _t('WorkflowAction.ALLOW_EDITING', 'Allow editing during this step?');
+		$labels['Title'] = _t('WorkflowAction.TITLE', 'Title');
+		$labels['AllowCommenting'] = _t('WorkflowAction.ALLOW_COMMENTING','Allow Commenting?');
+		$labels['Transitions'] = _t('WorkflowAction.Transitions','Transitions');
+
+		return $labels;
 	}
 	
 	/**

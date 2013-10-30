@@ -77,7 +77,7 @@ class WorkflowTransition extends DataObject {
 
 	public function getCMSFields() {
 		$fields = new FieldList(new TabSet('Root'));
-		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowAction.TITLE', 'Title')));
+		$fields->addFieldToTab('Root.Main', new TextField('Title', $this->fieldLabel('Title')));
 
 		$filter = '';
 
@@ -103,18 +103,18 @@ class WorkflowTransition extends DataObject {
 
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'ActionID',
-			_t('WorkflowTransition.ACTION', 'Action'),
+			$this->fieldLabel('ActionID'),
 			$options, $defaultAction));
 		$fields->addFieldToTab('Root.Main', $nextActionDropdownField = new DropdownField(
 			'NextActionID',
-			_t('WorkflowTransition.NEXT_ACTION', 'Next Action'),
+			$this->fieldLabel('NextActionID'),
 			$options));
 		$nextActionDropdownField->setEmptyString(_t('WorkflowTransition.SELECTONE', '(Select one)'));
 		$fields->addFieldToTab('Root.Main', new DropdownField(
 			'Type',
 			_t('WorkflowTransition.TYPE', 'Type'),
 			$typeOptions
-			));
+		));
 
 		$members = Member::get();
 		$fields->findOrMakeTab(
@@ -129,6 +129,15 @@ class WorkflowTransition extends DataObject {
 		return $fields;
 	}
 
+	public function fieldLabels($includerelations = true) {
+		$labels = parent::fieldLabels($includerelations);
+		$labels['Title'] = _t('WorkflowAction.TITLE', 'Title');
+		$labels['ActionID'] = _t('WorkflowTransition.ACTION', 'Action');
+		$labels['NextActionID'] = _t('WorkflowTransition.NEXT_ACTION', 'Next Action');
+
+		return $labels;
+	}
+
 	public function getValidator() {
 		$required = new AWRequiredFields('Title', 'ActionID', 'NextActionID');
 		$required->setCaller($this);
@@ -140,7 +149,9 @@ class WorkflowTransition extends DataObject {
 	}
 
 	public function summaryFields() {
-		return array('Title' => 'Title');
+		return array(
+			'Title' => $this->fieldLabel('Title')
+		);
 	}
 
 

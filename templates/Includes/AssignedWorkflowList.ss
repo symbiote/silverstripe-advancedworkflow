@@ -6,10 +6,10 @@
 <table class="userWorkflowTable">
 	<thead>
 		<tr>
-			<th width="45%">Item</th>
-			<th width="15%">Edited by</th>
-			<th width="15%">Submitted</th>
-			<th width="25%">Actions</th>
+			<th width="45%"><%t WorkflowList.TableHeaderItem "Item" %></th>
+			<th width="15%"><%t WorkflowList.TableHeaderEditedBy "Edited by" %></th>
+			<th width="15%"><%t WorkflowList.TableHeaderSubmitted "Submitted" %></th>
+			<th width="25%"><%t WorkflowList.TableHeaderActions "Actions" %></th>
 		</tr>
 	</thead>
 	<tbody>

@@ -138,7 +138,7 @@ jQuery.entwine("workflow", function($) {
 
 	$(".workflow-field .workflow-field-delete").entwine({
 		onclick: function() {
-			if(confirm("Are you sure you want to permanently delete this?")) {
+			if(confirm(ss.i18n._t('Workflow.DeleteQuestion'))) {
 				var data = {
 					"SecurityID" : this.data("securityid")
 				};
@@ -232,25 +232,23 @@ jQuery.entwine("workflow", function($) {
 				if(publishDate === ''){
 					//Has time, not date
 					message = ss.i18n.sprintf(
-						ss.i18n._t(
-							'Workflow.EMBARGOMESSAGETIME', 
-							'Saved drafts of this page will auto publish today at <a>%s</a>'
-						), publishTime);
+						ss.i18n._t('Workflow.EMBARGOMESSAGETIME'), 
+						publishTime
+					);
 
 				}else if(publishTime === ''){
 					//has date no time
 					message = ss.i18n.sprintf(
-						ss.i18n._t(
-							'Workflow.EMBARGOMESSAGEDATE', 
-							'Saved drafts of this page will auto publish on <a>%s</a>'
-						), publishDate);
+						ss.i18n._t('Workflow.EMBARGOMESSAGEDATE'), 
+						publishDate
+					);
 				}else{
 					//has date and time
 					message = ss.i18n.sprintf(
-					ss.i18n._t(
-						'Workflow.EMBARGOMESSAGEDATETIME', 
-						'Saved drafts of this page will auto publish on <a>%s at %s</a>'
-					), publishDate, publishTime);
+						ss.i18n._t('Workflow.EMBARGOMESSAGEDATETIME'), 
+						publishDate, 
+						publishTime
+					);
 				}
 
 				message = message.replace('<a>','<a href="#" id="workflow-schedule">');

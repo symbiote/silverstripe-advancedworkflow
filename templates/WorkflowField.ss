@@ -6,13 +6,15 @@
 		<h3>$Title</h3>
 		<div class="workflow-field-create">
 			<select class="workflow-field-create-class no-change-track">
-				<option value="">Create an action&hellip;</option>
+				<option value="">
+					<%t WorkflowField.CreateAction "Create an action" %>&hellip;
+				</option>
 				<% loop $CreateableActions %>
 					<option value="$Top.ActionLink('new',$Class,'edit')">$Title</option>
 				<% end_loop %>
 			</select>
 			<button class="ss-ui-button ui-state-disabled workflow-field-do-create" data-icon="add">
-				Create
+				<%t WorkflowField.CreateLabel "Create" %>
 			</button>
 		</div>
 	</div>
@@ -27,13 +29,13 @@
 
 					<div class="workflow-field-action-buttons">
 						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>" href="$Top.ActionLink('item',$ID,'edit')" data-icon="pencil">
-							Edit
+							<%t WorkflowField.EditAction "Edit" %>
 						</a>
 						<a class="ss-ui-button workflow-field-open-dialog<% if $disableButtonAddTransition %> workflow-field-action-disabled<% end_if %>" href="$Top.TransitionLink('new',$ID,'edit')" data-icon="chain--arrow">
-							Add Transition
+							<%t WorkflowField.AddTransitionAction "Add Transition" %>
 						</a>
 						<a href="$Top.ActionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="ss-ui-button workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>" data-icon="cross-circle">
-							Delete
+							<%t WorkflowField.DeleteAction "Delete" %>
 						</a>
 					</div>
 				</div>
@@ -49,8 +51,12 @@
 									<span class="ui-icon btn-icon-chain-small"></span>
 									<span class="next-title">$NextAction.Title</span>
 								</div>
-								<a href="$Top.TransitionLink('item',$ID,'edit')" class="ui-icon btn-icon-pencil workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Edit</a>
-								<a href="$Top.TransitionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="ui-icon btn-icon-cross-circle workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>">Delete</a>
+								<a href="$Top.TransitionLink('item',$ID,'edit')" class="ui-icon btn-icon-pencil workflow-field-open-dialog<% if $disableButton %> workflow-field-action-disabled<% end_if %>">
+									<%t WorkflowField.EditAction "Edit" %>
+								</a>
+								<a href="$Top.TransitionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="ui-icon btn-icon-cross-circle workflow-field-delete<% if $disableButton %> workflow-field-action-disabled<% end_if %>">
+									<%t WorkflowField.DeleteAction "Delete" %>
+								</a>
 							</li>
 						<% end_loop %>
 					</ol>

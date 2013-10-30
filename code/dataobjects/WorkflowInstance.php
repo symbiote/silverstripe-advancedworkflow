@@ -81,11 +81,25 @@ class WorkflowInstance extends DataObject {
 			'WorkflowID'	=> $this->ID
 		));
 
-		$grid = new GridField('Actions', 'Log', $items);
+		$grid = new GridField(
+			'Actions', 
+			_t('WorkflowInstance.ActionLogTitle','Log'), 
+			$items
+		);
 
 		$fields->push($grid);
 
 		return $fields;
+	}
+
+	public function fieldLabels($includerelations = true) {
+		$labels = parent::fieldLabels($includerelations);
+		$labels['Title'] = _t('WorkflowInstance.TitleLabel', 'Title');
+		$labels['WorkflowStatus'] = _t('WorkflowInstance.WorkflowStatusLabel', 'Workflow Status');
+		$labels['TargetClass'] = _t('WorkflowInstance.TargetClassLabel', 'Target Class');
+		$labels['TargetID'] = _t('WorkflowInstance.TargetIDLabel', 'Target');
+
+		return $labels;
 	}
 	
 	/**

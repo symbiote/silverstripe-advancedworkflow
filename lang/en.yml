@@ -10,6 +10,9 @@ en:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'You must be logged in'
   AdvancedWorkflowAdmin:
+    ChangedField: Changed
+    CurrentActionField: 'Current Action'
+    EffectiveWorkflowField: 'Effective Workflow'
     GridFieldTitleAssignedAll: 'All pending items'
     GridFieldTitleAssignedYour: 'Your pending items'
     GridFieldTitleSubmittedAll: 'All submitted items'
@@ -18,6 +21,7 @@ en:
     INVALIDIDLIST: 'An invalid list of IDs was provided.'
     INVALIDPARENTID: 'An invalid parent ID was specified.'
     SORTORDERSAVED: 'The sort order has been saved.'
+    TitleField: Title
     MENUTITLE: Workflows
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Action "%s" not allowed on controller (Class: %s)'
@@ -70,12 +74,19 @@ en:
   WorkflowAction:
     ALLOW_COMMENTING: 'Allow Commenting?'
     ALLOW_EDITING: 'Allow editing during this step?'
+    Author: Author
     CLASS_LABEL: 'Action Class'
     COMMENT: Comment
+    CommentLabel: Comment
+    ExecutedLabel: Executed
     FRONTENDCOMMENT: Comment
+    FinishedLabel: Finished
     PLURALNAME: 'Workflow Actions'
     SINGULARNAME: 'Workflow Action'
     TITLE: Title
+    TitleDescription: 'The Title is used as the button label for this Workflow Action'
+    Transitions: Transitions
+    TypeLabel: Type
   WorkflowActionInstance:
     PLURALNAME: 'Workflow Action Instancs'
     SINGULARNAME: 'Workflow Action Instance'
@@ -121,7 +132,14 @@ en:
     REQUESTED_UNPUBLISH_DATE: 'Requested un-publish date'
     TabTitle: 'Publishing Schedule'
     UNPUBLISH_ON: 'Scheduled un-publish date'
+  WorkflowField:
+    AddTransitionAction: 'Add Transition'
+    CreateAction: 'Create an action'
+    CreateLabel: Create
+    DeleteAction: Delete
+    EditAction: Edit
   WorkflowInstance:
+    ActionLogTitle: Log
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
     NEXT_ACTION: 'Next Action'
     PLURALNAME: 'Workflow Instancs'
@@ -129,7 +147,11 @@ en:
     SINGULARNAME: 'Workflow Instance'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Instance #%s of %s'
+    TargetClassLabel: 'Target Class'
+    TargetIDLabel: Target
+    TitleLabel: Title
     WORKFLOW_TRANSITION_EXCEPTION: 'Invalid transition state for action #%s'
+    WorkflowStatusLabel: 'Workflow Status'
   WorkflowReminderTask:
     SAVE: Save
   WorkflowService:

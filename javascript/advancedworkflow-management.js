@@ -22,7 +22,7 @@
 					if (data.success) {
 						location.href = data.link;
 					} else {
-						alert("Could not process workflow");
+						alert(ss.i18n._t('Workflow.ProcessError'));
 					}
 				}
 			})
