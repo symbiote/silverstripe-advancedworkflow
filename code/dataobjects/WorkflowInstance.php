@@ -91,7 +91,7 @@ class WorkflowInstance extends DataObject {
 
 		return $fields;
 	}
-
+	
 	public function fieldLabels($includerelations = true) {
 		$labels = parent::fieldLabels($includerelations);
 		$labels['Title'] = _t('WorkflowInstance.TitleLabel', 'Title');

@@ -20,12 +20,12 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 
 	public static $fileEditActions = 'getCMSActions';
 
-	public static $fieldOverrides = array(
-		'Title'				=> 'Title',
-		'LastEdited'		=> 'Changed',
-		'WorkflowTitle'		=> 'Effective workflow',
-		'WorkflowStatus'	=> 'Current action'
-	);
+	/**
+	 * Defaults are set in {@link getEditForm()}.
+	 * 
+	 * @var array
+	 */
+	public static $fieldOverrides = array();
 	
 	/**
 	 * @var WorkflowService
@@ -42,6 +42,17 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		// Show items submitted into a workflow for current user to action
 		$fieldName = 'PendingObjects';
 		$pending = $this->userObjects(Member::currentUser(), $fieldName);
+
+		if(self::$fieldOverrides) {
+			$displayFields = self::$fieldOverrides;
+		} else {
+			$displayFields = array(
+				'Title'				=> _t('AdvancedWorkflowAdmin.Title', 'Title'),
+				'LastEdited'		=> _t('AdvancedWorkflowAdmin.LastEdited', 'Changed'),
+				'WorkflowTitle'		=> _t('AdvancedWorkflowAdmin.WorkflowTitle', 'Effective workflow'),
+				'WorkflowStatus'	=> _t('AdvancedWorkflowAdmin.WorkflowStatus', 'Current action'),
+			);
+		}
 
 		// Pending/Submitted items GridField Config
 		$config = new GridFieldConfig_Base();
@@ -67,7 +78,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			);
 
 			$dataColumns = $formFieldTop->getConfig()->getComponentByType('GridFieldDataColumns');
-			$dataColumns->setDisplayFields(self::$fieldOverrides);
+			$dataColumns->setDisplayFields($displayFields);
 
 			$formFieldTop->setForm($form);
 			$form->Fields()->insertBefore($formFieldTop, 'WorkflowDefinition');
@@ -92,7 +103,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			);
 
 			$dataColumns = $formFieldBottom->getConfig()->getComponentByType('GridFieldDataColumns');
-			$dataColumns->setDisplayFields(self::$fieldOverrides);
+			$dataColumns->setDisplayFields($displayFields);
 
 			$formFieldBottom->setForm($form);
 			$form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
