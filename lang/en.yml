@@ -10,9 +10,6 @@ en:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'You must be logged in'
   AdvancedWorkflowAdmin:
-    ChangedField: Changed
-    CurrentActionField: 'Current Action'
-    EffectiveWorkflowField: 'Effective Workflow'
     GridFieldTitleAssignedAll: 'All pending items'
     GridFieldTitleAssignedYour: 'Your pending items'
     GridFieldTitleSubmittedAll: 'All submitted items'
@@ -20,8 +17,11 @@ en:
     INVALIDCLASSTOORDER: 'An invalid class to order was specified.'
     INVALIDIDLIST: 'An invalid list of IDs was provided.'
     INVALIDPARENTID: 'An invalid parent ID was specified.'
+    LastEdited: Changed
     SORTORDERSAVED: 'The sort order has been saved.'
-    TitleField: Title
+    Title: Title
+    WorkflowStatus: 'Current action'
+    WorkflowTitle: 'Effective workflow'
     MENUTITLE: Workflows
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Action "%s" not allowed on controller (Class: %s)'
@@ -90,6 +90,7 @@ en:
   WorkflowActionInstance:
     PLURALNAME: 'Workflow Action Instancs'
     SINGULARNAME: 'Workflow Action Instance'
+    Title: Title
   WorkflowApplicable:
     DEFINITION: 'Applied Workflow'
     EFFECTIVE_WORKFLOW: 'Effective Workflow'
@@ -152,6 +153,15 @@ en:
     TitleLabel: Title
     WORKFLOW_TRANSITION_EXCEPTION: 'Invalid transition state for action #%s'
     WorkflowStatusLabel: 'Workflow Status'
+  WorkflowList:
+    CommentHistory: 'Comment history on this request:'
+    TableHeaderActions: Actions
+    TableHeaderEditedBy: 'Edited by'
+    TableHeaderItem: Item
+    TableHeaderSubmitted: Submitted
+  WorkflowReminderEmail:
+    Action: 'Click here to action this workflow'
+    Content: "This is an automated reminder that the workflow '{title}' you are currently\n	assigned to has not been actioned for {days} days. The\n	workflow was last updated on {date} at {time}."
   WorkflowReminderTask:
     SAVE: Save
   WorkflowService:
@@ -161,8 +171,10 @@ en:
     INVALID_TEMPLATE_ACTION: 'Invalid action class specified in template'
   WorkflowTransition:
     ACTION: Action
+    Active: Active
     NEXT_ACTION: 'Next Action'
     PLURALNAME: 'Workflow Transitions'
+    Passive: Passive
     SELECTONE: '(Select one)'
     SINGULARNAME: 'Workflow Transition'
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'

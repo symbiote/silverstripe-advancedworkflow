@@ -24,21 +24,15 @@ class WorkflowActionInstance extends DataObject {
 	);
 	
 	public static $summary_fields = array(
-		'BaseAction.Title'		=> 'Title',
-		'Comment'				=> 'Comment',
-		'Created'				=> 'Date',
-		'Member.Name'			=> 'Author'
-	);
-	
-	public static $field_labels = array(
-		'BaseAction.Title'		=> 'Title',
-		'Comment'				=> 'Comment',
-		'Created'				=> 'Date',
-		'Member.Name'			=> 'Author'
+		'BaseAction.Title',
+		'Comment',
+		'Created',
+		'Member.Name',
 	);
 
 	public function fieldLabels($includerelations = true) {
 		$labels = parent::fieldLabels($includerelations);
+		$labels['BaseAction.Title'] = _t('WorkflowActionInstance.Title', 'Title');
 		$labels['Comment'] = _t('WorkflowAction.CommentLabel', 'Comment');
 		$labels['Member.Name'] = _t('WorkflowAction.Author', 'Author');
 		$labels['Finished'] = _t('WorkflowAction.FinishedLabel', 'Finished');
