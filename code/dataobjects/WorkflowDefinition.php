@@ -104,16 +104,24 @@ class WorkflowDefinition extends DataObject {
 		return count($this->Actions());
 	}
 
-	/**
-	 */
+	public function fieldLabels($includerelations = true) {
+		$labels = parent::fieldLabels($includerelations);
+		$labels['Title'] = _t('WorkflowDefinition.TITLE', 'Title');
+		$labels['Description'] = _t('WorkflowDefinition.DESCRIPTION', 'Description');
+		$labels['Template'] = _t('WorkflowDefinition.TEMPLATE_NAME', 'Source Template');
+		$labels['TemplateVersion'] = _t('WorkflowDefinition.TEMPLATE_VERSION', 'Template Version');
+
+		return $labels;
+	}
+
 	public function getCMSFields() {
 		
 		$cmsUsers = Member::mapInCMSGroups();
 		
 		$fields = new FieldList(new TabSet('Root'));
 
-		$fields->addFieldToTab('Root.Main', new TextField('Title', _t('WorkflowDefinition.TITLE', 'Title')));
-		$fields->addFieldToTab('Root.Main', new TextareaField('Description', _t('WorkflowDefinition.DESCRIPTION', 'Description')));
+		$fields->addFieldToTab('Root.Main', new TextField('Title', $this->fieldLabel('Title')));
+		$fields->addFieldToTab('Root.Main', new TextareaField('Description', $this->fieldLabel('Description')));
 		if($this->ID) {
 			$fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
 			$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
@@ -134,9 +142,9 @@ class WorkflowDefinition extends DataObject {
 		if($this->ID) {
 			if ($this->Template) {
 				$template = $this->workflowService->getNamedTemplate($this->Template);
-				$fields->addFieldToTab('Root.Main', new ReadonlyField('Template', _t('WorkflowDefinition.TEMPLATE_NAME', 'Source Template'), $this->Template));
+				$fields->addFieldToTab('Root.Main', new ReadonlyField('Template', $this->fieldLabel('Template'), $this->Template));
 				$fields->addFieldToTab('Root.Main', new ReadonlyField('TemplateDesc', _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'), $template ? $template->getDescription() : ''));
-				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', _t('WorkflowDefinition.TEMPLATE_VERSION', 'Template Version')));
+				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', $this->fieldLabel('TemplateVersion')));
 				$tv->setRightTitle(sprintf(_t('WorkflowDefinition.LATEST_VERSION', 'Latest version is %s'), $template->getVersion()));
 				
 			}
