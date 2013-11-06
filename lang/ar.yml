@@ -10,6 +10,9 @@ ar:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'يجب أن تقوم بتسجيل الدخول'
   AdvancedWorkflowAdmin:
+    ChangedField: تم التغيير
+    CurrentActionField: 'الإجراء الحالي'
+    EffectiveWorkflowField: 'سير العمل فعال'
     GridFieldTitleAssignedAll: 'كل العناصر المعلقة'
     GridFieldTitleAssignedYour: 'العناصر المعلقة الخاصة بك'
     GridFieldTitleSubmittedAll: 'كل العناصر التى تم تقديمها'
@@ -18,6 +21,7 @@ ar:
     INVALIDIDLIST: 'تم إضافة قائمة من التعريفات غير صالحة.'
     INVALIDPARENTID: 'تم تحديد هوية رئيسية غير صالحة.'
     SORTORDERSAVED: 'قد تم حفظ ترتيب الفرز.'
+    TitleField: عنوان
     MENUTITLE: سير العمل
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'التصرف "s%" غير مسموح به على وحدة التحكم (التصنيف: s%)'
@@ -64,15 +68,24 @@ ar:
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'إجراءات بسيطة للموافقة على مهام سير العمل'
     SINGULARNAME: 'إجراء بسيط للموافقة على مهام سير العمل'
+  Workflow:
+    WorkflowActionsTabTitle: 'إجراءات تسيير العمل'
   WorkflowAction:
     ALLOW_COMMENTING: 'إتاحة التعليق؟'
     ALLOW_EDITING: 'إتاحة التعديل خلال هذه الخطوة؟'
+    Author: الكاتب
     CLASS_LABEL: 'تصنيف الإجراءات'
     COMMENT: تعليق
+    CommentLabel: تعليق
+    ExecutedLabel: تم التنفيذ
     FRONTENDCOMMENT: تعليق
+    FinishedLabel: انتهى
     PLURALNAME: 'فعاليات سير العمل'
     SINGULARNAME: 'فعالية سير العمل'
     TITLE: عنوان
+    TitleDescription: 'يتم استخدام العنوان كتسمية زر تسيير هذا العمل'
+    Transitions: الانتقالات
+    TypeLabel: الصنف
   WorkflowActionInstance:
     PLURALNAME: 'أمثلة لفعاليات سير العمل'
     SINGULARNAME: 'مثال لفعاليات سير العمل'
@@ -105,6 +118,8 @@ ar:
     WORKFLOWACTIVEIINSTANCES: 'أمثلة مهام سير العمل النشطة'
     WORKFLOWCOMPLETEDIINSTANCES: 'حالات مهام سير العمل المكتملة'
   WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: نشط
+    CompletedWorkflowStateTitle: أكتمل
     EMBARGO_ERROR_PT1: 'هذا المحتوى تحت الحظر بالفعل, و ينتهى فى:'
     EMBARGO_ERROR_PT2: 'من فضلك انتظر حتى انتهاء هذا الموعد, قبل تطبيق موعد حظر جديد.'
     PUBLISH_ON: 'موعد النشر المحدد'
@@ -114,8 +129,16 @@ ar:
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'هذه الإعدادات لن تنفذ حتى يتم اتخاذ إجراءات الموافقة'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'إذا تم بالفعل تطبيق الحظر, فإن إضافة موعد حظر جديد قبل هذا الموعد سوف يقوم باستبدال هذا الموعد'
     REQUESTED_UNPUBLISH_DATE: 'موعد مطلوب لعدم النشر'
+    TabTitle: 'نشر الجدول الزمني'
     UNPUBLISH_ON: 'موعد محدد لعد النشر'
+  WorkflowField:
+    AddTransitionAction: 'أضف انتقال'
+    CreateAction: 'إنشاء إجراء'
+    CreateLabel: إنشاء
+    DeleteAction: احذف
+    EditAction: تحرير
   WorkflowInstance:
+    ActionLogTitle: سجل
     EXECUTE_EXCEPTION: 'محاولة بدء مثال غير صالح لسير العمل #s%!'
     NEXT_ACTION: 'الإجراء التالى'
     PLURALNAME: 'أمثلة مهام سير العمل'
@@ -123,7 +146,11 @@ ar:
     SINGULARNAME: 'مثال لسير العمل'
     TITLE_FOR_DO: 's - %s%'
     TITLE_STUB: 'مثال #s% ل s%'
+    TargetClassLabel: 'الفئة المستهدفة'
+    TargetIDLabel: الهدف
+    TitleLabel: عنوان
     WORKFLOW_TRANSITION_EXCEPTION: 'حالة تحول غير صالحة للإجراء #s%'
+    WorkflowStatusLabel: 'حالة سير العمل'
   WorkflowReminderTask:
     SAVE: حفظ
   WorkflowService:
@@ -139,5 +166,6 @@ ar:
     SINGULARNAME: 'تحول مهام سير العمل'
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'
     TYPE: نوع
+    TabTitle: 'حصرا للمستخدمين'
   advancedworkflow:
     EMBARGO_DSIRD_ERROR: 'قد تم بالفعل تخطى هذا الموعد, من فضلك قم بإدخال موعد مستقبلى صالح.'
