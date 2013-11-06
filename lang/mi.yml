@@ -10,6 +10,9 @@ mi:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'Me takiuru rawa koe'
   AdvancedWorkflowAdmin:
+    ChangedField: Kua Hurihia
+    CurrentActionField: 'Hohenga Onāianei'
+    EffectiveWorkflowField: 'Reremahi Tōtika'
     GridFieldTitleAssignedAll: 'Ngā tuemi tārewa katoa'
     GridFieldTitleAssignedYour: 'Ō tuemi tārewa'
     GridFieldTitleSubmittedAll: 'Ngā tuemi katoa kua tukuna'
@@ -18,6 +21,7 @@ mi:
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
     SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
+    TitleField: Taitara
     MENUTITLE: Ngā reremahi
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
@@ -64,15 +68,24 @@ mi:
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
     SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
+  Workflow:
+    WorkflowActionsTabTitle: 'Ngā Hohenga Reremahi'
   WorkflowAction:
     ALLOW_COMMENTING: 'Tuku Tākupu?'
     ALLOW_EDITING: 'Tuku whakatika i tēnei hipanga?'
+    Author: Kaituhi
     CLASS_LABEL: 'Tauaha Hohenga'
     COMMENT: Tākupu
+    CommentLabel: Tākupu
+    ExecutedLabel: Kua Kawea
     FRONTENDCOMMENT: Tākupu
+    FinishedLabel: Kua Oti
     PLURALNAME: 'Ngā Hohenga Reremahi'
     SINGULARNAME: 'Hohenga Reremahi'
     TITLE: Taitara
+    TitleDescription: 'Ka whakamahia te Taitara hei tapanga pātene mō tēnei Rerenga Mahi'
+    Transitions: Ngā Whakawhiti
+    TypeLabel: Momo
   WorkflowActionInstance:
     PLURALNAME: 'Ngā Tauira Hohenga Reremahi'
     SINGULARNAME: 'Tauira Hohenga Reremahi'
@@ -105,6 +118,8 @@ mi:
     WORKFLOWACTIVEIINSTANCES: 'Ngā Tauira Reremahi Hohe'
     WORKFLOWCOMPLETEDIINSTANCES: 'Ngā Tauira Reremahi Oti'
   WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Hohe
+    CompletedWorkflowStateTitle: Kua Oti
     EMBARGO_ERROR_PT1: 'Kei te rāhui kētia tēnei ihirangi, ka mōnehu ā te:'
     EMBARGO_ERROR_PT2: 'me tātari kia hipa rā anō taua rā i mua i te hoatu i te rā rāhui hou.'
     PUBLISH_ON: 'Rā whakaputa kua whakaritea'
@@ -114,8 +129,16 @@ mi:
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Kāore ēnei tautuhinga e whai mana kia whakahaeretia rā anō ngā hohenga whakaaetanga'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Mēnā kua tautuhi kētia tētahi rāhuitanga, ka tuhiruatia mā te tāpiri i te mea hou i mua i te hipa o taua rā'
     REQUESTED_UNPUBLISH_DATE: 'I tonoa te rā wetewhakaputa'
+    TabTitle: 'Hōtaka Whakaputa'
     UNPUBLISH_ON: 'Rā wetewhakaputa kua whakaritea'
+  WorkflowField:
+    AddTransitionAction: 'Tāpiri Whakawhiti'
+    CreateAction: 'Hangaia he hohenga'
+    CreateLabel: Hanga
+    DeleteAction: Muku
+    EditAction: Whakatika
   WorkflowInstance:
+    ActionLogTitle: Rangitaki
     EXECUTE_EXCEPTION: 'I whakamātauria te tīmatanga o tētahi tauira reremahi muhu #%s!'
     NEXT_ACTION: 'Hohenga Panuku'
     PLURALNAME: 'Ngā Tauira Reremahi'
@@ -123,7 +146,11 @@ mi:
     SINGULARNAME: 'Tauira Reremahi'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Tauira #%s o te %s'
+    TargetClassLabel: 'Tauaha Ūnga'
+    TargetIDLabel: Ūnga
+    TitleLabel: Taitara
     WORKFLOW_TRANSITION_EXCEPTION: 'Tūnga whakawhiti muhu mō te hohenga #%s'
+    WorkflowStatusLabel: 'Tūnga Reremahi'
   WorkflowReminderTask:
     SAVE: Tiaki
   WorkflowService:
@@ -139,5 +166,6 @@ mi:
     SINGULARNAME: 'Whakawhitinga Reremahi'
     TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
     TYPE: Momo
+    TabTitle: 'Whakawhāitihia ki ngā Kaiwhakamahi'
   advancedworkflow:
     EMBARGO_DSIRD_ERROR: 'Kua hipa kē te rā, tāurua he rā pono o muri ake.'

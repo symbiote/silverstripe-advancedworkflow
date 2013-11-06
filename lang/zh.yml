@@ -10,6 +10,9 @@ zh:
   AdvancedWorkflowActionController:
     ACTION_ERROR: '您必须登录'
   AdvancedWorkflowAdmin:
+    ChangedField: 已更改
+    CurrentActionField: '当前行动'
+    EffectiveWorkflowField: '有效的工作流程'
     GridFieldTitleAssignedAll: '所有挂起的项'
     GridFieldTitleAssignedYour: '您挂起的项'
     GridFieldTitleSubmittedAll: '所有提交的项目'
@@ -18,6 +21,7 @@ zh:
     INVALIDIDLIST: '提供了一个无效的 ID 列表。'
     INVALIDPARENTID: '指定了一个无效的父 ID。'
     SORTORDERSAVED: '排序顺序已保存。'
+    TitleField: 标题
     MENUTITLE: 工作流
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: '操作 "%s" 不允许针对控制器进行（类： %s）'
@@ -64,15 +68,24 @@ zh:
   SimpleApprovalWorkflowAction:
     PLURALNAME: '简单的审批工作流活动'
     SINGULARNAME: '简单的审批工作流活动'
+  Workflow:
+    WorkflowActionsTabTitle: '工作流程行动'
   WorkflowAction:
     ALLOW_COMMENTING: '允许注解？'
     ALLOW_EDITING: '此步中是否允许编辑？'
+    Author: 作者
     CLASS_LABEL: '动作类'
     COMMENT: 评论
+    CommentLabel: 评论
+    ExecutedLabel: 已执行
     FRONTENDCOMMENT: 评论
+    FinishedLabel: 已结束
     PLURALNAME: '工作流动作'
     SINGULARNAME: '工作流动作'
     TITLE: 标题
+    TitleDescription: '该标题被用作此工作流程行动的按钮标签'
+    Transitions: 转换
+    TypeLabel: 类型
   WorkflowActionInstance:
     PLURALNAME: '工作流操作实例'
     SINGULARNAME: '工作流动作实例'
@@ -105,6 +118,8 @@ zh:
     WORKFLOWACTIVEIINSTANCES: '活动的工作流实例'
     WORKFLOWCOMPLETEDIINSTANCES: '完成的工作流实例'
   WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: 活跃的
+    CompletedWorkflowStateTitle: 已完成
     EMBARGO_ERROR_PT1: '此内容已禁止，到期时间：'
     EMBARGO_ERROR_PT2: '请等到此日期到期后，再应用新的禁止日期。'
     PUBLISH_ON: '安排的发布日期'
@@ -114,15 +129,28 @@ zh:
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: '批准动作执行之前，这些设置不会生效'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: '如果已经设置了禁令，在该日期之前添加新的可覆盖该设置'
     REQUESTED_UNPUBLISH_DATE: '请求未发布的日期'
+    TabTitle: '发布日程表'
     UNPUBLISH_ON: '安排未发布的日期'
+  WorkflowField:
+    AddTransitionAction: '添加转换'
+    CreateAction: '创建一次行动'
+    CreateLabel: 创建
+    DeleteAction: 删除
+    EditAction: 编辑
   WorkflowInstance:
+    ActionLogTitle: 日志
     EXECUTE_EXCEPTION: '试图启动一个无效的工作流实例 #%s！'
     NEXT_ACTION: '下一个动作'
     PLURALNAME: '工作流实例'
     REASSIGN_HEADER: '重新分配工作流'
+    SINGULARNAME: '工作流实例'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: '实例 %s 之 #%s'
+    TargetClassLabel: '目标类别'
+    TargetIDLabel: 目标
+    TitleLabel: 标题
     WORKFLOW_TRANSITION_EXCEPTION: '操作 #%s 的过渡状态无效'
+    WorkflowStatusLabel: '工作流程状态'
   WorkflowReminderTask:
     SAVE: 保存
   WorkflowService:
@@ -138,5 +166,6 @@ zh:
     SINGULARNAME: '工作流过渡'
     TRANSITIONLOOP: '过渡操作不能重新触发其父操作。'
     TYPE: 类型
+    TabTitle: '用户限制'
   advancedworkflow:
     EMBARGO_DSIRD_ERROR: '此日期已过，请输入一个有效的未来日期。'
