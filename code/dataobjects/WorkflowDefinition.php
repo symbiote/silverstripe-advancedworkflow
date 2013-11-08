@@ -286,6 +286,16 @@ class WorkflowDefinition extends DataObject {
 		self::$workflow_defs = $workflow_defs->map()->toArray();
 	}
 
+	public function canCreate($member=null) {
+		if (is_null($member)) {
+			if (!Member::currentUserID()) {
+				return false;
+			}
+			$member = Member::currentUser();
+		}
+
+		return Permission::checkMember($member, 'CREATE_WORKFLOW');
+	}
 	public function canView($member=null) {
 		return $this->userHasAccess($member);
 	}
