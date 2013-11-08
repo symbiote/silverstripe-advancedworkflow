@@ -319,6 +319,12 @@ class WorkflowService implements PermissionProvider {
 
 	public function providePermissions() {
 		return array(
+			'CREATE_WORKFLOW' => array(
+				'name' => _t('AdvancedWorkflow.CREATE_WORKFLOW', 'Create workflow'),
+				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+				'help' => _t('AdvancedWorkflow.CREATE_WORKFLOW_HELP', 'Users can create workflows'),
+				'sort' => 0
+			),
 			'APPLY_WORKFLOW' => array(
 				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'Apply workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
