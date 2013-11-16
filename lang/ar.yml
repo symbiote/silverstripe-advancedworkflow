@@ -10,9 +10,6 @@ ar:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'يجب أن تقوم بتسجيل الدخول'
   AdvancedWorkflowAdmin:
-    ChangedField: تم التغيير
-    CurrentActionField: 'الإجراء الحالي'
-    EffectiveWorkflowField: 'سير العمل فعال'
     GridFieldTitleAssignedAll: 'كل العناصر المعلقة'
     GridFieldTitleAssignedYour: 'العناصر المعلقة الخاصة بك'
     GridFieldTitleSubmittedAll: 'كل العناصر التى تم تقديمها'
@@ -20,8 +17,11 @@ ar:
     INVALIDCLASSTOORDER: 'تم تحديد تصنيف غير صالح للترتيب.'
     INVALIDIDLIST: 'تم إضافة قائمة من التعريفات غير صالحة.'
     INVALIDPARENTID: 'تم تحديد هوية رئيسية غير صالحة.'
+    LastEdited: تم تغييره
     SORTORDERSAVED: 'قد تم حفظ ترتيب الفرز.'
-    TitleField: عنوان
+    Title: عنوان
+    WorkflowStatus: 'النشاط الحالي'
+    WorkflowTitle: 'العمل الفعال'
     MENUTITLE: سير العمل
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'التصرف "s%" غير مسموح به على وحدة التحكم (التصنيف: s%)'
@@ -73,22 +73,23 @@ ar:
   WorkflowAction:
     ALLOW_COMMENTING: 'إتاحة التعليق؟'
     ALLOW_EDITING: 'إتاحة التعديل خلال هذه الخطوة؟'
-    Author: الكاتب
+    Author: مؤلف
     CLASS_LABEL: 'تصنيف الإجراءات'
     COMMENT: تعليق
     CommentLabel: تعليق
-    ExecutedLabel: تم التنفيذ
+    ExecutedLabel: تم تنفيذه
     FRONTENDCOMMENT: تعليق
     FinishedLabel: انتهى
     PLURALNAME: 'فعاليات سير العمل'
     SINGULARNAME: 'فعالية سير العمل'
     TITLE: عنوان
-    TitleDescription: 'يتم استخدام العنوان كتسمية زر تسيير هذا العمل'
-    Transitions: الانتقالات
-    TypeLabel: الصنف
+    TitleDescription: 'يتم استخدام العنوان كتسمية لزر هذا العمل'
+    Transitions: التنقلات
+    TypeLabel: نوع
   WorkflowActionInstance:
     PLURALNAME: 'أمثلة لفعاليات سير العمل'
     SINGULARNAME: 'مثال لفعاليات سير العمل'
+    Title: عنوان
   WorkflowApplicable:
     DEFINITION: 'سير العمل المقدم'
     EFFECTIVE_WORKFLOW: 'سير العمل الفعال'
@@ -133,9 +134,9 @@ ar:
     UNPUBLISH_ON: 'موعد محدد لعد النشر'
   WorkflowField:
     AddTransitionAction: 'أضف انتقال'
-    CreateAction: 'إنشاء إجراء'
-    CreateLabel: إنشاء
-    DeleteAction: احذف
+    CreateAction: 'قم بعمل نشاط'
+    CreateLabel: اصنع
+    DeleteAction: امسح
     EditAction: تحرير
   WorkflowInstance:
     ActionLogTitle: سجل
@@ -147,10 +148,19 @@ ar:
     TITLE_FOR_DO: 's - %s%'
     TITLE_STUB: 'مثال #s% ل s%'
     TargetClassLabel: 'الفئة المستهدفة'
-    TargetIDLabel: الهدف
+    TargetIDLabel: هدف
     TitleLabel: عنوان
     WORKFLOW_TRANSITION_EXCEPTION: 'حالة تحول غير صالحة للإجراء #s%'
-    WorkflowStatusLabel: 'حالة سير العمل'
+    WorkflowStatusLabel: 'حالة العمل'
+  WorkflowList:
+    CommentHistory: 'تاريخ الردود على هذا الطلب:'
+    TableHeaderActions: أنشطة
+    TableHeaderEditedBy: 'تم تحريره بواسطة'
+    TableHeaderItem: عنصر
+    TableHeaderSubmitted: تم تسليمه
+  WorkflowReminderEmail:
+    Action: 'اضغط هنا لتنشيط هذا العمل'
+    Content: "هذا تنبيه تلقائي لإبلاغك بأن هذا العمل ‘{العنوان}‘ الذي تم توكيله إليك لم يتم تنشيطه لمدة ‘{أيام}‘ أيام. و أخر تحديث تم للعمل بتاريخ ‘{التاريخ}‘ في ‘{الوقت}‘."
   WorkflowReminderTask:
     SAVE: حفظ
   WorkflowService:
@@ -160,8 +170,10 @@ ar:
     INVALID_TEMPLATE_ACTION: 'تم تحديد تصنيف إجراءات غير صالح فى النموذج'
   WorkflowTransition:
     ACTION: إجراء
+    Active: نشيط
     NEXT_ACTION: 'الإجراء التالى'
     PLURALNAME: 'تحولات مهام سير العمل'
+    Passive: سلبي
     SELECTONE: '(اختار واحد)'
     SINGULARNAME: 'تحول مهام سير العمل'
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'

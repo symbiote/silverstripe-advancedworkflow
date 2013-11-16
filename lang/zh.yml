@@ -10,9 +10,6 @@ zh:
   AdvancedWorkflowActionController:
     ACTION_ERROR: '您必须登录'
   AdvancedWorkflowAdmin:
-    ChangedField: 已更改
-    CurrentActionField: '当前行动'
-    EffectiveWorkflowField: '有效的工作流程'
     GridFieldTitleAssignedAll: '所有挂起的项'
     GridFieldTitleAssignedYour: '您挂起的项'
     GridFieldTitleSubmittedAll: '所有提交的项目'
@@ -20,8 +17,11 @@ zh:
     INVALIDCLASSTOORDER: '指定的订单类无效。'
     INVALIDIDLIST: '提供了一个无效的 ID 列表。'
     INVALIDPARENTID: '指定了一个无效的父 ID。'
+    LastEdited: 已更改
     SORTORDERSAVED: '排序顺序已保存。'
-    TitleField: 标题
+    Title: 题目
+    WorkflowStatus: '当前动作'
+    WorkflowTitle: '有效工作流程'
     MENUTITLE: 工作流
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: '操作 "%s" 不允许针对控制器进行（类： %s）'
@@ -79,16 +79,17 @@ zh:
     CommentLabel: 评论
     ExecutedLabel: 已执行
     FRONTENDCOMMENT: 评论
-    FinishedLabel: 已结束
+    FinishedLabel: 完成
     PLURALNAME: '工作流动作'
     SINGULARNAME: '工作流动作'
     TITLE: 标题
-    TitleDescription: '该标题被用作此工作流程行动的按钮标签'
+    TitleDescription: '标题被用作此工作流程操作的按钮标签'
     Transitions: 转换
     TypeLabel: 类型
   WorkflowActionInstance:
     PLURALNAME: '工作流操作实例'
     SINGULARNAME: '工作流动作实例'
+    Title: 题目
   WorkflowApplicable:
     DEFINITION: '应用的工作流'
     EFFECTIVE_WORKFLOW: '有效的工作流'
@@ -133,7 +134,7 @@ zh:
     UNPUBLISH_ON: '安排未发布的日期'
   WorkflowField:
     AddTransitionAction: '添加转换'
-    CreateAction: '创建一次行动'
+    CreateAction: '制定计划'
     CreateLabel: 创建
     DeleteAction: 删除
     EditAction: 编辑
@@ -146,11 +147,20 @@ zh:
     SINGULARNAME: '工作流实例'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: '实例 %s 之 #%s'
-    TargetClassLabel: '目标类别'
+    TargetClassLabel: '玻靶'
     TargetIDLabel: 目标
-    TitleLabel: 标题
+    TitleLabel: 题目
     WORKFLOW_TRANSITION_EXCEPTION: '操作 #%s 的过渡状态无效'
     WorkflowStatusLabel: '工作流程状态'
+  WorkflowList:
+    CommentHistory: '这个请求的评论历史记录：'
+    TableHeaderActions: 行动
+    TableHeaderEditedBy: '编辑'
+    TableHeaderItem: 项目
+    TableHeaderSubmitted: 提交
+  WorkflowReminderEmail:
+    Action: '点击此处启动工作流程'
+    Content: "这是一个自动提醒，您当前被分配的工作流程 '{title}' 已经有 {days} 天未被操作了。该工作流程上次更新时间为 {date} {time}。"
   WorkflowReminderTask:
     SAVE: 保存
   WorkflowService:
@@ -160,8 +170,10 @@ zh:
     INVALID_TEMPLATE_ACTION: '模板中指定的无效动作类'
   WorkflowTransition:
     ACTION: 动作
+    Active: 启动
     NEXT_ACTION: '下一个动作'
     PLURALNAME: '工作流过渡'
+    Passive: 消极的
     SELECTONE: '（选择一个）'
     SINGULARNAME: '工作流过渡'
     TRANSITIONLOOP: '过渡操作不能重新触发其父操作。'

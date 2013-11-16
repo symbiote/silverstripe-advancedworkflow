@@ -3,6 +3,8 @@ en:
     ADVANCED_WORKFLOW: 'Advanced Workflow'
     APPLY_WORKFLOW: 'Apply workflow'
     APPLY_WORKFLOW_HELP: 'Users can apply workflows to items'
+    CREATE_WORKFLOW: 'Create workflow'
+    CREATE_WORKFLOW_HELP: 'Users can create workflows'
     REASSIGNACTIVE: 'Reassign active workflows'
     REASSIGNACTIVEHELP: 'Users can reassign active workflows to different users and groups'
     VIEWACTIVE: 'View active workflows'
