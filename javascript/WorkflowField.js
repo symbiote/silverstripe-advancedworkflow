@@ -70,7 +70,8 @@ jQuery.entwine("workflow", function($) {
 
 					var data = {
 						"id[]":  ids.get(),
-						"class": "WorkflowAction"
+						"class": "WorkflowAction",
+						"SecurityID": field.data("securityid")
 					};
 
 					field.loading();
