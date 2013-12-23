@@ -104,6 +104,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
 
+		// if we've been duplicated, the old job IDs will be hanging around, so explicitly clear
+		if (!$this->owner->ID) {
+			$this->owner->PublishJobID = 0;
+			$this->owner->UnPublishJobID = 0;
+		}
+
 		// only operate on staging content for this extension; otherwise, you
 		// need to publish the page to be able to set a 'future' publish...
 		// while the same could be said for the unpublish, the 'publish' state
