@@ -157,7 +157,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	}
 
 	/*
-	 * Discreet method used by both intro gridfields
+	 * Discreet method used by both intro gridfields to format the target object's links and clickable text
 	 *
 	 * @param GridFieldConfig $config
 	 * @return array $fieldFormatting
@@ -167,8 +167,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		// Parse the column information
 		foreach($this->columns() as $source => $info) {
 			if(isset($info['link']) && $info['link']) {
-				$link = singleton('CMSPageEditController')->Link('show');
-				$fieldFormatting[$source] = '<a href=\"' . $link . '/$ObjectRecordID\">$value</a>';
+				$fieldFormatting[$source] = '<a href=\"/$ObjectRecordLink\">$value</a>';
 			}
 			if(isset($info['text']) && $info['text']) {
 				$fieldFormatting[$source] = $info['text'];
@@ -203,7 +202,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			// Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
 			$instance->setField('Title',$target->getField('Title'));
 			$instance->setField('LastEdited',$target->getField('LastEdited'));
-			$instance->setField('ObjectRecordID',$target->getField('ID')); // Forces a different default ID for linking to the pagesAdmin from a GridField
+			$instance->setField('ObjectRecordLink', Controller::join_links(singleton('CMSPageEditController')->Link('show'), $target->getField('ID')));
 			$list->push($instance);
 		}
 		return $list;
