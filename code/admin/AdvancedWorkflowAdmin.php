@@ -177,7 +177,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		// Parse the column information
 		foreach($this->columns() as $source => $info) {
 			if(isset($info['link']) && $info['link']) {
-				$fieldFormatting[$source] = '<a href=\"/$ObjectRecordLink\">$value</a>';
+				$fieldFormatting[$source] = '<a href=\"$ObjectRecordLink\">$value</a>';
 			}
 			if(isset($info['text']) && $info['text']) {
 				$fieldFormatting[$source] = $info['text'];
@@ -212,7 +212,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			// Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
 			$instance->setField('Title',$target->getField('Title'));
 			$instance->setField('LastEdited',$target->getField('LastEdited'));
-			$instance->setField('ObjectRecordLink', Controller::join_links(singleton('CMSPageEditController')->Link('show'), $target->getField('ID')));
+			$instance->setField('ObjectRecordLink', Controller::join_links(Director::absoluteBaseURL(), $target->CMSEditLink()));
+
 			$list->push($instance);
 		}
 		return $list;
