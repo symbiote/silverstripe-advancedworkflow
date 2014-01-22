@@ -10,9 +10,6 @@ mi:
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'Me takiuru rawa koe'
   AdvancedWorkflowAdmin:
-    ChangedField: Kua Hurihia
-    CurrentActionField: 'Hohenga Onāianei'
-    EffectiveWorkflowField: 'Reremahi Tōtika'
     GridFieldTitleAssignedAll: 'Ngā tuemi tārewa katoa'
     GridFieldTitleAssignedYour: 'Ō tuemi tārewa'
     GridFieldTitleSubmittedAll: 'Ngā tuemi katoa kua tukuna'
@@ -21,7 +18,6 @@ mi:
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
     SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
-    TitleField: Taitara
     MENUTITLE: Ngā reremahi
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
