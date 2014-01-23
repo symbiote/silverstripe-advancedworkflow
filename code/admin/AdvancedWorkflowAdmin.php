@@ -31,6 +31,16 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	 * @var WorkflowService
 	 */
 	public $workflowService;
+	
+	/**
+	 * Initialise javascript translation files
+	 * 
+	 * @return void
+	 */
+	public function init() {
+		parent::init();
+		Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
+	}	
 
 	/*
 	 * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
