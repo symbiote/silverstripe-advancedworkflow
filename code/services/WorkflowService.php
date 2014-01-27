@@ -43,6 +43,10 @@ class WorkflowService implements PermissionProvider {
 	 * @return WorkflowTemplate
 	 */
 	public function getNamedTemplate($name) {
+		if($importedTemplate = singleton('WorkflowDefinitionImporter')->getImportedWorkflows($name)) {
+			return $importedTemplate;
+		}
+		
 		if (!is_array($this->templates)) {
 			return;
 		}
@@ -267,7 +271,7 @@ class WorkflowService implements PermissionProvider {
 	}
 	
 	/**
-	 * Generate a workflow definition based on a tempate
+	 * Generate a workflow definition based on a template
 	 * 
 	 * @param WorkflowDefinition $definition
 	 * @param string $templateName 
@@ -279,18 +283,22 @@ class WorkflowService implements PermissionProvider {
 		if (!is_array($this->templates)) {
 			return;
 		}
-		
-		$template = $this->getNamedTemplate($templateName);
+
+		$template = $this->getNamedTemplate($templateName);		
 		
 		if (!$template) {
 			return;
 		}
 
-		$template->createActions($definition);
+		$template->createRelations($definition);
 		
 		// Set the version and do the write at the end so that we don't trigger an infinite loop!!
+		$definition->Description = $template->getDescription();
 		$definition->TemplateVersion = $template->getVersion();
+		$definition->RemindDays = $template->getRemindDays();
+		$definition->Sort = $template->getSort();
 		$definition->write();
+		return $definition;
 	}
 
 	/**

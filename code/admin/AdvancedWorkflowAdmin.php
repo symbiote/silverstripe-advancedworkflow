@@ -9,10 +9,27 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	public static $menu_priority = -1;
 	public static $url_segment   = 'workflows';
 	private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
-
+	
+	/**
+	 *
+	 * @var array Allowable actions on this controller.
+	 */
+	private static $allowed_actions = array(
+		'export',
+		'ImportForm'
+	);
+	
+	private static $url_handlers = array(
+		'$ModelClass/export/$ID!' => 'export',
+		'$ModelClass/$Action' => 'handleAction',
+		'' => 'index'
+	);
 
 	public static $managed_models  = 'WorkflowDefinition';
-	public static $model_importers = array();
+	
+	public static $model_importers = array(
+		'WorkflowDefinition' => 'WorkflowBulkLoader'
+	);
 	
 	public static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
@@ -40,8 +57,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	public function init() {
 		parent::init();
 		Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
+		Requirements::javascript('advancedworkflow/javascript/WorkflowField.js');
 		Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
-		Requirements::css('advancedworkflow/css/WorkflowGridField.css');
+		Requirements::css('advancedworkflow/css/WorkflowField.css');		
 	}	
 
 	/*
@@ -133,6 +151,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			});
 			
 			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemRequestClass('WorkflowDefinitionItemRequestClass');
+			$grid->getConfig()->addComponent(new GridFieldExportAction());
+			$grid->getConfig()->removeComponentsByType('GridFieldExportButton');
 		}
 		
 		return $form;
@@ -237,6 +257,51 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			return $this->workflowService->userSubmittedItems($user);
 		}
 	}
+	
+	/**
+	 * Spits out an exported version of the selected WorkflowDefinition for download.
+	 * 
+	 * @param \SS_HTTPRequest $request
+	 * @return \SS_HTTPResponse
+	 */
+	public function export(SS_HTTPRequest $request) {
+		$url = explode('/', $request->getURL());
+		$definitionID = end($url);
+		if($definitionID && is_numeric($definitionID)) {
+			$exporter = new WorkflowDefinitionExporter($definitionID);
+			$exportFilename = WorkflowDefinitionExporter::$export_filename_prefix.'-'.$definitionID.'.yml';
+			$exportBody = $exporter->export();
+			$fileData = array(
+				'name' => $exportFilename,
+				'mime' => 'text/x-yaml',
+				'body' => $exportBody,
+				'size' => $exporter->getExportSize($exportBody)
+			);
+			return $exporter->sendFile($fileData);
+		}
+	}	
+	
+	/**
+	 * Required so we can simply change the visible label of the "Import" button and lose some redundant form-fields.
+	 * 
+	 * @return Form
+	 */
+	public function ImportForm() {
+		$form = parent::ImportForm();
+		if(!$form) {
+			return;
+		}
+		
+		$form->unsetAllActions();
+		$newActionList = new FieldList(array(
+			new FormAction('import', _t('AdvancedWorkflowAdmin.IMPORT', 'Import workflow'))
+		));
+		$form->Fields()->fieldByName('_CsvFile')->getValidator()->setAllowedExtensions(array('yml', 'yaml'));
+		$form->Fields()->removeByName('EmptyBeforeImport');
+		$form->setActions($newActionList);
+		
+		return $form;
+	}	
 }
 
 class WorkflowDefinitionItemRequestClass extends GridFieldDetailForm_ItemRequest {

@@ -61,6 +61,8 @@ class WorkflowTemplate {
 	protected $name;
 	protected $description;
 	protected $version;
+	protected $remindDays;
+	protected $sort;
 	
 	/**
 	 * An array representation of the structure of this workflow template
@@ -69,10 +71,12 @@ class WorkflowTemplate {
 	 */
 	protected $structure;
 	
-	public function __construct($name, $description = '', $version = '0.0') {
+	public function __construct($name, $description = '', $version = '0.0', $remindDays = 0, $sort = 0) {
 		$this->name = $name;
 		$this->description = $description;
 		$this->version = $version;
+		$this->remindDays = $remindDays;
+		$this->sort = $sort;
 	}
 	
 	public function getName() {
@@ -86,6 +90,14 @@ class WorkflowTemplate {
 	public function getDescription() {
 		return $this->description;
 	}
+	
+	public function getRemindDays() {
+		return $this->remindDays;
+	}
+	
+	public function getSort() {
+		return $this->sort;
+	}		
 	
 	/**
 	 * Set the structure for this template
@@ -103,29 +115,44 @@ class WorkflowTemplate {
 	 * @param WorkflowDefinition $definitino
 	 *				An optional workflow definition to bind the actions into
 	 */
-	public function createActions($definition = null) {
+	public function createRelations($definition = null) {
 		$actions = array();
 		$transitions = new ArrayObject();
 		$sort = 1;
-		foreach ($this->structure as $actionName => $actionTemplate) {
-			$action = $this->createAction($actionName, $actionTemplate, $definition);
-			// add a sort value in! 
-			$action->Sort = $sort++;
-			$action->write();
+		foreach ($this->structure as $relationName => $relationTemplate) {
 			
-			$actions[$actionName] = $action;
+			$isAction = isset($relationTemplate['type']);
+			$isUsers = ($relationName == 'users');
+			$isGroups = ($relationName == 'groups');
 			
-			$newTransitions = $this->updateActionTransitions($actionTemplate, $action);
-			foreach ($newTransitions as $t) {
-				$transitions->append($t);
+			// Process actions on WorkflowDefinition from the template
+			if($isAction) {
+				$action = $this->createAction($relationName, $relationTemplate, $definition);
+				// add a sort value in! 
+				$action->Sort = $sort++;
+				$action->write();
+
+				$actions[$relationName] = $action;
+
+				$newTransitions = $this->updateActionTransitions($relationTemplate, $action);
+				foreach ($newTransitions as $t) {
+					$transitions->append($t);
+				}
 			}
+			// Process users on WorkflowDefinition from the template
+			if($isUsers) {
+				$this->createUsers($relationTemplate, $definition);
+			}
+			// Process groups on WorkflowDefinition from the template
+			if($isGroups) {
+				$this->createGroups($relationTemplate, $definition);
+			}			
 		}
 
 		foreach ($transitions as $transition) {
 			if (isset($actions[$transition->Target])) {
 				$transition->NextActionID = $actions[$transition->Target]->ID;
 			}
-			
 			$transition->write();
 		}
 		
@@ -144,7 +171,6 @@ class WorkflowTemplate {
 		$type = $actionTemplate['type'];
 		if (!$type || !class_exists($type)) {
 			throw new Exception(_t('WorkflowTemplate.INVALID_TEMPLATE_ACTION', 'Invalid action class specified in template'));
-
 		}
 
 		$action = $type::create();
@@ -156,6 +182,9 @@ class WorkflowTemplate {
 				$action->$prop = $val;
 			}
 		}
+		
+		// Deal with User + Group many_many relations on an action
+		$this->addManyManyToObject($action, $actionTemplate);		
 
 		if ($definition) {
 			$action->WorkflowDefID = $definition->ID;
@@ -165,6 +194,42 @@ class WorkflowTemplate {
 		
 		return $action;
 	}
+	
+	/**
+	 * Create a WorkflowDefinition->Users relation based on template data. But only if the related groups from the
+	 * export, can be foud in the target environment's DB.
+	 * 
+	 * Note: The template gives us a Member Email to work with rather than an ID as it's arguably
+	 * more likely that Member Emails will be the same between environments than their IDs.
+	 * 
+	 * @param array $users
+	 * @param WorkflowDefinition $definition
+	 * @param boolean $clear
+	 * @return void
+	 */
+	protected function createUsers($users, WorkflowDefinition $definition, $clear = false) {
+		// Create the necessary relation in WorkflowDefinition_Users
+		$source = array('users' => $users);
+		$this->addManyManyToObject($definition, $source, $clear);
+	}
+	
+	/**
+	 * Create a WorkflowDefinition->Groups relation based on template data, But only if the related groups from the
+	 * export, can be foud in the target environment's DB.
+	 * 
+	 * Note: The template gives us a Group Title to work with rther than an ID as it's arguably
+	 * more likely that Group titles will be the same between environments than their IDs.
+	 * 
+	 * @param array $groups
+	 * @param WorkflowDefinition $definition
+	 * @param boolean $clear
+	 * @return void
+	 */
+	protected function createGroups($groups, WorkflowDefinition $definition, $clear = false) {
+		// Create the necessary relation in WorkflowDefinition_Groups
+		$source = array('groups' => $groups);
+		$this->addManyManyToObject($definition, $source, $clear);
+	}	
 	
 	/**
 	 * Update the transitions for a given action
@@ -187,7 +252,9 @@ class WorkflowTemplate {
 			foreach ($actionTemplate['transitions'] as $transitionName => $transitionTemplate) {
 				$target = $transitionTemplate;
 				if (is_array($transitionTemplate)) {
-					$target = $transitionTemplate['to'];
+					$to = array_keys($transitionTemplate);
+					$transitionName = $to[0];
+					$target = $transitionTemplate[$transitionName];
 				}
 
 				if (isset($transitionMap[$transitionName])) {
@@ -195,6 +262,9 @@ class WorkflowTemplate {
 				} else {
 					$transition = WorkflowTransition::create();
 				}
+				
+				// Add Member and Group relations to this Transition
+				$this->addManyManyToObject($transition, $transitionTemplate);
 
 				$transition->Title = $transitionName;
 				$transition->ActionID = $action->ID;
@@ -234,35 +304,114 @@ class WorkflowTemplate {
 		$transitions = new ArrayObject;
 		$sort = 1;
 		// now, go through the structure and create/realign things
-		foreach ($this->structure as $actionName => $actionTemplate) {
-			$action = null;
-			if (isset($existingActions[$actionName])) {
-				$action = $existingActions[$actionName];
-			} else {
-				$action = $this->createAction($actionName, $actionTemplate, $definition, $transitions);
+		foreach ($this->structure as $relationName => $relationTemplate) {
+			
+			$isAction = isset($relationTemplate['type']);
+			$isUsers = ($relationName == 'users');
+			$isGroups = ($relationName == 'groups');
+			
+			if($isAction) {
+				$action = null;
+				if (isset($existingActions[$relationName])) {
+					$action = $existingActions[$relationName];
+				} else {
+					$action = $this->createAction($relationName, $relationTemplate, $definition, $transitions);
+				}
+
+				// add a sort value in! 
+				$action->Sort = $sort++;
+				$action->write();
+
+				$actions[$relationName] = $action;
+
+				$newTransitions = $this->updateActionTransitions($relationTemplate, $action);
+				foreach ($newTransitions as $t) {
+					$transitions->append($t);
+				}
 			}
-			
-			// add a sort value in! 
-			$action->Sort = $sort++;
-			$action->write();
-			
-			$actions[$actionName] = $action;
-			
-			$newTransitions = $this->updateActionTransitions($actionTemplate, $action);
-			foreach ($newTransitions as $t) {
-				$transitions->append($t);
+			// Process users on WorkflowDefinition from the template
+			if($isUsers) {
+				$this->createUsers($relationTemplate, $definition, true);
 			}
+			// Process groups on WorkflowDefinition from the template
+			if($isGroups) {
+				$this->createGroups($relationTemplate, $definition, true);
+			}			
 		}
 		
 		foreach ($transitions as $transition) {
 			if (isset($actions[$transition->Target])) {
 				$transition->NextActionID = $actions[$transition->Target]->ID;
 			}
-			
 			$transition->write();
 		}
 		
+		// Set the version and do the write at the end so that we don't trigger an infinite loop!!
+		$definition->Description = $this->getDescription();
 		$definition->TemplateVersion = $this->getVersion();
+		$definition->RemindDays = $this->getRemindDays();
+		$definition->Sort = $this->getSort();
 		$definition->write();
+	}
+	
+	/**
+	 * Given an object, first check it has a ManyMany relation on it and add() Member and Group relations as required.
+	 * 
+	 * @param Object $object (e.g. WorkflowDefinition, WorkflowAction, WorkflowTransition)
+	 * @param array $source Usually data taken from a YAML template
+	 * @param boolean $clear Lose/keep Group/Member relations on $object (useful for reloading/refreshing definition)
+	 * @return void
+	 */
+	protected function addManyManyToObject($object, $source, $clear = false) {
+		// Check incoming
+		if(!is_object($object) || !is_array($source)) {
+			return;
+		}
+		
+		// Only some target class variants actually have Group/User relations
+		$hasUsers = false;
+		$hasGroups = false;
+		if($manyMany = $object->stat('many_many')) {
+			if(in_array('Member', $manyMany)) {
+				$hasUsers = true;
+				$userRelationName = array_keys($manyMany);
+			}
+			if(in_array('Group', $manyMany)) {
+				$hasGroups = true;
+				$groupRelationName = array_keys($manyMany);
+			}			
+		}
+		
+		// Deal with User relations on target object
+		if($hasUsers) {
+			if($clear) {
+				$relName = $userRelationName[0];
+				$object->$relName()->removeAll();
+			}
+			if(isset($source['users']) && is_array($source['users'])) {
+				foreach ($source['users'] as $user) {
+					$email = Convert::raw2sql($user['email']);
+					if($_user = DataObject::get_one('Member', "Email = '".$email."'")) {
+						$object->Users()->add($_user);
+					}
+				}			
+			}
+		}	
+		
+		// Deal with Group relations on target object
+		if($hasGroups) {
+			if($clear) {
+				$relName = $groupRelationName[0];
+				$object->$relName()->removeAll();
+			}			
+			if(isset($source['groups']) && is_array($source['groups'])) {
+				foreach ($source['groups'] as $group) {
+					$title = Convert::raw2sql($group['title']);
+					if($_group = DataObject::get_one('Group', "Title = '".$title."'")) {
+						$object->Groups()->add($_group);
+					}
+				}
+			}
+		}		
 	}
 }
