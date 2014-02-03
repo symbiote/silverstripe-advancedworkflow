@@ -115,6 +115,12 @@ class WorkflowApplicable extends DataExtension {
 		}
 	}
 
+	/**
+	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction. 
+	 * Returns an absolute link to the CMS UI for a Page object
+	 * 
+	 * @return string | null
+	 */	
 	public function AbsoluteEditLink() {
 		$CMSEditLink = null;
 
@@ -129,6 +135,19 @@ class WorkflowApplicable extends DataExtension {
 		}
 
 		return Controller::join_links(Director::absoluteBaseURL(), $CMSEditLink);
+	}
+	
+	/**
+	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction. 
+	 * Allows users to select a link in an email for direct access to the transition-selection dropdown in the CMS UI.
+	 * 
+	 * @return string
+	 */
+	public function LinkToPendingItems() {
+		$urlBase = Director::absoluteBaseURL();
+		$urlFrag = 'admin/workflows/WorkflowDefinition/EditForm/field';
+		$urlInst = $this->getWorkflowInstance();
+		return Controller::join_links($urlBase, $urlFrag, 'PendingObjects', 'item', $urlInst->ID, 'edit');
 	}
 	
 	/**

@@ -48,7 +48,7 @@ en:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'You do not have permission to execute this action'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comment history up to this notification.'
-    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n			the CMS (if it is a Page)."
+    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS' workflow admin,\n			useful for allowing users to enact workflow transitions, directly from emails."
     EMAILFROM: 'Email from'
     EMAILSUBJECT: 'Email subject'
     EMAILTEMPLATE: 'Email template'
