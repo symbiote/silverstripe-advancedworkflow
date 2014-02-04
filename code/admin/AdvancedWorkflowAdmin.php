@@ -40,6 +40,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	public function init() {
 		parent::init();
 		Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
+		Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
+		Requirements::css('advancedworkflow/css/WorkflowGridField.css');
 	}	
 
 	/*
@@ -116,6 +118,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			$dataColumns->setDisplayFields($displayFields);
 
 			$formFieldBottom->setForm($form);
+			$formFieldBottom->getConfig()->removeComponentsByType('GridFieldEditButton');
+			$formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
 			$form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
 		}
 		
