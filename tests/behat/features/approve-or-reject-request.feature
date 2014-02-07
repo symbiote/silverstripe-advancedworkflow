@@ -6,8 +6,8 @@ Feature: Approve a request for edited content
   Background:
     Given a "Review and Approve" "Workflow Definition" "Template" is created
     And a "group" "Content Author" has permissions "Request approval" content
-	  And a "group" "Content Publisher" has permissions "approve" content
-	  And a "group" "Content Publisher" is set on "Workflow Definition" "Approve" action
+    And a "group" "Content Publisher" has permissions "approve" content
+    And a "group" "Content Publisher" is set on "Workflow Definition" "Approve" action
     And "Notify Initiator Publish" email template has content "Your content change for the page named $Context.Title has been approved by {$Member.FirstName}."
     And "About Us" has a pending "Apply for Approval" action triggered
     And I am logged in with "Content Publisher" permissions
