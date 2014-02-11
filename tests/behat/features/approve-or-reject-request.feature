@@ -18,9 +18,9 @@ Feature: Approve a request for edited content
   Scenario: I can approve a pending "Apply for approval" action
     Given I recived a "Notify Us" email
     Then I can see the "Approve" button
-@todo    And I can see the "Reject" button
+    And I can see the "Reject" button
     Then I press the "Approve" button
-@todo    Then I can see a "Comments" form
-@todo    Then I can edit a "Comment"
+    Then I can see a "Comments" form
+    Then I can edit a "Comment"
     And my change is "Saved in Draft"
     Then a "Notify Initiator Publish" email notification is sent to "Content Author"
