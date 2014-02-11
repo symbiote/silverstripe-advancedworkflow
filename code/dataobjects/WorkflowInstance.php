@@ -351,8 +351,22 @@ class WorkflowInstance extends DataObject {
 		return $list;
 	}
 
+	/**
+	 * 
+	 * @param \Member $member
+	 * @return boolean
+	 */
 	public function canView($member=null) {
-		return $this->userHasAccess($member);
+		$hasAccess = $this->userHasAccess($member);
+		/*
+		 * If the next action is an AssignUsersToWorkflowAction, its execute() method resets all user+group relations.
+		 * So the current user no-longer has permission to view this item in a PendingObjects Gridfield, even though she enacted it.
+		 * This is not the ideal solution, as the user who has issues is not always going to be the initiator
+		 */
+		if(!$hasAccess && ($this->InitiatorID == Member::currentUserID())) {
+			return true;
+		}
+		return $hasAccess;
 	}
 	public function canEdit($member=null) {
 		return $this->userHasAccess($member);
