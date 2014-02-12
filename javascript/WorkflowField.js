@@ -217,8 +217,16 @@ jQuery.entwine("workflow", function($) {
 
 			// Something has changed, remove any existing embargo message
 			$('.Actions #embargo-message').remove();
+			
+			/*
+			 * Fuzzy checking: 
+			 * There may not be $(#PublishOnXXX input.date) DOM objects = undefined.
+			 * There may be $(#PublishOnXXX input.date) DOM objects = val() method may return zero-length.
+			 */			
+			var noPublishDate = (publishDate === undefined || publishDate.length == 0);
+			var noPublishTime = (publishTime === undefined || publishTime.length == 0);			
 
-			if(publishDate == '' && publishTime == '' ){
+			if(noPublishDate && noPublishTime){
 				//No Embargo, remove customizations
 				$('#Form_EditForm_action_publish').removeClass('embargo');
 				$('#Form_EditForm_action_publish').prev('button').removeClass('ui-corner-right');
