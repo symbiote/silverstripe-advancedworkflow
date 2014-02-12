@@ -15,6 +15,9 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 		if (!$item || !$item->canEdit()) {
 			return;
 		}
+		
+		// Save a draft, if the user forgets to do so
+		$this->saveAsDraftWithAction($form, $item);
 
 		$svc = singleton('WorkflowService');
 		$svc->startWorkflow($item);
@@ -98,5 +101,20 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
 		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
+	
+	/**
+	 * Ocassionally users forget to apply their changes via the standard CMS "Save Draft" button,
+	 * and select the action button instead - losing their changes.
+	 * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run.
+	 * See: #72 and #77
+	 * 
+	 * @param \Form $form
+	 * @param \DataObject $item
+	 * @return void
+	 */
+	protected function saveAsDraftWithAction(Form $form, DataObject $item) {
+		$form->saveInto($item);
+		$item->write();
+	}	
 
 }
