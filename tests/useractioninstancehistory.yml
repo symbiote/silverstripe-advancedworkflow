@@ -1,0 +1,143 @@
+#
+# Models the first part of the default _config YML template as a fixture as though it's been run and is part way through
+#
+WorkflowTransition:
+  Transition01:
+    Title: notify
+  Transition02:
+    Title: approval
+  Transition03:
+    Title: Approve
+  Transition04:
+    Title: Reject
+    
+Member:
+  ApproverMember01:
+    ID: 1
+    FirstName: General
+    Surname: Approver
+    Email: g.approver@localhost
+  
+Group:
+  BaseAction01Group:
+    Title: Approvers
+    Members: =>Member.ApproverMember01
+
+AssignUsersToWorkflowAction:
+  BaseAction01:
+    Title: Assign
+    Transitions: =>WorkflowTransition.Transition01
+    Groups: =>Group.BaseAction01Group
+  BaseAction011:
+    Title: 'Another Assignment'
+    Transitions: =>WorkflowTransition.Transition01
+  BaseAction012:
+    Title: 'Assigned Again'
+    Transitions: =>WorkflowTransition.Transition01
+    Groups: =>Group.BaseAction01Group
+  BaseAction013:
+    Title: 'Assigned Me'
+    Transitions: =>WorkflowTransition.Transition01
+    Groups: =>Group.BaseAction01Group
+  BaseAction014:
+    Title: 'Not Re-Assigned Me'
+    Transitions: =>WorkflowTransition.Transition01
+NotifyUsersWorkflowAction:
+  BaseAction02:
+    Title: 'Notify users'
+    Transitions: =>WorkflowTransition.Transition02
+  BaseAction021:
+    Title: 'Notify users'
+    Transitions: =>WorkflowTransition.Transition02   
+SimpleApprovalWorkflowAction:
+  BaseAction03:
+    Title: Approval
+    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04
+  BaseAction031:
+    Title: Approval
+    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04    
+ 
+WorkflowActionInstance:
+  ActionInstance01:
+    Created: '2014-02-17 16:15:00'
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+  ActionInstance02:
+    Created: '2014-02-17 16:15:01'
+    Finished: 1
+    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+  ActionInstance03:
+    Created: '2014-02-17 16:15:02'      
+    Finished: 1
+    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
+  ActionInstance04:
+    Created: '2014-02-17 16:14:59'
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011
+  ActionInstance05:
+    Created: '2014-02-17 16:15:00'      
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+  ActionInstance06:
+    Created: '2014-02-17 16:15:01'      
+    Finished: 1
+    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+  ActionInstance07:
+    Created: '2014-02-17 16:15:02'      
+    Finished: 1
+    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
+  ActionInstance08:
+    Created: '2014-02-17 16:15:03'      
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011 
+  ActionInstance09:
+    Created: '2014-02-17 16:15:00'
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+  ActionInstance10:
+    Created: '2014-02-17 16:15:01'
+    Finished: 1
+    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+  ActionInstance11:
+    Created: '2014-02-17 16:15:02'
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction012
+  ActionInstance12:
+    Created: '2014-02-17 16:15:00'
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction013
+  ActionInstance13:
+    Created: '2014-02-17 16:15:01'
+    Finished: 1
+    BaseAction: =>NotifyUsersWorkflowAction.BaseAction021
+  ActionInstance14:
+    Created: '2014-02-17 16:15:02'      
+    Finished: 1
+    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction031  
+  ActionInstance15:
+    Created: '2014-02-17 16:15:03'      
+    Finished: 1
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction014   
+  
+WorkflowInstance:
+  WorkflowInstance01:
+    Title: 'Test WorkflowInstance 01'
+    WorkflowStatus: Paused
+    Actions: =>WorkflowActionInstance.ActionInstance01,=>WorkflowActionInstance.ActionInstance02,=>WorkflowActionInstance.ActionInstance03
+  WorkflowInstance02:
+    Title: 'Test WorkflowInstance 02'
+    WorkflowStatus: Paused
+    Actions: =>WorkflowActionInstance.ActionInstance04,=>WorkflowActionInstance.ActionInstance02,=>WorkflowActionInstance.ActionInstance03
+  WorkflowInstance03:
+    Title: 'Test WorkflowInstance 03'
+    WorkflowStatus: Paused
+    Actions: =>WorkflowActionInstance.ActionInstance05,=>WorkflowActionInstance.ActionInstance06,=>WorkflowActionInstance.ActionInstance07,=>WorkflowActionInstance.ActionInstance08
+  WorkflowInstance04:
+    Title: 'Test WorkflowInstance 04'
+    WorkflowStatus: Paused
+    Actions: =>WorkflowActionInstance.ActionInstance09,=>WorkflowActionInstance.ActionInstance10,=>WorkflowActionInstance.ActionInstance11
+  WorkflowInstance05:
+    Title: 'Test WorkflowInstance 05'
+    WorkflowStatus: Paused
+    Actions: =>WorkflowActionInstance.ActionInstance12,=>WorkflowActionInstance.ActionInstance13,=>WorkflowActionInstance.ActionInstance14,=>WorkflowActionInstance.ActionInstance15
+ 

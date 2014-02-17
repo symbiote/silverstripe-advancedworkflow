@@ -359,12 +359,14 @@ class WorkflowInstance extends DataObject {
 	public function canView($member=null) {
 		$hasAccess = $this->userHasAccess($member);
 		/*
-		 * If the next action is an AssignUsersToWorkflowAction, its execute() method resets all user+group relations.
-		 * So the current user no-longer has permission to view this item in a PendingObjects Gridfield, even though she enacted it.
-		 * This is not the ideal solution, as the user who has issues is not always going to be the initiator
+		 * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
+		 * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects Gridfield, even though;
+		 * - She had permissions granted via the workflow definition to run the preceeding Action that took her here.
 		 */
-		if(!$hasAccess && ($this->InitiatorID == Member::currentUserID())) {
-			return true;
+		if(!$hasAccess) {
+			if($this->getMostRecentActionForUser($member)) {
+				return true;
+			}
 		}
 		return $hasAccess;
 	}
@@ -588,5 +590,40 @@ class WorkflowInstance extends DataObject {
 			return 'N/A';
 		}
 		return $action->getField('Title');
+	}
+	
+	/**
+	 * Tells us if $member has had permissions over some part of the current WorkflowInstance.
+	 * 
+	 * @param $member
+	 * @return \WorkflowAction | boolean
+	 */
+	public function getMostRecentActionForUser($member = null) {
+		if(!$member) {
+			if (!Member::currentUserID()) {
+				return false;
+			}
+			$member = Member::currentUser();
+		}
+		
+		// WorkflowActionInstances in reverse creation-order so we get the most recent one's first
+		$history = $this->Actions()->filter(array(
+			'Finished' =>1,
+			'BaseAction.ClassName' => 'AssignUsersToWorkflowAction'
+		))->Sort('Created', 'DESC');
+		
+		$i=0;
+		foreach($history as $inst) {
+			/*
+			 * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction in $history.
+			 * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
+			 */
+			$assignedMembers = $inst->BaseAction()->getAssignedMembers();
+			if($i<=1 && $assignedMembers->count()>0 && $assignedMembers->find('ID', $member->ID)) {
+				return $inst;
+			}
+			++$i;
+		}
+		return false;
 	}
 }
