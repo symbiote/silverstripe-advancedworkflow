@@ -61,4 +61,32 @@ SQL;
 			'AssignInitiator'	=> _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
 		));
 	}
+	
+	/**
+	 * Returns a set of all Members that are assigned to this WorkflowAction subclass, either directly or via a group.
+	 *
+	 * @return ArrayList
+	 */
+	public function getAssignedMembers() {
+		$members = $this->Users();
+		$groups  = $this->Groups();
+		
+		// Can't merge instances of DataList so convert to something where we can
+		$_members = ArrayList::create();
+		$members->each(function($item) use(&$_members) {
+			$_members->push($item);
+		});
+		
+		$_groups = ArrayList::create();
+		$groups->each(function($item) use(&$_groups) {
+			$_groups->push($item);
+		});		
+
+		foreach($_groups as $group) {
+			$_members->merge($group->Members());
+		}
+
+		$_members->removeDuplicates();
+		return $_members;
+	}	
 }
