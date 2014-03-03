@@ -185,9 +185,33 @@ class WorkflowTransition extends DataObject {
 		}else{
 			return $return;
 		}
-
-
 	}
+	
+	/**
+	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
+	 * 
+	 * @param  Member $member
+	 * @return bool
+	 */
+	public function canCreate($member = null) {
+		return $this->Action()->WorkflowDef()->canCreate($member);
+	}
+	
+	/**
+	 * @param  Member $member
+	 * @return bool
+	 */	
+	public function canEdit($member = null) {
+		return $this->canCreate($member);
+	}
+	
+	/**
+	 * @param  Member $member
+	 * @return bool
+	 */		
+	public function canDelete($member = null) {
+		return $this->canCreate($member);
+	}	
 
 	/**
 	 * Returns a set of all Members that are assigned to this transition, either directly or via a group.
@@ -229,27 +253,5 @@ class WorkflowTransition extends DataObject {
 				'A transition cannot lead back to its parent action.');
 		}
 		return self::$extendedMethodReturn;
-	}
-
-	/*
-	 * Returns true if a button should be disabled due to a low level of user-permissions on the current WorkflowTransition.
-	 * Ultimately relies on WorkflowInstance->userHasAccess() to decide if a user has permission to edit a transition or action, on their workflowInstance.
-	 *
-	 * @todo Might this be better defined on WorkflowService? There is an almost identical method defined on WorkflowTransition
-	 *
-	 * @param Member $member
-	 * @return boolean
-	 */
-	public function disableButton($member = null) {
-		if(Permission::checkMember($member, 'ADMIN')) {
-			return false;
-		}
-		if(!$member) {
-			$member = Member::currentUser();
-		}
-		if(!$this->Action()->WorkflowDef()->canEdit($member)) {
-			return true; // disable
-		}
-		return false;
 	}
 }
