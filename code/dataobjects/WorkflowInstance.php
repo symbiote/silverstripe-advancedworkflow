@@ -566,9 +566,9 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function getVersionedConnection($recordID,$userID,$definitionID,$wasPublished=0) {
 		// Turn this into an array and run through implode()
-		$filter = "\"AuthorID\" = '".$userID."' AND \"RecordID\" = '".$recordID."' AND \"WorkflowDefinitionID\" = '".$definitionID."' AND WasPublished = '".$wasPublished."'";
+		$filter = "\"AuthorID\" = '".$userID."' AND \"RecordID\" = '".$recordID."' AND \"WorkflowDefinitionID\" = '".$definitionID."' AND \"WasPublished\" = '".$wasPublished."'";
 		$query = new SQLQuery();
-		$query->setFrom('SiteTree_versions')->setSelect('COUNT(ID)')->setWhere($filter);
+		$query->setFrom('"SiteTree_versions"')->setSelect('COUNT("ID")')->setWhere($filter);
 		$query->firstRow();
 		$hasAuthored = $query->execute();
 		if($hasAuthored) {
