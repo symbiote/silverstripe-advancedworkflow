@@ -78,6 +78,43 @@ class WorkflowAction extends DataObject {
 	public function canPublishTarget(DataObject $target) {
 		return null;
 	}
+	
+	/**
+	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
+	 * 
+	 * @param  Member $member
+	 * @return bool
+	 */
+	public function canCreate($member = null) {
+		return $this->WorkflowDef()->canCreate($member);
+	}
+	
+	/**
+	 * @param  Member $member
+	 * @return bool
+	 */	
+	public function canEdit($member = null) {
+		return $this->canCreate($member);
+	}
+	
+	/**
+	 * @param  Member $member
+	 * @return bool
+	 */		
+	public function canDelete($member = null) {
+		return $this->canCreate($member);
+	}
+	
+	/*
+	 * If there is only a single action defined for a workflow, there's no sense
+	 * in allowing users to add a transition to it (and causing errors).
+	 * Hide the "Add Transition" button in this case
+	 *
+	 * @return boolean true if we should disable the button, false otherwise
+	 */
+	public function canAddTransition() {
+		return ($this->WorkflowDef()->numChildren() >1);
+	}	
 
 	/**
 	 * Gets an object that is used for saving the actual state of things during
@@ -214,41 +251,5 @@ class WorkflowAction extends DataObject {
 
 	public function Icon() {
 		return $this->stat('icon');
-	}
-
-	/*
-	 * If there is only a single action defined for a workflow, there is no sense in allowing users to add a transition to it (and causing errors).
-	 * Hide the "Add Transition" button in this case
-	 *
-	 * @return boolean true if we should disable the button, false otherwise
-	 */
-	public function disableButtonAddTransition() {
-		if($this->WorkflowDef()->numChildren() == 1 || $this->disableButton()) {
-			return true;
-		}
-		return false;
-	}
-
-	/*
-	 * Returns true if a button should be disabled due to a low level of user-permissions on the current WorkflowAction.
-	 * Ultimately relies on WorkflowInstance->userHasAccess() to decide if a user has permission to edit a transition or action, on their workflowInstance.
-	 *
-	 * @todo Should we be taking account of $this->AllowEditing()??
-	 * @todo Might this be better defined on WorkflowService? There is an almost identical method defined on WorkflowTransition
-	 *
-	 * @param Member $member
-	 * @return boolean
-	 */
-	public function disableButton($member = null) {
-		if(Permission::checkMember($member, 'ADMIN')) {
-			return false;
-		}
-		if(!$member) {
-			$member = Member::currentUser();
-		}
-		if(!$this->WorkflowDef()->canEdit($member)) {
-			return true; // disable
-		}
-		return false;
 	}
 }

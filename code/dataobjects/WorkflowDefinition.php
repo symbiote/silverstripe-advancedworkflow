@@ -286,6 +286,11 @@ class WorkflowDefinition extends DataObject {
 		self::$workflow_defs = $workflow_defs->map()->toArray();
 	}
 
+	/**
+	 * 
+	 * @param Member $member
+	 * @return boolean
+	 */
 	public function canCreate($member=null) {
 		if (is_null($member)) {
 			if (!Member::currentUserID()) {
@@ -293,17 +298,34 @@ class WorkflowDefinition extends DataObject {
 			}
 			$member = Member::currentUser();
 		}
-
 		return Permission::checkMember($member, 'CREATE_WORKFLOW');
 	}
+	
+	/**
+	 * 
+	 * @param Member $member
+	 * @return boolean
+	 */	
 	public function canView($member=null) {
 		return $this->userHasAccess($member);
 	}
+	
+	/**
+	 * 
+	 * @param Member $member
+	 * @return boolean
+	 */	
 	public function canEdit($member=null) {
-		return $this->userHasAccess($member);
+		return $this->canCreate($member);
 	}
+	
+	/**
+	 * 
+	 * @param Member $member
+	 * @return boolean
+	 */	
 	public function canDelete($member=null) {
-		return $this->userHasAccess($member);
+		return $this->canCreate($member);
 	}
 
 	/**

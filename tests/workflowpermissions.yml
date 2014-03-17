@@ -1,0 +1,23 @@
+#
+# Models the various permission checks on Workflow objects
+#   
+WorkflowTransition:
+  test-transition-01:
+    Title: 'Test transition 01'
+      
+WorkflowAction:
+  action-no-transitions:
+    Title: 'No transitions'
+  action-with-transitions:
+    Title: 'With transitions'
+    Transitions: =>WorkflowTransition.test-transition-01
+  
+WorkflowDefinition:
+  no-actions:
+    Title: 'Test definition 01'
+  with-actions:
+    Title: 'Test definition 02'  
+    Actions: =>WorkflowAction.action-no-transitions
+  with-actions-and-transitions:
+    Title: 'Test definition 03'  
+    Actions: =>WorkflowAction.action-with-transitions
