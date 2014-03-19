@@ -7,13 +7,6 @@
 			onmatch: function(e) {
 				var ele = $(this);
 				var row = ele.closest('tr');
-				row.on('click', function(e) {
-					/*
-					 * Prevent a precursor POST to gridfield record URLs (all GridFields) when clicking on target-object's
-					 * hyperlinks, which results in a 404.
-					 */
-					e.stopPropagation();
-				});
 
 				if(ele.find('.col-buttons.disabled').length) {
 					row
@@ -23,7 +16,7 @@
 							return (e.target.nodeName === 'A' && e.target.className.match(/edit-link/) === null);
 						});
 						ele.find('a.edit-link').attr('title', '');
-				}
+				}			
 			}
 		});
 		
@@ -33,6 +26,16 @@
 				this.css('cursor', 'default');
 			}
 		});	
+		
+		/*
+		 * Prevent a precursor POST to gridfield record URLs (all Pending/Submitted GridFields) 
+		 * when clicking on target-object's hyperlinks, which results in a 404.
+		 */		
+		$('.ss-gridfield .ss-gridfield-item td.col-Title a').entwine({
+			onclick: function(e) {	
+				e.stopPropagation();
+			}
+		});
 		
 	});
 	
