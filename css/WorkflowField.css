@@ -23,3 +23,5 @@
 .workflow-field .workflow-field-actions .workflow-field-action-transitions li .ui-icon, .workflow-field .workflow-field-actions .workflow-field-action-transitions li span { float: left; }
 .workflow-field .workflow-placeholder { margin-bottom: 4px; height: 32px; }
 .workflow-field .workflow-field-loading { background: rgba(0, 0, 0, 0.15) url(../../framework/admin/images/spinner.gif) no-repeat center center; border-radius: 0 0 3px 3px; bottom: 0; display: none; left: 0; position: absolute; right: 0; top: 0; z-index: 999; }
+
+.cms table.ss-gridfield-table .btn-icon-download-csv { display: inline-block; vertical-align: middle; width: 16px; height: 16px; margin: -2px 0 0 10px; }
