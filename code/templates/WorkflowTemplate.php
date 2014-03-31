@@ -114,6 +114,7 @@ class WorkflowTemplate {
 	 * 
 	 * @param WorkflowDefinition $definitino
 	 *				An optional workflow definition to bind the actions into
+	 * @return array
 	 */
 	public function createRelations($definition = null) {
 		$actions = array();

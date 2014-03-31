@@ -37,6 +37,18 @@
 			}
 		});
 		
+		/*
+		 * Reload the current (central) CMS pane, to ensure that previously related content
+		 * objects, are visually cleared from the UI immediately.
+		 */
+		$('.ss-gridfield .col-buttons .action.gridfield-button-delete, .cms-edit-form .Actions button.action.action-delete').entwine({
+			onclick: function(e) {
+				this._super(e);
+				$('.cms-container').reloadCurrentPanel();
+				e.preventDefault();
+			}
+		});	
+		
 	});
 	
 }(jQuery));
