@@ -100,10 +100,48 @@ class WorkflowDefinition extends DataObject {
 	}
 	
 	/**
-	 * Delete the ImportedWorkflowTemplate object that underpins each imported WorkflowDefinition
+	 * Ensure all WorkflowDefinition relations are removed on delete. If we don't do this, 
+	 * we see issues with targets previously under the control of a now-deleted workflow, 
+	 * becoming stuck, even if a new workflow is subsequently assigned to it.
+	 *
+	 * @return null
 	 */
 	public function onBeforeDelete() {
 		parent::onBeforeDelete();
+		
+		// Delete related import
+		$this->deleteRelatedImport();
+		
+		// Reset/unlink related HasMany|ManyMany relations and their orphaned objects
+		$this->removeRelatedHasLists();
+	}
+
+	/**
+	 * Removes User+Group relations from this object as well as WorkflowAction relations.
+	 * When a WorkflowAction is deleted, its own relations are also removed:
+	 * - WorkflowInstance
+	 * - WorkflowTransition
+	 * @see WorkflowAction::onAfterDelete()
+	 * 
+	 * @return void
+	 */
+	private function removeRelatedHasLists() {
+		$this->Users()->removeAll();
+		$this->Groups()->removeAll();
+		$this->Actions()->each(function($action) {
+			if($orphan = DataObject::get_by_id('WorkflowAction', $action->ID)) {
+				$orphan->delete();
+			}
+		});
+	}
+
+	/**
+	 * 
+	 * Deletes related ImportedWorkflowTemplate objects.
+	 * 
+	 * @return void
+	 */
+	private function deleteRelatedImport() {
 		if($import = DataObject::get('ImportedWorkflowTemplate')->filter('DefinitionID', $this->ID)->first()) {
 			$import->delete();
 		}
@@ -353,21 +391,30 @@ class WorkflowDefinition extends DataObject {
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param Member $member
 	 * @return boolean
-	 */	
+	 */
 	public function canEdit($member=null) {
 		return $this->canCreate($member);
 	}
 	
 	/**
-	 * 
+	 *
 	 * @param Member $member
 	 * @return boolean
-	 */	
+	 */
 	public function canDelete($member=null) {
-		return $this->canCreate($member);
+		if(!$this->canCreate($member)) {
+			return false;
+		}
+		/*
+		 * When a definition is deleted, remove all relations to prevent CMS issues,
+		 * but we need to check we're permitted to do this first.
+		 */
+		$canDeleteAction = WorkflowAction::create()->canDelete();
+		$canDeleteInstance = WorkflowInstance::create()->canDelete();
+		return ($canDeleteAction && $canDeleteInstance);
 	}	
 
 	/**
