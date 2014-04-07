@@ -3,6 +3,10 @@
  * A workflow action describes a the 'state' a workflow can be in, and
  * the action(s) that occur while in that state. An action can then have
  * subsequent transitions out of the current state. 
+ * 
+ * @method WorkflowDefinition WorkflowDef()
+ * @method Member Member()
+ * @method DataList Transitions()
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -242,11 +246,51 @@ class WorkflowAction extends DataObject {
 	}
 	
 	/**
-	 * Used for Front End Workflows
+	 * 
+	 * Updates fields for when this is part of an active workflow
+	 * 
+	 * @param FieldList $fields
 	 */
-	public function updateFrontendWorkflowFields($fields, $workflow){	
+	public function updateWorkflowFields($fields) {
+		if ($this->AllowCommenting) {
+			$fields->push(new TextareaField(
+				'Comment',
+				_t('WorkflowAction.COMMENT', 'Comment')
+			));
+		}
+	}
+	
+	/**
+	 * Used for Front End Workflows
+	 * 
+	 * @param FieldList $fields
+	 * @param WorkFlowInstance $workflow {@see WorkflowInstance} context
+	 */
+	public function updateFrontendWorkflowFields($fields, $workflow = null){
+		if ($this->AllowCommenting) {		
+			$fields->push(new TextareaField(
+				'WorkflowActionInstanceComment',
+				_t('WorkflowAction.FRONTENDCOMMENT', 'Comment')
+			));
+		}
+	}
+	
+	/**
+	 * Get valid transitions for this action, given a workflow context
+	 * 
+	 * @param WorkFlowInstance $workflow {@see WorkflowInstance} context
+	 * @return SS_List
+	 */
+	public function getValidTransitions($workflow = null) {
 		
-	}	
+		// iterate through the transitions and see if they're valid for the current state of the item being
+		// workflowed
+		return $this
+			->Transitions()
+			->filterByCallback(function($transition) use($workflow) {
+				return $transition->isValid($workflow);
+			});
+	}
 	
 
 	public function Icon() {

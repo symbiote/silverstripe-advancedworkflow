@@ -63,6 +63,7 @@ class WorkflowService implements PermissionProvider {
 	 * Will recursively query parent elements until it finds one, if available
 	 *
 	 * @param DataObject $dataObject
+	 * @return WorkflowDefinition The workflow definition, if present
 	 */
 	public function getDefinitionFor(DataObject $dataObject) {
 		if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
@@ -161,9 +162,10 @@ class WorkflowService implements PermissionProvider {
 
 	/**
 	 * Starts the workflow for the given data object, assuming it or a parent has
-	 * a definition specified. 
+	 * a definition specified.
 	 * 
 	 * @param DataObject $object
+	 * @return WorkflowInstance The initiated instance, if available
 	 */
 	public function startWorkflow(DataObject $object) {
 		$existing = $this->getWorkflowFor($object);
@@ -176,7 +178,7 @@ class WorkflowService implements PermissionProvider {
 		if ($definition) {
 			$instance = new WorkflowInstance();
 			$instance->beginWorkflow($definition, $object);
-			$instance->execute();
+			return $instance;
 		}
 	}
 	

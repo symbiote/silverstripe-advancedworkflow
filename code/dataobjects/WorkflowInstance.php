@@ -6,6 +6,9 @@
  * button (eg 'apply for approval'). This creates a standalone object
  * that maintains the state of the workflow process. 
  * 
+ * @method WorkflowDefinition Definition()
+ * @method WorkflowActionInstance CurrentAction()
+ * @method Member Initiator()
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)

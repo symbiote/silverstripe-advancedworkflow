@@ -8,21 +8,14 @@
  * @package advancedworkflow
  */
 class AdvancedWorkflowExtension extends LeftAndMainExtension {
-
-	public function startworkflow($data, $form, $request) {
-		$item = $form->getRecord();
-
-		if (!$item || !$item->canEdit()) {
-			return;
-		}
-		
-		// Save a draft, if the user forgets to do so
-		$this->saveAsDraftWithAction($form, $item);
-
-		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($item);
-
-		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
+	
+	/**
+	 * Workflow provider service
+	 * 
+	 * @return WorkflowService
+	 */
+	protected function workflowService() {
+		return singleton('WorkflowService');
 	}
 
 	/**
@@ -32,34 +25,70 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @param Form $form
 	 */
 	public function updateEditForm(Form $form) {
-		$svc    = singleton('WorkflowService');
-		$p      = $form->getRecord();
-		$active = $svc->getWorkflowFor($p);
+		$service = $this->workflowService();
+		$record = $form->getRecord();
 
-		if ($active) {
-
-			$fields = $form->Fields();
-			$current = $active->CurrentAction();
+		// Determine if loading from active step, or from definition
+		if ($active = $service->getWorkflowFor($record)) {
+			// Load active workflow
+			$current = $active->CurrentAction(); // WorkflowActionInstance
 			$wfFields = $active->getWorkflowFields();
+		} elseif($effective = $service->getDefinitionFor($record)) {
+			// Request fielids for initial workflow step from effective definition
+			$current = null;
+			$wfFields = $effective->getWorkflowFields();
+		} else {
+			return;
+		}
+		
+		// Merge these fields with the form
+		$fields = $form->Fields();
+		$fields->findOrMakeTab(
+			'Root.WorkflowActions',
+			_t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
+		);
+		$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 
+		// If a step is active, load saved details into the form
+		if($current) {
 			$allowed = array_keys($wfFields->saveableFields());
 			$data = array();
 			foreach ($allowed as $fieldName) {
 				$data[$fieldName] = $current->$fieldName;
 			}
-
-			$fields->findOrMakeTab(
-				'Root.WorkflowActions',
-				_t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
-			);
-			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
-
 			$form->loadDataFrom($data);
-
-			if (!$p->canEditWorkflow()) {
-				$form->makeReadonly();
-			}
 		}
+
+		// Apply workflow specific locking to this form
+		if (!$record->canEditWorkflow()) {
+			$form->makeReadonly();
+		}
+	}
+
+	/**
+	 * Generates a new workflow based on user input
+	 * 
+	 * @param array $data
+	 * @param Form $form
+	 * @param SS_HTTPRequest $request
+	 * @return SS_HTTPResponse
+	 */
+	public function startworkflow($data, $form, $request) {
+		// Ensure record is valid and can be processed
+		$record = $form->getRecord();
+		if (!$record || !$record->canEdit()) {
+			return;
+		}
+		
+		// Save a draft, if the user forgets to do so
+		$this->saveAsDraftWithAction($form, $record);
+
+		// Initiate workflow
+		$service = $this->workflowService();
+		$workflow = $service->startWorkflow($record);
+		
+		// Process workflow from form data
+		return $this->processWorkflow($data, $form, $record, $workflow);
 	}
 
 	/**
@@ -70,17 +99,34 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @param array $data
 	 * @param Form $form
 	 * @param SS_HTTPRequest $request
-	 * @return String
+	 * @return SS_HTTPResponse
 	 */
 	public function updateworkflow($data, Form $form, $request) {
-		$svc = singleton('WorkflowService');
-		$p = $form->getRecord();
-		$workflow = $svc->getWorkflowFor($p);
-		$action = $workflow->CurrentAction();
-
-		if (!$p || !$p->canEditWorkflow()) {
+		// Ensure record is valid and can be processed
+		$record = $form->getRecord();
+		if (!$record || !$record->canEditWorkflow()) {
 			return;
 		}
+		
+		// Retrieve in-progress workflow
+		$service = $this->workflowService();
+		$workflow = $service->getWorkflowFor($record);
+		
+		// Process workflow
+		return $this->processWorkflow($data, $form, $record, $workflow);
+	}
+	
+	/**
+	 * Advance the process of a workflow, whether in-progress or recently created
+	 * 
+	 * @param array $data
+	 * @param Form $form
+	 * @param DataObject $record
+	 * @param WorkflowInstance $workflow
+	 * @return SS_HTTPResponse
+	 */
+	protected function processWorkflow($data, $form, $record, $workflow) {
+		$action = $workflow->CurrentAction();
 
 		$allowedFields = $workflow->getWorkflowFields()->saveableFields();
 		unset($allowedFields['TransitionID']);
@@ -91,8 +137,9 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			$action->write();
 		}
 
-		if (isset($data['TransitionID']) && $data['TransitionID']) {
-			$svc->executeTransition($p, $data['TransitionID']);
+		if (!empty($data['TransitionID'])) {
+			$service = $this->workflowService();
+			$service->executeTransition($record, $data['TransitionID']);
 		} else {
 			// otherwise, just try to execute the current workflow to see if it
 			// can now proceed based on user input
