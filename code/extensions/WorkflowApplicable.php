@@ -241,6 +241,9 @@ class WorkflowApplicable extends DataExtension {
 		if ($active) {
 			return $active->canEdit();
 		}
+		if($effective = $this->workflowService->getDefinitionFor($this->owner)) {
+			return $effective->canEdit();
+		}
 		return false;
 	}
 }

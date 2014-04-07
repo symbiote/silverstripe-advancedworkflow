@@ -6,6 +6,10 @@
  * Each step of the workflow has one of these created for it - it refers back
  * to the original action definition, but is unique for each step of the
  * workflow to ensure re-entrant behaviour. 
+ * 
+ * @method WorkflowInstance Workflow()
+ * @method WorkflowAction BaseAction()
+ * @method Member Member()
  *
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
@@ -43,20 +47,15 @@ class WorkflowActionInstance extends DataObject {
 	
 	/**
 	 * Gets fields for when this is part of an active workflow
+	 * 
+	 * @param FieldList $fields
 	 */
 	public function updateWorkflowFields($fields) {
-		if ($this->BaseAction()->AllowCommenting) {	
-			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
-		}
+		$this->BaseAction()->updateWorkflowFields($fields);
 	}
 	
 	public function updateFrontendWorkflowFields($fields){
-		if ($this->BaseAction()->AllowCommenting) {		
-			$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
-		}
-		
-		$ba = $this->BaseAction();
-		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
+		$this->BaseAction()->updateFrontendWorkflowFields($fields, $this->Workflow());
 	}
 
 	/**
@@ -144,16 +143,9 @@ class WorkflowActionInstance extends DataObject {
 	 * @return ArrayList
 	 */
 	public function getValidTransitions() {
-		$available = $this->BaseAction()->Transitions();
-		$valid     = new ArrayList();
-
-		// iterate through the transitions and see if they're valid for the current state of the item being
-		// workflowed
-		if($available) foreach($available as $transition) {
-			if($transition->isValid($this->Workflow())) $valid->push($transition);
-		}
-
-		return $valid;
+		return $this
+			->BaseAction()
+			->getValidTransitions($this->Workflow());
 	}
 
 	/**
@@ -167,6 +159,7 @@ class WorkflowActionInstance extends DataObject {
 	 * Called when this action has been completed within the workflow
 	 */
 	public function actionComplete(WorkflowTransition $transition) {
+		$this->Finished = true;
 		$this->MemberID = Member::currentUserID();
 		$this->write();
 		$this->extend('onActionComplete', $transition);

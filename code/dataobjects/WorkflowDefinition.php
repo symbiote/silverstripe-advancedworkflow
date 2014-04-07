@@ -68,6 +68,41 @@ class WorkflowDefinition extends DataObject {
 	public function getInitialAction() {
 		if($actions = $this->Actions()) return $actions->First();
 	}
+	
+	/**
+	 * Gets fields for the first step of this workflow
+	 *
+	 * @return FieldList
+	 */
+	public function getWorkflowFields() {
+		$action    = $this->getInitialAction();
+		$options = $action->getValidTransitions();
+		$wfOptions = $options->map('ID', 'Title', ' ');
+		$fields    = new FieldList();
+
+		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
+		$fields->push(new DropdownField('TransitionID', _t('WorkflowInstance.NEXT_ACTION', 'Next Action'), $wfOptions));
+
+		// Let the Active Action update the fields that the user can interact with so that data can be
+		// stored for the workflow.
+		$action->updateWorkflowFields($fields);
+
+		return $fields;
+	}
+	
+	/**
+	 * Gets Front-End form fields for the first step of this workflow
+	 * 
+	 * @return FieldList
+	 */
+	public function getFrontEndWorkflowFields() {
+		$action = $this->getInitialAction();
+		
+		$fields = new FieldList();
+		$action->updateFrontEndWorkflowFields($fields);
+		
+		return $fields;
+	}
 
 	/**
 	 * Ensure a sort value is set and we get a useable initial workflow title.
