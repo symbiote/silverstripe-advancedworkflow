@@ -2,8 +2,10 @@
 
 [![Build Status](https://secure.travis-ci.org/silverstripe-australia/advancedworkflow.png?branch=master)](http://travis-ci.org/australia/silverstripe-advancedworkflow)
 
-Note: The SilverStripe 2.4 version of the module is available from the ss24
-branch of the repository.
+Note: Versions of the module for older SilverStripe versions are available as follows:
+
+- 2.4: ss24 branch; composer version `dev-ss24`
+- 3.0: ss30 branch; composer version `dev-ss30`
 
 ## Overview
 
@@ -26,11 +28,11 @@ extending from `ModelAdmin`. `mysite/_config/config.yml`:
 
 	:::yml
 	MyObject:
-	    extensions:
-	        - WorkflowApplicable
+		extensions:
+			- WorkflowApplicable
 	MyObjectAdmin:
-	    extensions:
-	        - AdvancedWorkflowExtension
+		extensions:
+			- AdvancedWorkflowExtension
 
 The workflow engine can send out email reminders if a workflow has been open for longer
 than a couple of days (configurable in each "Workflow Definition" through the CMS).
@@ -167,8 +169,8 @@ add the `WorkflowEmbargoExpiryExtension`.
 
 	:::yml
 	SiteTree:
-	    extensions:
-	        - WorkflowEmbargoExpiryExtension
+		extensions:
+			- WorkflowEmbargoExpiryExtension
 
 Make sure the [QueuedJobs](https://github.com/nyeholt/silverstripe-queuedjobs) 
 module is installed and configured correctly.
