@@ -16,6 +16,7 @@ en:
     GridFieldTitleAssignedYour: 'Your pending items'
     GridFieldTitleSubmittedAll: 'All submitted items'
     GridFieldTitleSubmittedYour: 'Your submitted items'
+    IMPORT: 'Import workflow'
     INVALIDCLASSTOORDER: 'An invalid class to order was specified.'
     INVALIDIDLIST: 'An invalid list of IDs was provided.'
     INVALIDPARENTID: 'An invalid parent ID was specified.'
@@ -46,6 +47,14 @@ en:
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Context Object Not Found'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'You do not have permission to execute this action'
+  GridAction:
+    EXPORT_DESCRIPTION: Export
+    Export: Export
+  GridFieldEditButton_ss:
+    EXPORT: Export
+  ImportedWorkflowTemplate:
+    PLURALNAME: 'Imported Workflow Templats'
+    SINGULARNAME: 'Imported Workflow Template'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comment history up to this notification.'
     CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS' workflow admin,\n			useful for allowing users to enact workflow transitions, directly from emails."
@@ -121,6 +130,9 @@ en:
     WORKFLOW: Workflow
     WORKFLOWACTIVEIINSTANCES: 'Active Workflow Instances'
     WORKFLOWCOMPLETEDIINSTANCES: 'Completed Workflow Instances'
+  WorkflowDefinitionImporter:
+    INVALID_YML_FORMAT_NO_HEADER: 'Invalid YAML format.'
+    INVALID_YML_FORMAT_NO_PARSE: 'Invalid YAML format. Unable to parse.'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Active
     CompletedWorkflowStateTitle: Completed

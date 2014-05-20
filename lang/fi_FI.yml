@@ -1,1 +1,37 @@
-fi_FI: {}
+fi_FI:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Edistynyt työnkulku'
+    APPLY_WORKFLOW: 'Ota työnkulku käyttöön'
+    REASSIGNACTIVE: 'Vastuuta uudelleen aktiiviset työnkulut'
+    VIEWACTIVE: 'Näytä aktiiviset työnkulut'
+  AdvancedWorkflowAdmin:
+    LastEdited: Muokattu
+    Title: Otsikko
+  WorkflowAction:
+    Author: Tekijä
+    FinishedLabel: Valmistunut
+    TypeLabel: Tyyppi
+  WorkflowActionInstance:
+    Title: Otsikko
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktiivinen
+    CompletedWorkflowStateTitle: Valmistunut
+  WorkflowField:
+    CreateLabel: Luo
+    DeleteAction: Poista
+    EditAction: Muokkaa
+  WorkflowInstance:
+    ActionLogTitle: Loki
+    TargetClassLabel: 'Kohdeluokka'
+    TargetIDLabel: Kohde
+    TitleLabel: Otsikko
+  WorkflowList:
+    TableHeaderActions: Toimenpiteet
+    TableHeaderSubmitted: Lähetetty
+  WorkflowReminderTask:
+    SAVE: Tallenna
+  WorkflowTransition:
+    Active: Aktiivinen
+    NEXT_ACTION: 'Seuraava toimenpide'
+    Passive: Passiivinen
+    TYPE: Tyyppi
