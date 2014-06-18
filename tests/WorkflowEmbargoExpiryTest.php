@@ -21,8 +21,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	public function testFutureDatesJobs() {
 		$page = new Page();
 		
-		$page->PublishOnDate = '2020-01-01 00:00:00';
-		$page->UnPublishOnDate = '2020-01-01 01:00:00';
+		$page->PublishOnDate = date("Y-m-d H:i:s", strtotime('+20 days'));
+		$page->UnPublishOnDate = date("Y-m-d H:i:s", strtotime('+21 days'));
 		
 		// Two writes are necessary for this to work on new objects
 		$page->write();
@@ -36,8 +36,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	public function testDesiredRemovesJobs() {
 		$page = new Page();
 		
-		$page->PublishOnDate = '2020-01-01 00:00:00';
-		$page->UnPublishOnDate = '2020-01-01 01:00:00';
+		$page->PublishOnDate = date("Y-m-d H:i:s", strtotime('+20 days'));
+		$page->UnPublishOnDate = date("Y-m-d H:i:s", strtotime('+21 days'));
 		
 		// Two writes are necessary for this to work on new objects
 		$page->write();
@@ -46,8 +46,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertTrue($page->PublishJobID > 0);
 		$this->assertTrue($page->UnPublishJobID > 0);
 		
-		$page->DesiredPublishDate = '2020-02-01 00:00:00';
-		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
+		$page->DesiredPublishDate = date("Y-m-d H:i:s", strtotime('+30 days'));
+		$page->DesiredUnPublishDate = date("Y-m-d H:i:s", strtotime('+31 days'));
 		
 		$page->write();
 		
@@ -61,8 +61,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		
 		$page = new Page();
 		$page->Title = 'stuff';
-		$page->DesiredPublishDate = '2020-02-01 00:00:00';
-		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
+		$page->DesiredPublishDate = date("Y-m-d H:i:s", strtotime('+20 days'));
+		$page->DesiredUnPublishDate = date("Y-m-d H:i:s", strtotime('+21 days'));
 		$page->write();
 
 		$instance->TargetClass = 'Page';
@@ -75,6 +75,58 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertTrue($page->UnPublishJobID > 0);
 	}
 	
+	public function testRescheduleDates() {
+		$action = new PublishItemWorkflowAction;
+		
+		// Create new page
+		$page = new Page();
+		$page->Title = 'stuff';
+		$desiredPublish = $page->DesiredPublishDate = date("Y-m-d H:i:s", strtotime('+20 days'));
+		$desiredUnPublish = $page->DesiredUnPublishDate = date("Y-m-d H:i:s", strtotime('+21 days'));
+		$page->write();
+
+		// Approve publish request
+		$instance = new WorkflowInstance();
+		$instance->TargetClass = 'Page';
+		$instance->TargetID = $page->ID;
+		$action->execute($instance);
+		
+		// Check that the correct jobs have been initiated
+		$page = DataObject::get_by_id('Page', $page->ID);
+		$publishJobID = $page->PublishJobID;
+		$unPublishJobID = $page->UnPublishJobID;
+		$publishJob = QueuedJobDescriptor::get()->byID($publishJobID);
+		$unPublishJob = QueuedJobDescriptor::get()->byID($unPublishJobID);
+		$this->assertEquals($desiredPublish, $publishJob->StartAfter);
+		$this->assertEquals($desiredUnPublish, $unPublishJob->StartAfter);
+		
+		// Reschedule
+		$newDesiredPublish  = $page->DesiredPublishDate = date("Y-m-d H:i:s", strtotime('+20 days'));
+		$newDesiredUnPublish = $page->DesiredUnPublishDate = date("Y-m-d H:i:s", strtotime('+21 days'));
+		$page->write();
+		
+		// Check old jobs have been aborted and detached from this page
+		$page = DataObject::get_by_id('Page', $page->ID);
+		$this->assertEquals(0, $page->PublishJobID);
+		$this->assertEquals(0, $page->UnPublishJobID);
+		$this->assertEmpty(QueuedJobDescriptor::get()->byID($publishJobID));
+		$this->assertEmpty(QueuedJobDescriptor::get()->byID($unPublishJobID));
+		
+		// Approve new request
+		$instance = new WorkflowInstance();
+		$instance->TargetClass = 'Page';
+		$instance->TargetID = $page->ID;
+		$action->execute($instance);
+		
+		// Jobs have been replaced
+		$page = DataObject::get_by_id('Page', $page->ID);
+		$publishJobID = $page->PublishJobID;
+		$unPublishJobID = $page->UnPublishJobID;
+		$publishJob = QueuedJobDescriptor::get()->byID($publishJobID);
+		$unPublishJob = QueuedJobDescriptor::get()->byID($unPublishJobID);
+		$this->assertEquals($newDesiredPublish, $publishJob->StartAfter);
+		$this->assertEquals($newDesiredUnPublish, $unPublishJob->StartAfter);
+	}
 	
 
 	protected function createDefinition() {
