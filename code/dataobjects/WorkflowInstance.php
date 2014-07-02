@@ -399,7 +399,7 @@ class WorkflowInstance extends DataObject {
 		// However; lowly authors (users entering items into a workflow) are not assigned - but we still wish them to see their submitted content.
 		$inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
 		// This method is used in more than just the ModelAdmin. Check for the current controller to determine where canView() expectations differ
-		if(Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
+		if($this->getTarget() && Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
 			if($this->getVersionedConnection($this->getTarget()->ID,$member->ID,$this->DefinitionID)) {
 				return true;
 			}

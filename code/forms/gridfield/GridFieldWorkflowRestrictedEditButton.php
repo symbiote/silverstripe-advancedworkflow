@@ -31,7 +31,9 @@ class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider 
 	public function getColumnAttributes($gridField, $record, $columnName) {
 		$defaultAtts = array('class' => 'col-buttons');
 		if($record instanceof WorkflowInstance) {
-			if(!$record->getAssignedMembers()->find('ID', Member::currentUserID())) {
+			$isAdmin = Permission::check('ADMIN');
+			$isAssigned = $record->getAssignedMembers()->find('ID', Member::currentUserID());
+			if(!$isAdmin && !$isAssigned) {
 				$atts['class'] = $defaultAtts['class'].' disabled';
 				return $atts;
 			}

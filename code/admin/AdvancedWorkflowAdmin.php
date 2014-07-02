@@ -59,7 +59,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
 		Requirements::javascript('advancedworkflow/javascript/WorkflowField.js');
 		Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
-		Requirements::css('advancedworkflow/css/WorkflowField.css');		
+		Requirements::css('advancedworkflow/css/WorkflowField.css');
+		Requirements::css('advancedworkflow/css/WorkflowGridField.css');
 	}	
 
 	/*
