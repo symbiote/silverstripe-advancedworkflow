@@ -158,19 +158,34 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * Get the object that this workflow is active for.
+	 * Get the target-object that this WorkflowInstance "points" to.
 	 *
-	 * Because workflows might not just be on sitetree items, we
-	 * need to account for being attached to anything
+	 * Workflows are not restricted to being active on SiteTree objects,
+	 * so we need to account for being attached to anything.
+	 *
+	 * Uses Versioned instead of a straight call to DataObject::get_by_id(), if TargetClass
+	 * is versionable. This allows us to fetch Draft _and_ Published items.
+	 *
+	 * @return (null | DataObject)
 	 */
 	public function getTarget() {
-		if ($this->TargetID) {
+		if($this->TargetID && $this->TargetClass) {
+			$versionable = singleton($this->TargetClass)->has_extension('Versioned');
+			if($versionable) {
+				return Versioned::get_all_versions($this->TargetClass, $this->TargetID)
+						->sort('ID', 'DESC')
+						->first();
+			}
+			
+			// Default
 			return DataObject::get_by_id($this->TargetClass, $this->TargetID);
 		}
 	}
 
 	/**
-	 * @see getTarget
+	 * 
+	 * @see {@link {$this->getTarget()}
+	 * @return (null | DataObject)
 	 */
 	public function Target() {
 		return $this->getTarget();

@@ -9,6 +9,8 @@
  */
 class WorkflowEngineTest extends SapphireTest {
 
+	public static $fixture_file = 'advancedworkflow/tests/workflowinstancetargets.yml';
+
 	public function testCreateWorkflowInstance() {
 		
 		$definition = new WorkflowDefinition();
@@ -64,6 +66,39 @@ class WorkflowEngineTest extends SapphireTest {
 		foreach($actions as $action) {
 			$this->assertTrue((bool) $action->Finished);
 		}
+	}
+
+	/**
+	 * Ensure WorkflowInstance returns expected values for a Published target object.
+	 */
+	public function testInstanceGetTargetPublished() {
+		$def = $this->createDefinition();
+		$target = $this->objFromFixture('SiteTree', 'published-object');
+		$target->doPublish();
+
+		$instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
+		$instance->beginWorkflow($def);
+		$instance->execute();
+
+		$this->assertTrue($target->isPublished());
+		$this->assertEquals($target->ID, $instance->getTarget()->ID);
+		$this->assertEquals($target->Title, $instance->getTarget()->Title);
+	}
+
+	/**
+	 * Ensure WorkflowInstance returns expected values for a Draft target object.
+	 */
+	public function testInstanceGetTargetDraft() {
+		$def = $this->createDefinition();
+		$target = $this->objFromFixture('SiteTree', 'draft-object');
+
+		$instance = $this->objFromFixture('WorkflowInstance', 'target-is-draft');
+		$instance->beginWorkflow($def);
+		$instance->execute();
+
+		$this->assertFalse($target->isPublished());
+		$this->assertEquals($target->ID, $instance->getTarget()->ID);
+		$this->assertEquals($target->Title, $instance->getTarget()->Title);
 	}
 	
 	public function testPublishAction() {

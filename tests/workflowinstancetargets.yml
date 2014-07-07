@@ -1,0 +1,18 @@
+#
+# Models DataObject's / SiteTree objects for testing WorkflowInstance::getTarget()
+#
+SiteTree:
+  published-object:
+    ID: 44
+    Title: 'Page is Published'
+  draft-object:
+    ID: 45
+    Title: 'Page is Draft'
+
+WorkflowInstance:
+  target-is-published:
+    TargetClass: 'SiteTree'
+    TargetID: 44
+  target-is-draft:
+    TargetClass: 'SiteTree'
+    TargetID: 45
