@@ -1,6 +1,6 @@
 .ss-gridfield {
 	.ss-gridfield-item {
-		&.disabled {
+		.disabled {
 			a.action {
 				opacity: 0.35;
 				filter: Alpha(Opacity=35);
