@@ -178,7 +178,18 @@ as the webserver user.
 	*/1 * * * * cd  && sudo -u www php /var/www/framework/cli-script.php dev/tasks/ProcessJobQueueTask
 
 It also allows for an optional subsequent expiry date. Note: Changes to these dates also constitute modifications to the content and as such
-are subject to the same workflow approval processes, where a particular workflow instance is in effect. The embargo export functionality can also be used independently of any workflow. 
+are subject to the same workflow approval processes, where a particular workflow instance is in effect. The embargo export functionality can also be used independently of any workflow.
+
+## Sending reminder emails
+
+Periodically run the Workflow Reminder Task by adding a task like this one to the crontab:
+
+	# Check every minute if someone needs to be reminded about pending workflows
+	*/1 * * * * cd /var/www && sudo -u www ./sapphire/sake dev/tasks/WorkflowReminderTask
+
+This is an example only. The key is to run the task as the same user as the web server.
+
+You can run the task manually for testing by visiting the `/dev/tasks/WorkflowReminderTask` URL of your site.
 
 ## Usage
 
