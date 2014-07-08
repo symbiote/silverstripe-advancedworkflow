@@ -287,6 +287,8 @@ class WorkflowDefinition extends DataObject {
 			$fields->addFieldToTab('Root.Completed', $completed);
 		}
 		
+		$this->extend('updateCMSFields', $fields);
+
 		return $fields;
 	}
 	
