@@ -173,9 +173,7 @@ class WorkflowInstance extends DataObject {
 		if($this->TargetID && $this->TargetClass) {
 			$versionable = singleton($this->TargetClass)->has_extension('Versioned');
 			if($versionable) {
-				return Versioned::get_all_versions($this->TargetClass, $this->TargetID)
-						->sort('ID', 'DESC')
-						->first();
+				return Versioned::get_latest_version($this->TargetClass, $this->TargetID);
 			}
 			
 			// Default
