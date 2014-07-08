@@ -70,8 +70,6 @@ class WorkflowDefinitionExporter {
 		$templateData = new ArrayData(array(
 			'ExportMetaData' => $this->ExportMetaData(),
 			'ExportActions' => $def->Actions(),
-			'ExportUsers' => $def->Users(),
-			'ExportGroups' => $def->Groups() 
 		));
 		return $this->format($templateData);
 	}

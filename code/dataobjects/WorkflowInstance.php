@@ -224,9 +224,6 @@ class WorkflowInstance extends DataObject {
 		$this->CurrentActionID = $action->ID;
 		$this->InitiatorID     = Member::currentUserID();
 		$this->write();
-
-		$this->Users()->addMany($definition->Users());
-		$this->Groups()->addMany($definition->Groups());
 	}
 
 	/**

@@ -1,7 +1,7 @@
 <?php
 /**
  * Tests for permissions on all Workflow Objects.
- * These will obviousely need to be modified should additional workflow permissions come online.
+ * These will obviously need to be modified should additional workflow permissions come online.
  *
  * @author     russell@silverstripe.com
  * @license    BSD License (http://silverstripe.org/bsd-license/)
@@ -85,6 +85,5 @@ class WorkflowPermissionsTest extends SapphireTest {
 		$this->assertTrue($workflowdef->Actions()->first()->Transitions()->first()->canCreate());
 		$this->assertTrue($workflowdef->Actions()->first()->Transitions()->first()->canEdit());
 		$this->assertTrue($workflowdef->Actions()->first()->Transitions()->first()->canDelete());	
-	}	
-
+	}
 }

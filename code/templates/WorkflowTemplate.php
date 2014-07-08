@@ -140,14 +140,6 @@ class WorkflowTemplate {
 					$transitions->append($t);
 				}
 			}
-			// Process users on WorkflowDefinition from the template
-			if($isUsers) {
-				$this->createUsers($relationTemplate, $definition);
-			}
-			// Process groups on WorkflowDefinition from the template
-			if($isGroups) {
-				$this->createGroups($relationTemplate, $definition);
-			}			
 		}
 
 		foreach ($transitions as $transition) {
@@ -195,42 +187,6 @@ class WorkflowTemplate {
 		
 		return $action;
 	}
-	
-	/**
-	 * Create a WorkflowDefinition->Users relation based on template data. But only if the related groups from the
-	 * export, can be foud in the target environment's DB.
-	 * 
-	 * Note: The template gives us a Member Email to work with rather than an ID as it's arguably
-	 * more likely that Member Emails will be the same between environments than their IDs.
-	 * 
-	 * @param array $users
-	 * @param WorkflowDefinition $definition
-	 * @param boolean $clear
-	 * @return void
-	 */
-	protected function createUsers($users, WorkflowDefinition $definition, $clear = false) {
-		// Create the necessary relation in WorkflowDefinition_Users
-		$source = array('users' => $users);
-		$this->addManyManyToObject($definition, $source, $clear);
-	}
-	
-	/**
-	 * Create a WorkflowDefinition->Groups relation based on template data, But only if the related groups from the
-	 * export, can be foud in the target environment's DB.
-	 * 
-	 * Note: The template gives us a Group Title to work with rther than an ID as it's arguably
-	 * more likely that Group titles will be the same between environments than their IDs.
-	 * 
-	 * @param array $groups
-	 * @param WorkflowDefinition $definition
-	 * @param boolean $clear
-	 * @return void
-	 */
-	protected function createGroups($groups, WorkflowDefinition $definition, $clear = false) {
-		// Create the necessary relation in WorkflowDefinition_Groups
-		$source = array('groups' => $groups);
-		$this->addManyManyToObject($definition, $source, $clear);
-	}	
 	
 	/**
 	 * Update the transitions for a given action
@@ -308,9 +264,7 @@ class WorkflowTemplate {
 		foreach ($this->structure as $relationName => $relationTemplate) {
 			
 			$isAction = isset($relationTemplate['type']);
-			$isUsers = ($relationName == 'users');
-			$isGroups = ($relationName == 'groups');
-			
+
 			if($isAction) {
 				$action = null;
 				if (isset($existingActions[$relationName])) {
@@ -330,14 +284,6 @@ class WorkflowTemplate {
 					$transitions->append($t);
 				}
 			}
-			// Process users on WorkflowDefinition from the template
-			if($isUsers) {
-				$this->createUsers($relationTemplate, $definition, true);
-			}
-			// Process groups on WorkflowDefinition from the template
-			if($isGroups) {
-				$this->createGroups($relationTemplate, $definition, true);
-			}			
 		}
 		
 		foreach ($transitions as $transition) {
