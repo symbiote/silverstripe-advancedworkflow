@@ -1,6 +1,7 @@
 # Advanced Workflow Module
 
-[![Build Status](https://secure.travis-ci.org/silverstripe-australia/advancedworkflow.png?branch=master)](http://travis-ci.org/australia/silverstripe-advancedworkflow)
+[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/?branch=master)
+[![Build Status](https://travis-ci.org/silverstripe-australia/advancedworkflow.svg?branch=master)](https://travis-ci.org/silverstripe-australia/advancedworkflow)
 
 Note: The SilverStripe 2.4 version of the module is available from the ss24
 branch of the repository.
