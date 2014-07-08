@@ -10,7 +10,7 @@
  */
 class WorkflowAction extends DataObject {
 
-	public static $db = array(
+	private static $db = array(
 		'Title'				=> 'Varchar(255)',
 		'Comment'			=> 'Text',
 		'Type'				=> "Enum('Dynamic,Manual','Manual')",  // is this used?
@@ -20,18 +20,18 @@ class WorkflowAction extends DataObject {
 		'AllowCommenting'	=> 'Boolean'
 	);
 
-	public static $defaults = array(
+	private static $defaults = array(
 		'AllowCommenting'	=> '1',
 	);
-	
-	public static $default_sort = 'Sort';
 
-	public static $has_one = array(
+	private static $default_sort = 'Sort';
+
+	private static $has_one = array(
 		'WorkflowDef' => 'WorkflowDefinition',
 		'Member'      => 'Member'
 	);
 
-	public static $has_many = array(
+	private static $has_many = array(
 		'Transitions' => 'WorkflowTransition.Action'
 	);
 
@@ -41,9 +41,9 @@ class WorkflowAction extends DataObject {
 	 *
 	 * @var string
 	 */
-	public static $instance_class = 'WorkflowActionInstance';
-	
-	public static $icon = 'advancedworkflow/images/action.png';
+	private static $instance_class = 'WorkflowActionInstance';
+
+	private static $icon = 'advancedworkflow/images/action.png';
 
 	/**
 	 * Can documents in the current workflow state be edited?

@@ -8,19 +8,19 @@
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 	
-	public static $db = array(
+	private static $db = array(
 		'DesiredPublishDate'	=> 'SS_Datetime',
 		'DesiredUnPublishDate'	=> 'SS_Datetime',
 		'PublishOnDate'			=> 'SS_Datetime',
 		'UnPublishOnDate'		=> 'SS_Datetime',
 	);
-	
-	public static $has_one = array(
+
+	private static $has_one = array(
 		'PublishJob'			=> 'QueuedJobDescriptor',
 		'UnPublishJob'			=> 'QueuedJobDescriptor',
 	);
 
-	public static $dependencies = array(
+	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
 
