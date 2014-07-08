@@ -8,7 +8,7 @@
  */
 class NotifyUsersWorkflowAction extends WorkflowAction {
 
-	public static $db = array(
+	private static $db = array(
 		'EmailSubject'			=> 'Varchar(100)',
 		'EmailFrom'				=> 'Varchar(50)',
 		'EmailTemplate'			=> 'Text',
