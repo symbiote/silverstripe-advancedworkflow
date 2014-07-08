@@ -74,12 +74,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				$dt = new Datetimefield('DesiredPublishDate', _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')),
 				$ut = new Datetimefield('DesiredUnPublishDate', _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')),
 				Datetimefield::create('PublishOnDate', _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date'))->setDisabled(true),
-				Datetimefield::create('UnPublishOnDate', _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date'))->setDisabled(true),
-				// Readonly fields do not store any value, so add a hidden-field and set its value to the current PublishOnDate so we can perform some validation
-				$uth = new HiddenField('PublishOnDateOwner')
+				Datetimefield::create('UnPublishOnDate', _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date'))->setDisabled(true)
 			));
-			// Set a value to our hidden field
-			$uth->setValue($this->owner->PublishOnDate);
 		} else {
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
 				new HeaderField('PublishDateHeader', _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_H3', 'Expiry and Embargo'), 3),
@@ -117,13 +113,23 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		// date for as-yet-not-published content. 
 		if (Versioned::current_stage() != 'Live') {
 			
-			// check to see if we've got a 'desired' future date. If so, we need
-			// to remove any existing values set
-			if ($this->owner->DesiredPublishDate && $this->owner->PublishOnDate) {
+			/*
+			 * Without checking if there's actually a workflow in effect, simply saving
+			 * as draft, would clear the Scheduled Publish & Unpublish date fields, which we obviously
+			 * don't want during a workflow: These date fields should be treated as a content
+			 * change that also requires approval (where such an approval step exists).
+			 *
+			 * - Check to see if we've got 'desired' publish/unpublish date(s).
+			 * - Check if there's a workflow attached to this content
+			 * - Reset values if it's safe to do so
+			 */
+			$resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
+			if ($resetPublishOnDate && !$this->getIsWorkflowInEffect()) {
 				$this->owner->PublishOnDate = '';
 			}
 
-			if ($this->owner->DesiredUnPublishDate && $this->owner->UnPublishOnDate) {
+			$resetUnPublishOnDate = $this->owner->DesiredUnPublishDate && $this->owner->UnPublishOnDate;
+			if ($resetUnPublishOnDate && !$this->getIsWorkflowInEffect()) {
 				$this->owner->UnPublishOnDate = '';
 			}
 
@@ -205,52 +211,44 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $required;
 	}
 
-	/*
-	 * Use AWRequiredFields to peform validation at the DataExtension level. Granted, having to add self::$extendedMethodReturn everywhere you want custom validation
-	 * is rubbish, but it works and does what it intends. If a better way is found to implement validation on a DataExtension, without access to Form,
-	 * feel-free to re-open issues/47 and comment with a link to your own Gist! :-)
+	/**
 	 *
+	 * Uses AWRequiredFields to peform validation at the DataExtension level. 
+	 *
+	 * @see {@ink AWRequiredFields}
 	 * @param array $data
 	 * @return array
 	 */
 	public function extendedRequiredFieldsCheckEmbargoDates($data = null) {
-		if(!$this->getIsWorkflowInEffect() || !isset($data['PublishOnDateOwner'])) {
+		if(!$this->getIsWorkflowInEffect()) {
 			return self::$extendedMethodReturn;
 		}
+
 		$desiredEmbargo = strtotime($data['DesiredPublishDate']);
-		$scheduledEmbargo = strtotime($data['PublishOnDateOwner']);
 		$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
 		$msg = '';
-		if(strlen($data['DesiredPublishDate']) && $scheduledEmbargo > time()) {
-			$scheduledEmbargo = $this->getUserDate($data['PublishOnDateOwner']);
-			$msg = _t(
-				'WorkflowEmbargoExpiryExtension.EMBARGO_ERROR_PT1',
-				"This content is already under embargo, expiring at: ")
-				.$scheduledEmbargo.
-				_t(
-					'WorkflowEmbargoExpiryExtension.EMBARGO_ERROR_PT2',
-					' please wait until this date has passed, before applying a new embargo date.'
-			);
-			self::$extendedMethodReturn['fieldName'] = 'DesiredPublishDate';
-		}
-		if(strlen($data['DesiredPublishDate']) && $desiredEmbargo < time()) {
+
+		if($desiredEmbargo && $desiredEmbargo < time()) {
 			$msg = _t(
 				'EMBARGO_DSIRD_ERROR',
 				"This date has already passed, please enter a valid future date."
 			);
 			self::$extendedMethodReturn['fieldName'] = 'DesiredPublishDate';
 		}
-		if(strlen($data['DesiredUnPublishDate']) && $desiredExpiry < time()) {
+		
+		if($desiredExpiry && $desiredExpiry < time()) {
 			$msg = _t(
 				'EMBARGO_DSIRD_ERROR',
 				"This date has already passed, please enter a valid future date."
 			);
 			self::$extendedMethodReturn['fieldName'] = 'DesiredUnPublishDate';
 		}
-		if(strlen($msg)>0) {
+		
+		if(strlen($msg)) {
 			self::$extendedMethodReturn['fieldValid'] = false;
 			self::$extendedMethodReturn['fieldMsg'] = $msg;
 		}
+		
 		return self::$extendedMethodReturn;
 	}
 

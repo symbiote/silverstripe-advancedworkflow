@@ -19,6 +19,39 @@ class WorkflowApplicable extends DataExtension {
 	);
 
 	/**
+	 *
+	 * Used to flag to this extension if there's a WorkflowPublishTargetJob running.
+	 * @var boolean
+	 */
+	public $isPublishJobRunning = false;
+
+	/**
+	 *
+	 * @param boolean $truth
+	 */
+	public function setIsPublishJobRunning($truth) {
+		$this->isPublishJobRunning = $truth;
+	}
+
+	/**
+	 *
+	 * @return boolean
+	 */
+	public function getIsPublishJobRunning() {
+		return $this->isPublishJobRunning;
+	}
+
+	/**
+	 *
+	 * @see {@link $this->isPublishJobRunning}
+	 * @return boolean
+	 */
+	public function isPublishJobRunning() {
+		$propIsSet = $this->getIsPublishJobRunning() ? true : false;
+		return class_exists('AbstractQueuedJob') && $propIsSet;
+	}
+
+	/**
 	 * @var WorkflowService
 	 */
 	public $workflowService;
@@ -212,6 +245,11 @@ class WorkflowApplicable extends DataExtension {
 	 * If there's an active instance, then it 'might' be publishable
 	 */
 	public function canPublish() {
+		// Override any default behaviour, to allow queuedjobs to complete
+		if($this->isPublishJobRunning()) {
+			return true;
+		}
+
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canPublishTarget($this->owner);
 		}
@@ -221,13 +259,17 @@ class WorkflowApplicable extends DataExtension {
 		if ($effective = $this->workflowService->getDefinitionFor($this->owner)) {
 			return false;
 		}
-
 	}
 
 	/**
 	 * Can only edit content that's NOT in another person's content changeset
 	 */
 	public function canEdit($member) {
+		// Override any default behaviour, to allow queuedjobs to complete
+		if($this->isPublishJobRunning()) {
+			return true;
+		}
+
 		if ($active = $this->getWorkflowInstance()) {
 			return $active->canEditTarget($this->owner);
 		}

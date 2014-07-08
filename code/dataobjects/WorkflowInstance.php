@@ -164,20 +164,18 @@ class WorkflowInstance extends DataObject {
 	 * Workflows are not restricted to being active on SiteTree objects,
 	 * so we need to account for being attached to anything.
 	 *
-	 * Uses Versioned instead of a straight call to DataObject::get_by_id(), if TargetClass
-	 * is versionable. This allows us to fetch Draft _and_ Published items.
+	 * Sets Versioned::set_reading_mode() to allow fetching of Draft _and_ Published
+	 * content.
 	 *
 	 * @return (null | DataObject)
 	 */
 	public function getTarget() {
 		if($this->TargetID && $this->TargetClass) {
-			$versionable = singleton($this->TargetClass)->has_extension('Versioned');
+			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
 			if($versionable) {
-				return Versioned::get_all_versions($this->TargetClass, $this->TargetID)
-						->sort('ID', 'DESC')
-						->first();
+				Versioned::set_reading_mode("Stage.Stage");
 			}
-			
+
 			// Default
 			return DataObject::get_by_id($this->TargetClass, $this->TargetID);
 		}
