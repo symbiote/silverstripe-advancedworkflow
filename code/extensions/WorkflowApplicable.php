@@ -10,11 +10,11 @@
  */
 class WorkflowApplicable extends DataExtension {
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'WorkflowDefinition' => 'WorkflowDefinition',
 	);
-	
-	public static $dependencies = array(
+
+	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
 
