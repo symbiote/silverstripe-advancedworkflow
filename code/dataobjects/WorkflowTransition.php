@@ -15,20 +15,20 @@
  */
 class WorkflowTransition extends DataObject {
 
-	public static $db = array(
+	private static $db = array(
 		'Title' 	=> 'Varchar(128)',
 		'Sort'  	=> 'Int',
 		'Type' 		=> "Enum('Active, Passive', 'Active')"
 	);
 
-	public static $default_sort = 'Sort';
+	private static $default_sort = 'Sort';
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'Action' => 'WorkflowAction',
 		'NextAction' => 'WorkflowAction',
 	);
 
-	public static $many_many = array(
+	private static $many_many = array(
 		'Users'  => 'Member',
 		'Groups' => 'Group'
 	);

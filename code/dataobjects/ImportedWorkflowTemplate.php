@@ -13,7 +13,7 @@ class ImportedWorkflowTemplate extends DataObject {
 	 *
 	 * @var array
 	 */
-	public static $db = array(
+	private static $db = array(
 		"Name" => "Varchar(255)",
 		"Filename" => "Varchar(255)",
 		"Content" => "Text"
@@ -23,7 +23,7 @@ class ImportedWorkflowTemplate extends DataObject {
 	 *
 	 * @var array
 	 */	
-	public static $has_one = array(
+	private static $has_one = array(
 		'Definition' => 'WorkflowDefinition'
 	);
 	

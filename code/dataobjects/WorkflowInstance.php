@@ -12,20 +12,21 @@
  * @package advancedworkflow
  */
 class WorkflowInstance extends DataObject {
-    public static $db = array(
+
+	private static $db = array(
 		'Title'				=> 'Varchar(128)',
 		'WorkflowStatus'	=> "Enum('Active,Paused,Complete,Cancelled','Active')",
 		'TargetClass'		=> 'Varchar(64)',
 		'TargetID'			=> 'Int',
 	);
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'Definition'    => 'WorkflowDefinition',
 		'CurrentAction' => 'WorkflowActionInstance',
 		'Initiator'		=> 'Member',
 	);
 
-	public static $has_many = array(
+	private static $has_many = array(
 		'Actions'		=> 'WorkflowActionInstance',
 	);
 
@@ -34,12 +35,12 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @var array
 	 */
-	public static $many_many = array(
+	private static $many_many = array(
 		'Users'			=> 'Member',
 		'Groups'		=> 'Group'
 	);
 
-	public static $summary_fields = array(
+	private static $summary_fields = array(
 		'Title',
 		'WorkflowStatus',
 		'Created'
