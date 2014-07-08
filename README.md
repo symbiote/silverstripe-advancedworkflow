@@ -32,12 +32,6 @@ extending from `ModelAdmin`. `mysite/_config/config.yml`:
 	    extensions:
 	        - AdvancedWorkflowExtension
 
-The workflow engine can send out email reminders if a workflow has been open for longer
-than a couple of days (configurable in each "Workflow Definition" through the CMS).
-Here's how to set up a cronjob for those:
-
-	*/1 * * * * cd /var/www && sudo -u www ./sapphire/sake dev/tasks/WorkflowReminderTask
-
 ## Concept
 
 In its most basic sense, workflow means that new content or changes to existing content, need to go through an approval process before they're able to be
@@ -181,6 +175,9 @@ It also allows for an optional subsequent expiry date. Note: Changes to these da
 are subject to the same workflow approval processes, where a particular workflow instance is in effect. The embargo export functionality can also be used independently of any workflow.
 
 ## Sending reminder emails
+
+The workflow engine can send out email reminders if a workflow has been open for longer
+than a couple of days (configurable in each "Workflow Definition" through the CMS).
 
 Periodically run the Workflow Reminder Task by adding a task like this one to the crontab:
 
