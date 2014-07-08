@@ -32,19 +32,6 @@ class WorkflowDefinition extends DataObject {
 		'Instances' => 'WorkflowInstance'
 	);
 
-	/**
-	 * By default, a workflow definition is bound to a particular set of users or groups.
-	 *
-	 * This is covered across to the workflow instance - it is up to subsequent
-	 * workflow actions to change this if needbe.
-	 *
-	 * @var array
-	 */
-	public static $many_many = array(
-		'Users' => 'Member',
-		'Groups' => 'Group'
-	);
-
 	public static $icon = 'advancedworkflow/images/definition.png';
 
 	public static $default_workflow_title_base = 'My Workflow';
@@ -126,8 +113,6 @@ class WorkflowDefinition extends DataObject {
 	 * @return void
 	 */
 	private function removeRelatedHasLists() {
-		$this->Users()->removeAll();
-		$this->Groups()->removeAll();
 		$this->Actions()->each(function($action) {
 			if($orphan = DataObject::get_by_id('WorkflowAction', $action->ID)) {
 				$orphan->delete();
@@ -170,12 +155,9 @@ class WorkflowDefinition extends DataObject {
 		
 		$fields = new FieldList(new TabSet('Root'));
 
+
 		$fields->addFieldToTab('Root.Main', new TextField('Title', $this->fieldLabel('Title')));
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', $this->fieldLabel('Description')));
-		if($this->ID) {
-			$fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
-			$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
-		}
 
 		if (class_exists('AbstractQueuedJob')) {
 			$before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
