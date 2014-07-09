@@ -9,7 +9,7 @@
  */
 class PublishItemWorkflowAction extends WorkflowAction {
 
-	public static $db = array(
+	private static $db = array(
 		'PublishDelay' => 'Int'
 	);
 

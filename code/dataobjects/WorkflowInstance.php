@@ -12,20 +12,21 @@
  * @package advancedworkflow
  */
 class WorkflowInstance extends DataObject {
-    public static $db = array(
+
+	private static $db = array(
 		'Title'				=> 'Varchar(128)',
 		'WorkflowStatus'	=> "Enum('Active,Paused,Complete,Cancelled','Active')",
 		'TargetClass'		=> 'Varchar(64)',
 		'TargetID'			=> 'Int',
 	);
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'Definition'    => 'WorkflowDefinition',
 		'CurrentAction' => 'WorkflowActionInstance',
 		'Initiator'		=> 'Member',
 	);
 
-	public static $has_many = array(
+	private static $has_many = array(
 		'Actions'		=> 'WorkflowActionInstance',
 	);
 
@@ -34,12 +35,12 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @var array
 	 */
-	public static $many_many = array(
+	private static $many_many = array(
 		'Users'			=> 'Member',
 		'Groups'		=> 'Group'
 	);
 
-	public static $summary_fields = array(
+	private static $summary_fields = array(
 		'Title',
 		'WorkflowStatus',
 		'Created'
@@ -163,20 +164,18 @@ class WorkflowInstance extends DataObject {
 	 * Workflows are not restricted to being active on SiteTree objects,
 	 * so we need to account for being attached to anything.
 	 *
-	 * Uses Versioned instead of a straight call to DataObject::get_by_id(), if TargetClass
-	 * is versionable. This allows us to fetch Draft _and_ Published items.
+	 * Sets Versioned::set_reading_mode() to allow fetching of Draft _and_ Published
+	 * content.
 	 *
 	 * @return (null | DataObject)
 	 */
 	public function getTarget() {
 		if($this->TargetID && $this->TargetClass) {
-			$versionable = singleton($this->TargetClass)->has_extension('Versioned');
+			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
 			if($versionable) {
-				return Versioned::get_all_versions($this->TargetClass, $this->TargetID)
-						->sort('ID', 'DESC')
-						->first();
+				Versioned::set_reading_mode("Stage.Stage");
 			}
-			
+
 			// Default
 			return DataObject::get_by_id($this->TargetClass, $this->TargetID);
 		}

@@ -12,18 +12,18 @@
  */
 class WorkflowActionInstance extends DataObject {
 
-	public static $db = array(
+	private static $db = array(
 		'Comment'  => 'Text',
 		'Finished' => 'Boolean'
 	);
 
-	public static $has_one = array(
+	private static $has_one = array(
 		'Workflow'   => 'WorkflowInstance',
 		'BaseAction' => 'WorkflowAction',
 		'Member'     => 'Member'
 	);
 	
-	public static $summary_fields = array(
+	private static $summary_fields = array(
 		'BaseAction.Title',
 		'Comment',
 		'Created',

@@ -1,0 +1,11 @@
+.icon.icon-16.icon-advancedworkflowadmin {
+	background-image: url(../images/workflow-menu-icon.png);
+}
+.field.date, .field.datetime {
+	.message {
+		&.required {
+			position: relative;
+			top: 10px;
+		}
+	}
+}
