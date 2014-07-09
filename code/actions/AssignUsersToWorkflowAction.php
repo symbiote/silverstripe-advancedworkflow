@@ -9,11 +9,11 @@
  */
 class AssignUsersToWorkflowAction extends WorkflowAction {
 
-	public static $db = array(
+	private static $db = array(
 		'AssignInitiator'		=> 'Boolean',
 	);
 
-	public static $many_many = array(
+	private static $many_many = array(
 		'Users'  => 'Member',
 		'Groups' => 'Group'
 	);

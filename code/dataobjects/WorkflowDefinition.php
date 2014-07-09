@@ -16,7 +16,8 @@
  * @package advancedworkflow
  */
 class WorkflowDefinition extends DataObject {
-	public static $db = array(
+
+	private static $db = array(
 		'Title'				=> 'Varchar(128)',
 		'Description'		=> 'Text',
 		'Template'			=> 'Varchar',
@@ -25,9 +26,9 @@ class WorkflowDefinition extends DataObject {
 		'Sort'				=> 'Int'
 	);
 
-	public static $default_sort = 'Sort';
+	private static $default_sort = 'Sort';
 
-	public static $has_many = array(
+	private static $has_many = array(
 		'Actions'   => 'WorkflowAction',
 		'Instances' => 'WorkflowInstance'
 	);
@@ -40,7 +41,7 @@ class WorkflowDefinition extends DataObject {
 	 *
 	 * @var array
 	 */
-	public static $many_many = array(
+	private static $many_many = array(
 		'Users' => 'Member',
 		'Groups' => 'Group'
 	);
@@ -51,7 +52,7 @@ class WorkflowDefinition extends DataObject {
 
 	public static $workflow_defs = array();
 
-	public static $dependencies = array(
+	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
 	
