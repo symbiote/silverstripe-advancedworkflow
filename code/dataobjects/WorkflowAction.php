@@ -102,7 +102,7 @@ class WorkflowAction extends DataObject {
 	 * @return bool
 	 */		
 	public function canDelete($member = null) {
-		return $this->canCreate($member);
+		return $this->WorkflowDef()->canDelete($member);
 	}
 	
 	/*
