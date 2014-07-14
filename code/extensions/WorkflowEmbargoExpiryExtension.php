@@ -224,8 +224,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			return self::$extendedMethodReturn;
 		}
 
-		$desiredEmbargo = strtotime($data['DesiredPublishDate']);
-		$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
+		$desiredEmbargo = false;
+		$desiredExpiry = false;
+
+		if(!empty($data['DesiredPublishDate'])) {
+			$desiredEmbargo = strtotime($data['DesiredPublishDate']);
+		}
+
+		if(!empty($data['DesiredPublishDate'])) {
+			$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
+		}
+
 		$msg = '';
 
 		if($desiredEmbargo && $desiredEmbargo < time()) {
