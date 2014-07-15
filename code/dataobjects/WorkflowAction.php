@@ -213,7 +213,7 @@ class WorkflowAction extends DataObject {
 		 	_t('AllowEditing.NoString', 'No')
 		));
 		$fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'),$this->AllowCommenting));
-		
+		$this->extend('updateCMSFields', $fields);
 		return $fields;
 	}
 
