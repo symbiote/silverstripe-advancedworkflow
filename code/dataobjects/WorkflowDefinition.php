@@ -406,18 +406,26 @@ class WorkflowDefinition extends DataObject {
 	 *
 	 * @param Member $member
 	 * @return boolean
+	 * @see {@link $this->onBeforeDelete()}
 	 */
-	public function canDelete($member=null) {
-		if(!$this->canCreate($member)) {
-			return false;
+	public function canDelete($member = null) {
+		if(!$member) {
+			if(!Member::currentUserID()) {
+				return false;
+			}
+			$member = Member::currentUser();
 		}
+
+		if(Permission::checkMember($member, 'ADMIN')) {
+			return true;
+		}
+
 		/*
-		 * When a definition is deleted, remove all relations to prevent CMS issues,
-		 * but we need to check we're permitted to do this first.
+		 * DELETE_WORKFLOW should trump all other canDelete() return values on
+		 * related objects.
+		 * @see {@link $this->onBeforeDelete()}
 		 */
-		$canDeleteAction = WorkflowAction::create()->canDelete();
-		$canDeleteInstance = WorkflowInstance::create()->canDelete();
-		return ($canDeleteAction && $canDeleteInstance);
+		return Permission::checkMember($member, 'DELETE_WORKFLOW');
 	}	
 
 	/**

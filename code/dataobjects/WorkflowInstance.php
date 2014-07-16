@@ -384,10 +384,26 @@ class WorkflowInstance extends DataObject {
 		}
 		return $hasAccess;
 	}
-	public function canEdit($member=null) {
+
+	/**
+	 *
+	 * @param \Member $member
+	 * @return boolean
+	 */
+	public function canEdit($member = null) {
 		return $this->userHasAccess($member);
 	}
-	public function canDelete($member=null) {
+
+	/**
+	 *
+	 * @param \Member $member
+	 * @return boolean
+	 */
+	public function canDelete($member = null) {
+		if(Permission::checkMember($member, "DELETE_WORKFLOW")) {
+			return true;
+		}
+
 		return $this->userHasAccess($member);
 	}
 

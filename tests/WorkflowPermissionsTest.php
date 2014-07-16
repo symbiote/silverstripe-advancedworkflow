@@ -32,7 +32,17 @@ class WorkflowPermissionsTest extends SapphireTest {
 		// Has perms. Can create.
 		$this->logInWithPermission('CREATE_WORKFLOW');
 		$workflowdef = $this->objFromFixture('WorkflowDefinition', 'no-actions');
-		$this->assertTrue($workflowdef->canCreate());			
+		$this->assertTrue($workflowdef->canCreate());
+
+		// Limited perms. No delete
+		$this->logInWithPermission('CREATE_WORKFLOW');
+		$workflowdef = $this->objFromFixture('WorkflowDefinition', 'no-actions');
+		$this->assertFalse($workflowdef->canDelete());
+
+		// Has perms. No delete
+		$this->logInWithPermission('DELETE_WORKFLOW');
+		$workflowdef = $this->objFromFixture('WorkflowDefinition', 'no-actions');
+		$this->assertTrue($workflowdef->canDelete());
 	}
 	
 	/**
@@ -46,7 +56,7 @@ class WorkflowPermissionsTest extends SapphireTest {
 		$this->assertFalse($workflowdef->Actions()->first()->canEdit());
 		$this->assertFalse($workflowdef->Actions()->first()->canDelete());
 		
-		// Limited perms. No create.
+		// Limited perms. No create or delete.
 		$this->logInWithPermission('VIEW_ACTIVE_WORKFLOWS');
 		$workflowdef = $this->objFromFixture('WorkflowDefinition', 'with-actions');
 		$this->assertFalse($workflowdef->Actions()->first()->canCreate());
@@ -57,8 +67,10 @@ class WorkflowPermissionsTest extends SapphireTest {
 		$this->logInWithPermission('CREATE_WORKFLOW');
 		$workflowdef = $this->objFromFixture('WorkflowDefinition', 'with-actions');
 		$this->assertTrue($workflowdef->Actions()->first()->canCreate());
-		$this->assertTrue($workflowdef->Actions()->first()->canEdit());	
-		$this->assertTrue($workflowdef->Actions()->first()->canDelete());
+		$this->assertTrue($workflowdef->Actions()->first()->canEdit());
+
+		// Limited perms. No Delete
+		$this->assertFalse($workflowdef->Actions()->first()->canDelete());
 	}	
 	
 	/**
