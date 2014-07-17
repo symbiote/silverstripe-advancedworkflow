@@ -70,7 +70,7 @@ Here, we'll create a simple two step workflow with the following features:
 
 ### Adding Groups and Users
 
-First of all, login to the CMS as an administrator. Ensure you have "Authors", "Editors" and "Managers" groups created with a single user linked to each group (in the standard "Security" admin). Assign the three "Advanced Workflow" permissions to each group.
+First of all, login to the CMS as an administrator. Ensure you have "Authors", "Editors" and "Managers" groups created with a single user linked to each group (in the standard "Security" admin). Assign the five "Advanced Workflow" permissions to each group.
 
 ![](docs/en/_images/permissions.png)
 
