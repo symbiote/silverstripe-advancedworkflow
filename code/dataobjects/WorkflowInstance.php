@@ -403,8 +403,7 @@ class WorkflowInstance extends DataObject {
 		if(Permission::checkMember($member, "DELETE_WORKFLOW")) {
 			return true;
 		}
-
-		return $this->userHasAccess($member);
+		return false;
 	}
 
 	/**
