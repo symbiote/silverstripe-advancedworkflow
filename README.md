@@ -72,7 +72,7 @@ Here, we'll create a simple two step workflow with the following features:
 
 First of all, login to the CMS as an administrator. Ensure you have "Authors", "Editors" and "Managers" groups created with a single user linked to each group (in the standard "Security" admin). Assign the five "Advanced Workflow" permissions to each group.
 
-![](docs/en/_images/permissions.png)
+For more details about permissions, see the "Workflow permissions" section below.
 
 ### Creating Your Workflow Definition From a Template
 
@@ -154,6 +154,38 @@ the "Save" button.
 
 If you were to go and check the edit screen for this page, you'll notice now that having gone through the full workflow, that the action button at the bottom,
 now shows "Apply for approval" once again, and logging back-in as an Author, this user is now able to make further changes.
+
+## Workflow permissions
+
+This section describes the different permission that can be assigned to a user, group or role.
+
+![Advanced workflow permissions](docs/en/_images/permissions.png)
+
+### Apply workflow
+
+A user with this permission can choose which workflow that should be used for an item. E.g. for a page this permission
+will allow the user to change workflow in a drop down under the "Page > Settings > Workflow" tab.
+
+### Create workflow
+
+A user with this permission can create and change workflow definitions.
+
+### Delete workflow
+
+A user with this permission can delete:
+
+ * workflow definitions
+ * workflow instances
+
+I.e. if a user needs to completely stop and delete an active workflow, they would need this permission.
+
+### Reassign active workflows
+
+A user with this permission can reassign active workflows to different users and groups.
+
+### View active workflows
+
+A user with this permission can view active workflows via the workflows admin panel.
 
 ## Embargo and Expiry
 
