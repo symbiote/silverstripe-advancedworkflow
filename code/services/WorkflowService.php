@@ -334,13 +334,13 @@ class WorkflowService implements PermissionProvider {
 			'CREATE_WORKFLOW' => array(
 				'name' => _t('AdvancedWorkflow.CREATE_WORKFLOW', 'Create workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-				'help' => _t('AdvancedWorkflow.CREATE_WORKFLOW_HELP', 'Users can create workflows'),
+				'help' => _t('AdvancedWorkflow.CREATE_WORKFLOW_HELP', 'Users can create workflow definitions'),
 				'sort' => 0
 			),
 			'DELETE_WORKFLOW' => array(
 				'name' => _t('AdvancedWorkflow.DELETE_WORKFLOW', 'Delete workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-				'help' => _t('AdvancedWorkflow.DELETE_WORKFLOW_HELP', 'Users can delete workflows'),
+				'help' => _t('AdvancedWorkflow.DELETE_WORKFLOW_HELP', 'Users can delete workflow definitions and active workflows'),
 				'sort' => 0
 			),
 			'APPLY_WORKFLOW' => array(
