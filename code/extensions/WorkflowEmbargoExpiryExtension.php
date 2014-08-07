@@ -52,6 +52,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @param FieldList $fields 
 	 */
 	public function updateCMSFields(FieldList $fields) {
+		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
 
 		// Add timepicker functionality
 		// @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
