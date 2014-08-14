@@ -232,4 +232,74 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertEmpty($unpublish); // for immediate run
 		$this->assertGreaterThan(strtotime(SS_Datetime::now()->getValue()), $publish); // for later run
 	}
+
+	public function testPastPublishWithWorkflowInEffect() {
+		$definition = $this->createDefinition();
+
+		$page = new Page();
+		$page->Title = 'My page';
+		$page->WorkflowDefinitionID = $definition->ID;
+		$page->write();
+
+		// No publish
+		$this->assertEmpty($page->PublishJobID);
+		$this->assertEmpty($page->UnPublishJobID);
+
+		// Set a past publish date
+		$page->DesiredPublishDate = '2010-01-01 00:00:00';
+		$page->write();
+
+		// Workflow is in effect. No jobs have been created yet as it's not approved.
+		$this->assertEmpty($page->PublishJobID);
+		$this->assertEmpty($page->UnPublishJobID);
+
+		// Advance the workflow so we can see what happens
+		$instance = new WorkflowInstance();
+		$instance->beginWorkflow($definition, $page);
+		$instance->execute();
+
+		// execute the "publish" workflow action
+		$action = new PublishItemWorkflowAction();
+		$action->execute($instance);
+
+		// re-fetch the Page again.
+		$page = Page::get()->byId($page->ID);
+
+		// We now have a PublishOnDate field set
+		$this->assertEquals('2010-01-01 00:00:00', $page->PublishOnDate);
+		$this->assertEmpty($page->DesiredPublishDate);
+
+		// Publish job has been setup
+		$this->assertNotEmpty($page->PublishJobID);
+		$this->assertEmpty($page->UnPublishJobID);
+
+		// Check that this publish job is set for immediate run
+		$publish = strtotime($page->PublishJob()->StartAfter);
+		$this->assertEmpty($publish);
+	}
+
+	protected function createDefinition() {
+		$definition = new WorkflowDefinition();
+		$definition->Title = 'Dummy Workflow Definition';
+		$definition->write();
+
+		$stepOne = new WorkflowAction();
+		$stepOne->Title = 'Step One';
+		$stepOne->WorkflowDefID = $definition->ID;
+		$stepOne->write();
+
+		$stepTwo = new WorkflowAction();
+		$stepTwo->Title = 'Step Two';
+		$stepTwo->WorkflowDefID = $definition->ID;
+		$stepTwo->write();
+
+		$transitionOne = new WorkflowTransition();
+		$transitionOne->Title = 'Step One T1';
+		$transitionOne->ActionID = $stepOne->ID;
+		$transitionOne->NextActionID = $stepTwo->ID;
+		$transitionOne->write();
+
+		return $definition;
+	}
+
 }

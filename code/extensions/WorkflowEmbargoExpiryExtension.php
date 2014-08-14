@@ -313,56 +313,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $required;
 	}
 
-	/**
-	 *
-	 * Uses AWRequiredFields to peform validation at the DataExtension level.
-	 *
-	 * @see {@ink AWRequiredFields}
-	 * @param array $data
-	 * @return array
-	 */
-	public function extendedRequiredFieldsCheckEmbargoDates($data = null) {
-		if(!$this->getIsWorkflowInEffect()) {
-			return self::$extendedMethodReturn;
-		}
-
-		$desiredEmbargo = false;
-		$desiredExpiry = false;
-
-		if(!empty($data['DesiredPublishDate'])) {
-			$desiredEmbargo = strtotime($data['DesiredPublishDate']);
-		}
-
-		if(!empty($data['DesiredPublishDate'])) {
-			$desiredExpiry = strtotime($data['DesiredUnPublishDate']);
-		}
-
-		$msg = '';
-
-		if($desiredEmbargo && $desiredEmbargo < time()) {
-			$msg = _t(
-				'EMBARGO_DSIRD_ERROR',
-				"This date has already passed, please enter a valid future date."
-			);
-			self::$extendedMethodReturn['fieldName'] = 'DesiredPublishDate';
-		}
-
-		if($desiredExpiry && $desiredExpiry < time()) {
-			$msg = _t(
-				'EMBARGO_DSIRD_ERROR',
-				"This date has already passed, please enter a valid future date."
-			);
-			self::$extendedMethodReturn['fieldName'] = 'DesiredUnPublishDate';
-		}
-
-		if(strlen($msg)) {
-			self::$extendedMethodReturn['fieldValid'] = false;
-			self::$extendedMethodReturn['fieldMsg'] = $msg;
-		}
-
-		return self::$extendedMethodReturn;
-	}
-
 	/*
 	 * Format a date according to member/user preferences
 	 *
