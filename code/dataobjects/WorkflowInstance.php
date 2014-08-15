@@ -371,6 +371,9 @@ class WorkflowInstance extends DataObject {
 	 * @return boolean
 	 */
 	public function canView($member=null) {
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) return $extended;
+
 		$hasAccess = $this->userHasAccess($member);
 		/*
 		 * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
@@ -391,6 +394,9 @@ class WorkflowInstance extends DataObject {
 	 * @return boolean
 	 */
 	public function canEdit($member = null) {
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) return $extended;
+
 		return $this->userHasAccess($member);
 	}
 
@@ -400,6 +406,9 @@ class WorkflowInstance extends DataObject {
 	 * @return boolean
 	 */
 	public function canDelete($member = null) {
+		$extended = $this->extendedCan(__FUNCTION__, $member);
+		if($extended !== null) return $extended;
+
 		if(Permission::checkMember($member, "DELETE_WORKFLOW")) {
 			return true;
 		}
