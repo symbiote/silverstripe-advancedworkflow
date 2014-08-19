@@ -45,7 +45,6 @@ ar:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'ليس لديك الحق فى تنفيذ هذا الإجراء'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'تاريخ التعليقات حتى هذا الإشعار'
-    CONTEXTNOTE: "أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {$Context.Title}. إضافى إلى ذلك,  متغير {$Context.AbsoluteEditLink} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة)."
     EMAILFROM: 'البريد الالكترونى من'
     EMAILSUBJECT: 'عنوان البريد الالكترونى'
     EMAILTEMPLATE: 'نموذج البريد الالكترونى'
@@ -121,8 +120,6 @@ ar:
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: نشط
     CompletedWorkflowStateTitle: أكتمل
-    EMBARGO_ERROR_PT1: 'هذا المحتوى تحت الحظر بالفعل, و ينتهى فى:'
-    EMBARGO_ERROR_PT2: 'من فضلك انتظر حتى انتهاء هذا الموعد, قبل تطبيق موعد حظر جديد.'
     PUBLISH_ON: 'موعد النشر المحدد'
     REQUESTED_PUBLISH_DATE: 'موعد النشر المطلوب'
     REQUESTED_PUBLISH_DATE_H3: 'انتهاء الصلاحية و الحظر'
@@ -179,5 +176,3 @@ ar:
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'
     TYPE: نوع
     TabTitle: 'حصرا للمستخدمين'
-  advancedworkflow:
-    EMBARGO_DSIRD_ERROR: 'قد تم بالفعل تخطى هذا الموعد, من فضلك قم بإدخال موعد مستقبلى صالح.'

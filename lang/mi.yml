@@ -41,7 +41,6 @@ mi:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Kāore ō whakaaetanga kia kawe i tēnei hohenga'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Hītori tākupu tae mai ki tēnei whakamōhiotanga.'
-    CONTEXTNOTE: "Ka wātea ngā āpure rāpopoto mai i te ūnga reremahi. Hei tauira, {$Context.Title}.\n\t\t\tI tua atu, ka whai hononga te taurangi {$Context.AbsoluteEditLink} hei whakatikatika i te ūnga i te\n\t\t\tCMS (mēnā he Whārangi tēnā)."
     EMAILFROM: 'Īmēra mai'
     EMAILSUBJECT: 'Kaupapa īmēra'
     EMAILTEMPLATE: 'Tātauira īmēra'
@@ -116,8 +115,6 @@ mi:
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Hohe
     CompletedWorkflowStateTitle: Kua Oti
-    EMBARGO_ERROR_PT1: 'Kei te rāhui kētia tēnei ihirangi, ka mōnehu ā te:'
-    EMBARGO_ERROR_PT2: 'me tātari kia hipa rā anō taua rā i mua i te hoatu i te rā rāhui hou.'
     PUBLISH_ON: 'Rā whakaputa kua whakaritea'
     REQUESTED_PUBLISH_DATE: 'I tonoa te rā whakaputa'
     REQUESTED_PUBLISH_DATE_H3: 'Mōnehutanga me te Rāhui'
@@ -163,5 +160,3 @@ mi:
     TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
     TYPE: Momo
     TabTitle: 'Whakawhāitihia ki ngā Kaiwhakamahi'
-  advancedworkflow:
-    EMBARGO_DSIRD_ERROR: 'Kua hipa kē te rā, tāurua he rā pono o muri ake.'

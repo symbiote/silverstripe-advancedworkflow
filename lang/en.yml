@@ -5,6 +5,8 @@ en:
     APPLY_WORKFLOW_HELP: 'Users can apply workflows to items'
     CREATE_WORKFLOW: 'Create workflow'
     CREATE_WORKFLOW_HELP: 'Users can create workflow definitions'
+    DELETE_WORKFLOW: 'Delete workflow'
+    DELETE_WORKFLOW_HELP: 'Users can delete workflow definitions and active workflows'
     REASSIGNACTIVE: 'Reassign active workflows'
     REASSIGNACTIVEHELP: 'Users can reassign active workflows to different users and groups'
     VIEWACTIVE: 'View active workflows'
@@ -30,6 +32,8 @@ en:
     ACTIONCONTROLLERCHECK: 'Action "%s" not allowed on controller (Class: %s)'
     ACTIONFORMCHECK: 'Action "%s" not allowed on form (Name: "%s")'
     SECURITYTOKENCHECK: 'Security token doesn''t match, possible CSRF attack.'
+  AdvancedWorkflowPublishJob:
+    SCHEDULEJOBTITLE: 'Scheduled {type} of {object}'
   AllowEditing:
     ByAssignees: 'By Assignees'
     ContentSettings: 'Content Settings'
@@ -136,8 +140,6 @@ en:
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Active
     CompletedWorkflowStateTitle: Completed
-    EMBARGO_ERROR_PT1: 'This content is already under embargo, expiring at: '
-    EMBARGO_ERROR_PT2: ' please wait until this date has passed, before applying a new embargo date.'
     PUBLISH_ON: 'Scheduled publish date'
     REQUESTED_PUBLISH_DATE: 'Requested publish date'
     REQUESTED_PUBLISH_DATE_H3: 'Expiry and Embargo'
@@ -194,5 +196,3 @@ en:
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
     TYPE: Type
     TabTitle: 'Restrict to users'
-  advancedworkflow:
-    EMBARGO_DSIRD_ERROR: 'This date has already passed, please enter a valid future date.'

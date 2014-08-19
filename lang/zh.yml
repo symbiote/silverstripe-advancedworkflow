@@ -45,7 +45,6 @@ zh:
     FRONTENDACTION_TRANSITION_EXCEPTION: '您没有权限执行此操作。'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: '截止到此通知的评论历史。'
-    CONTEXTNOTE: "工作流目标的所有总结字段都是可用的。例如，{$Context.Title}。\n此外，{$Context.AbsoluteEditLink} 变量将包含一个可以在 CMS （（若它是一个页面）中编辑工作流目标的链接。"
     EMAILFROM: '邮件来自'
     EMAILSUBJECT: '邮件主题'
     EMAILTEMPLATE: '邮件模板'
@@ -121,8 +120,6 @@ zh:
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: 活跃的
     CompletedWorkflowStateTitle: 已完成
-    EMBARGO_ERROR_PT1: '此内容已禁止，到期时间：'
-    EMBARGO_ERROR_PT2: '请等到此日期到期后，再应用新的禁止日期。'
     PUBLISH_ON: '安排的发布日期'
     REQUESTED_PUBLISH_DATE: '请求的发布日期'
     REQUESTED_PUBLISH_DATE_H3: '到期和禁止'
@@ -179,5 +176,3 @@ zh:
     TRANSITIONLOOP: '过渡操作不能重新触发其父操作。'
     TYPE: 类型
     TabTitle: '用户限制'
-  advancedworkflow:
-    EMBARGO_DSIRD_ERROR: '此日期已过，请输入一个有效的未来日期。'

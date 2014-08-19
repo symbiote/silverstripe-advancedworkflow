@@ -1,0 +1,192 @@
+eo:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Speciala laborfluo'
+    APPLY_WORKFLOW: 'Apliki laborfluon'
+    APPLY_WORKFLOW_HELP: 'Uzantoj povas apliki laborfluon al elementoj'
+    CREATE_WORKFLOW: 'Krei laborfluon'
+    REASSIGNACTIVE: 'Reagordi aktivajn laborfluojn'
+    REASSIGNACTIVEHELP: 'Uzantoj povas reatribui aktivajn laborfluojn al diversaj uzantoj kaj grupoj'
+    VIEWACTIVE: 'Vidigi aktivajn laborfluoj'
+    VIEWACTIVEHELP: 'Uzantoj povas vidigi aktivajn laborfluojn per la laborflua administra panelo'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'Necesas ke vi ensalutu'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Ĉiuj okazontaj elementoj'
+    GridFieldTitleAssignedYour: 'Viaj okazontaj elementoj'
+    GridFieldTitleSubmittedAll: 'Ĉiuj senditaj elementoj'
+    GridFieldTitleSubmittedYour: 'Viaj senditaj elementoj'
+    IMPORT: 'Importa laborfluo'
+    INVALIDCLASSTOORDER: 'Agordis nevalidan klason mendi'
+    INVALIDIDLIST: 'Provizis nevalidan liston de ID-oj'
+    INVALIDPARENTID: 'Agordis nevalidan praan ID'
+    LastEdited: Ŝanĝita
+    SORTORDERSAVED: 'Konservis la ordigan ordon'
+    Title: Titolo
+    WorkflowStatus: 'Aktuala ago'
+    WorkflowTitle: 'Aktuala laborfluo'
+    MENUTITLE: Laborfluoj
+  AdvancedWorkflowFrontendForm:
+    ACTIONCONTROLLERCHECK: 'Ago "%s" ne estas permesita ĉe regilo (Klaso: %s)'
+    ACTIONFORMCHECK: 'Ago "%s" ne estas permesita en formularo (Nomo: "%s")'
+    SECURITYTOKENCHECK: 'Sekuriga ĵetono ne kongruas, ebla CSRF-atako.'
+  AllowEditing:
+    ByAssignees: 'De asignitoj'
+    ContentSettings: 'Enhavaj agordoj'
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Asigni uzantojn'
+    GROUPS: Grupoj
+    INITIATOR: 'Asigni initiatanton'
+    PLURALNAME: 'Asigni uzantojn al laborfluaj agoj'
+    SINGULARNAME: 'Asigni uzantojn al laborflua ago'
+    USERS: Uzuloj
+  CancelWorkflowAction:
+    PLURALNAME: 'Nuligi laborfluajn agojn'
+    SINGULARNAME: 'Nuligi laborfluan agon'
+  FrontEndWorkflowController:
+    FRONTENDACTION_CONTEXT_EXCEPTION: 'Ne trovis enhavan objekton'
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'Vi ne rajtas plenumi tiun agon'
+  GridAction:
+    EXPORT_DESCRIPTION: Eksporti
+    Export: Eksporti
+  GridFieldEditButton_ss:
+    EXPORT: Eksporti
+  ImportedWorkflowTemplate:
+    PLURALNAME: 'Importitaj laborfluaj ŝablonoj'
+    SINGULARNAME: 'Importita laborflua ŝablono'
+  NotifyUsersWorkflowAction:
+    COMMENTHISTORY: 'Komenta historio ĝis ĉi tiu sciigo.'
+    CONTEXTNOTE: "Disponeblos eventualaj resumaj kampoj el la laborflua celo. Ekzemple, {$Context.Title}.\n\t\t\tPlue, la variablo {$Context.AbsoluteEditLink} enhavos ligilon por redakti la laborfluan celon en\n\t\t\tla CMS (se ĝi estas Paĝo), kaj la variablo {$Context.LinkToPendingItems} generos ligilon al la laborflua administrado de la CMS,\n\t\t\tutilan por ebligi al uzulojn efiki laborfluajn transirojn, rekte el retpoŝtoj."
+    EMAILFROM: 'Retpoŝto el'
+    EMAILSUBJECT: 'Retpoŝta temo'
+    EMAILTEMPLATE: 'Retpoŝta ŝablono'
+    FIELDNAME: 'Nomo de kampo'
+    FORMATTINGHELP: 'Formatada helpo'
+    FORMATTINGNOTE: "Sciigaj retpoŝtoj povas enhavi HTML-formatojn. La jenajn specialajn variablojn anstataŭas iliaj respektivaj valoroj en la retpoŝtaj temo, sendinto kaj ŝablono/korpo."
+    INITIATORNOTE: "Ĉi tiuj kampoj pleniĝos el la membro kiu initiatis la laborfluan peton."
+    LISTING_TEMPLATE: "Listaj ŝablonoj - Elementoj estos ĉiuj agoj en la laborfluo (sinonimo al Agoj). \n\t\t\t\t\tAnkaŭ disponeblaj estos ĉiuj atributoj de la aktuala laborflua ekzemplo"
+    MEMBERNOTE: "Ĉi tiuj kampoj pleniĝos de la membro kiu iniciatos la sciigan agon. Ekzemple,\n\t\t\t{$Member.FirstName}."
+    NOTIFICATIONEMAIL: 'Sciiga retpoŝto'
+    NOTIFICATIONNOTE: 'Retpoŝto sendiĝos al ĉiuj uzuloj ligitaj al la laborfluo, kiam la ago ruliĝos.'
+    PLURALNAME: 'Sciigi uzulajn laborfluajn agojn'
+    SINGULARNAME: 'Sciigi uzulan laborfluan agon'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'tagoj'
+    DELAYPUBDAYSBEFORE: 'Prokrasti publikigon'
+    PLURALNAME: 'Publikigi elementajn laborfluajn agojn'
+    PUBLICATIONDELAY: 'Publikiga prokrasto'
+    SINGULARNAME: 'Publikigi elementan laborfluan agon'
+  SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Simple aprobi laborfluajn agojn'
+    SINGULARNAME: 'Simple aprobi laborfluan agon'
+  Workflow:
+    WorkflowActionsTabTitle: 'Laborfluaj agoj'
+  WorkflowAction:
+    ALLOW_COMMENTING: 'Ĉu permesi komenti?'
+    ALLOW_EDITING: 'Ĉu permesi redakti dum ĉi tiu paŝo?'
+    Author: Aŭtoro
+    CLASS_LABEL: 'Agoklaso'
+    COMMENT: Komento
+    CommentLabel: Komento
+    ExecutedLabel: Plenumis
+    FRONTENDCOMMENT: Komento
+    FinishedLabel: Finis
+    PLURALNAME: 'Laborfluaj agoj'
+    SINGULARNAME: 'Laborflua ago'
+    TITLE: Titolo
+    TitleDescription: 'La titolo uziĝas kiel la butona etikedo por ĉi tiu laborflua ago'
+    Transitions: Transiroj
+    TypeLabel: Tipo
+  WorkflowActionInstance:
+    PLURALNAME: 'Ekzemploj de laborfluaj agoj'
+    SINGULARNAME: 'Ekzemplo de laborflua ago'
+    Title: Titolo
+  WorkflowApplicable:
+    DEFINITION: 'Aplikis laborfluon'
+    EFFECTIVE_WORKFLOW: 'Efika laborfluo'
+    INHERIT: 'Heredi de patro'
+    NONE: (neniu)
+    UPDATE_WORKFLOW: 'Ĝisdatigi laborfluon'
+    WORKFLOWLOG: 'Laborflua protokolo'
+  WorkflowDefinition:
+    ADDAFTERSAVING: 'Vi povos enmeti laborfluajn paŝojn post vi konservis la unuan fojon.'
+    CHOOSE_TEMPLATE: 'Elekti ŝablonon (malnepra)'
+    CHOOSE_TEMPLATE_RIGHT: 'Se agordita, ĉi tiu laborflua difino aŭtomate aktualiĝos se la ŝablono ŝanĝiĝos.'
+    DESCRIPTION: Priskribo
+    GROUPS: 'Limigi al grupoj'
+    LATEST_VERSION: 'Lasta versio estas %s'
+    PLURALNAME: 'Laborfluaj difinoj'
+    REMINDEREMAIL: 'Memoriga retpoŝto'
+    SENDREMINDERDAYSAFTER: 'tagoj sen ago.'
+    SENDREMINDERDAYSBEFORE: 'Sendi retpoŝton post'
+    SINGULARNAME: 'Laborflua difino'
+    TEMPLATE_INFO: 'Ŝablona informo'
+    TEMPLATE_NAME: 'Fonta ŝablono'
+    TEMPLATE_VERSION: 'Ŝablona versio'
+    TITLE: Titolo
+    UPDATE_FROM_TEMLPATE: 'Ĝisdatigi la lastan ŝablonan version (%s)'
+    USERS: 'Limigi al uzuloj'
+    WORKFLOW: Laborfluo
+    WORKFLOWACTIVEIINSTANCES: 'Aktivaj laborfluaj ekzemploj'
+    WORKFLOWCOMPLETEDIINSTANCES: 'Kompletaj laborfluaj ekzemploj'
+  WorkflowDefinitionImporter:
+    INVALID_YML_FORMAT_NO_HEADER: 'Nevalida YAML-formato.'
+    INVALID_YML_FORMAT_NO_PARSE: 'Nevalida YAML-formato. Ne povas analizi.'
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktiva
+    CompletedWorkflowStateTitle: Kompletigita
+    PUBLISH_ON: 'Planita publikiga dato'
+    REQUESTED_PUBLISH_DATE: 'Petita publikiga dato'
+    REQUESTED_PUBLISH_DATE_H3: 'Malvalidiĝo kaj embargo'
+    REQUESTED_PUBLISH_DATE_INTRO: 'Enigu daton kaj/aŭ horon por agordi embargan kaj malvalidiĝan datojn.'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Tiuj agordoj ekefikos nur kiam eventualaj agoj estas rulitaj'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Se embargo jam estas agordita, aldoni novan antaŭ la paso de ties dato anstataŭos ĝin'
+    REQUESTED_UNPUBLISH_DATE: 'Petita malpublikiga dato'
+    TabTitle: 'Publikiga plano'
+    UNPUBLISH_ON: 'Planita malpublikiga dato'
+  WorkflowField:
+    AddTransitionAction: 'Aldoni transiron'
+    CreateAction: 'Krei agon'
+    CreateLabel: Krei
+    DeleteAction: Forigi
+    EditAction: Redakti
+  WorkflowInstance:
+    ActionLogTitle: Protokolo
+    EXECUTE_EXCEPTION: 'Provis startigi nevalidan laborfluan ekzemplon #%s!'
+    NEXT_ACTION: 'Sekva ago'
+    PLURALNAME: 'Laborfluaj ekzemploj'
+    REASSIGN_HEADER: 'Reagordi laborfluon'
+    SINGULARNAME: 'Laborflua ekzemplo'
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Ekzemplo #%s el %s'
+    TargetClassLabel: 'Cela klaso'
+    TargetIDLabel: Celo
+    TitleLabel: Titolo
+    WORKFLOW_TRANSITION_EXCEPTION: 'Nevalida transira stato por ago #%s'
+    WorkflowStatusLabel: 'Laborflua stato'
+  WorkflowList:
+    CommentHistory: 'Komenta historio pri ĉi tiu peto:'
+    TableHeaderActions: Agoj
+    TableHeaderEditedBy: 'Redaktita de'
+    TableHeaderItem: Elemento
+    TableHeaderSubmitted: Sendis
+  WorkflowReminderEmail:
+    Action: 'Klaku ĉi tie por efikigi ĉi tiun laborfluon'
+    Content: "Ĉi tiu estas aŭtomata memorigo ke la laborfluo '{title}', al kiu vi aktuale\n\testas asignita, ne estas plenumigita por {days} tagoj. \n\tLa laborfluo laste ĝisdatiĝis je {date} je {time}."
+  WorkflowReminderTask:
+    SAVE: Konservi
+  WorkflowService:
+    EXISTING_WORKFLOW_ERROR: 'Tiu objekto jam havas rulatan laborfluon'
+    INVALID_WORKFLOW_TARGET: 'Transiro plenumiĝis ĉe celo kiu ne havas laborfluon.'
+  WorkflowTemplate:
+    INVALID_TEMPLATE_ACTION: 'Nevalida agoklaso agordita en ŝablono'
+  WorkflowTransition:
+    ACTION: Ago
+    Active: Aktiva
+    NEXT_ACTION: 'Sekva ago'
+    PLURALNAME: 'Laborfluaj transiroj'
+    Passive: Pasiva
+    SELECTONE: '(Elektu iun)'
+    SINGULARNAME: 'Laborflua transiro'
+    TRANSITIONLOOP: 'Transira ago ne povas konduki al sia patra ago.'
+    TYPE: Tipo
+    TabTitle: 'Limigi al uzuloj'
