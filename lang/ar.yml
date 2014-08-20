@@ -45,7 +45,7 @@ ar:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'ليس لديك الحق فى تنفيذ هذا الإجراء'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'تاريخ التعليقات حتى هذا الإشعار'
-    CONTEXTNOTE: "أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {Context.Title$}. إضافى إلى ذلك,  متغير {Context.AbsoluteEditLink$} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة)."
+    CONTEXTNOTE: "أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {$Context.Title}. إضافى إلى ذلك,  متغير {$Context.AbsoluteEditLink} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة)."
     EMAILFROM: 'البريد الالكترونى من'
     EMAILSUBJECT: 'عنوان البريد الالكترونى'
     EMAILTEMPLATE: 'نموذج البريد الالكترونى'
