@@ -41,6 +41,7 @@ mi:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Kāore ō whakaaetanga kia kawe i tēnei hohenga'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Hītori tākupu tae mai ki tēnei whakamōhiotanga.'
+    CONTEXTNOTE: "Ka wātea ngā āpure rāpopoto mai i te ūnga reremahi. Hei tauira, {$Context.Title}.\n\t\t\tI tua atu, ka whai hononga te taurangi {$Context.AbsoluteEditLink} hei whakatikatika i te ūnga i te\n\t\t\tCMS (mēnā he Whārangi tēnā)."
     EMAILFROM: 'Īmēra mai'
     EMAILSUBJECT: 'Kaupapa īmēra'
     EMAILTEMPLATE: 'Tātauira īmēra'

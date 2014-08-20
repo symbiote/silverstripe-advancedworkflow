@@ -45,6 +45,7 @@ zh:
     FRONTENDACTION_TRANSITION_EXCEPTION: '您没有权限执行此操作。'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: '截止到此通知的评论历史。'
+    CONTEXTNOTE: "工作流目标的所有总结字段都是可用的。例如，{$Context.Title}。\n此外，{$Context.AbsoluteEditLink} 变量将包含一个可以在 CMS （（若它是一个页面）中编辑工作流目标的链接。"
     EMAILFROM: '邮件来自'
     EMAILSUBJECT: '邮件主题'
     EMAILTEMPLATE: '邮件模板'
