@@ -25,8 +25,9 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
 		$svc = singleton('WorkflowService');
 		$svc->startWorkflow($item);
-
-		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
+		
+		$negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
+		return $negotiator->respond($this->owner->getRequest());
 	}
 
 	/**
@@ -67,6 +68,10 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			}
 		}
 	}
+	
+	public function updateItemEditForm($form) {
+		$this->updateEditForm($form);
+	}
 
 	/**
 	 * Update a workflow based on user input. 
@@ -105,7 +110,9 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			$workflow->execute();
 		}
 
-		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
+		$negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
+
+		return $negotiator->respond($this->owner->getRequest());
 	}
 	
 	/**

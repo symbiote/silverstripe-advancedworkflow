@@ -110,10 +110,8 @@ class WorkflowApplicable extends DataExtension {
 
 	public function updateCMSActions(FieldList $actions) {
 		$active = $this->workflowService->getWorkflowFor($this->owner);
-		
-		
-
-		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')) {
+		$c = Controller::curr();
+		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
 			
 			if ($active) {
 				if ($this->canEditWorkflow()) {
@@ -125,6 +123,8 @@ class WorkflowApplicable extends DataExtension {
 					$menu = $actions->fieldByName('ActionMenus');
 					if (!$menu) {
 						// create the menu for adding to any arbitrary non-sitetree object
+						$menu = $this->createActionMenu();
+						$actions->push($menu);
 					}
 
 					$menu->push($workflowOptions);
@@ -152,6 +152,12 @@ class WorkflowApplicable extends DataExtension {
 				}
 			}
 		}
+	}
+	
+	protected function createActionMenu() {
+		$rootTabSet = new TabSet('ActionMenus');
+		$rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
+		return $rootTabSet;
 	}
 	
 	public function updateFrontendActions($actions){

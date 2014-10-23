@@ -2,7 +2,7 @@
 ;(function ($) {
 	$(function () {
 		$.entwine('ss', function($) {
-			$('.cms-edit-form .Actions #ActionMenus_WorkflowOptions button.action').entwine({
+			$('.cms-edit-form .Actions #ActionMenus_WorkflowOptions .action').entwine({
 				onclick: function(e) {
 					var transitionId = $(this).attr('data-transitionid');
 					var buttonName = $(this).attr('name');
