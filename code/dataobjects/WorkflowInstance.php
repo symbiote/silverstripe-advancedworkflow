@@ -438,7 +438,7 @@ class WorkflowInstance extends DataObject {
 		$inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
 		// This method is used in more than just the ModelAdmin. Check for the current controller to determine where canView() expectations differ
 		if($this->getTarget() && Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
-			if($this->getVersionedConnection($this->getTarget()->ID,$member->ID,$this->DefinitionID)) {
+			if($this->getVersionedConnection($this->getTarget()->ID, $member->ID)) {
 				return true;
 			}
 			return false;
@@ -598,13 +598,12 @@ class WorkflowInstance extends DataObject {
 	 *
 	 * @param number $recordID
 	 * @param number $userID
-	 * @param number $definitionID
 	 * @param number $wasPublished
 	 * @return boolean
 	 */
-	public function getVersionedConnection($recordID,$userID,$definitionID,$wasPublished=0) {
+	public function getVersionedConnection($recordID, $userID, $wasPublished = 0) {
 		// Turn this into an array and run through implode()
-		$filter = "\"AuthorID\" = '".$userID."' AND \"RecordID\" = '".$recordID."' AND \"WorkflowDefinitionID\" = '".$definitionID."' AND \"WasPublished\" = '".$wasPublished."'";
+		$filter = "RecordID = {$recordID} AND AuthorID = {$userID} AND WasPublished = {$wasPublished}";
 		$query = new SQLQuery();
 		$query->setFrom('"SiteTree_versions"')->setSelect('COUNT("ID")')->setWhere($filter);
 		$query->firstRow();

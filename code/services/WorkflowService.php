@@ -83,6 +83,55 @@ class WorkflowService implements PermissionProvider {
 	}
 
 	/**
+	 *	Retrieves a workflow definition by ID for a data object.
+	 *
+	 *	@param data object
+	 *	@param integer
+	 *	@return workflow definition
+	 */
+
+	public function getDefinitionByID($object, $workflowID) {
+
+		// Make sure the correct extensions have been applied to the data object.
+
+		$workflow = null;
+		if($object->hasExtension('WorkflowApplicable') || $object->hasExtension('FileWorkflowApplicable')) {
+
+			// Validate the workflow ID against the data object.
+
+			if(($object->WorkflowDefinitionID = $workflowID) || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))) {
+				if(is_null($workflow)) {
+					$workflow = DataObject::get_by_id('WorkflowDefinition', $workflowID);
+				}
+			}
+		}
+		return $workflow ? $workflow : null;
+	}
+
+	/**
+	 *	Retrieves and collates the workflow definitions for a data object, where the first element will be the main workflow definition.
+	 *
+	 *	@param data object
+	 *	@return array
+	 */
+
+	public function getDefinitionsFor($object) {
+
+		// Retrieve the main workflow definition.
+
+		$default = $this->getDefinitionFor($object);
+		if($default) {
+
+			// Merge the additional workflow definitions.
+
+			return array_merge(array(
+				$default
+			), $object->AdditionalWorkflowDefinitions()->toArray());
+		}
+		return null;
+	}
+
+	/**
 	 * Gets the workflow for the given item
 	 *
 	 * The item can be
@@ -165,13 +214,25 @@ class WorkflowService implements PermissionProvider {
 	 * 
 	 * @param DataObject $object
 	 */
-	public function startWorkflow(DataObject $object) {
+	public function startWorkflow(DataObject $object, $workflowID) {
 		$existing = $this->getWorkflowFor($object);
 		if ($existing) {
 			throw new ExistingWorkflowException(_t('WorkflowService.EXISTING_WORKFLOW_ERROR', "That object already has a workflow running"));
 		}
 
-		$definition = $this->getDefinitionFor($object);
+		$definition = null;
+		if($workflowID) {
+
+			// Retrieve the workflow definition that has been triggered.
+
+			$definition = $this->getDefinitionByID($object, $workflowID);
+		}
+		if(is_null($definition)) {
+
+			// Fall back to the main workflow definition.
+
+			$definition = $this->getDefinitionFor($object);
+		}
 
 		if ($definition) {
 			$instance = new WorkflowInstance();

@@ -9,8 +9,13 @@
  */
 class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
+	private static $allowed_actions = array(
+		'startworkflow'
+	);
+
 	public function startworkflow($data, $form, $request) {
 		$item = $form->getRecord();
+		$workflowID = isset($data['TriggeredWorkflowID']) ? intval($data['TriggeredWorkflowID']) : 0;
 
 		if (!$item || !$item->canEdit()) {
 			return;
@@ -20,7 +25,7 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 		$this->saveAsDraftWithAction($form, $item);
 
 		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($item);
+		$svc->startWorkflow($item, $workflowID);
 
 		return $this->owner->getResponseNegotiator()->respond($this->owner->getRequest());
 	}
@@ -32,6 +37,8 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @param Form $form
 	 */
 	public function updateEditForm(Form $form) {
+
+		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/advanced-workflow-cms.js');
 		$svc    = singleton('WorkflowService');
 		$p      = $form->getRecord();
 		$active = $svc->getWorkflowFor($p);
