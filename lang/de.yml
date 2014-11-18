@@ -1,1 +1,127 @@
-de: {}
+de:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Fortgeschrittener Arbeitsablauf'
+    APPLY_WORKFLOW: 'Arbeitsablauf anwenden'
+    CREATE_WORKFLOW: 'Arbeitsablauf erstellen'
+    DELETE_WORKFLOW: 'Arbeitsablauf löschen'
+    VIEWACTIVE: 'Aktive Arbeitsabläufe ansehen'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Alle ausstehenden Einträge'
+    GridFieldTitleAssignedYour: 'Ihre ausstehenden Einträge'
+    IMPORT: 'Arbeitsablauf importieren'
+    INVALIDIDLIST: 'Eine ungültige Liste mit Kennungen wurde angegeben.'
+    INVALIDPARENTID: 'Eine ungültige übergeordnete Kennung wurde angegeben.'
+    LastEdited: Geändert
+    SORTORDERSAVED: 'Die Sortierreihenfolge wurde gespeichert.'
+    Title: Titel
+    WorkflowStatus: 'Aktuelle Aktion'
+    WorkflowTitle: 'Effektiver Arbeitsablauf'
+    MENUTITLE: Arbeitsabläufe
+  AllowEditing:
+    ContentSettings: 'Inhaltseinstellungen'
+  AssignUsersToWorkflowAction:
+    GROUPS: Gruppen
+    USERS: Benutzer
+  CancelWorkflowAction:
+    PLURALNAME: 'Arbeitsablaufaktionen abbrechen'
+    SINGULARNAME: 'Arbeitsablaufaktion abbrechen'
+  FrontEndWorkflowController:
+    FRONTENDACTION_CONTEXT_EXCEPTION: 'Inhaltsobjekt nicht gefunden'
+  GridAction:
+    EXPORT_DESCRIPTION: Exportieren
+    Export: Exportieren
+  GridFieldEditButton_ss:
+    EXPORT: Exportieren
+  ImportedWorkflowTemplate:
+    PLURALNAME: 'Importierte Arbeitsablaufvorlagen'
+    SINGULARNAME: 'Importierte Arbeitsablaufvorlage'
+  NotifyUsersWorkflowAction:
+    EMAILFROM: 'E-Mail von'
+    EMAILSUBJECT: 'E-Mail-Betreff'
+    EMAILTEMPLATE: 'E-Mail-Vorlage'
+    FIELDNAME: 'Feldname'
+    FORMATTINGHELP: 'Formatierungshilfe'
+    NOTIFICATIONEMAIL: 'Benachrichtigungs-E-Mail'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'Tage'
+    DELAYPUBDAYSBEFORE: 'Veröffentlichung verzögern'
+    PUBLICATIONDELAY: 'Veröffentlichungsverzögerung'
+  Workflow:
+    WorkflowActionsTabTitle: 'Arbeitsablaufaktionen'
+  WorkflowAction:
+    ALLOW_COMMENTING: 'Kommentieren erlauben?'
+    Author: Autor
+    CLASS_LABEL: 'Aktionsklasse'
+    COMMENT: Kommentar
+    CommentLabel: Kommentar
+    ExecutedLabel: Ausgeführt
+    FRONTENDCOMMENT: Kommentar
+    FinishedLabel: Abgeschlossen
+    PLURALNAME: 'Arbeitsablaufaktionen'
+    SINGULARNAME: 'Arbeitsablaufaktion'
+    TITLE: Titel
+    Transitions: Übergänge
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Titel
+  WorkflowApplicable:
+    DEFINITION: 'Angewandter Arbeitsablauf'
+    EFFECTIVE_WORKFLOW: 'Effektiver Arbeitsablauf'
+    NONE: (kein)
+    UPDATE_WORKFLOW: 'Arbeitsablauf aktualisieren'
+    WORKFLOWLOG: 'Arbeitsablaufprotokoll'
+  WorkflowDefinition:
+    CHOOSE_TEMPLATE: 'Vorlage auswählen (optional)'
+    DESCRIPTION: Beschreibung
+    GROUPS: 'Auf Gruppen beschränken'
+    LATEST_VERSION: 'Aktuelle Version ist %s'
+    PLURALNAME: 'Arbeitsablaufdefinitionen'
+    REMINDEREMAIL: 'Erinnerungs-E-Mail'
+    SENDREMINDERDAYSAFTER: 'Tage ohne Aktion.'
+    SENDREMINDERDAYSBEFORE: 'Erinnerungs-E-Mail senden nach'
+    SINGULARNAME: 'Arbeitsablaufdefinition'
+    TEMPLATE_INFO: 'Vorlageninformation'
+    TEMPLATE_NAME: 'Quellvorlage'
+    TEMPLATE_VERSION: 'Vorlagenversion'
+    TITLE: Titel
+    USERS: 'Auf Benutzer beschränken'
+    WORKFLOW: Arbeitsablauf
+    WORKFLOWACTIVEIINSTANCES: 'Aktive Arbeitsablaufinstanzen'
+  WorkflowDefinitionImporter:
+    INVALID_YML_FORMAT_NO_HEADER: 'Ungültiges YAML-Format.'
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktiv
+    CompletedWorkflowStateTitle: Fertiggestellt
+  WorkflowField:
+    AddTransitionAction: 'Übergang hinzufügen'
+    CreateAction: 'Aktion erstellen'
+    CreateLabel: Erstellen
+    DeleteAction: Löschen
+    EditAction: Bearbeiten
+  WorkflowInstance:
+    ActionLogTitle: Protokollieren
+    NEXT_ACTION: 'Nächste Aktion'
+    PLURALNAME: 'Arbeitsablaufinstanzen'
+    SINGULARNAME: 'Arbeitsablaufinstanz'
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Instanz #%s von %s'
+    TargetClassLabel: 'Zielklasse'
+    TargetIDLabel: Ziel
+    TitleLabel: Titel
+    WorkflowStatusLabel: 'Arbeitsablaufstatus'
+  WorkflowList:
+    TableHeaderActions: Aktionen
+    TableHeaderEditedBy: 'Bearbeitet von'
+    TableHeaderItem: Eintrag
+  WorkflowReminderTask:
+    SAVE: Speichern
+  WorkflowTransition:
+    ACTION: Aktion
+    Active: Aktiv
+    NEXT_ACTION: 'Nächste Aktion'
+    PLURALNAME: 'Arbeitsablaufübergänge'
+    Passive: Passiv
+    SELECTONE: '(Eines auswählen)'
+    SINGULARNAME: 'Arbeitsablaufübergang'
+    TYPE: Typ
+    TabTitle: 'Auf Benutzer beschränken'

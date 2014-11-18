@@ -4,6 +4,9 @@ eo:
     APPLY_WORKFLOW: 'Apliki laborfluon'
     APPLY_WORKFLOW_HELP: 'Uzantoj povas apliki laborfluon al elementoj'
     CREATE_WORKFLOW: 'Krei laborfluon'
+    CREATE_WORKFLOW_HELP: 'Uzantoj povas krei laborfluajn difinojn'
+    DELETE_WORKFLOW: 'Forigi laborfluon'
+    DELETE_WORKFLOW_HELP: 'Uzantoj povas forigi laborfluajn difinojn kaj aktivajn laborfluojn'
     REASSIGNACTIVE: 'Reagordi aktivajn laborfluojn'
     REASSIGNACTIVEHELP: 'Uzantoj povas reatribui aktivajn laborfluojn al diversaj uzantoj kaj grupoj'
     VIEWACTIVE: 'Vidigi aktivajn laborfluoj'
@@ -29,6 +32,8 @@ eo:
     ACTIONCONTROLLERCHECK: 'Ago "%s" ne estas permesita ĉe regilo (Klaso: %s)'
     ACTIONFORMCHECK: 'Ago "%s" ne estas permesita en formularo (Nomo: "%s")'
     SECURITYTOKENCHECK: 'Sekuriga ĵetono ne kongruas, ebla CSRF-atako.'
+  AdvancedWorkflowPublishJob:
+    SCHEDULEJOBTITLE: 'Planita {type} de {object}'
   AllowEditing:
     ByAssignees: 'De asignitoj'
     ContentSettings: 'Enhavaj agordoj'
