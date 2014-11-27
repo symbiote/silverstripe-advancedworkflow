@@ -480,13 +480,24 @@ class WorkflowInstance extends DataObject {
 	}
 	
 	/**
-	 * Get the current set of transitions that are valid for the current workflow state
+	 * Get the current set of transitions that are valid for the current workflow state,
+	 * and are available to the current user.
 	 * 
 	 * @return array 
 	 */
 	public function validTransitions() {
 		$action    = $this->CurrentAction();
-		return $action->getValidTransitions();
+		$transitions = $action->getValidTransitions();
+		$member = Member::currentUser();
+		$validTransitions = ArrayList::create();
+
+		foreach ($transitions as $key => $transition) {
+			if ($member->inGroups($transition->Groups()) || Permission::check('ADMIN')) {
+				$validTransitions->add($transition);
+			}
+		}
+
+		return $validTransitions;
 	}
 	
 	/* UI RELATED METHODS */
