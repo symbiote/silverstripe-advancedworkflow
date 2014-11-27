@@ -12,7 +12,8 @@ jQuery.entwine("workflow", function($) {
 				autoOpen: false,
 				width:    800,
 				height:   600,
-				modal:    true
+				modal:    true,
+				dialogClass: 'workflow-field-editor-dialog'
 			});
 
 			this.getDialog().on("click", "button", function() {
@@ -31,6 +32,9 @@ jQuery.entwine("workflow", function($) {
 
 				return false;
 			});
+		},
+		onunmatch: function () {
+			$('.workflow-field-editor-dialog').remove();
 		},
 		showDialog: function(url) {
 			var dlg = this.getDialog();
