@@ -89,4 +89,30 @@ class WorkflowInstanceTest extends SapphireTest {
 		$this->assertTrue($history05->canView($this->currentMember));	
 	}
 
+	public function testValidTransitions() {
+		$instance = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance06');
+		$transition1 = $this->objFromFixture('WorkflowTransition', 'Transition05');
+		$transition2 = $this->objFromFixture('WorkflowTransition', 'Transition06');
+		$member1 = $this->objFromFixture('Member', 'Transition05Member');
+		$member2 = $this->objFromFixture('Member', 'Transition06Member');
+
+		// Given logged in as admin, check that there are two actions
+		$this->logInWithPermission('ADMIN');
+		$transitions = $instance->validTransitions()->column('ID');
+		$this->assertContains($transition1->ID, $transitions);
+		$this->assertContains($transition2->ID, $transitions);
+
+		// Logged in as a member with permission on one transition, check that only this one is present
+		$member1->logIn();
+		$transitions = $instance->validTransitions()->column('ID');
+		$this->assertContains($transition1->ID, $transitions);
+		$this->assertNotContains($transition2->ID, $transitions);
+
+		// Logged in as a member with permissions via group
+		$member2->logIn();
+		$transitions = $instance->validTransitions()->column('ID');
+		$this->assertNotContains($transition1->ID, $transitions);
+		$this->assertContains($transition2->ID, $transitions);
+	}
+
 }

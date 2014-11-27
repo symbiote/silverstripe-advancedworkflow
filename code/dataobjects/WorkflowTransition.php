@@ -164,27 +164,22 @@ class WorkflowTransition extends DataObject {
 	 * @return bool
 	 **/
 	public function canExecute(WorkflowInstance $workflow){
-		$return = true; 
-
+		$return = true;
 		$members = $this->getAssignedMembers();
 
-		// check if the member is in the list of assigned members
-		if($members->exists()){
-			if(!$members->find('ID', Member::currentUserID())){
+		// If not admin, check if the member is in the list of assigned members
+		if(!Permission::check('ADMIN') && $members->exists()){
+			if(!$members->find('ID', Member::currentUserID())) {
 				$return = false;
 			}
 		}
 
-		if($return){
-			$return = $this->extend('extendCanExecute', $workflow);	
-			if(is_array($return)) $return = $return[0]; // @todo work out why this is returning an array...
+		if($return) {
+			$extended = $this->extend('extendCanExecute', $workflow);
+			if($extended) $return = min($extended);
 		}
 		
-		if($return !== false){
-			return true;
-		}else{
-			return $return;
-		}
+		return $return !== false;
 	}
 	
 	/**
@@ -216,10 +211,10 @@ class WorkflowTransition extends DataObject {
 	/**
 	 * Returns a set of all Members that are assigned to this transition, either directly or via a group.
 	 *
-	 * @return DataObjectSet
+	 * @return ArrayList
 	 */
 	public function getAssignedMembers() {
-		$members = $this->Users();
+		$members = ArrayList::create($this->Users()->toArray());
 		$groups  = $this->Groups();
 
 		foreach($groups as $group) {
