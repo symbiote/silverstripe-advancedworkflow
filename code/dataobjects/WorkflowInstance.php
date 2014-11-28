@@ -5,7 +5,10 @@
  * This 'start' is triggered automatically when the user clicks the relevant 
  * button (eg 'apply for approval'). This creates a standalone object
  * that maintains the state of the workflow process. 
- * 
+ *
+ * @method WorkflowDefinition Definition()
+ * @method WorkflowActionInstance CurrentAction()
+ * @method Member Initiator()
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -480,13 +483,20 @@ class WorkflowInstance extends DataObject {
 	}
 	
 	/**
-	 * Get the current set of transitions that are valid for the current workflow state
+	 * Get the current set of transitions that are valid for the current workflow state,
+	 * and are available to the current user.
 	 * 
 	 * @return array 
 	 */
 	public function validTransitions() {
 		$action    = $this->CurrentAction();
-		return $action->getValidTransitions();
+		$transitions = $action->getValidTransitions();
+
+		// Filter by execute permission
+		$self = $this;
+		return $transitions->filterByCallback(function($transition) use ($self) {
+			return $transition->canExecute($self);
+		});
 	}
 	
 	/* UI RELATED METHODS */
