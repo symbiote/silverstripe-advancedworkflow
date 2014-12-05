@@ -110,13 +110,38 @@ class WorkflowApplicable extends DataExtension {
 
 	public function updateCMSActions(FieldList $actions) {
 		$active = $this->workflowService->getWorkflowFor($this->owner);
+		
+		
 
-		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')){
+		if (Controller::curr() && Controller::curr()->hasExtension('AdvancedWorkflowExtension')) {
+			
 			if ($active) {
 				if ($this->canEditWorkflow()) {
-					$action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
-						->setAttribute('data-icon', 'navigation');
-					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+					$workflowOptions = new Tab(
+						'WorkflowOptions', 
+						_t('SiteTree.WorkflowOptions', 'Workflow options', 'Expands a view for workflow specific buttons')
+					);
+
+					$menu = $actions->fieldByName('ActionMenus');
+					if (!$menu) {
+						// create the menu for adding to any arbitrary non-sitetree object
+					}
+
+					$menu->push($workflowOptions);
+					
+					$transitions = $active->CurrentAction()->getValidTransitions();
+					
+					foreach ($transitions as $transition) {
+						if ($transition->canExecute($active)) {
+							$action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
+								->setAttribute('data-transitionid', $transition->ID);
+							$workflowOptions->push($action);
+						}
+					}
+
+//					$action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+//						->setAttribute('data-icon', 'navigation');
+//					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
 				$effective = $this->workflowService->getDefinitionFor($this->owner);

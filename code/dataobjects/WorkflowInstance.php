@@ -513,8 +513,8 @@ class WorkflowInstance extends DataObject {
 		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		$fields->push(new DropdownField('TransitionID', _t('WorkflowInstance.NEXT_ACTION', 'Next Action'), $wfOptions));
-
+		
+		$fields->push(HiddenField::create('TransitionID', ''));
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.
 		$action->updateWorkflowFields($fields);

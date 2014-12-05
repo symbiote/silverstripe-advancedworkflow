@@ -8,6 +8,10 @@
  * @package advancedworkflow
  */
 class AdvancedWorkflowExtension extends LeftAndMainExtension {
+	
+	private static $allowed_actions = array(
+		'updateworkflow',
+	);
 
 	public function startworkflow($data, $form, $request) {
 		$item = $form->getRecord();
@@ -32,6 +36,8 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	 * @param Form $form
 	 */
 	public function updateEditForm(Form $form) {
+		Requirements::javascript('advancedworkflow/javascript/advancedworkflow-cms.js');
+		
 		$svc    = singleton('WorkflowService');
 		$p      = $form->getRecord();
 		$active = $svc->getWorkflowFor($p);
