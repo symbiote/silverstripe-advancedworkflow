@@ -237,7 +237,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			// Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
 			$instance->setField('Title',$target->getField('Title'));
 			$instance->setField('LastEdited',$target->getField('LastEdited'));
-			$instance->setField('ObjectRecordLink', Controller::join_links(Director::absoluteBaseURL(), $target->CMSEditLink()));
+			if (method_exists($target, 'CMSEditLink')) {
+				$instance->setField('ObjectRecordLink', Controller::join_links(Director::absoluteBaseURL(), $target->CMSEditLink()));
+			}
 
 			$list->push($instance);
 		}

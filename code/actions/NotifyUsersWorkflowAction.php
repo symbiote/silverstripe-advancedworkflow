@@ -69,7 +69,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	public function execute(WorkflowInstance $workflow) {
 		$members = $workflow->getAssignedMembers();
 
-		if(!$members || !count($members)) return;
+		if(!$members || !count($members)) {
+			return true;
+		}
 
 		$context   = $this->getContextFields($workflow->getTarget());
 		$member    = $this->getMemberFields();
