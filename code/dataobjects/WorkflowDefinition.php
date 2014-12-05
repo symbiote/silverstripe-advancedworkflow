@@ -23,7 +23,8 @@ class WorkflowDefinition extends DataObject {
 		'Template'			=> 'Varchar',
 		'TemplateVersion'	=> 'Varchar',
 		'RemindDays'		=> 'Int',
-		'Sort'				=> 'Int'
+		'Sort'				=> 'Int',
+		'InitialActionButtonText' => 'Varchar'
 	);
 
 	private static $default_sort = 'Sort';
@@ -173,6 +174,10 @@ class WorkflowDefinition extends DataObject {
 
 		$fields->addFieldToTab('Root.Main', new TextField('Title', $this->fieldLabel('Title')));
 		$fields->addFieldToTab('Root.Main', new TextareaField('Description', $this->fieldLabel('Description')));
+		$fields->addFieldToTab('Root.Main', TextField::create(
+			'InitialActionButtonText',
+			_t('WorkflowDefinition.INITIAL_ACTION_BUTTON_TEXT', 'Initial Action Button Text')
+		));
 		if($this->ID) {
 			$fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
 			$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
