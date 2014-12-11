@@ -14,6 +14,10 @@ class WorkflowApplicable extends DataExtension {
 		'WorkflowDefinition' => 'WorkflowDefinition',
 	);
 
+	private static $many_many = array(
+		'AdditionalWorkflowDefinitions' => 'WorkflowDefinition'
+	);
+
 	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
@@ -70,31 +74,51 @@ class WorkflowApplicable extends DataExtension {
 
 	public function updateCMSFields(FieldList $fields) {
 		if(!$this->owner->hasMethod('getSettingsFields')) $this->updateFields($fields);
+
+		// Instantiate a hidden form field to pass the triggered workflow definition through, allowing a dynamic form action.
+
+		$fields->push(HiddenField::create(
+			'TriggeredWorkflowID'
+		));
 	}
 
 	public function updateFields(FieldList $fields) {
 		if (!$this->owner->ID) {
 			return $fields;
 		}
-		$effective = $this->workflowService->getDefinitionFor($this->owner);
 		
 		$tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
 		if(Permission::check('APPLY_WORKFLOW')) {
 			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
-			$definition->setSource($this->workflowService->getDefinitions()->map());
+			$definitions = $this->workflowService->getDefinitions()->map()->toArray();
+			$definition->setSource($definitions);
 			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
-
 			$tab->push($definition);
-			
-//			$fields->addFieldToTab($tab, $definition);
+
+			// Allow an optional selection of additional workflow definitions.
+
+			if($this->owner->WorkflowDefinitionID) {
+				unset($definitions[$this->owner->WorkflowDefinitionID]);
+				$tab->push($additional = ListboxField::create(
+					'AdditionalWorkflowDefinitions',
+					_t('WorkflowApplicable.ADDITIONAL_WORKFLOW_DEFINITIONS', 'Additional Workflows')
+				));
+				$additional->setSource($definitions);
+				$additional->setMultiple(true);
+			}
 		}
 
-		$tab->push(new ReadonlyField(
-			'EffectiveWorkflow',
-			_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
-			$effective ? $effective->Title : _t('WorkflowApplicable.NONE', '(none)')
-		));
+		// Display the effective workflow definition.
+
+		if($effective = $this->getWorkflowInstance()) {
+			$title = $effective->Definition()->Title;
+			$tab->push(ReadonlyField::create(
+				'EffectiveWorkflow',
+				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
+				$title
+			));
+		}
 
 		if($this->owner->ID) {
 			$config = new GridFieldConfig_Base();
@@ -112,7 +136,6 @@ class WorkflowApplicable extends DataExtension {
 		$active = $this->workflowService->getWorkflowFor($this->owner);
 		$c = Controller::curr();
 		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
-			
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
@@ -144,12 +167,43 @@ class WorkflowApplicable extends DataExtension {
 //					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
-				$effective = $this->workflowService->getDefinitionFor($this->owner);
-				if ($effective && $effective->getInitialAction()) {
-					$action = FormAction::create('startworkflow', $effective->getInitialAction()->Title)
-						->setAttribute('data-icon', 'navigation');
-					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+				// Instantiate the workflow definition initial actions.
+				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+				if($definitions) {
+					$menu = $actions->fieldByName('ActionMenus');
+					if(is_null($menu)) {
+
+						// Instantiate a new action menu for any data objects.
+
+						$menu = $this->createActionMenus();
+						$actions->push($menu);
+					}
+					$tab = Tab::create(
+						'AdditionalWorkflows'
+					);
+					$menu->insertBefore($tab, 'MoreOptions');
+					$addedFirst = false;
+					foreach($definitions as $definition) {
+						if($definition->getInitialAction()) {
+							$action = FormAction::create(
+								"startworkflow-{$definition->ID}",
+								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
+							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
+
+							// The first element is the main workflow definition, and will be displayed as a major action.
+
+							if(!$addedFirst) {
+								$addedFirst = true;
+								$action->setAttribute('data-icon', 'navigation');
+								$majorActions = $actions->fieldByName('MajorActions');
+								$majorActions ? $majorActions->push($action) : $actions->push($action);
+							} else {
+								$tab->push($action);
+							}
+						}
+					}
 				}
+				
 			}
 		}
 	}
@@ -160,25 +214,6 @@ class WorkflowApplicable extends DataExtension {
 		return $rootTabSet;
 	}
 	
-	public function updateFrontendActions($actions){
-		$active = $this->workflowService->getWorkflowFor($this->owner);
-		
-		if ($active) {
-			if ($this->canEditWorkflow()) {
-				$action = FormAction::create('updateworkflow', _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'));
-				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
-			}
-		} else {
-			$effective = $this->workflowService->getDefinitionFor($this->owner);
-			if ($effective) {
-				// we can add an action for starting off the workflow at least
-				$initial = $effective->getInitialAction();
-				$action = FormAction::create('startworkflow', $initial->Title);
-				$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
-			}
-		}
-	}
-
 	/**
 	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction. 
 	 * Returns an absolute link to the CMS UI for a Page object
