@@ -1,1 +1,44 @@
-id: {}
+id:
+  AdvancedWorkflowAdmin:
+    LastEdited: Diubah
+    Title: Judul
+  AssignUsersToWorkflowAction:
+    GROUPS: Grup
+  GridAction:
+    EXPORT_DESCRIPTION: Ekspor
+    Export: Ekspor
+  GridFieldEditButton_ss:
+    EXPORT: Ekspor
+  NotifyUsersWorkflowAction:
+    EMAILFROM: 'Surel dari'
+    EMAILSUBJECT: 'Judul surel'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'hari'
+  WorkflowAction:
+    Author: Pengarang
+    COMMENT: Komentar
+    CommentLabel: Komentar
+    FRONTENDCOMMENT: Komentar
+    TITLE: Judul
+    Transitions: Transisi
+    TypeLabel: Tipe
+  WorkflowActionInstance:
+    Title: Judul
+  WorkflowDefinition:
+    DESCRIPTION: Deskripsi
+    TITLE: Judul
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktif
+  WorkflowField:
+    CreateLabel: Buat
+    DeleteAction: Hapus
+    EditAction: Edit
+  WorkflowInstance:
+    ActionLogTitle: Log
+    TitleLabel: Judul
+  WorkflowTransition:
+    ACTION: Aksi
+    Active: Aktif
+    Passive: Pasiv
+    SELECTONE: '(Pilih satu)'
+    TYPE: Tipe

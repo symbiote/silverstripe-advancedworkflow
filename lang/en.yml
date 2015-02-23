@@ -57,7 +57,7 @@ en:
   GridFieldEditButton_ss:
     EXPORT: Export
   ImportedWorkflowTemplate:
-    PLURALNAME: 'Imported Workflow Templats'
+    PLURALNAME: 'Imported Workflow Templates'
     SINGULARNAME: 'Imported Workflow Template'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comment history up to this notification.'
@@ -84,6 +84,8 @@ en:
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple Approval Workflow Actions'
     SINGULARNAME: 'Simple Approval Workflow Action'
+  SiteTree:
+    WorkflowOptions: 'Workflow options'
   Workflow:
     WorkflowActionsTabTitle: 'Workflow Actions'
   WorkflowAction:
@@ -103,10 +105,11 @@ en:
     Transitions: Transitions
     TypeLabel: Type
   WorkflowActionInstance:
-    PLURALNAME: 'Workflow Action Instancs'
+    PLURALNAME: 'Workflow Action Instances'
     SINGULARNAME: 'Workflow Action Instance'
     Title: Title
   WorkflowApplicable:
+    ADDITIONAL_WORKFLOW_DEFINITIONS: 'Additional Workflows'
     DEFINITION: 'Applied Workflow'
     EFFECTIVE_WORKFLOW: 'Effective Workflow'
     INHERIT: 'Inherit from parent'
@@ -119,6 +122,7 @@ en:
     CHOOSE_TEMPLATE_RIGHT: 'If set, this workflow definition will be automatically updated if the template is changed'
     DESCRIPTION: Description
     GROUPS: 'Restrict to Groups'
+    INITIAL_ACTION_BUTTON_TEXT: 'Initial Action Button Text'
     LATEST_VERSION: 'Latest version is %s'
     PLURALNAME: 'Workflow Definitions'
     REMINDEREMAIL: 'Reminder Email'
@@ -159,7 +163,7 @@ en:
     ActionLogTitle: Log
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
     NEXT_ACTION: 'Next Action'
-    PLURALNAME: 'Workflow Instancs'
+    PLURALNAME: 'Workflow Instances'
     REASSIGN_HEADER: 'Reassign workflow'
     SINGULARNAME: 'Workflow Instance'
     TITLE_FOR_DO: '%s - %s'
