@@ -71,7 +71,12 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 	}
 	
 	public function updateItemEditForm($form) {
-		$this->updateEditForm($form);
+		$record = $form->getRecord();
+		if ($record && $record->hasExtension('WorkflowApplicable')) {
+			$actions = $form->Actions();
+			$record->extend('updateCMSActions', $actions);
+			$this->updateEditForm($form);
+		}
 	}
 
 	/**
