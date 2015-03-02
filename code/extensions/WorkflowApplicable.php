@@ -99,6 +99,7 @@ class WorkflowApplicable extends DataExtension {
 			// Allow an optional selection of additional workflow definitions.
 
 			if($this->owner->WorkflowDefinitionID) {
+				$fields->removeByName('AdditionalWorkflowDefinitions');
 				unset($definitions[$this->owner->WorkflowDefinitionID]);
 				$tab->push($additional = ListboxField::create(
 					'AdditionalWorkflowDefinitions',
@@ -175,7 +176,7 @@ class WorkflowApplicable extends DataExtension {
 
 						// Instantiate a new action menu for any data objects.
 
-						$menu = $this->createActionMenus();
+						$menu = $this->createActionMenu();
 						$actions->push($menu);
 					}
 					$tab = Tab::create(
