@@ -27,9 +27,8 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 
 		$svc = singleton('WorkflowService');
 		$svc->startWorkflow($item, $workflowID);
-
-		$negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
-		return $negotiator->respond($this->owner->getRequest());
+		
+		return $this->returnResponse($form);
 	}
 
 	/**
@@ -116,8 +115,18 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			$workflow->execute();
 		}
 
+		return $this->returnResponse($form);
+	}
+	
+	protected function returnResponse($form) {
+		if ($this->owner instanceof GridFieldDetailForm_ItemRequest) {
+			$record = $form->getRecord();
+			if ($record && $record->exists()) {
+				return $this->owner->edit($this->owner->getRequest());
+			}
+		} 
+		
 		$negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
-
 		return $negotiator->respond($this->owner->getRequest());
 	}
 	
