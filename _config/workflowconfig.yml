@@ -8,3 +8,6 @@ SiteTree:
 CMSPageEditController:
     extensions:
         - AdvancedWorkflowExtension
+GridFieldDetailForm_ItemRequest:
+    extensions:
+        - AdvancedWorkflowExtension
