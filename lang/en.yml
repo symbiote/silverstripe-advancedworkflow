@@ -7,10 +7,12 @@ en:
     CREATE_WORKFLOW_HELP: 'Users can create workflow definitions'
     DELETE_WORKFLOW: 'Delete workflow'
     DELETE_WORKFLOW_HELP: 'Users can delete workflow definitions and active workflows'
+    JOB_REMINDER_COMMENT: '%s: Reminder email sent\n\n'
     REASSIGNACTIVE: 'Reassign active workflows'
     REASSIGNACTIVEHELP: 'Users can reassign active workflows to different users and groups'
     VIEWACTIVE: 'View active workflows'
     VIEWACTIVEHELP: 'Users can view active workflows via the workflows admin panel'
+    WORKFLOW_REMINDER_JOB: 'Workflow Reminder Job'
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'You must be logged in'
   AdvancedWorkflowAdmin:
@@ -113,8 +115,6 @@ en:
     DEFINITION: 'Applied Workflow'
     EFFECTIVE_WORKFLOW: 'Effective Workflow'
     INHERIT: 'Inherit from parent'
-    NONE: (none)
-    UPDATE_WORKFLOW: 'Update Workflow'
     WORKFLOWLOG: 'Workflow Log'
   WorkflowDefinition:
     ADDAFTERSAVING: 'You can add workflow steps after you save for the first time.'
@@ -162,7 +162,6 @@ en:
   WorkflowInstance:
     ActionLogTitle: Log
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
-    NEXT_ACTION: 'Next Action'
     PLURALNAME: 'Workflow Instances'
     REASSIGN_HEADER: 'Reassign workflow'
     SINGULARNAME: 'Workflow Instance'
