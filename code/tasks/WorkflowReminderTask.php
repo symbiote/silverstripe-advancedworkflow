@@ -11,41 +11,42 @@ class WorkflowReminderTask extends BuildTask {
 	protected $description = 'Sends out workflow reminder emails to stale workflow instances';
 
 	public function run($request) {
-		$sent   = 0;
-		$filter = '"WorkflowStatus" IN (\'Active\', \'Paused\') AND "RemindDays" > 0';
-		$join   = 'INNER JOIN "WorkflowDefinition" ON "DefinitionID" = "WorkflowDefinition"."ID"';
-		$active = DataObject::get('WorkflowInstance', $filter, null, $join);
+		$sent = 0;
+		if (WorkflowInstance::get()->count()) { // Don't attempt the filter if no instances -- prevents a crash
+			$active = WorkflowInstance::get()
+					->innerJoin('WorkflowDefinition', '"DefinitionID" = "WorkflowDefinition"."ID"')
+					->filter(array('WorkflowStatus' => array('Active', 'Paused'), 'RemindDays:GreaterThan' => '0'));
+			$active->filter(array('RemindDays:GreaterThan' => '0'));
+			if ($active) foreach ($active as $instance) {
+				$edited = strtotime($instance->LastEdited);
+				$days   = $instance->Definition()->RemindDays;
 
-		if ($active) foreach ($active as $instance) {
-			$edited = strtotime($instance->LastEdited);
-			$days   = $instance->Definition()->RemindDays;
+				if ($edited + $days * 3600 * 24 > time()) {
+					continue;
+				}
 
-			if ($edited + $days * 3600 * 24 > time()) {
-				continue;
+				$email   = new Email();
+				$bcc     = '';
+				$members = $instance->getAssignedMembers();
+				$target  = $instance->getTarget();
+
+				if (!$members || !count($members)) continue;
+
+				$email->setSubject("Workflow Reminder: $instance->Title");
+				$email->setBcc(implode(', ', $members->column('Email')));
+				$email->setTemplate('WorkflowReminderEmail');
+				$email->populateTemplate(array(
+					'Instance' => $instance,
+					'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
+				));
+
+				$email->send();
+				$sent++;
+
+				$instance->LastEdited = time();
+				$instance->write();
 			}
-
-			$email   = new Email();
-			$bcc     = '';
-			$members = $instance->getAssignedMembers();
-			$target  = $instance->getTarget();
-
-			if (!$members || !count($members)) continue;
-
-			$email->setSubject("Workflow Reminder: $instance->Title");
-			$email->setBcc(implode(', ', $members->column('Email')));
-			$email->setTemplate('WorkflowReminderEmail');
-			$email->populateTemplate(array(
-				'Instance' => $instance,
-				'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
-			));
-
-			$email->send();
-			$sent++;
-
-			$instance->LastEdited = time();
-			$instance->write();
 		}
-
 		echo "Sent $sent workflow reminder emails.\n";
 	}
 
