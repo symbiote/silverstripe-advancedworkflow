@@ -39,7 +39,7 @@ en:
   AllowEditing:
     ByAssignees: 'By Assignees'
     ContentSettings: 'Content Settings'
-    NoString: No
+    NoString: 'No'
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Assign Users'
     GROUPS: Groups
