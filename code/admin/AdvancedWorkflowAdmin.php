@@ -5,9 +5,9 @@
  */
 class AdvancedWorkflowAdmin extends ModelAdmin {
 
-	public static $menu_title    = 'Workflows';
-	public static $menu_priority = -1;
-	public static $url_segment   = 'workflows';
+	private static $menu_title    = 'Workflows';
+	private static $menu_priority = -1;
+	private static $url_segment   = 'workflows';
 	private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
 	
 	/**
@@ -25,24 +25,24 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		'' => 'index'
 	);
 
-	public static $managed_models  = 'WorkflowDefinition';
-	
-	public static $model_importers = array(
+	private static $managed_models  = 'WorkflowDefinition';
+
+	private static $model_importers = array(
 		'WorkflowDefinition' => 'WorkflowBulkLoader'
 	);
-	
-	public static $dependencies = array(
+
+	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
 
-	public static $fileEditActions = 'getCMSActions';
+	private static $fileEditActions = 'getCMSActions';
 
 	/**
 	 * Defaults are set in {@link getEditForm()}.
 	 * 
 	 * @var array
 	 */
-	public static $fieldOverrides = array();
+	private static $fieldOverrides = array();
 	
 	/**
 	 * @var WorkflowService
