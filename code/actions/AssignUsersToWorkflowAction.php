@@ -40,9 +40,9 @@ SQL;
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
-		
+
 		$cmsUsers = Member::mapInCMSGroups();
-		
+
 		$fields->addFieldsToTab('Root.Main', array(
 			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
 			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
@@ -61,7 +61,7 @@ SQL;
 			'AssignInitiator'	=> _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
 		));
 	}
-	
+
 	/**
 	 * Returns a set of all Members that are assigned to this WorkflowAction subclass, either directly or via a group.
 	 *
@@ -70,17 +70,17 @@ SQL;
 	public function getAssignedMembers() {
 		$members = $this->Users();
 		$groups  = $this->Groups();
-		
+
 		// Can't merge instances of DataList so convert to something where we can
 		$_members = ArrayList::create();
 		$members->each(function($item) use(&$_members) {
 			$_members->push($item);
 		});
-		
+
 		$_groups = ArrayList::create();
 		$groups->each(function($item) use(&$_groups) {
 			$_groups->push($item);
-		});		
+		});
 
 		foreach($_groups as $group) {
 			$_members->merge($group->Members());
@@ -88,5 +88,5 @@ SQL;
 
 		$_members->removeDuplicates();
 		return $_members;
-	}	
+	}
 }

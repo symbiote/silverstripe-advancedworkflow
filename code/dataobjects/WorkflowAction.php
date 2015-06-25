@@ -2,7 +2,7 @@
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
  * the action(s) that occur while in that state. An action can then have
- * subsequent transitions out of the current state. 
+ * subsequent transitions out of the current state.
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -36,8 +36,8 @@ class WorkflowAction extends DataObject {
 	);
 
 	/**
-	 * The type of class to use for instances of this workflow action that are used for storing the 
-	 * data of the instance. 
+	 * The type of class to use for instances of this workflow action that are used for storing the
+	 * data of the instance.
 	 *
 	 * @var string
 	 */
@@ -47,10 +47,10 @@ class WorkflowAction extends DataObject {
 
 	/**
 	 * Can documents in the current workflow state be edited?
-	 * 
+	 *
 	 * Only return true or false if this is an absolute value; the WorkflowActionInstance
 	 * will try and figure out an appropriate value for the actively running workflow
-	 * if null is returned from this method. 
+	 * if null is returned from this method.
 	 *
 	 * @param  DataObject $target
 	 * @return bool
@@ -78,33 +78,33 @@ class WorkflowAction extends DataObject {
 	public function canPublishTarget(DataObject $target) {
 		return null;
 	}
-	
+
 	/**
 	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
-	 * 
+	 *
 	 * @param  Member $member
 	 * @return bool
 	 */
 	public function canCreate($member = null) {
 		return $this->WorkflowDef()->canCreate($member);
 	}
-	
+
 	/**
 	 * @param  Member $member
 	 * @return bool
-	 */	
+	 */
 	public function canEdit($member = null) {
 		return $this->canCreate($member);
 	}
-	
+
 	/**
 	 * @param  Member $member
 	 * @return bool
-	 */		
+	 */
 	public function canDelete($member = null) {
 		return $this->WorkflowDef()->canDelete($member);
 	}
-	
+
 	/*
 	 * If there is only a single action defined for a workflow, there's no sense
 	 * in allowing users to add a transition to it (and causing errors).
@@ -114,7 +114,7 @@ class WorkflowAction extends DataObject {
 	 */
 	public function canAddTransition() {
 		return ($this->WorkflowDef()->numChildren() >1);
-	}	
+	}
 
 	/**
 	 * Gets an object that is used for saving the actual state of things during
@@ -136,7 +136,7 @@ class WorkflowAction extends DataObject {
 	 * Perform whatever needs to be done for this action. If this action can be considered executed, then
 	 * return true - if not (ie it needs some user input first), return false and 'execute' will be triggered
 	 * again at a later point in time after the user has provided more data, either directly or indirectly.
-	 * 
+	 *
 	 * @param  WorkflowInstance $workflow
 	 * @return bool Returns true if this action has finished.
 	 */
@@ -151,7 +151,7 @@ class WorkflowAction extends DataObject {
 
 		parent::onBeforeWrite();
 	}
-	
+
 	/**
 	 * When deleting an action from a workflow definition, make sure that workflows currently paused on that action
 	 * are deleted
@@ -179,7 +179,7 @@ class WorkflowAction extends DataObject {
 			$transition->delete();
 		}
 	}
-	
+
 	/**
 	 * Called when the current target of the workflow has been updated
 	 */
@@ -194,7 +194,7 @@ class WorkflowAction extends DataObject {
 	}
 
 	public function getCMSFields() {
-		
+
 		$fields = new FieldList(new TabSet('Root'));
 		$typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
 		$fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
@@ -204,7 +204,7 @@ class WorkflowAction extends DataObject {
 			'The Title is used as the button label for this Workflow Action'
 		));
 		$fields->addFieldToTab('Root.Main', $titleField);
-		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $this->fieldLabel('AllowEditing'), 
+		$fields->addFieldToTab('Root.Main', new DropdownField('AllowEditing', $this->fieldLabel('AllowEditing'),
 			array(
 				'By Assignees' => _t('AllowEditing.ByAssignees', 'By Assignees'),
 				'Content Settings' => _t('AllowEditing.ContentSettings', 'Content Settings'),
@@ -223,7 +223,7 @@ class WorkflowAction extends DataObject {
 
 	public function summaryFields() {
 		return array(
-			'Title' => $this->fieldLabel('Title'), 
+			'Title' => $this->fieldLabel('Title'),
 			'Transitions' => $this->fieldLabel('Transitions'),
 		);
 	}
@@ -240,14 +240,14 @@ class WorkflowAction extends DataObject {
 
 		return $labels;
 	}
-	
+
 	/**
 	 * Used for Front End Workflows
 	 */
-	public function updateFrontendWorkflowFields($fields, $workflow){	
-		
-	}	
-	
+	public function updateFrontendWorkflowFields($fields, $workflow){
+
+	}
+
 
 	public function Icon() {
 		return $this->stat('icon');
