@@ -58,8 +58,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'All users attached to the workflow will be sent an email when this action is run.'),
 			'EmailSubject'      => _t('NotifyUsersWorkflowAction.EMAILSUBJECT', 'Email subject'),
 			'EmailFrom'         => _t('NotifyUsersWorkflowAction.EMAILFROM', 'Email from'),
-			'ListingTemplateID' => _t('NotifyUsersWorkflowAction.LISTING_TEMPLATE', 
-				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). 
+			'ListingTemplateID' => _t('NotifyUsersWorkflowAction.LISTING_TEMPLATE',
+				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions).
 					Also available will be all properties of the current Workflow Instance'),
 			'EmailTemplate'     => _t('NotifyUsersWorkflowAction.EMAILTEMPLATE', 'Email template'),
 			'FormattingHelp'    => _t('NotifyUsersWorkflowAction.FORMATTINGHELP', 'Formatting Help')
@@ -77,7 +77,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$member    = $this->getMemberFields();
 		$initiator = $this->getMemberFields($workflow->Initiator());
 		$variables = array();
-		
+
 		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
 		foreach($initiator as $field => $val)  $variables["\$Initiator.$field"] = $val;
@@ -96,7 +96,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'Context'	=> $workflow->getTarget(),
 			'CommentHistory' => $variables["\$CommentHistory"]
 		));
-		
+
 		if ($this->ListingTemplateID) {
 			$item = $workflow->customise(array(
 				'Items'		=> $workflow->Actions(),
@@ -108,9 +108,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
 			$view = SSViewer::fromString($template->ItemTemplate);
 		} else {
-			$view = SSViewer::fromString($this->EmailTemplate);			
+			$view = SSViewer::fromString($this->EmailTemplate);
 		}
-		
+
 		$body = $view->process($item);
 		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
 
@@ -170,7 +170,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		return $result;
 	}
-	
+
 
 	/**
 	 * Returns a basic set of instructions on how email templates are populated with variables.

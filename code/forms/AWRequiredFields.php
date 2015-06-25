@@ -28,7 +28,7 @@ class AWRequiredFields extends RequiredFields {
 			if($formField && $msg = $formField->getCustomValidationMessage()) {
 				$errorMessage = $msg;
 			}
-			
+
 			$this->validationError(
 				$fieldName,
 				$errorMessage,
@@ -51,7 +51,7 @@ class AWRequiredFields extends RequiredFields {
 	 * @return array $return
 	 */
 	public function getExtendedValidationRoutines() {
-		// Setup a return array 
+		// Setup a return array
 		$return = array(
 			'fieldValid'=>true,
 			'fieldName'	=>null,

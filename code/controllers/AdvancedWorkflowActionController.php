@@ -7,10 +7,10 @@
  * @license BSD License http://silverstripe.org/bsd-license/
  */
 class AdvancedWorkflowActionController extends Controller {
-	
+
 	public function transition($request) {
 		if (!Member::currentUserID()) {
-			return Security::permissionFailure($this, 
+			return Security::permissionFailure($this,
 				_t(
 					'AdvancedWorkflowActionController.ACTION_ERROR',
 					"You must be logged in"

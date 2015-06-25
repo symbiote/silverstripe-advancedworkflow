@@ -56,7 +56,7 @@ class WorkflowDefinition extends DataObject {
 	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
-	
+
 	/**
 	 * @var WorkflowService
 	 */
@@ -83,7 +83,7 @@ class WorkflowDefinition extends DataObject {
 		}
 		parent::onBeforeWrite();
 	}
-	
+
 	/**
 	 * After we've been written, check whether we've got a template and to then
 	 * create the relevant actions etc.
@@ -100,20 +100,20 @@ class WorkflowDefinition extends DataObject {
 			$this->workflowService->defineFromTemplate($this, $this->Template);
 		}
 	}
-	
+
 	/**
-	 * Ensure all WorkflowDefinition relations are removed on delete. If we don't do this, 
-	 * we see issues with targets previously under the control of a now-deleted workflow, 
+	 * Ensure all WorkflowDefinition relations are removed on delete. If we don't do this,
+	 * we see issues with targets previously under the control of a now-deleted workflow,
 	 * becoming stuck, even if a new workflow is subsequently assigned to it.
 	 *
 	 * @return null
 	 */
 	public function onBeforeDelete() {
 		parent::onBeforeDelete();
-		
+
 		// Delete related import
 		$this->deleteRelatedImport();
-		
+
 		// Reset/unlink related HasMany|ManyMany relations and their orphaned objects
 		$this->removeRelatedHasLists();
 	}
@@ -124,7 +124,7 @@ class WorkflowDefinition extends DataObject {
 	 * - WorkflowInstance
 	 * - WorkflowTransition
 	 * @see WorkflowAction::onAfterDelete()
-	 * 
+	 *
 	 * @return void
 	 */
 	private function removeRelatedHasLists() {
@@ -138,9 +138,9 @@ class WorkflowDefinition extends DataObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * Deletes related ImportedWorkflowTemplate objects.
-	 * 
+	 *
 	 * @return void
 	 */
 	private function deleteRelatedImport() {
@@ -167,9 +167,9 @@ class WorkflowDefinition extends DataObject {
 	}
 
 	public function getCMSFields() {
-		
+
 		$cmsUsers = Member::mapInCMSGroups();
-		
+
 		$fields = new FieldList(new TabSet('Root'));
 
 		$fields->addFieldToTab('Root.Main', new TextField('Title', $this->fieldLabel('Title')));
@@ -193,7 +193,7 @@ class WorkflowDefinition extends DataObject {
 				new NumericField('RemindDays', ''),
 				new LabelField('ReminderEmailAfter', $after)
 			));
-		}		
+		}
 
 		if($this->ID) {
 			if ($this->Template) {
@@ -202,30 +202,30 @@ class WorkflowDefinition extends DataObject {
 				$fields->addFieldToTab('Root.Main', new ReadonlyField('TemplateDesc', _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'), $template ? $template->getDescription() : ''));
 				$fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', $this->fieldLabel('TemplateVersion')));
 				$tv->setRightTitle(sprintf(_t('WorkflowDefinition.LATEST_VERSION', 'Latest version is %s'), $template ? $template->getVersion() : ''));
-				
+
 			}
 
 			$fields->addFieldToTab('Root.Main', new WorkflowField(
-				'Workflow', _t('WorkflowDefinition.WORKFLOW', 'Workflow'), $this 
+				'Workflow', _t('WorkflowDefinition.WORKFLOW', 'Workflow'), $this
 			));
 		} else {
 			// add in the 'template' info
 			$templates = $this->workflowService->getTemplates();
-			
+
 			if (is_array($templates)) {
 				$items = array('' => '');
 				foreach ($templates as $template) {
 					$items[$template->getName()] = $template->getName();
 				}
 				$templates = array_combine(array_keys($templates), array_keys($templates));
-				
+
 				$fields->addFieldToTab('Root.Main', $dd = new DropdownField('Template', _t('WorkflowDefinition.CHOOSE_TEMPLATE', 'Choose template (optional)'), $items));
 				$dd->setRightTitle(_t('WorkflowDefinition.CHOOSE_TEMPLATE_RIGHT', 'If set, this workflow definition will be automatically updated if the template is changed'));
 			}
-			
+
 			/*
 			 * Uncomment to allow pre-uploaded exports to appear in a new DropdownField.
-			 * 
+			 *
 			 * $import = singleton('WorkflowDefinitionImporter')->getImportedWorkflows();
 			 * if (is_array($import)) {
 			 * $_imports = array('' => '');
@@ -235,8 +235,8 @@ class WorkflowDefinition extends DataObject {
 			 * $imports = array_combine(array_keys($_imports), array_keys($_imports));
 			 * $fields->addFieldToTab('Root.Main', new DropdownField('Import', _t('WorkflowDefinition.CHOOSE_IMPORT', 'Choose import (optional)'), $imports));
 			 * }
-			 */			
-			
+			 */
+
 			$message = _t(
 				'WorkflowDefinition.ADDAFTERSAVING',
 				'You can add workflow steps after you save for the first time.'
@@ -273,7 +273,7 @@ class WorkflowDefinition extends DataObject {
 			$config = new GridFieldConfig_Base();
 			$config->addComponent(new GridFieldEditButton());
 			$config->addComponent(new GridFieldDetailForm());
-			
+
 			$completed = new GridField(
 				'Completed',
 				_t('WorkflowDefinition.WORKFLOWCOMPLETEDIINSTANCES', 'Completed Workflow Instances'),
@@ -292,12 +292,12 @@ class WorkflowDefinition extends DataObject {
 			);
 			$fields->addFieldToTab('Root.Completed', $completed);
 		}
-		
+
 		$this->extend('updateCMSFields', $fields);
 
 		return $fields;
 	}
-	
+
 	public function updateAdminActions($actions) {
 		if ($this->Template) {
 			$template = $this->workflowService->getNamedTemplate($this->Template);
@@ -307,7 +307,7 @@ class WorkflowDefinition extends DataObject {
 			}
 		}
 	}
-	
+
 	public function updateFromTemplate() {
 		if ($this->Template) {
 			$template = $this->workflowService->getNamedTemplate($this->Template);
@@ -321,7 +321,7 @@ class WorkflowDefinition extends DataObject {
 	 * otherwise have the same name.
 	 *
 	 * @return string
-	 * @todo	Filter query on current-user's workflows. Avoids confusion when other users may already have 'My Workflow 1' 
+	 * @todo	Filter query on current-user's workflows. Avoids confusion when other users may already have 'My Workflow 1'
 	 *			and user sees 'My Workflow 2'
 	 */
 	public function getDefaultWorkflowTitle() {
@@ -329,9 +329,9 @@ class WorkflowDefinition extends DataObject {
 		$incomingTitle = $this->incomingTitle();
 		$defs = DataObject::get('WorkflowDefinition')->map()->toArray();
 		$tmp = array();
-		
+
 		foreach($defs as $def) {
-			$parts = preg_split("#\s#", $def, -1, PREG_SPLIT_NO_EMPTY);		
+			$parts = preg_split("#\s#", $def, -1, PREG_SPLIT_NO_EMPTY);
 			$lastPart = array_pop($parts);
 			$match = implode(' ', $parts);
 			// @todo do all this in one preg_match_all() call
@@ -350,10 +350,10 @@ class WorkflowDefinition extends DataObject {
 		}
 		return $incomingTitle.' '.$incr;
 	}
-	
+
 	/**
 	 * Return the workflow definition title according to the source
-	 * 
+	 *
 	 * @return string
 	 */
 	public function incomingTitle() {
@@ -375,7 +375,7 @@ class WorkflowDefinition extends DataObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param Member $member
 	 * @return boolean
 	 */
@@ -388,16 +388,16 @@ class WorkflowDefinition extends DataObject {
 		}
 		return Permission::checkMember($member, 'CREATE_WORKFLOW');
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param Member $member
 	 * @return boolean
-	 */	
+	 */
 	public function canView($member=null) {
 		return $this->userHasAccess($member);
 	}
-	
+
 	/**
 	 *
 	 * @param Member $member
@@ -406,7 +406,7 @@ class WorkflowDefinition extends DataObject {
 	public function canEdit($member=null) {
 		return $this->canCreate($member);
 	}
-	
+
 	/**
 	 *
 	 * @param Member $member
@@ -431,7 +431,7 @@ class WorkflowDefinition extends DataObject {
 		 * @see {@link $this->onBeforeDelete()}
 		 */
 		return Permission::checkMember($member, 'DELETE_WORKFLOW');
-	}	
+	}
 
 	/**
 	 * Checks whether the passed user is able to view this ModelAdmin
@@ -449,5 +449,5 @@ class WorkflowDefinition extends DataObject {
 		if(Permission::checkMember($member, "VIEW_ACTIVE_WORKFLOWS")) {
 			return true;
 		}
-	}	
+	}
 }

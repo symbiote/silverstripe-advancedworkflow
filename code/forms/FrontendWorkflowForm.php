@@ -7,22 +7,22 @@ class FrontendWorkflowForm extends Form{
 		if(isset($funcName)) {
 			Form::set_current_action($funcName);
 		}
-	
+
 		// Populate the form
 		$this->loadDataFrom($vars, true);
-	
+
 		// Protection against CSRF attacks
 		$token = $this->getSecurityToken();
 		if(!$token->checkRequest($request)) {
 			$this->httpError(400, _t('AdvancedWorkflowFrontendForm.SECURITYTOKENCHECK', "Security token doesn't match, possible CSRF attack."));
 		}
-	
+
 		// Determine the action button clicked
 		$funcName = null;
 		foreach($vars as $paramName => $paramVal) {
 			if(substr($paramName,0,7) == 'action_') {
-				
-				// Added for frontend workflow form - get / set transitionID on controller, 
+
+				// Added for frontend workflow form - get / set transitionID on controller,
 				// unset action and replace with doFrontEndAction action
 				if(substr($paramName,0,18) == 'action_transition_') {
 					$this->controller->transitionID = substr($paramName,strrpos($paramName,'_') +1);
@@ -31,7 +31,7 @@ class FrontendWorkflowForm extends Form{
 					$paramName = 'action_doFrontEndAction';
 					$paramVal = 'doFrontEndAction';
 				}
-			
+
 				// Break off querystring arguments included in the action
 				if(strpos($paramName,'?') !== false) {
 					list($paramName, $paramVars) = explode('?', $paramName, 2);
@@ -39,7 +39,7 @@ class FrontendWorkflowForm extends Form{
 					parse_str($paramVars, $newRequestParams);
 					$vars = array_merge((array)$vars, (array)$newRequestParams);
 				}
-			
+
 				// Cleanup action_, _x and _y from image fields
 				$funcName = preg_replace(array('/^action_/','/_x$|_y$/'),'',$paramName);
 				break;
@@ -50,11 +50,11 @@ class FrontendWorkflowForm extends Form{
 		if(!isset($funcName) && $defaultAction = $this->defaultAction()){
 			$funcName = $defaultAction->actionName();
 		}
-		
+
 		if(isset($funcName)) {
 			$this->setButtonClicked($funcName);
 		}
-	
+
 		// Permission checks (first on controller, then falling back to form)
 		if(
 			// Ensure that the action is actually a button or method on the form,
@@ -65,7 +65,7 @@ class FrontendWorkflowForm extends Form{
 			&& !$this->Actions()->fieldByName('action_' . $funcName)
 		) {
 			return $this->httpError(
-				403, 
+				403,
 				sprintf(_t('AdvancedWorkflowFrontendForm.ACTIONCONTROLLERCHECK', 'Action "%s" not allowed on controller (Class: %s)'), $funcName, get_class($this->controller))
 			);
 		} elseif(
@@ -75,17 +75,17 @@ class FrontendWorkflowForm extends Form{
 			// all form methods are callable (e.g. the legacy "callfieldmethod()")
 		) {
 			return $this->httpError(
-				403, 
+				403,
 				sprintf(_t('AdvancedWorkflowFrontendForm.ACTIONFORMCHECK','Action "%s" not allowed on form (Name: "%s")'), $funcName, $this->Name())
 			);
 		}
-	
+
 		if ($wfTransition = $this->controller->getCurrentTransition()) {
 			$wfTransType = $wfTransition->Type;
 		} else {
 			$wfTransType = null; //ie. when a custom Form Action is defined in WorkflowAction
 		}
-		
+
 		// Validate the form
 		if(!$this->validate() && $wfTransType == 'Active') {
 			if(Director::is_ajax()) {
@@ -104,7 +104,7 @@ class FrontendWorkflowForm extends Form{
 						$response = new SS_HTTPResponse($this->forTemplate());
 						$response->addHeader('Content-Type', 'text/html');
 					}
-				
+
 					return $response;
 				}
 			} else {
@@ -120,7 +120,7 @@ class FrontendWorkflowForm extends Form{
 				return Director::redirectBack();
 			}
 		}
-	
+
 		// First, try a handler method on the controller (has been checked for allowed_actions above already)
 		if($this->controller->hasMethod($funcName)) {
 			return $this->controller->$funcName($vars, $this, $request);
@@ -128,7 +128,7 @@ class FrontendWorkflowForm extends Form{
 		} elseif($this->hasMethod($funcName)) {
 			return $this->$funcName($vars, $this, $request);
 		}
-	
+
 		return $this->httpError(404);
 	}
 }

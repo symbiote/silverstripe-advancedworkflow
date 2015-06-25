@@ -1,16 +1,16 @@
 <?php
 /**
  * WorkflowApplicable extension specifically for File objects, which don't have the same CMS
- * UI structure so need to be handled a little differently. Additionally, it doesn't really 
+ * UI structure so need to be handled a little differently. Additionally, it doesn't really
  * work without custom code to handle the triggering of workflow, and in general is not
- * ready for production use just yet. 
+ * ready for production use just yet.
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
 class FileWorkflowApplicable extends WorkflowApplicable {
-	
+
 	public function updateSummaryFields(&$fields) {
 		$fields['ID'] = 'ID';
 		$fields['ParentID'] = 'ParentID';
@@ -28,7 +28,7 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 		if ($active) {
 			$current = $active->CurrentAction();
 			$wfFields = $active->getWorkflowFields();
-			
+
 			// loading data in a somewhat hack way
 			$form = new Form($this, 'DummyForm', $wfFields, new FieldList());
 			$form->loadDataFrom($current);
@@ -43,11 +43,11 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 
 	public function onAfterWrite() {
 		parent::onAfterWrite();
-		
+
 		$workflow = $this->workflowService->getWorkflowFor($this->owner);
 		$rawData = $this->owner->toMap();
 		if ($workflow && $this->owner->TransitionID) {
-			// we want to transition, so do so if that's a valid transition to take. 
+			// we want to transition, so do so if that's a valid transition to take.
 			$action = $workflow->CurrentAction();
 			if (!$this->canEditWorkflow()) {
 				return;
@@ -57,13 +57,13 @@ class FileWorkflowApplicable extends WorkflowApplicable {
 			unset($allowedFields['TransitionID']);
 
 			$allowed = array_keys($allowedFields);
-			
+
 			foreach ($allowed as $field) {
 				if (isset($rawData[$field])) {
 					$action->$field = $rawData[$field];
 				}
 			}
-			
+
 			$action->write();
 
 			if (isset($rawData['TransitionID']) && $rawData['TransitionID']) {
