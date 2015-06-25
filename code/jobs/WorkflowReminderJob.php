@@ -7,13 +7,13 @@ if (class_exists('AbstractQueuedJob')) {
  */
 class WorkflowReminderJob extends AbstractQueuedJob {
 	const DEFAULT_REPEAT = 600;
-	
+
 	/**
 	 *
 	 * @var QueuedJobService
 	 */
 	public $queuedJobService;
-	
+
 	public function __construct($repeatInterval = 0) {
 		if (!$this->repeatInterval) {
 			$this->repeatInterval = $repeatInterval ? $repeatInterval : self::DEFAULT_REPEAT;
@@ -21,29 +21,29 @@ class WorkflowReminderJob extends AbstractQueuedJob {
 			$this->currentStep = 1;
 		}
 	}
-	
+
 	public function getTitle() {
 		return _t('AdvancedWorkflow.WORKFLOW_REMINDER_JOB', 'Workflow Reminder Job');
 	}
-	
+
 	/**
 	 * We only want one instance of this job ever
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getSignature() {
 		return md5($this->getTitle());
 	}
-	
+
 	public function process() {
 		$sent   = 0;
 		$filter = array(
 			'WorkflowStatus'						=> array('Active', 'Paused'),
 			'Definition.RemindDays:GreaterThan'		=> 0
 		);
-		
+
 		$active = WorkflowInstance::get()->filter($filter);
-		
+
 		foreach ($active as $instance) {
 			$edited = strtotime($instance->LastEdited);
 			$days   = $instance->Definition()->RemindDays;
@@ -74,7 +74,7 @@ class WorkflowReminderJob extends AbstractQueuedJob {
 
 			// add a comment to the workflow if possible
 			$action = $instance->CurrentAction();
-			
+
 			$currentComment = $action->Comment;
 			$action->Comment = sprintf(_t('AdvancedWorkflow.JOB_REMINDER_COMMENT', '%s: Reminder email sent\n\n'), date('Y-m-d H:i:s')) . $currentComment;
 			try {
@@ -93,7 +93,7 @@ class WorkflowReminderJob extends AbstractQueuedJob {
 
 		$this->currentStep = 2;
 		$this->isComplete = true;
-		
+
 		$nextDate = date('Y-m-d H:i:s', time() + $this->repeatInterval);
 		$this->queuedJobService->queueJob(new WorkflowReminderJob($this->repeatInterval), $nextDate);
 	}

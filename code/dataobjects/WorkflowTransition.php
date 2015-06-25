@@ -7,7 +7,7 @@
  * this transition is valid for the state of the workflow that it a part of.
  *
  * Therefore, any logic around whether the workflow can proceed should be
- * managed within this method. 
+ * managed within this method.
  *
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -82,13 +82,13 @@ class WorkflowTransition extends DataObject {
 		$filter = '';
 
 		$reqParent = isset($_REQUEST['ParentID']) ? (int) $_REQUEST['ParentID'] : 0;
-        $attachTo = $this->ActionID ? $this->ActionID : $reqParent;
+		$attachTo = $this->ActionID ? $this->ActionID : $reqParent;
 
 		if ($attachTo) {
-            $action = DataObject::get_by_id('WorkflowAction', $attachTo);
-            if ($action && $action->ID) {
-                $filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
-            }
+			$action = DataObject::get_by_id('WorkflowAction', $attachTo);
+			if ($action && $action->ID) {
+				$filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
+			}
 		}
 
 		$actions = DataObject::get('WorkflowAction', $filter);
@@ -98,7 +98,7 @@ class WorkflowTransition extends DataObject {
 		}
 
 		$defaultAction = $action?$action->ID:"";
-		
+
 		$typeOptions = array(
 			'Active' => _t('WorkflowTransition.Active', 'Active'),
 			'Passive' => _t('WorkflowTransition.Passive', 'Passive'),
@@ -178,35 +178,35 @@ class WorkflowTransition extends DataObject {
 			$extended = $this->extend('extendCanExecute', $workflow);
 			if($extended) $return = min($extended);
 		}
-		
+
 		return $return !== false;
 	}
-	
+
 	/**
 	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
-	 * 
+	 *
 	 * @param  Member $member
 	 * @return bool
 	 */
 	public function canCreate($member = null) {
 		return $this->Action()->WorkflowDef()->canCreate($member);
 	}
-	
+
 	/**
 	 * @param  Member $member
 	 * @return bool
-	 */	
+	 */
 	public function canEdit($member = null) {
 		return $this->canCreate($member);
 	}
-	
+
 	/**
 	 * @param  Member $member
 	 * @return bool
-	 */		
+	 */
 	public function canDelete($member = null) {
 		return $this->canCreate($member);
-	}	
+	}
 
 	/**
 	 * Returns a set of all Members that are assigned to this transition, either directly or via a group.

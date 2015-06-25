@@ -9,7 +9,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	private static $menu_priority = -1;
 	private static $url_segment   = 'workflows';
 	private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
-	
+
 	/**
 	 *
 	 * @var array Allowable actions on this controller.
@@ -18,7 +18,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		'export',
 		'ImportForm'
 	);
-	
+
 	private static $url_handlers = array(
 		'$ModelClass/export/$ID!' => 'export',
 		'$ModelClass/$Action' => 'handleAction',
@@ -39,19 +39,19 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 
 	/**
 	 * Defaults are set in {@link getEditForm()}.
-	 * 
+	 *
 	 * @var array
 	 */
 	private static $fieldOverrides = array();
-	
+
 	/**
 	 * @var WorkflowService
 	 */
 	public $workflowService;
-	
+
 	/**
 	 * Initialise javascript translation files
-	 * 
+	 *
 	 * @return void
 	 */
 	public function init() {
@@ -61,7 +61,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
 		Requirements::css('advancedworkflow/css/WorkflowField.css');
 		Requirements::css('advancedworkflow/css/WorkflowGridField.css');
-	}	
+	}
 
 	/*
 	 * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
@@ -69,7 +69,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 	 */
 	public function getEditForm($id = null, $fields = null) {
 		$form = parent::getEditForm($id, $fields);
-		
+
 		// Show items submitted into a workflow for current user to action
 		$fieldName = 'PendingObjects';
 		$pending = $this->userObjects(Member::currentUser(), $fieldName);
@@ -141,7 +141,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			$formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
 			$form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
 		}
-		
+
 		$grid = $form->Fields()->dataFieldByName('WorkflowDefinition');
 		if ($grid) {
 			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemEditFormCallback(function ($form) {
@@ -150,12 +150,12 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 					$record->updateAdminActions($form->Actions());
 				}
 			});
-			
+
 			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemRequestClass('WorkflowDefinitionItemRequestClass');
 			$grid->getConfig()->addComponent(new GridFieldExportAction());
 			$grid->getConfig()->removeComponentsByType('GridFieldExportButton');
 		}
-		
+
 		return $form;
 	}
 
@@ -260,10 +260,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			return $this->workflowService->userSubmittedItems($user);
 		}
 	}
-	
+
 	/**
 	 * Spits out an exported version of the selected WorkflowDefinition for download.
-	 * 
+	 *
 	 * @param \SS_HTTPRequest $request
 	 * @return \SS_HTTPResponse
 	 */
@@ -282,11 +282,11 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			);
 			return $exporter->sendFile($fileData);
 		}
-	}	
-	
+	}
+
 	/**
 	 * Required so we can simply change the visible label of the "Import" button and lose some redundant form-fields.
-	 * 
+	 *
 	 * @return Form
 	 */
 	public function ImportForm() {
@@ -294,7 +294,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		if(!$form) {
 			return;
 		}
-		
+
 		$form->unsetAllActions();
 		$newActionList = new FieldList(array(
 			new FormAction('import', _t('AdvancedWorkflowAdmin.IMPORT', 'Import workflow'))
@@ -302,9 +302,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		$form->Fields()->fieldByName('_CsvFile')->getValidator()->setAllowedExtensions(array('yml', 'yaml'));
 		$form->Fields()->removeByName('EmptyBeforeImport');
 		$form->setActions($newActionList);
-		
+
 		return $form;
-	}	
+	}
 }
 
 class WorkflowDefinitionItemRequestClass extends GridFieldDetailForm_ItemRequest {

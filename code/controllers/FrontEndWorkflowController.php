@@ -100,13 +100,13 @@ abstract class FrontEndWorkflowController extends Controller {
 						
 		// set any requirements spcific to this contextobject
 		$active->setFrontendFormRequirements();
-                
+
 		// hooks for decorators
 		$this->extend('updateFrontEndWorkflowFields', $wfActions);
 		$this->extend('updateFrontEndWorkflowActions', $wfFields);
 		$this->extend('updateFrontEndRequiredFields', $wfValidator);
 		$this->extend('updateFrontendFormRequirements');
-       
+
 		$form = new FrontendWorkflowForm($this, 'Form/' . $this->getContextID(), $wfFields, $wfActions, $wfValidator);
 		
 		$form->addExtraClass("fwf");
@@ -114,7 +114,7 @@ abstract class FrontEndWorkflowController extends Controller {
 		if($wfDataObject) {
 			$form->loadDataFrom($wfDataObject);
 		}
-    
+
 		return $form;
 	}
 	
