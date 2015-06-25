@@ -82,13 +82,13 @@ class WorkflowTransition extends DataObject {
 		$filter = '';
 
 		$reqParent = isset($_REQUEST['ParentID']) ? (int) $_REQUEST['ParentID'] : 0;
-        $attachTo = $this->ActionID ? $this->ActionID : $reqParent;
+		$attachTo = $this->ActionID ? $this->ActionID : $reqParent;
 
 		if ($attachTo) {
-            $action = DataObject::get_by_id('WorkflowAction', $attachTo);
-            if ($action && $action->ID) {
-                $filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
-            }
+			$action = DataObject::get_by_id('WorkflowAction', $attachTo);
+			if ($action && $action->ID) {
+				$filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
+			}
 		}
 
 		$actions = DataObject::get('WorkflowAction', $filter);
