@@ -8,9 +8,9 @@
  * @subpackage tests
  */
 class WorkflowImportExportTest extends SapphireTest {
-	
+
 	public static $fixture_file = 'advancedworkflow/tests/workflowtemplateimport.yml';
-	
+
 	/**
 	 * Utility method, used in tests
 	 * @return \WorkflowDefinition
@@ -37,7 +37,7 @@ class WorkflowImportExportTest extends SapphireTest {
 		$transitionOne->write();
 
 		return $definition;
-	}	
+	}
 
 	/**
 	 * Create a WorkflowDefinition with some actions. Ensure an expected length of formatted template.
@@ -53,15 +53,15 @@ class WorkflowImportExportTest extends SapphireTest {
 			'ExportMetaData' => $exporter->ExportMetaData(),
 			'ExportActions' => $exporter->getDefinition()->Actions()
 		));
-		
+
 		$formatted = $exporter->format($templateData);
-		$numActions = count(preg_split("#\R#", $formatted)); 
-		
+		$numActions = count(preg_split("#\R#", $formatted));
+
 		$this->assertNotEmpty($formatted);
 		// Seems arbitrary, but if no actions, then the resulting YAML file is exactly 18 lines long
-		$this->assertGreaterThan(18, $numActions);				
+		$this->assertGreaterThan(18, $numActions);
 	}
-	
+
 	/**
 	 * Create a WorkflowDefinition with NO actions. Ensure an expected length of formatted template.
 	 */
@@ -73,18 +73,18 @@ class WorkflowImportExportTest extends SapphireTest {
 		$member->Surname = 'bloggs';
 		$exporter->setMember($member);
 		$templateData = new ArrayData(array());
-		
+
 		$formatted = $exporter->format($templateData);
-		$numActions = count(preg_split("#\R#", $formatted)); 
-		
+		$numActions = count(preg_split("#\R#", $formatted));
+
 		// Seems arbitrary, but if no actions, then the resulting YAML file is exactly 18 lines long
 		$this->assertEquals(18, $numActions);
-		
+
 		// Ensure outputted YAML has no blank lines, where SS's control structures would normally be
 		$numBlanks = preg_match("#^\s*$#m", $formatted);
-		$this->assertEquals(0, $numBlanks);		
+		$this->assertEquals(0, $numBlanks);
 	}
-	
+
 	/**
 	 * Tests a badly formatted YAML import for parsing (no headers)
 	 * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
@@ -115,10 +115,10 @@ Injector:
       templates:
         - %$ExportedWorkflow
 EOD;
-		
+
 		$importer->parseYAMLImport($source);
-	}	
-	
+	}
+
 	/**
 	 * Tests a badly formatted YAML import for parsing (missing YML colon)
 	 * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
@@ -152,10 +152,10 @@ Injector:
       templates:
         - %$ExportedWorkflow
 EOD;
-		
+
 		$importer->parseYAMLImport($source);
-	}	
-	
+	}
+
 	/**
 	 * Tests a well-formatted YAML import for parsing
 	 * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
@@ -188,12 +188,12 @@ Injector:
       templates:
         - %$ExportedWorkflow
 EOD;
-		
+
 		$this->assertNotEmpty($importer->parseYAMLImport($source));
 	}
-	
+
 	/**
-	 * Given no ImportedWorkflowTemplate fixture/input data, tests an empty array is returned 
+	 * Given no ImportedWorkflowTemplate fixture/input data, tests an empty array is returned
 	 * by WorkflowDefinitionImporter#getImportedWorkflows()
 	 */
 	public function testGetImportedWorkflowsNone() {
@@ -202,16 +202,16 @@ EOD;
 		$imports = $importer->getImportedWorkflows();
 		$this->assertEmpty($imports);
 	}
-	
+
 	/**
-	 * Given a single ImportedWorkflowTemplate fixture/input data, tests an non-empty array is returned 
+	 * Given a single ImportedWorkflowTemplate fixture/input data, tests an non-empty array is returned
 	 * by WorkflowDefinitionImporter#getImportedWorkflows()
-	 */	
+	 */
 	public function testGetImportedWorkflowsOne() {
 		$name = 'My Workflow 21/02/2014 09-01-29';
 		// Pretend a ImportedWorkflowTemplate object has been created by WorkflowBulkLoader
-		$this->objFromFixture('ImportedWorkflowTemplate', 'Import01');		
-		
+		$this->objFromFixture('ImportedWorkflowTemplate', 'Import01');
+
 		$importer = singleton('WorkflowDefinitionImporter');
 		$import = $importer->getImportedWorkflows($name);
 
@@ -220,22 +220,22 @@ EOD;
 		$this->assertEquals(1, count($import));
 		$this->assertEquals($name, $import->getName());
 	}
-	
+
 	/**
-	 * Given many ImportedWorkflowTemplate fixture/input data, tests an non-empty array is returned 
+	 * Given many ImportedWorkflowTemplate fixture/input data, tests an non-empty array is returned
 	 * by WorkflowDefinitionImporter#getImportedWorkflows()
-	 */	
+	 */
 	public function testGetImportedWorkflowsMany() {
 		// Pretend some ImportedWorkflowTemplate objects have been created by WorkflowBulkLoader
 		$this->objFromFixture('ImportedWorkflowTemplate', 'Import02');
 		$this->objFromFixture('ImportedWorkflowTemplate', 'Import03');
-		
+
 		$importer = singleton('WorkflowDefinitionImporter');
 		$imports = $importer->getImportedWorkflows();
 
 		$this->assertNotEmpty($imports);
 		$this->assertInternalType('array', $imports);
 		$this->assertGreaterThan(1, count($imports));
-	}	
-	
+	}
+
 }

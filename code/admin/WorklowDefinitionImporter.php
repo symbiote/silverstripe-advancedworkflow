@@ -1,16 +1,16 @@
 <?php
 /**
  * Workflow definition import-specific logic. @see {@link WorkflowDefinitionExporter}.
- * 
+ *
  * @author  russell@silverstripe.com
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
 class WorkflowDefinitionImporter {
-	
+
 	/**
 	 * Generates an array of WorkflowTemplate Objects of all uploaded workflows.
-	 * 
+	 *
 	 * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first constructor param matches $name
 	 *						is returned.
 	 * @return WorkflowTemplate $template | array $importedDefs
@@ -36,10 +36,10 @@ class WorkflowDefinitionImporter {
 		}
 		return $importedDefs;
 	}
-	
+
 	/**
 	 * Handles finding and parsing YAML input as a string or from the contents of a file.
-	 * 
+	 *
 	 * @see addYAMLConfigFile() on {@link SS_ConfigManifest} from where this logic was taken and adapted.
 	 * @param string $source YAML as a string or a filename
 	 * @return array
@@ -51,7 +51,7 @@ class WorkflowDefinitionImporter {
 
 		require_once('thirdparty/zend_translate_railsyaml/library/Translate/Adapter/thirdparty/sfYaml/lib/sfYamlParser.php');
 		$parser = new sfYamlParser();
-		
+
 		// Make sure the linefeeds are all converted to \n, PCRE '$' will not match anything else.
 		$convertLF = str_replace(array("\r\n", "\r"), "\n", $source);
 		/*
@@ -67,7 +67,7 @@ class WorkflowDefinitionImporter {
 			$msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_HEADER', 'Invalid YAML format.');
 			throw new ValidationException($msg);
 		}
-		
+
 		try {
 			$parsed = $parser->parse($parts[1]);
 			return $parsed;
@@ -75,5 +75,5 @@ class WorkflowDefinitionImporter {
 			$msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE', 'Invalid YAML format. Unable to parse.');
 			throw new ValidationException($msg);
 		}
-	}		
+	}
 }

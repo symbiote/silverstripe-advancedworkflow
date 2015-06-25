@@ -2,10 +2,10 @@
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
  * and is either currently running, or has finished.
- * 
+ *
  * Each step of the workflow has one of these created for it - it refers back
  * to the original action definition, but is unique for each step of the
- * workflow to ensure re-entrant behaviour. 
+ * workflow to ensure re-entrant behaviour.
  *
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
@@ -22,7 +22,7 @@ class WorkflowActionInstance extends DataObject {
 		'BaseAction' => 'WorkflowAction',
 		'Member'     => 'Member'
 	);
-	
+
 	private static $summary_fields = array(
 		'BaseAction.Title',
 		'Comment',
@@ -40,92 +40,92 @@ class WorkflowActionInstance extends DataObject {
 
 		return $labels;
 	}
-	
+
 	/**
 	 * Gets fields for when this is part of an active workflow
 	 */
 	public function updateWorkflowFields($fields) {
-		if ($this->BaseAction()->AllowCommenting) {	
+		if ($this->BaseAction()->AllowCommenting) {
 			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
 		}
 	}
-	
+
 	public function updateFrontendWorkflowFields($fields){
-		if ($this->BaseAction()->AllowCommenting) {		
+		if ($this->BaseAction()->AllowCommenting) {
 			$fields->push(new TextareaField('WorkflowActionInstanceComment', _t('WorkflowAction.FRONTENDCOMMENT', 'Comment')));
 		}
-		
+
 		$ba = $this->BaseAction();
-		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());	
+		$fields = $ba->updateFrontendWorkflowFields($fields, $this->Workflow());
 	}
 
 	/**
 	 * Gets Front-End DataObject
-	 * 
+	 *
 	 * Use the DataObject as defined in the WorkflowAction, otherwise fall back to the
 	 * context object.
-	 * 
+	 *
 	 * Useful for situations where front end workflow deals with multiple data objects
-	 * 
+	 *
 	 * @return DataObject
 	 */
 	public function getFrontEndDataObject() {
 		$obj = null;
 		$ba = $this->BaseAction();
-		
+
 		if ($ba->hasMethod('getFrontEndDataObject')) {
 			$obj = $ba->getFrontEndDataObject();
 		} else {
 			$obj = $this->Workflow()->getTarget();
 		}
-		
+
 		return $obj;
 	}
-	
+
 	public function updateFrontEndWorkflowActions($actions) {
 		$ba = $this->BaseAction();
-		
+
 		if ($ba->hasMethod('updateFrontEndWorkflowActions')) {
 			$ba->updateFrontEndWorkflowActions($actions);
 		}
 	}
-	
+
 	public function getRequiredFields() {
 		$validator = null;
 		$ba = $this->BaseAction();
-		
+
 		if ($ba->hasMethod('getRequiredFields')) {
 			$validator = $ba->getRequiredFields();
 		}
-		
+
 		return $validator;
 	}
 
 	public function setFrontendFormRequirements() {
 		$ba = $this->BaseAction();
-		
+
 		if ($ba->hasMethod('setFrontendFormRequirements')) {
 			$ba->setFrontendFormRequirements();
 		}
 	}
-	
+
 	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		//Save Front End Workflow notes, then hand over to Workflow Action
 		if (isset($data["WorkflowActionInstanceComment"])) {
 			$this->Comment = $data["WorkflowActionInstanceComment"];
 			$this->write();
 		}
-		
+
 		$ba = $this->BaseAction();
 		if ($ba->hasMethod('doFrontEndAction')) {
 			$ba->doFrontEndAction($data, $form, $request);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Gets the title of this active action instance
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getTitle() {
@@ -172,7 +172,7 @@ class WorkflowActionInstance extends DataObject {
 		$this->extend('onActionComplete', $transition);
 	}
 
-	
+
 	/**
 	 * Can documents in the current workflow state be edited?
 	 *
@@ -185,7 +185,7 @@ class WorkflowActionInstance extends DataObject {
 			return $absolute;
 		}
 		switch ($this->BaseAction()->AllowEditing) {
-			case 'By Assignees': 
+			case 'By Assignees':
 				return $this->Workflow()->canEdit();
 			case 'No':
 				return false;
@@ -218,15 +218,15 @@ class WorkflowActionInstance extends DataObject {
 		}
 		return false;
 	}
-	
+
 	public function canView($member = null) {
 		return $this->Workflow()->canView($member);
 	}
-	
+
 	public function canEdit($member = null) {
 		return $this->Workflow()->canEdit($member);
 	}
-	
+
 	public function canDelete($member = null) {
 		return $this->Workflow()->canDelete($member);
 	}
