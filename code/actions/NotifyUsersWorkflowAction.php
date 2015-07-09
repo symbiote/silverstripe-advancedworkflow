@@ -133,8 +133,11 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	 * @return array
 	 */
 	public function getContextFields(DataObject $target) {
-		$fields = $target->inheritedDatabaseFields();
 		$result = array();
+		if (!$target) {
+			return $result;
+		}
+		$fields = $target->inheritedDatabaseFields();
 
 		foreach($fields as $field => $fieldDesc) {
 			$result[$field] = $target->$field;
