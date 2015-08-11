@@ -37,6 +37,11 @@ class WorkflowFieldItemController extends Controller {
 		$fields    = $record->getCMSFields();
 		$validator = $record->hasMethod('getValidator') ? $record->getValidator() : null;
 
+		// limit to the users which actually can access the CMS
+		$fields->findByName('Users')->setSource(
+			Permission::get_members_by_permission('CMS_ACCESS_DashboardModelAdmin')
+		);
+
 		$save = FormAction::create('doSave', _t('WorkflowReminderTask.SAVE', 'Save'));
 		$save->addExtraClass('ss-ui-button ss-ui-action-constructive')
 		     ->setAttribute('data-icon', 'accept')
