@@ -31,7 +31,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
 
-		if (class_exists('ListingPage')) {
+		if (class_exists('ListingPage') && class_exists('ListingTemplate')) {
 			// allow the user to select an existing 'listing template'. The "getItems()" for that template
 			// will be the list of items in the workflow
 			$templates = DataObject::get('ListingTemplate');
