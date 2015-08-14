@@ -77,6 +77,11 @@ class WorkflowInstance extends DataObject {
 			if ($action->exists()) {
 				$actionFields = $this->getWorkflowFields();
 				$fields->merge($actionFields);
+				
+				$transitions = $action->getValidTransitions();
+				if ($transitions) {
+					$fields->replaceField('TransitionID', DropdownField::create("TransitionID", "Next action", $transitions->map()));
+				}
 			}
 		}
 

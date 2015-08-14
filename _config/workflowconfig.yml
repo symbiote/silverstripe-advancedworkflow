@@ -8,3 +8,16 @@ SiteTree:
 CMSPageEditController:
     extensions:
         - AdvancedWorkflowExtension
+GridFieldDetailForm_ItemRequest:
+    extensions:
+        - AdvancedWorkflowExtension
+
+---
+Name: workflow_jobs
+Only:
+    moduleexists: queuedjobs
+---
+Injector:
+    WorkflowReminderJob:
+        properties:
+            queuedJobService: %$QueuedJobService

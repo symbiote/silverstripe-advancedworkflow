@@ -86,7 +86,7 @@ class GridFieldExportAction implements GridField_ColumnProvider, GridField_Actio
 			->setDescription(_t('GridAction.EXPORT_DESCRIPTION','Export'));
 		
 		$segment1 = Director::baseURL();
-		$segment2 = AdvancedWorkflowAdmin::$url_segment;
+		$segment2 = Config::inst()->get('AdvancedWorkflowAdmin', 'url_segment');
 		$segment3 = $record->getClassName();
 		$fields = new ArrayData(array(
 			'Link' => Controller::join_links($segment1, 'admin', $segment2 , $segment3, 'export', $record->ID)
