@@ -83,8 +83,7 @@ class WorkflowDefinitionExporter {
 	 * @return void
 	 */
 	public function format($templateData) {
-		$templateFile = BASE_PATH.'/'.ADVANCED_WORKFLOW_DIR.'/templates/Includes/WorkflowDefinitionExport.ss';
-		$viewer = SSViewer::execute_template($templateFile, $templateData);
+		$viewer = SSViewer::execute_template('WorkflowDefinitionExport', $templateData);
 		// Temporary until we find the source of the replacement in SSViewer
 		$processed = str_replace('&amp;', '&', $viewer);
 		// Clean-up newline "gaps" that SSViewer leaves behind from the placement of template control structures
