@@ -83,14 +83,11 @@ mi:
     Transitions: Ngā Whakawhiti
     TypeLabel: Momo
   WorkflowActionInstance:
-    PLURALNAME: 'Ngā Tauira Hohenga Reremahi'
     SINGULARNAME: 'Tauira Hohenga Reremahi'
   WorkflowApplicable:
     DEFINITION: 'Reremahi Kua Hoatu'
     EFFECTIVE_WORKFLOW: 'Reremahi Tōtika'
     INHERIT: 'Tukuna iho i te matua'
-    NONE: (kore)
-    UPDATE_WORKFLOW: 'Whakahou Reremahi'
     WORKFLOWLOG: 'Rangitaki Reremahi'
   WorkflowDefinition:
     ADDAFTERSAVING: 'Ka taea  te tāpiri hipanga reremahi i muri i te tiakinga tuatahitanga.'
@@ -134,8 +131,6 @@ mi:
   WorkflowInstance:
     ActionLogTitle: Rangitaki
     EXECUTE_EXCEPTION: 'I whakamātauria te tīmatanga o tētahi tauira reremahi muhu #%s!'
-    NEXT_ACTION: 'Hohenga Panuku'
-    PLURALNAME: 'Ngā Tauira Reremahi'
     REASSIGN_HEADER: 'Tautapatia anō te reremahi'
     SINGULARNAME: 'Tauira Reremahi'
     TITLE_FOR_DO: '%s - %s'

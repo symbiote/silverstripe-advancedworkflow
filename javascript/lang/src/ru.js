@@ -1,7 +1,7 @@
 {
-    "Workflow.DeleteQuestion": "Are you sure you want to permanently delete this?",
-    "Workflow.EMBARGOMESSAGETIME": "Saved drafts of this page will auto publish today at <a>%s</a>",
-    "Workflow.EMBARGOMESSAGEDATE": "Saved drafts of this page will auto publish on <a>%s</a>",
-    "Workflow.EMBARGOMESSAGEDATETIME": "Saved drafts of this page will auto publish on <a>%s at %s</a>",
-    "Workflow.ProcessError": "Could not process workflow"
+    "Workflow.DeleteQuestion": "Действительно удалить? Эта операция необратима.",
+    "Workflow.EMBARGOMESSAGETIME": "Сохраненные черновики на этой странице будут автоматически опубликованы сегодня в <a>%s</a>",
+    "Workflow.EMBARGOMESSAGEDATE": "Сохраненные черновики будут автоматически опубликованы <a>%s</a>",
+    "Workflow.EMBARGOMESSAGEDATETIME": "Сохраненные черновики этой страницы будут автоматически опубликованы <a>%s в %s</a>",
+    "Workflow.ProcessError": "Не удалось обработать поток задач"
 }

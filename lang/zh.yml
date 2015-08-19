@@ -87,15 +87,12 @@ zh:
     Transitions: 转换
     TypeLabel: 类型
   WorkflowActionInstance:
-    PLURALNAME: '工作流操作实例'
     SINGULARNAME: '工作流动作实例'
     Title: 题目
   WorkflowApplicable:
     DEFINITION: '应用的工作流'
     EFFECTIVE_WORKFLOW: '有效的工作流'
     INHERIT: '从父项继承'
-    NONE: （无）
-    UPDATE_WORKFLOW: '更新工作流'
     WORKFLOWLOG: '工作流日志'
   WorkflowDefinition:
     ADDAFTERSAVING: '第一次保存后，您可以添加工作流步骤。'
@@ -139,8 +136,6 @@ zh:
   WorkflowInstance:
     ActionLogTitle: 日志
     EXECUTE_EXCEPTION: '试图启动一个无效的工作流实例 #%s！'
-    NEXT_ACTION: '下一个动作'
-    PLURALNAME: '工作流实例'
     REASSIGN_HEADER: '重新分配工作流'
     SINGULARNAME: '工作流实例'
     TITLE_FOR_DO: '%s - %s'

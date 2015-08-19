@@ -83,6 +83,8 @@ eo:
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple aprobi laborfluajn agojn'
     SINGULARNAME: 'Simple aprobi laborfluan agon'
+  SiteTree:
+    WorkflowOptions: 'Laborfluaj agordoj'
   Workflow:
     WorkflowActionsTabTitle: 'Laborfluaj agoj'
   WorkflowAction:
@@ -102,15 +104,14 @@ eo:
     Transitions: Transiroj
     TypeLabel: Tipo
   WorkflowActionInstance:
-    PLURALNAME: 'Ekzemploj de laborfluaj agoj'
+    PLURALNAME: 'Ekzemploj de laborfluaj agoj '
     SINGULARNAME: 'Ekzemplo de laborflua ago'
     Title: Titolo
   WorkflowApplicable:
+    ADDITIONAL_WORKFLOW_DEFINITIONS: 'Kromaj laborfluoj'
     DEFINITION: 'Aplikis laborfluon'
     EFFECTIVE_WORKFLOW: 'Efika laborfluo'
     INHERIT: 'Heredi de patro'
-    NONE: (neniu)
-    UPDATE_WORKFLOW: 'Ĝisdatigi laborfluon'
     WORKFLOWLOG: 'Laborflua protokolo'
   WorkflowDefinition:
     ADDAFTERSAVING: 'Vi povos enmeti laborfluajn paŝojn post vi konservis la unuan fojon.'
@@ -118,6 +119,7 @@ eo:
     CHOOSE_TEMPLATE_RIGHT: 'Se agordita, ĉi tiu laborflua difino aŭtomate aktualiĝos se la ŝablono ŝanĝiĝos.'
     DESCRIPTION: Priskribo
     GROUPS: 'Limigi al grupoj'
+    INITIAL_ACTION_BUTTON_TEXT: 'Teksto de komencaga butono'
     LATEST_VERSION: 'Lasta versio estas %s'
     PLURALNAME: 'Laborfluaj difinoj'
     REMINDEREMAIL: 'Memoriga retpoŝto'
@@ -157,7 +159,6 @@ eo:
   WorkflowInstance:
     ActionLogTitle: Protokolo
     EXECUTE_EXCEPTION: 'Provis startigi nevalidan laborfluan ekzemplon #%s!'
-    NEXT_ACTION: 'Sekva ago'
     PLURALNAME: 'Laborfluaj ekzemploj'
     REASSIGN_HEADER: 'Reagordi laborfluon'
     SINGULARNAME: 'Laborflua ekzemplo'

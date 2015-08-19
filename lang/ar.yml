@@ -87,15 +87,12 @@ ar:
     Transitions: التنقلات
     TypeLabel: نوع
   WorkflowActionInstance:
-    PLURALNAME: 'أمثلة لفعاليات سير العمل'
     SINGULARNAME: 'مثال لفعاليات سير العمل'
     Title: عنوان
   WorkflowApplicable:
     DEFINITION: 'سير العمل المقدم'
     EFFECTIVE_WORKFLOW: 'سير العمل الفعال'
     INHERIT: 'تم وراثته من الوالد'
-    NONE: (لا شئ)
-    UPDATE_WORKFLOW: 'قم بتحديث مهام سير العمل'
     WORKFLOWLOG: 'سجل مهام سير العمل'
   WorkflowDefinition:
     ADDAFTERSAVING: 'يمكنك إضافة خطوات سير العمل بعد أن تحفظها أول مرة.'
@@ -139,8 +136,6 @@ ar:
   WorkflowInstance:
     ActionLogTitle: سجل
     EXECUTE_EXCEPTION: 'محاولة بدء مثال غير صالح لسير العمل #s%!'
-    NEXT_ACTION: 'الإجراء التالى'
-    PLURALNAME: 'أمثلة مهام سير العمل'
     REASSIGN_HEADER: 'قم بإعادة تعيين مهام سير العمل'
     SINGULARNAME: 'مثال لسير العمل'
     TITLE_FOR_DO: 's - %s%'

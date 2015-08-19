@@ -1,1 +1,180 @@
-es: {}
+es:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Flujo de trabajo avanzado'
+    APPLY_WORKFLOW: 'Aplicar flujo de trabajo'
+    APPLY_WORKFLOW_HELP: 'Los usuarios pueden aplicar flujos de trabajo a items'
+    CREATE_WORKFLOW: 'Crear flujo de trabajo'
+    CREATE_WORKFLOW_HELP: 'Los usuariuos pueden crear definiciones de flujos de trabajo'
+    DELETE_WORKFLOW: 'Eliminar flujo de trabajo'
+    DELETE_WORKFLOW_HELP: 'Los usuarios pueden eliminar definiciones de flujo de trabajo y flujos de trabajo activos'
+    JOB_REMINDER_COMMENT: '%s: Se envió el recordatorio por email\n\n'
+    REASSIGNACTIVE: 'Reasignar los flujos de trabajo activos'
+    REASSIGNACTIVEHELP: 'Los usuarios pueden reasignar los flujos de trabajo activos a diferentes usuarios y grupos'
+    VIEWACTIVE: 'Ver los flujos de trabajo activos'
+    VIEWACTIVEHELP: 'Los usuarios pueden ver los flujod de trabajo activos mediante el panel de administración de flujos de trabajo'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'Ud tiene que haber iniciado sesión'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Todos los ítems pendientes'
+    GridFieldTitleAssignedYour: 'Sus ítems pendientes'
+    GridFieldTitleSubmittedAll: 'Todos los ítems enviados'
+    GridFieldTitleSubmittedYour: 'Sus ítems enviados'
+    IMPORT: 'Importar flujo de trabajo'
+    INVALIDCLASSTOORDER: 'Se especificó una clase inválida para ordenar.'
+    INVALIDIDLIST: 'Se proporcionó una lista inválida de IDs.'
+    INVALIDPARENTID: 'Se especificó un ID de padre inválido.'
+    LastEdited: Cambiado
+    SORTORDERSAVED: 'Se guardó el orden de clasificación.'
+    Title: Título
+    WorkflowStatus: 'Acción actual'
+    WorkflowTitle: 'Flujo de trabajo efectivo'
+    MENUTITLE: Flujos de trabajo
+  AdvancedWorkflowFrontendForm:
+    ACTIONCONTROLLERCHECK: 'Acción "%s" no permitida en el controlador (Clase: %s)'
+    ACTIONFORMCHECK: 'Acción "%s" no permitida en el formulario (Nombre: "%s")'
+    SECURITYTOKENCHECK: 'El token de seguridad no coincide, posible ataque CSRF.'
+  AdvancedWorkflowPublishJob:
+    SCHEDULEJOBTITLE: '{type} programado de {object}'
+  AllowEditing:
+    ContentSettings: 'Configuración de contenido'
+    NoString: 'No'
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Asignar usuarios'
+    GROUPS: Grupos
+    INITIATOR: 'Asignar iniciador'
+    PLURALNAME: 'Asignar usuarios a acciones del flujo de trabajo'
+    SINGULARNAME: 'Asignar usuarios a una acción del flujo de trabajo'
+    USERS: Usuarios
+  CancelWorkflowAction:
+    PLURALNAME: 'Cancelar acciones del flujo de trabajo'
+    SINGULARNAME: 'Cancelar acción del flujo de trabajo'
+  FrontEndWorkflowController:
+    FRONTENDACTION_CONTEXT_EXCEPTION: 'No se encontró el objeto de contexto'
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'Ud no tiene permiso para ejecutar esta acción'
+  GridAction:
+    EXPORT_DESCRIPTION: Exportar
+    Export: Exportar
+  GridFieldEditButton_ss:
+    EXPORT: Exportar
+  ImportedWorkflowTemplate:
+    PLURALNAME: 'Plantillas de flujo de trabajo importadas'
+    SINGULARNAME: 'Plantilla de flujo de trabajo importada'
+  NotifyUsersWorkflowAction:
+    COMMENTHISTORY: 'Comentar la historia hasta esta notificación.'
+    EMAILFROM: 'Email de'
+    EMAILSUBJECT: 'Asunto del Email'
+    EMAILTEMPLATE: 'Plantilla de Email'
+    FIELDNAME: 'Nombre de campo'
+    FORMATTINGNOTE: "Los emails de notificación pueden contener HTML formateado. Las siguientes variables especiales se reemplazan con sus\n⇥⇥⇥valores respectivos en el asunto del email, email de y plantilla/cuerpo."
+    INITIATORNOTE: "Estos campos se rellenarán desde el miembro que inicia la petición de flujo de trabajo. Por ejemplo,\n⇥⇥⇥ {$ Initiator.Email}."
+    NOTIFICATIONEMAIL: 'Email de notificación'
+    NOTIFICATIONNOTE: 'Se enviará un email a todos los usuarios vinculados al flujo de trabajo cuando se ejecute esta acción.'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'días'
+    DELAYPUBDAYSBEFORE: 'Demorar publicación'
+    PUBLICATIONDELAY: 'Demora de publicación'
+  SiteTree:
+    WorkflowOptions: 'Opciones del flujo de trabajo'
+  Workflow:
+    WorkflowActionsTabTitle: 'Acciones del flujo de trabajo'
+  WorkflowAction:
+    ALLOW_COMMENTING: '¿Permitir hacer comentarios?'
+    ALLOW_EDITING: '¿Permitir editar durante este paso?'
+    Author: Autor
+    ExecutedLabel: Ejecutado
+    FinishedLabel: Terminado
+    PLURALNAME: 'Acciones del flujo de trabajo'
+    SINGULARNAME: 'Acción del flujo de trabajo'
+    TITLE: Título
+    TitleDescription: 'El título se usa como el rótulo del botón para esta acción del flujo de trabajo'
+    Transitions: Transiciones
+    TypeLabel: Tipo
+  WorkflowActionInstance:
+    PLURALNAME: 'Instancias de acción del flujo de trabajo'
+    SINGULARNAME: 'Instancia de acción del flujo de trabajo'
+    Title: Título
+  WorkflowApplicable:
+    ADDITIONAL_WORKFLOW_DEFINITIONS: 'Flujos de trabajo adicionales'
+    DEFINITION: 'Flujo de trabajo aplicado'
+    EFFECTIVE_WORKFLOW: 'Flujo de trabajo efectivo'
+    INHERIT: 'Heredar del padre'
+    WORKFLOWLOG: 'Registro del flujo de trabajo'
+  WorkflowDefinition:
+    ADDAFTERSAVING: 'Ud puede agregar pasos al flujo de trabajo después de guardar por primera vez.'
+    CHOOSE_TEMPLATE: 'Elegir plantilla (opcional)'
+    CHOOSE_TEMPLATE_RIGHT: 'Si está establecida, esta definición de flujo de trabajo se actualizará automáticamente si la plantilla cambia.'
+    DESCRIPTION: Descripción
+    GROUPS: 'Restringir a grupos'
+    INITIAL_ACTION_BUTTON_TEXT: 'Texto del botón Acción inicial'
+    LATEST_VERSION: 'La última versión es %s'
+    PLURALNAME: 'Definiciones del flujo de trabajo'
+    REMINDEREMAIL: 'Recordatorio por email'
+    SENDREMINDERDAYSAFTER: 'días sin acción.'
+    SENDREMINDERDAYSBEFORE: 'Enviar recordatorio por email después de'
+    SINGULARNAME: 'Definición del flujo de trabajo'
+    TEMPLATE_INFO: 'Información de la plantilla'
+    TEMPLATE_VERSION: 'Versión de la plantilla'
+    TITLE: Título
+    UPDATE_FROM_TEMLPATE: 'Actualizar a la última versión de la plantilla (%s)'
+    USERS: 'Restringir a los usuarios'
+    WORKFLOW: Flujo de trabajo
+    WORKFLOWACTIVEIINSTANCES: 'Instancias activas de flujo de trabajo'
+    WORKFLOWCOMPLETEDIINSTANCES: 'Instancias del flujo de trabajo completadas'
+  WorkflowDefinitionImporter:
+    INVALID_YML_FORMAT_NO_HEADER: 'Formato YAML inválido.'
+    INVALID_YML_FORMAT_NO_PARSE: 'Formato YAML inválido. Imposible analizar.'
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Activo
+    CompletedWorkflowStateTitle: Completo
+    PUBLISH_ON: 'Fecha prevista de publicación'
+    REQUESTED_PUBLISH_DATE: 'Fecha solicitada de publicación'
+    REQUESTED_PUBLISH_DATE_H3: 'Caducidad y Embargo'
+    REQUESTED_PUBLISH_DATE_INTRO: 'Ingresar una fecha y/u hora para especificar las fechas de embargo y caducidad.'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Estos parámetros no tendrán efecto hasta que se ejecuten las acciones de aprobación'
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Si ya se estableció un embargo, agregar uno nuevo antes que pase esa fecha, lo sobrescribirá.'
+    REQUESTED_UNPUBLISH_DATE: 'Fecha solicitada para anular la publicación'
+    TabTitle: 'Horario de publicación'
+    UNPUBLISH_ON: 'Fecha prevista para anular la publicación'
+  WorkflowField:
+    AddTransitionAction: 'Agregar transición'
+    CreateAction: 'Crear una acción'
+    CreateLabel: Crear
+    DeleteAction: Eliminar
+    EditAction: Editar
+  WorkflowInstance:
+    ActionLogTitle: Registro
+    EXECUTE_EXCEPTION: '¡Se intentó comenzar una instancia inválida de flujo de trabajo #%s!'
+    PLURALNAME: 'Instancias de flujo de trabajo'
+    REASSIGN_HEADER: 'Reasignar flujo de trabajo'
+    SINGULARNAME: 'Instancia de flujo de trabajo'
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Instancia #%s de %s'
+    TargetIDLabel: Destino
+    TitleLabel: Título
+    WORKFLOW_TRANSITION_EXCEPTION: 'Estado de transición inválido para la acción #%s'
+    WorkflowStatusLabel: 'Estado del flujo de trabajo'
+  WorkflowList:
+    TableHeaderActions: Acciones
+    TableHeaderEditedBy: 'Editado por'
+    TableHeaderItem: Item
+    TableHeaderSubmitted: Enviado
+  WorkflowReminderEmail:
+    Content: "Este es un recordatorio automático de que el flujo de trabajo '{title}' que Ud actualmente\n⇥asignó, no fue accionado por {days} días. El flujo\n⇥de trabajo se actualizó por última vez el {date} a las {time}."
+  WorkflowReminderTask:
+    SAVE: Guardar
+  WorkflowService:
+    EXISTING_WORKFLOW_ERROR: 'Ese objeto ya tiene un flujo de trabajo en ejecución'
+    INVALID_WORKFLOW_TARGET: 'Se ejecutó una transición en un objetivo que no tiene un flujo de trabajo.'
+  WorkflowTemplate:
+    INVALID_TEMPLATE_ACTION: 'Se especificó una clase de acción inválida en la plantilla'
+  WorkflowTransition:
+    ACTION: Acción
+    Active: Activo
+    NEXT_ACTION: 'Proxima acción'
+    PLURALNAME: 'Transiciones del flujo de trabajo'
+    Passive: Pasivo
+    SELECTONE: '(Elegir una)'
+    SINGULARNAME: 'Transición del flujo de trabajo'
+    TRANSITIONLOOP: 'Una transición no puede llevar de nuevo a su acción padre.'
+    TYPE: Tipo
+    TabTitle: 'Restringir a los usuarios'

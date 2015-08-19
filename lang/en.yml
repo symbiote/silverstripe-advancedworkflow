@@ -25,11 +25,11 @@ en:
     INVALIDIDLIST: 'An invalid list of IDs was provided.'
     INVALIDPARENTID: 'An invalid parent ID was specified.'
     LastEdited: Changed
+    MENUTITLE: Workflows
     SORTORDERSAVED: 'The sort order has been saved.'
     Title: Title
     WorkflowStatus: 'Current action'
     WorkflowTitle: 'Effective workflow'
-    MENUTITLE: Workflows
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Action "%s" not allowed on controller (Class: %s)'
     ACTIONFORMCHECK: 'Action "%s" not allowed on form (Name: "%s")'
