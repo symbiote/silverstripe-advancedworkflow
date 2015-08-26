@@ -46,9 +46,12 @@ SQL;
 		$fields->addFieldsToTab('Root.Main', array(
 			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
 			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
-			new CheckboxSetField('Users', $this->fieldLabel('Users'), $cmsUsers),
+			$users = CheckboxSetField::create('Users', $this->fieldLabel('Users'), $cmsUsers),
 			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'Group')
 		));
+
+		// limit to the users which actually can access the CMS
+		$users->setSource(Member::mapInCMSGroups());
 
 		return $fields;
 	}
