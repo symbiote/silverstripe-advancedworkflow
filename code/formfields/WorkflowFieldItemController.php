@@ -39,8 +39,8 @@ class WorkflowFieldItemController extends Controller {
 
 		$save = FormAction::create('doSave', _t('WorkflowReminderTask.SAVE', 'Save'));
 		$save->addExtraClass('ss-ui-button ss-ui-action-constructive')
-		     ->setAttribute('data-icon', 'accept')
-		     ->setUseButtonTag(true);
+			 ->setAttribute('data-icon', 'accept')
+			 ->setUseButtonTag(true);
 
 		$form = new Form($this, 'Form', $fields, new FieldList($save), $validator);
 		if($record && $record instanceof DataObject && $record->exists()){
