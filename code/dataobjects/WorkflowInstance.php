@@ -1,10 +1,10 @@
 <?php
 /**
- * A WorkflowInstance is created whenever a user 'starts' a workflow. 
- * 
- * This 'start' is triggered automatically when the user clicks the relevant 
+ * A WorkflowInstance is created whenever a user 'starts' a workflow.
+ *
+ * This 'start' is triggered automatically when the user clicks the relevant
  * button (eg 'apply for approval'). This creates a standalone object
- * that maintains the state of the workflow process. 
+ * that maintains the state of the workflow process.
  *
  * @method WorkflowDefinition Definition()
  * @method WorkflowActionInstance CurrentAction()
@@ -48,17 +48,17 @@ class WorkflowInstance extends DataObject {
 		'WorkflowStatus',
 		'Created'
 	);
-	
+
 	/**
-	 * Get the CMS view of the instance. This is used to display the log of 
-	 * this workflow, and options to reassign if the workflow hasn't been 
+	 * Get the CMS view of the instance. This is used to display the log of
+	 * this workflow, and options to reassign if the workflow hasn't been
 	 * finished yet
-	 * 
-	 * @return \FieldList 
+	 *
+	 * @return \FieldList
 	 */
 	public function getCMSFields() {
 		$fields = new FieldList();
-		
+
 		if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
 			if ($this->WorkflowStatus == 'Paused' || $this->WorkflowStatus == 'Active') {
 				$cmsUsers = Member::mapInCMSGroups();
@@ -71,13 +71,13 @@ class WorkflowInstance extends DataObject {
 
 			}
 		}
-		
+
 		if ($this->canEdit()) {
 			$action = $this->CurrentAction();
 			if ($action->exists()) {
 				$actionFields = $this->getWorkflowFields();
 				$fields->merge($actionFields);
-				
+
 				$transitions = $action->getValidTransitions();
 				if ($transitions) {
 					$fields->replaceField('TransitionID', DropdownField::create("TransitionID", "Next action", $transitions->map()));
@@ -91,8 +91,8 @@ class WorkflowInstance extends DataObject {
 		));
 
 		$grid = new GridField(
-			'Actions', 
-			_t('WorkflowInstance.ActionLogTitle','Log'), 
+			'Actions',
+			_t('WorkflowInstance.ActionLogTitle','Log'),
 			$items
 		);
 
@@ -100,7 +100,7 @@ class WorkflowInstance extends DataObject {
 
 		return $fields;
 	}
-	
+
 	public function fieldLabels($includerelations = true) {
 		$labels = parent::fieldLabels($includerelations);
 		$labels['Title'] = _t('WorkflowInstance.TitleLabel', 'Title');
@@ -110,13 +110,13 @@ class WorkflowInstance extends DataObject {
 
 		return $labels;
 	}
-	
+
 	/**
 	 * See if we've been saved in context of managing the workflow directly
 	 */
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
-		
+
 		$vars = $this->record;
 
 		if (isset($vars['DirectUpdate'])) {
@@ -125,21 +125,21 @@ class WorkflowInstance extends DataObject {
 			$this->updateWorkflow($vars);
 		}
 	}
-	
+
 	/**
 	 * Update the current state of the workflow
-	 * 
+	 *
 	 * Typically, this is triggered by someone modifiying the workflow instance via the modeladmin form
 	 * side of things when administering things, such as re-assigning or manually approving a stuck workflow
-	 * 
+	 *
 	 * Note that this is VERY similar to AdvancedWorkflowExtension::updateworkflow
 	 * but without the formy bits. These two implementations should PROBABLY
 	 * be merged
-	 * 
+	 *
 	 * @todo refactor with AdvancedWorkflowExtension
 	 *
 	 * @param type $data
-	 * @return 
+	 * @return
 	 */
 	public function updateWorkflow($data) {
 		$action = $this->CurrentAction();
@@ -190,7 +190,7 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * @see {@link {$this->getTarget()}
 	 * @return (null | DataObject)
 	 */
@@ -221,8 +221,8 @@ class WorkflowInstance extends DataObject {
 		$action = $definition->getInitialAction()->getInstanceForWorkflow();
 		$action->WorkflowID   = $this->ID;
 		$action->write();
-		
-		$title = $for && $for->hasField('Title') ? 
+
+		$title = $for && $for->hasField('Title') ?
 				sprintf(_t('WorkflowInstance.TITLE_FOR_DO', '%s - %s'), $definition->Title, $for->Title) :
 				sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 
@@ -239,20 +239,20 @@ class WorkflowInstance extends DataObject {
 	/**
 	 * Execute this workflow. In rare cases this will actually execute all actions,
 	 * but typically, it will stop and wait for the user to input something
-	 * 
+	 *
 	 * The basic process is to get the current action, and see whether it has been finished
-	 * by some process, if not it attempts to execute it. 
-	 * 
+	 * by some process, if not it attempts to execute it.
+	 *
 	 * If it has been finished, we check to see if there's some transitions to follow. If there's
-	 * only one transition, then we execute that immediately. 
-	 * 
+	 * only one transition, then we execute that immediately.
+	 *
 	 * If there's multiple transitions, we just stop and wait for the user to manually
-	 * trigger a transition. 
-	 * 
+	 * trigger a transition.
+	 *
 	 * If there's no transitions, we make the assumption that we've finished the workflow and
-	 * mark it as such. 
-	 * 
-	 * 
+	 * mark it as such.
+	 *
+	 *
 	 */
 	public function execute() {
 		if (!$this->CurrentActionID) {
@@ -272,7 +272,7 @@ class WorkflowInstance extends DataObject {
 			$result = $action->BaseAction()->execute($this);
 
 			// if the action was successful, then the action has finished running and
-			// next transition should be run (if only one). 
+			// next transition should be run (if only one).
 			// input.
 			if($result) {
 				$action->MemberID = Member::currentUserID();
@@ -319,7 +319,7 @@ class WorkflowInstance extends DataObject {
 	 * Transitions a workflow to the next step defined by the given transition.
 	 *
 	 * After transitioning, the action is 'executed', and next steps
-	 * determined. 
+	 * determined.
 	 *
 	 * @param WorkflowTransition $transition
 	 */
@@ -374,7 +374,7 @@ class WorkflowInstance extends DataObject {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param \Member $member
 	 * @return boolean
 	 */
@@ -436,7 +436,7 @@ class WorkflowInstance extends DataObject {
 			}
 			$member = Member::currentUser();
 		}
-		
+
 		if(Permission::checkMember($member, "ADMIN")) {
 			return true;
 		}
@@ -486,12 +486,12 @@ class WorkflowInstance extends DataObject {
 			return $this->CurrentAction()->canPublishTarget($this->getTarget());
 		}
 	}
-	
+
 	/**
 	 * Get the current set of transitions that are valid for the current workflow state,
 	 * and are available to the current user.
-	 * 
-	 * @return array 
+	 *
+	 * @return array
 	 */
 	public function validTransitions() {
 		$action    = $this->CurrentAction();
@@ -503,7 +503,7 @@ class WorkflowInstance extends DataObject {
 			return $transition->canExecute($self);
 		});
 	}
-	
+
 	/* UI RELATED METHODS */
 
 	/**
@@ -518,7 +518,7 @@ class WorkflowInstance extends DataObject {
 		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
-		
+
 		$fields->push(HiddenField::create('TransitionID', ''));
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.
@@ -526,34 +526,34 @@ class WorkflowInstance extends DataObject {
 
 		return $fields;
 	}
-	
+
 	/**
 	 * Gets Front-End form fields from current Action
-	 * 
+	 *
 	 * @return FieldList
 	 */
 	public function getFrontEndWorkflowFields() {
 		$action = $this->CurrentAction();
-		
+
 		$fields = new FieldList();
 		$action->updateFrontEndWorkflowFields($fields);
-		
+
 		return $fields;
 	}
-	
+
 	/**
 	 * Gets Transitions for display as Front-End Form Actions
-	 * 
+	 *
 	 * @return FieldList
 	 */
 	public function getFrontEndWorkflowActions() {
 		$action    = $this->CurrentAction();
 		$options   = $action->getValidTransitions();
 		$actions   = new FieldList();
-		
+
 		foreach ($options as $option) {
 			$btn = new FormAction("transition_{$option->ID}", $option->Title);
-			
+
 			// add cancel class to passive actions, this prevents js validation (using jquery.validate)
 			if($option->Type == 'Passive'){
 				$btn->addExtraClass('cancel');
@@ -567,41 +567,41 @@ class WorkflowInstance extends DataObject {
 
 			$actions->push($btn);
 		}
-		
+
 		$action->updateFrontEndWorkflowActions($actions);
-		
+
 		return $actions;
 	}
 
 	/**
 	 * Gets Front-End DataObject
-	 * 
+	 *
 	 * @return DataObject
 	 */
 	public function getFrontEndDataObject() {
 		$action = $this->CurrentAction();
 		$obj = $action->getFrontEndDataObject();
-		
+
 		return $obj;
 	}
-	
+
 	/**
 	 * Gets Front-End DataObject
-	 * 
+	 *
 	 * @return DataObject
 	 */
 	public function getFrontEndRequiredFields() {
 		$action = $this->CurrentAction();
 		$validator = $action->getRequiredFields();
-		
+
 		return $validator;
 	}
-	
+
 	public function setFrontendFormRequirements() {
 		$action = $this->CurrentAction();
 		$action->setFrontendFormRequirements();
 	}
-	
+
 	public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request) {
 		$action = $this->CurrentAction();
 		$action->doFrontEndAction($data, $form, $request);
@@ -643,10 +643,10 @@ class WorkflowInstance extends DataObject {
 		}
 		return $action->getField('Title');
 	}
-	
+
 	/**
 	 * Tells us if $member has had permissions over some part of the current WorkflowInstance.
-	 * 
+	 *
 	 * @param $member
 	 * @return \WorkflowAction | boolean
 	 */
@@ -657,13 +657,13 @@ class WorkflowInstance extends DataObject {
 			}
 			$member = Member::currentUser();
 		}
-		
+
 		// WorkflowActionInstances in reverse creation-order so we get the most recent one's first
 		$history = $this->Actions()->filter(array(
 			'Finished' =>1,
 			'BaseAction.ClassName' => 'AssignUsersToWorkflowAction'
 		))->Sort('Created', 'DESC');
-		
+
 		$i=0;
 		foreach($history as $inst) {
 			/*
