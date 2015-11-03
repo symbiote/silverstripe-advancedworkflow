@@ -1,23 +1,25 @@
 ---
 Name: workflowconfig
-After: 'framework/*','cms/*'
+After:
+  - 'framework/*'
+  - 'cms/*'
 ---
 SiteTree:
-    extensions:
-        - WorkflowApplicable
+  extensions:
+    - WorkflowApplicable
 CMSPageEditController:
-    extensions:
-        - AdvancedWorkflowExtension
+  extensions:
+    - AdvancedWorkflowExtension
 GridFieldDetailForm_ItemRequest:
-    extensions:
-        - AdvancedWorkflowExtension
+  extensions:
+    - AdvancedWorkflowExtension
 
 ---
 Name: workflow_jobs
 Only:
-    moduleexists: queuedjobs
+  moduleexists: queuedjobs
 ---
 Injector:
-    WorkflowReminderJob:
-        properties:
-            queuedJobService: %$QueuedJobService
+  WorkflowReminderJob:
+    properties:
+      queuedJobService: %$QueuedJobService
