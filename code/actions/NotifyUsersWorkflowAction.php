@@ -8,6 +8,11 @@
  */
 class NotifyUsersWorkflowAction extends WorkflowAction {
 
+	/**
+	 * @var bool Should templates be constrained to just known-safe variables.
+	 */
+	private static $whitelist_template_variables = false;
+
 	private static $db = array(
 		'EmailSubject'			=> 'Varchar(100)',
 		'EmailFrom'				=> 'Varchar(50)',
@@ -59,8 +64,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'EmailSubject'      => _t('NotifyUsersWorkflowAction.EMAILSUBJECT', 'Email subject'),
 			'EmailFrom'         => _t('NotifyUsersWorkflowAction.EMAILFROM', 'Email from'),
 			'ListingTemplateID' => _t('NotifyUsersWorkflowAction.LISTING_TEMPLATE', 
-				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). 
-					Also available will be all properties of the current Workflow Instance'),
+				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). '.
+				'Also available will be all properties of the current Workflow Instance'
+			),
 			'EmailTemplate'     => _t('NotifyUsersWorkflowAction.EMAILTEMPLATE', 'Email template'),
 			'FormattingHelp'    => _t('NotifyUsersWorkflowAction.FORMATTINGHELP', 'Formatting Help')
 		));
@@ -73,14 +79,18 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			return true;
 		}
 
-		$context   = $this->getContextFields($workflow->getTarget());
-		$member    = $this->getMemberFields();
-		$initiator = $this->getMemberFields($workflow->Initiator());
+		$member = Member::currentUser();
+		$initiator = $workflow->Initiator();
+
+		$contextFields   = $this->getContextFields($workflow->getTarget());
+		$memberFields    = $this->getMemberFields($member);
+		$initiatorFields = $this->getMemberFields($initiator);
+
 		$variables = array();
 		
-		foreach($context as $field => $val) $variables["\$Context.$field"] = $val;
-		foreach($member as $field => $val)  $variables["\$Member.$field"] = $val;
-		foreach($initiator as $field => $val)  $variables["\$Initiator.$field"] = $val;
+		foreach($contextFields as $field => $val) $variables["\$Context.$field"] = $val;
+		foreach($memberFields as $field => $val)  $variables["\$Member.$field"] = $val;
+		foreach($initiatorFields as $field => $val)  $variables["\$Initiator.$field"] = $val;
 
 		$pastActions = $workflow->Actions()->sort('Created DESC');
 		$variables["\$CommentHistory"] = $this->customise(array(
@@ -88,23 +98,27 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			'Now'=>SS_Datetime::now()
 		))->renderWith('CommentHistory');
 
+		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
 
-		$item = $workflow->customise(array(
-			'Items'		=> $workflow->Actions(),
-			'Member'	=> Member::currentUser(),
-			'Context'	=> $workflow->getTarget(),
-			'CommentHistory' => $variables["\$CommentHistory"]
-		));
-		
-		if ($this->ListingTemplateID) {
-			$item = $workflow->customise(array(
-				'Items'		=> $workflow->Actions(),
-				'Member'	=> Member::currentUser(),
-				'Initiator' => $workflow->Initiator(),
-				'Context'	=> $workflow->getTarget(),
+		if ($this->config()->whitelist_template_variables) {
+			$item = new ArrayData(array(
+				'Initiator' => new ArrayData($initiatorFields),
+				'Member' => new ArrayData($memberFields),
+				'Context' => new ArrayData($contextFields),
+				'CommentHistory' => $variables["\$CommentHistory"]
 			));
+		}
+		else {
+			$item = $workflow->customise(array(
+				'Items' => $workflow->Actions(),
+				'Member' => $member,
+				'Context' => new ArrayData($contextFields),
+				'CommentHistory' => $variables["\$CommentHistory"]
+			));
+		}
 
+		if ($this->ListingTemplateID) {
 			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
 			$view = SSViewer::fromString($template->ItemTemplate);
 		} else {
@@ -112,7 +126,6 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		}
 		
 		$body = $view->process($item);
-		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
 
 		foreach($members as $member) {
 			if($member->Email) {

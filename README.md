@@ -33,6 +33,15 @@ extending from `ModelAdmin`. `mysite/_config/config.yml`:
 	    extensions:
 	        - AdvancedWorkflowExtension
 
+We strongly recommend also setting the `NotifyUsersWorkflowAction` configuration parameter `whitelist_template_variables` 
+to true on new projects. This configuration will achieve this:
+
+	:::yml
+	NotifyUsersWorkflowAction:
+	    whitelist_template_variables: true
+
+See the Security section below for more details.
+
 ## Concept
 
 In its most basic sense, workflow means that new content or changes to existing content, need to go through an approval process before they're able to be
@@ -298,6 +307,19 @@ Okay, now we need to join up these actions using transitions, so that users can 
 * On the "Manager Approval" action, add a transition and call it "Accept and Publish" and select "Publish item" as the next action.
 * Create another transition on the "Manager Approval" action and call it "Reject and Cancel", then select "Cancel" as the next action, then select "Save".
 * Select the "Save" button at the bottom of the screen to finalize your workflow, and you're done.
+
+## Security
+
+### `whitelist_template_variables`
+
+The `NotifyUsersWorkflowAction` workflow action has a configuration parameter, `whitelist_template_variables`.
+Currently this variable defaults to false in order to retain backwards compatibility. In a future major release it will
+be changed to default to true.
+
+Setting this configuration variable to true will limit template variables available in the email template sent as part
+of the notify users action to a known-safe whitelist. When it is false, the template may reference any accessible parameter.
+As this template is editable in the CMS, whitelisting these parameters ensures CMS admins can not bypass data access
+restrictions.
 
 ## Contributing
 
