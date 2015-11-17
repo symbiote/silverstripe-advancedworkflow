@@ -18,11 +18,11 @@ zh:
     INVALIDIDLIST: '提供了一个无效的 ID 列表。'
     INVALIDPARENTID: '指定了一个无效的父 ID。'
     LastEdited: 已更改
+    MENUTITLE: 工作流
     SORTORDERSAVED: '排序顺序已保存。'
     Title: 题目
     WorkflowStatus: '当前动作'
     WorkflowTitle: '有效工作流程'
-    MENUTITLE: 工作流
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: '操作 "%s" 不允许针对控制器进行（类： %s）'
     ACTIONFORMCHECK: '操作 "%s" 不允许针对表单进行（名称："%s"）'

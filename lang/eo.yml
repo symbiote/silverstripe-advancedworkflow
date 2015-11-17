@@ -7,10 +7,12 @@ eo:
     CREATE_WORKFLOW_HELP: 'Uzantoj povas krei laborfluajn difinojn'
     DELETE_WORKFLOW: 'Forigi laborfluon'
     DELETE_WORKFLOW_HELP: 'Uzantoj povas forigi laborfluajn difinojn kaj aktivajn laborfluojn'
+    JOB_REMINDER_COMMENT: '%s: Sendis memorigan retpoŝton\n\n'
     REASSIGNACTIVE: 'Reagordi aktivajn laborfluojn'
     REASSIGNACTIVEHELP: 'Uzantoj povas reatribui aktivajn laborfluojn al diversaj uzantoj kaj grupoj'
     VIEWACTIVE: 'Vidigi aktivajn laborfluoj'
     VIEWACTIVEHELP: 'Uzantoj povas vidigi aktivajn laborfluojn per la laborflua administra panelo'
+    WORKFLOW_REMINDER_JOB: 'Tasko pri laborflua memorigo'
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'Necesas ke vi ensalutu'
   AdvancedWorkflowAdmin:
@@ -23,11 +25,11 @@ eo:
     INVALIDIDLIST: 'Provizis nevalidan liston de ID-oj'
     INVALIDPARENTID: 'Agordis nevalidan praan ID'
     LastEdited: Ŝanĝita
+    MENUTITLE: Laborfluoj
     SORTORDERSAVED: 'Konservis la ordigan ordon'
     Title: Titolo
     WorkflowStatus: 'Aktuala ago'
     WorkflowTitle: 'Aktuala laborfluo'
-    MENUTITLE: Laborfluoj
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Ago "%s" ne estas permesita ĉe regilo (Klaso: %s)'
     ACTIONFORMCHECK: 'Ago "%s" ne estas permesita en formularo (Nomo: "%s")'
@@ -37,6 +39,7 @@ eo:
   AllowEditing:
     ByAssignees: 'De asignitoj'
     ContentSettings: 'Enhavaj agordoj'
+    NoString: 'Ne'
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Asigni uzantojn'
     GROUPS: Grupoj

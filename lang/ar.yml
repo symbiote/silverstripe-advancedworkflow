@@ -18,11 +18,11 @@ ar:
     INVALIDIDLIST: 'تم إضافة قائمة من التعريفات غير صالحة.'
     INVALIDPARENTID: 'تم تحديد هوية رئيسية غير صالحة.'
     LastEdited: تم تغييره
+    MENUTITLE: سير العمل
     SORTORDERSAVED: 'قد تم حفظ ترتيب الفرز.'
     Title: عنوان
     WorkflowStatus: 'النشاط الحالي'
     WorkflowTitle: 'العمل الفعال'
-    MENUTITLE: سير العمل
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'التصرف "s%" غير مسموح به على وحدة التحكم (التصنيف: s%)'
     ACTIONFORMCHECK: 'التصرف "s%" غير مسموح به على النموذج (الاسم: s%)'

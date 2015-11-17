@@ -17,8 +17,8 @@ mi:
     INVALIDCLASSTOORDER: 'I tāurua he tauaha muhu ki te raupapa.'
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
-    SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
     MENUTITLE: Ngā reremahi
+    SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
     ACTIONFORMCHECK: 'Kāore e whakaaetia te hohenga "%s" i te puka (Ingoa: %s)'

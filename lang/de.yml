@@ -20,11 +20,11 @@ de:
     INVALIDIDLIST: 'Eine ungültige Liste mit Kennungen wurde angegeben.'
     INVALIDPARENTID: 'Eine ungültige übergeordnete Kennung wurde angegeben.'
     LastEdited: Geändert
+    MENUTITLE: Arbeitsabläufe
     SORTORDERSAVED: 'Die Sortierreihenfolge wurde gespeichert.'
     Title: Titel
     WorkflowStatus: 'Aktuelle Aktion'
     WorkflowTitle: 'Effektiver Arbeitsablauf'
-    MENUTITLE: Arbeitsabläufe
   AdvancedWorkflowPublishJob:
     SCHEDULEJOBTITLE: '{type} von {object} geplant'
   AllowEditing:

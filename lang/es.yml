@@ -24,11 +24,11 @@ es:
     INVALIDIDLIST: 'Se proporcionó una lista inválida de IDs.'
     INVALIDPARENTID: 'Se especificó un ID de padre inválido.'
     LastEdited: Cambiado
+    MENUTITLE: Flujos de trabajo
     SORTORDERSAVED: 'Se guardó el orden de clasificación.'
     Title: Título
     WorkflowStatus: 'Acción actual'
     WorkflowTitle: 'Flujo de trabajo efectivo'
-    MENUTITLE: Flujos de trabajo
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Acción "%s" no permitida en el controlador (Clase: %s)'
     ACTIONFORMCHECK: 'Acción "%s" no permitida en el formulario (Nombre: "%s")'
