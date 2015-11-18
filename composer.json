@@ -17,5 +17,10 @@
 	"require":
 	{
 		"silverstripe/cms": ">=3.0.0"
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.2.x-dev"
+		}
 	}
 }
