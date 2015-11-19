@@ -1,3 +1,65 @@
+2015-11-18 v3.2.2
+-----------------
+
+* Limit the users list to the users with access to the workflows dashboard
+* Update using Member::mapInCMSGroups()
+* Fix issue introduced in [#219](https://github.com/silverstripe-australia/advancedworkflow/pull/219)
+
+2015-08-20 v3.2.1
+-----------------
+
+* Fix potential null reference in Notify action
+* Ensure instances can be transitioned from log
+* Replace call to private static with Config::inst
+
+2015-06-02 v3.2.0
+-----------------
+
+* Workflow reminders as queuedjobs
+* Fix translations
+* Add license
+
+2015-05-11 v3.1.3
+-----------------
+* Update WorkflowReminderTask to use new ORM
+
+2015-03-18 v3.1.2
+-----------------
+
+* Fix publishing action
+* Ensure updateCMSFields is called in ModelAdmin
+* Provide appropriate gridfield edit response
+
+2015-02-23 v3.1.1
+-----------------
+
+2014-12-12 v3.1.0
+-----------------
+
+* Support for multiple workflow definitions
+
+2014-12-05 v3.0.6
+-----------------
+
+2014-11-19 v3.0.5
+-----------------
+
+2014-08-21 v3.0.4
+-----------------
+
+2014-05-20 v3.0.3
+-----------------
+
+2014-01-27 v3.0.2
+-----------------
+
+2013-11-12 v3.0.1
+-----------------
+
+* New Major version for compatibility with framework 3.1
+* Workflow templates
+
+
 2012-11-26 v2.1.0
 -----------------
 
