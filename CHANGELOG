@@ -1,3 +1,8 @@
+2015-11-23 v3.2.3
+-----------------
+
+* Fix for security issue [ss-2015-023](http://www.silverstripe.org/download/security-releases/ss-2015-023)
+
 2015-11-18 v3.2.2
 -----------------
 
