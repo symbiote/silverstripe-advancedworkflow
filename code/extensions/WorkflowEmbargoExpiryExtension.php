@@ -55,6 +55,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @param FieldList $fields
 	 */
 	public function updateCMSFields(FieldList $fields) {
+	    
+	    // requirements
+	    // ------------
+	    
 		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
 
 		// Add timepicker functionality
@@ -71,6 +75,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		);
 		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
 
+        // Fields
+        // ------
+
+		// we never show these explicitly in admin
+		$fields->removeByName('PublishJobID');
+		$fields->removeByName('UnPublishJobID');
+
 		$this->setIsWorkflowInEffect();
 
 		$fields->findOrMakeTab(
@@ -78,6 +89,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			_t('WorkflowEmbargoExpiryExtension.TabTitle', 'Publishing Schedule')
 		);
 		if ($this->getIsWorkflowInEffect()) {
+		    
+		    // remove fields that have been automatically added that we don't want
+			$fields->removeByName('PublishDateHeader');
+			$fields->removeByName('PublishDateIntro');
+			$fields->removeByName('PublishOnDate');
+			$fields->removeByName('UnPublishOnDate');
+
+			// add fields we want in this context
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
 				HeaderField::create(
 					'PublishDateHeader',
@@ -103,6 +122,16 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				)->setDisabled(true)
 			));
 		} else {
+		    
+		    // remove fields that have been automatically added that we don't want
+			$fields->removeByName('PublishDateHeader');
+			$fields->removeByName('PublishDateIntro');
+			$fields->removeByName('DesiredPublishDate');
+			$fields->removeByName('DesiredUnPublishDate');
+			$fields->removeByName('PublishOnDate');
+			$fields->removeByName('UnPublishOnDate');
+
+			// add fields we want in this context
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
 				HeaderField::create(
 					'PublishDateHeader',
