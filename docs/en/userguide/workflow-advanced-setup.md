@@ -8,8 +8,8 @@ If you want the user to make an explicit choice about which path of the workflow
 there should be multiple transitions created going out from that action. Continuing the above flow; after Notifying users,
 you might want them to make a decision as to whether to "Approve" or "Reject" the item; therefore, from the Notify action, there may be two transitions:
 
-1). The Approve transition that leads to the approval and publication actions.
-2). The Reject transition that leads to the cancel action.
+1. The Approve transition that leads to the approval and publication actions.
+2. The Reject transition that leads to the cancel action.
 
 The name given to a transition appears on the "Workflow Actions" tab of a content item when a content author needs to make a decision.
 
