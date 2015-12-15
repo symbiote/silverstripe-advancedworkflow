@@ -26,7 +26,7 @@ Once your user groups are set, you can apply Workflow actions to these user grou
 
 See [more on workflow permissions.](workflow-permissions.md)
 
-<div class="note" markdown="1">Note: Any user with ‘full administrative rights’ set will see all Workflow action buttons in the CMS, plus they will have the ability to Publish and Draft content regardless of whether or not a workflow is configured_ _on a page.</div>
+<div class="note" markdown="1">Note: Any user with ‘full administrative rights’ set will see all Workflow action buttons in the CMS, plus they will have the ability to Publish and Draft content regardless of whether or not a workflow is configured on a page.</div>
 
 ## **Step 2. Create a Workflow Definition**
 There is no default workflow in SilverStripe CMS since actual workflows vary greatly across web sites and hence one must be created. 
@@ -43,15 +43,16 @@ Once you have added a template, you will need to configure it with your custom s
 Now continue to "Step 4. Assigning Users to the Workflow" below.
 
 ### Defining your own workflow
-1. To create a Workflow Definition, select the _Workflows_ admin in the Left Hand Menu to show the Workflow administration.
+* To create a Workflow Definition, select the _Workflows_ admin in the Left Hand Menu to show the Workflow administration.
 
 ![Workflow CMS section](_images/advancedworkflow-modeladmin.jpg)
 
-2. Click on ‘Add Workflow Definition’ to bring up the Workflow form.
+* Click on ‘Add Workflow Definition’ to bring up the Workflow form.
 
 ![Add Workflow Definition](_images/advancedworkflow-workflowdefinition.jpg)
 
-Enter:
+* Enter:
+
 **Title**
 The title for your workflow.
 
@@ -61,9 +62,10 @@ A summary of your workflow.
 **Choose from Template (optional)**
 As detailed above, a template can be selected here. 
 
-3. Click ‘Save’ 
+* Click ‘Save’ 
 
-Note: You must save your workflow definition before you can add workflow actions.
+### Note:
+You must save your workflow definition before you can add workflow actions.
 
 ## **Step 3. Adding Workflow Actions**
 Once you have saved your Workflow Definition you can now add Workflow Actions to it. 
