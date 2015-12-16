@@ -10,7 +10,7 @@ You will need to configure the workflow in the ‘workflows’ admin interface. 
 ![Flow diagram of advanced workflow objective](_images/advancedworkflow-review-and-approve.jpg)
 
 ## **Step 1. Set up user groups**
-CMS Administrators must first set up user groups to be configured in the Workflow, _see_ [http://userhelp.silverstripe.org/en/for-website-administrators/changing-and-managing-users](http://userhelp.silverstripe.org/framework/en/for-website-administrators/changing-and-managing-users) _for setting up users and groups in the Secuirty admin_. 
+CMS Administrators must first set up user groups to be configured in the Workflow, _see_ [Changing and managing users](https://userhelp.silverstripe.org/en/managing_your_website/changing_and_managing_users/) _for setting up users and groups in the Secuirty admin_. 
 
 For this example workflow we have the following user groups set up: 
 1. Content Authors
