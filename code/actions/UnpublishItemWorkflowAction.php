@@ -10,7 +10,7 @@
 class UnpublishItemWorkflowAction extends WorkflowAction {
 
 	private static $db = array(
-		'PublishDelay' => 'Int'
+		'UnpublishDelay' => 'Int'
 	);
 
 	public static $icon = 'advancedworkflow/images/publish.png';
@@ -20,9 +20,9 @@ class UnpublishItemWorkflowAction extends WorkflowAction {
 			return true;
 		}
 
-		if (class_exists('AbstractQueuedJob') && $this->PublishDelay) {
-			$job   = new WorkflowPublishTargetJob($target);
-			$days  = $this->PublishDelay;
+		if (class_exists('AbstractQueuedJob') && $this->UnpublishDelay) {
+			$job   = new WorkflowPublishTargetJob($target, "unpublish");
+			$days  = $this->UnpublishDelay;
 			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
 			singleton('QueuedJobService')->queueJob($job, $after);
 		} else if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
@@ -53,7 +53,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction {
 			$after  = _t('UnpublishItemWorkflowAction.DELAYUNPUBDAYSAFTER', ' days');
 
 			$fields->addFieldToTab('Root.Main', new FieldGroup(
-				_t('UnpublishItemWorkflowAction.UNPUBLICATIONDELAY', 'Publication Delay'),
+				_t('UnpublishItemWorkflowAction.UNPUBLICATIONDELAY', 'Delay Un-publishing'),
 				new LabelField('UnpublishDelayBefore', $before),
 				new NumericField('UnpublishDelay', ''),
 				new LabelField('UnpublishDelayAfter', $after)
