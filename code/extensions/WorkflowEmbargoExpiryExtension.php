@@ -89,10 +89,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			_t('WorkflowEmbargoExpiryExtension.TabTitle', 'Publishing Schedule')
 		);
 		if ($this->getIsWorkflowInEffect()) {
-		    
-		    // remove fields that have been automatically added that we don't want
-			$fields->removeByName('PublishOnDate');
-			$fields->removeByName('UnPublishOnDate');
 
 			// add fields we want in this context
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
@@ -124,8 +120,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		    // remove fields that have been automatically added that we don't want
 			$fields->removeByName('DesiredPublishDate');
 			$fields->removeByName('DesiredUnPublishDate');
-			$fields->removeByName('PublishOnDate');
-			$fields->removeByName('UnPublishOnDate');
 
 			// add fields we want in this context
 			$fields->addFieldsToTab('Root.PublishingSchedule', array(
