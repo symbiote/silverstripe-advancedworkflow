@@ -91,8 +91,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		if ($this->getIsWorkflowInEffect()) {
 		    
 		    // remove fields that have been automatically added that we don't want
-			$fields->removeByName('PublishDateHeader');
-			$fields->removeByName('PublishDateIntro');
 			$fields->removeByName('PublishOnDate');
 			$fields->removeByName('UnPublishOnDate');
 
@@ -124,8 +122,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		} else {
 		    
 		    // remove fields that have been automatically added that we don't want
-			$fields->removeByName('PublishDateHeader');
-			$fields->removeByName('PublishDateIntro');
 			$fields->removeByName('DesiredPublishDate');
 			$fields->removeByName('DesiredUnPublishDate');
 			$fields->removeByName('PublishOnDate');
