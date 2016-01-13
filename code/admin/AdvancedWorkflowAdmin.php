@@ -25,7 +25,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		'' => 'index'
 	);
 
-	private static $managed_models  = 'WorkflowDefinition';
+	private static $managed_models  = array(
+		'WorkflowDefinition',
+		'WorkflowTypeConfiguration'
+	);
 
 	private static $model_importers = array(
 		'WorkflowDefinition' => 'WorkflowBulkLoader'
