@@ -182,7 +182,6 @@ class WorkflowApplicable extends DataExtension {
 					$tab = Tab::create(
 						'AdditionalWorkflows'
 					);
-					$menu->insertBefore($tab, 'MoreOptions');
 					$addedFirst = false;
 					foreach($definitions as $definition) {
 						if($definition->getInitialAction()) {
@@ -194,15 +193,16 @@ class WorkflowApplicable extends DataExtension {
 							// The first element is the main workflow definition, and will be displayed as a major action.
 
 							if(!$addedFirst) {
-								$addedFirst = true;
+								$addedFirst = $action->getName();
 								$action->setAttribute('data-icon', 'navigation');
 								$majorActions = $actions->fieldByName('MajorActions');
-								$majorActions ? $majorActions->push($action) : $actions->push($action);
+								$majorActions ? $majorActions->push($action) : $actions->insertBefore($action, 'ActionMenus');
 							} else {
 								$tab->push($action);
 							}
 						}
 					}
+					$menu->push($tab);
 				}
 				
 			}

@@ -83,6 +83,31 @@ class WorkflowService implements PermissionProvider {
 	}
 
 	/**
+	 * Gets additional workflow definition for a given dataobject, if there is one
+	 *
+	 * Will recursively query parent elements until it finds one, if available
+	 *
+	 * @param DataObject $dataObject
+	 */
+	public function getAdditionalDefinitionsFor(DataObject $dataObject) {
+		if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
+			if ($dataObject->collectAdditionalWorkflowDefinitions()->count()) {
+				return $dataObject->collectAdditionalWorkflowDefinitions();
+			}
+			if ($dataObject->ParentID) {
+				return $this->getAdditionalDefinitionsFor($dataObject->Parent());
+			}
+			if ($dataObject->hasMethod('workflowParent')) {
+				$obj = $dataObject->workflowParent();
+				if ($obj) {
+					return $this->getAdditionalDefinitionsFor($obj);
+				}
+			}
+		}
+		return null;
+	}
+
+	/**
 	 *	Retrieves a workflow definition by ID for a data object.
 	 *
 	 *	@param data object
@@ -97,15 +122,16 @@ class WorkflowService implements PermissionProvider {
 		$workflow = null;
 		if($object->hasExtension('WorkflowApplicable') || $object->hasExtension('FileWorkflowApplicable')) {
 
+			$workflow = null;
 			// Validate the workflow ID against the data object.
-
-			if(($object->WorkflowDefinitionID == $workflowID) || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))) {
-				if(is_null($workflow)) {
-					$workflow = DataObject::get_by_id('WorkflowDefinition', $workflowID);
-				}
+			if($object->WorkflowDefinitionID == $workflowID) {
+				$workflow = DataObject::get_by_id('WorkflowDefinition', $workflowID);
+			} else {
+				$additionalDefinitions = $this->getAdditionalDefinitionsFor($object);
+				if($additionalDefinitions) $workflow = $additionalDefinitions->byID($workflowID);
 			}
 		}
-		return $workflow ? $workflow : null;
+		return $workflow;
 	}
 
 	/**
@@ -121,12 +147,11 @@ class WorkflowService implements PermissionProvider {
 
 		$default = $this->getDefinitionFor($object);
 		if($default) {
-
+			$additionalDefinitions = $this->getAdditionalDefinitionsFor($object);
 			// Merge the additional workflow definitions.
-
-			return array_merge(array(
-				$default
-			), $object->AdditionalWorkflowDefinitions()->toArray());
+			return is_a($additionalDefinitions, 'ManyManyList')
+				? array_merge(array($default),$additionalDefinitions->toArray())
+				: array($default);
 		}
 		return null;
 	}
