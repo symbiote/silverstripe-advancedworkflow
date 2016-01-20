@@ -198,10 +198,14 @@ class WorkflowApplicable extends DataExtension {
 								$majorActions = $actions->fieldByName('MajorActions');
 								$majorActions ? $majorActions->push($action) : $actions->insertBefore($action, 'ActionMenus');
 							} else {
+								//Make sure $action renders as a <button> in ModelAdmin without this it renders as an
+								//<input>
+								$action->setUseButtonTag(true);
 								$tab->push($action);
 							}
 						}
 					}
+					//Add the AdditionalWorkflows tab 
 					$menu->push($tab);
 				}
 				

@@ -91,8 +91,8 @@ class WorkflowService implements PermissionProvider {
 	 */
 	public function getAdditionalDefinitionsFor(DataObject $dataObject) {
 		if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
-			if ($dataObject->collectAdditionalWorkflowDefinitions()->count()) {
-				return $dataObject->collectAdditionalWorkflowDefinitions();
+			if ($dataObject->AdditionalWorkflowDefinitions()->count()) {
+				return $dataObject->AdditionalWorkflowDefinitions();
 			}
 			if ($dataObject->ParentID) {
 				return $this->getAdditionalDefinitionsFor($dataObject->Parent());
