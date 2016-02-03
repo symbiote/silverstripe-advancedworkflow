@@ -7,12 +7,19 @@ fi_FI:
   AdvancedWorkflowAdmin:
     LastEdited: Muokattu
     Title: Otsikko
+  AllowEditing:
+    NoString: 'Ei'
+  NotifyUsersWorkflowAction:
+    EMAILTEMPLATE: 'Sähköpostipohja'
   WorkflowAction:
     Author: Tekijä
     FinishedLabel: Valmistunut
+    TITLE: Otsikko
     TypeLabel: Tyyppi
   WorkflowActionInstance:
     Title: Otsikko
+  WorkflowDefinition:
+    TITLE: Otsikko
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Aktiivinen
     CompletedWorkflowStateTitle: Valmistunut
