@@ -71,7 +71,7 @@ en:
     FORMATTINGHELP: 'Formatting Help'
     FORMATTINGNOTE: "Notification emails can contain HTML formatting. The following special variables are replaced with their\n			respective values in the email subject, email from and template/body."
     INITIATORNOTE: "These fields will be populated from the member that initiates the workflow request. For example,\n			{$Initiator.Email}."
-    LISTING_TEMPLATE: "Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). \n					Also available will be all properties of the current Workflow Instance"
+    LISTING_TEMPLATE: 'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). Also available will be all properties of the current Workflow Instance'
     MEMBERNOTE: "These fields will be populated from the member that initiates the notification action. For example,\n			{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Notification Email'
     NOTIFICATIONNOTE: 'All users attached to the workflow will be sent an email when this action is run.'
