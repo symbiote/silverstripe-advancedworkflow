@@ -184,9 +184,9 @@ jQuery.entwine("workflow", function($) {
 		},
 		onmatch: function(){
 			var self = this,
-				publishDate = this.find('#PublishOnDate input.date'),
-				publishTime = this.find('#PublishOnDate input.time'),
-				parent = this.find('#PublishOnDate');
+				publishDate = this.find('input[name="PublishOnDate[date]"]'),
+				publishTime = this.find('input[name="PublishOnDate[time]"]'),
+				parent = publishDate.parent().parent();
 				
 
 			if(!$('#Form_EditForm_action_publish').attr('disabled')){
