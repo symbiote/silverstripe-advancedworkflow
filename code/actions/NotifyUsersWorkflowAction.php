@@ -162,7 +162,11 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			$result['CMSLink'] = $target->WorkflowLink();
 		}
 
-		return $result;
+        if ($target->hasExtension('WorkflowApplicable')) {
+            $result['LinkToPendingItems'] = $target->LinkToPendingItems();
+        }
+
+        return $result;
 	}
 
 	/**
@@ -205,7 +209,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			{$Initiator.Email}.');
 		$context = _t('NotifyUsersWorkflowAction.CONTEXTNOTE',
 			'Any summary fields from the workflow target will be available. For example, {$Context.Title}.
-			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in
+			Additionally, the {$Context.CMSLink} variable will contain a link to edit the workflow target in
 			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS\' workflow admin,
 			useful for allowing users to enact workflow transitions, directly from emails.');
 		$fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
