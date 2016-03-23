@@ -16,8 +16,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	private static $db = array(
 		'EmailSubject'			=> 'Varchar(100)',
 		'EmailFrom'				=> 'Varchar(50)',
-		'EmailTemplate'			=> 'Text',
-		'ListingTemplateID'		=> 'Int',
+		'EmailTemplate'			=> 'Text'
 	);
 
 	public static $icon = 'advancedworkflow/images/notify.png';
@@ -36,22 +35,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				$this->fieldLabel('FormattingHelp'), new LiteralField('FormattingHelp', $this->getFormattingHelp()))
 		));
 
-		if (class_exists('ListingPage')) {
-			// allow the user to select an existing 'listing template'. The "getItems()" for that template
-			// will be the list of items in the workflow
-			$templates = DataObject::get('ListingTemplate');
-			$opts = array();
-			if ($templates) {
-				$opts = $templates->map();
-			}
-
-			$fields->addFieldToTab('Root.Main', $listingTemplateDropdownField = new DropdownField('ListingTemplateID', $this->fieldLabel('ListingTemplateID'), $opts, ''), 'EmailTemplate');
-			$listingTemplateDropdownField->setEmptyString('(choose)');
-		}
-
-		if ($this->ListingTemplateID) {
-			$fields->removeFieldFromTab('Root.Main', 'EmailTemplate');
-		}
+		$this->extend('updateNotifyUsersCMSFields', $fields);
 
 		return $fields;
 	}
@@ -63,10 +47,6 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'All users attached to the workflow will be sent an email when this action is run.'),
 			'EmailSubject'      => _t('NotifyUsersWorkflowAction.EMAILSUBJECT', 'Email subject'),
 			'EmailFrom'         => _t('NotifyUsersWorkflowAction.EMAILFROM', 'Email from'),
-			'ListingTemplateID' => _t('NotifyUsersWorkflowAction.LISTING_TEMPLATE', 
-				'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). '.
-				'Also available will be all properties of the current Workflow Instance'
-			),
 			'EmailTemplate'     => _t('NotifyUsersWorkflowAction.EMAILTEMPLATE', 'Email template'),
 			'FormattingHelp'    => _t('NotifyUsersWorkflowAction.FORMATTINGHELP', 'Formatting Help')
 		));
@@ -118,13 +98,10 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			));
 		}
 
-		if ($this->ListingTemplateID) {
-			$template = DataObject::get_by_id('ListingTemplate', $this->ListingTemplateID);
-			$view = SSViewer::fromString($template->ItemTemplate);
-		} else {
-			$view = SSViewer::fromString($this->EmailTemplate);			
-		}
 		
+		$view = SSViewer::fromString($this->EmailTemplate);
+		$this->extend('updateView', $view);
+
 		$body = $view->process($item);
 
 		foreach($members as $member) {
