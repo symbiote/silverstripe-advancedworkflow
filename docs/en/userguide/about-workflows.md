@@ -17,6 +17,12 @@ the current user. The current user can then use this button to initiate the tran
 The same workflow system also allows you to set up embargo and expiry dates on your pages. This enables pages be assigned a scheduled time 
 and date when the page will be automatically published to or removed from your website.
 
+## Non-inheritance options
+
+If sitemap inheritance is not what you desire then you can stop inheritance on a specific page type by adding a useInheritedWorkflow method. This method is designed to return a true or false, therefore stopping the inheritance from the parent.
+
+If you need pagetypes to be automatically assigned a specific workflow, we'd recommend adding an extension to the WorkflowDefition to define the page type(s) it's meant to be used for, and then an onBeforeWrite on the page type, to find and assign that WorkflowDefinition.
+
 ## Workflow Terminology
 - **Workflow Definition**: Description of all the "actions" and "transitions" that make up a single workflow process to publish a page. Definitions are applied to pages within the CMS and are managed through the "Workflows" section of the CMS.
 - **Workflow Instance**: When a user wants to publish a page, instead of selecting the 'publish' button, they instead start a workflow, or more specifically, an instance of the "Workflow Definition" applied to that page. This "Instance" contains all the relevant data (e.g. user choices, comments, etc) for the running workflow on that page's content.
