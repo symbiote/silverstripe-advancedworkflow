@@ -66,6 +66,8 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 			if (!$p->canEditWorkflow()) {
 				$form->makeReadonly();
 			}
+
+			$this->owner->extend('updateWorkflowEditForm', $form);
 		}
 	}
 	
