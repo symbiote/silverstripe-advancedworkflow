@@ -102,8 +102,8 @@ abstract class FrontEndWorkflowController extends Controller {
 		$active->setFrontendFormRequirements();
 				
 		// hooks for decorators
-		$this->extend('updateFrontEndWorkflowFields', $wfActions);
-		$this->extend('updateFrontEndWorkflowActions', $wfFields);
+		$this->extend('updateFrontEndWorkflowFields', $wfFields);
+		$this->extend('updateFrontEndWorkflowActions', $wfActions);
 		$this->extend('updateFrontEndRequiredFields', $wfValidator);
 		$this->extend('updateFrontendFormRequirements');
 	   
