@@ -1,3 +1,13 @@
+2016-04-27 v3.3.2
+-----------------
+
+* Frontend workflow: Made the visiblity of unexecutable actions configurable.
+* Fixed frontend workflow ->extend hooks to use proper fields as named.
+* Added updateWorkflowEditForm hook for manipulating workflow edit form 
+* Removed explicit listingpage dependency
+* Fix embargo publishDate selector
+
+
 2016-02-04 v3.3.1
 -----------------
 
