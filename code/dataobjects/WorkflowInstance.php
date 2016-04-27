@@ -50,6 +50,14 @@ class WorkflowInstance extends DataObject {
 	);
 
 	/**
+	 * If set to true, actions that cannot be executed by the user will not show
+	 * on the frontend (just like the backend). 
+	 *
+	 * @var boolean
+	 */
+	private static $hide_disabled_actions_on_frontend = false;
+
+	/**
 	 * Get the CMS view of the instance. This is used to display the log of
 	 * this workflow, and options to reassign if the workflow hasn't been
 	 * finished yet
@@ -551,17 +559,26 @@ class WorkflowInstance extends DataObject {
 		$options   = $action->getValidTransitions();
 		$actions   = new FieldList();
 
-		foreach ($options as $option) {
-			// skip adding the button if canExecute() returns false
-			if(!$option->canExecute($this)){
-				continue;
-			}
+		$hide_disabled_actions_on_frontend = $this->config()->hide_disabled_actions_on_frontend; 
 
+		foreach ($options as $option) {
 			$btn = new FormAction("transition_{$option->ID}", $option->Title);
 
 			// add cancel class to passive actions, this prevents js validation (using jquery.validate)
 			if($option->Type == 'Passive'){
 				$btn->addExtraClass('cancel');
+			}
+
+			// disable the button if canExecute() returns false
+			if(!$option->canExecute($this))
+			{
+				if ($hide_disabled_actions_on_frontend)
+				{
+					continue;
+				}
+
+				$btn = $btn->performReadonlyTransformation();
+				$btn->addExtraClass('hide');
 			}
 
 			$actions->push($btn);
