@@ -86,7 +86,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'Initiator' => new ArrayData($initiatorFields),
 				'Member' => new ArrayData($memberFields),
 				'Context' => new ArrayData($contextFields),
-				'CommentHistory' => $variables["\$CommentHistory"]
+				'CommentHistory' => $variables["\$CommentHistory"],
+				'Workflow' 	=> $workflow
 			));
 		}
 		else {
@@ -94,7 +95,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 				'Items' => $workflow->Actions(),
 				'Member' => $member,
 				'Context' => new ArrayData($contextFields),
-				'CommentHistory' => $variables["\$CommentHistory"]
+				'CommentHistory' => $variables["\$CommentHistory"],
+				'Workflow' 	=> $workflow
 			));
 		}
 
