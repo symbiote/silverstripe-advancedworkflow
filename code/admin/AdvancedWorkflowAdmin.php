@@ -74,8 +74,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		$fieldName = 'PendingObjects';
 		$pending = $this->userObjects(Member::currentUser(), $fieldName);
 
-		if(self::$fieldOverrides) {
-			$displayFields = self::$fieldOverrides;
+		if($this->config()->fieldOverrides) {
+			$displayFields = $this->config()->fieldOverrides;
 		} else {
 			$displayFields = array(
 				'Title'				=> _t('AdvancedWorkflowAdmin.Title', 'Title'),
