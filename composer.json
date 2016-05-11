@@ -16,7 +16,8 @@
 	],
 	"require":
 	{
-		"silverstripe/cms": ">=3.0.0"
+		"silverstripe/cms": ">=3.0.0",
+		"silverstripe/multivaluefield": "~2.2"
 	},
 	"extra": {
 		"branch-alias": {
