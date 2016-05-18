@@ -71,7 +71,7 @@ eo:
     FORMATTINGHELP: 'Formatada helpo'
     FORMATTINGNOTE: "Sciigaj retpoŝtoj povas enhavi HTML-formatojn. La jenajn specialajn variablojn anstataŭas iliaj respektivaj valoroj en la retpoŝtaj temo, sendinto kaj ŝablono/korpo."
     INITIATORNOTE: "Ĉi tiuj kampoj pleniĝos el la membro kiu initiatis la laborfluan peton."
-    LISTING_TEMPLATE: "Listaj ŝablonoj - Elementoj estos ĉiuj agoj en la laborfluo (sinonimo al Agoj). \n\t\t\t\t\tAnkaŭ disponeblaj estos ĉiuj atributoj de la aktuala laborflua ekzemplo"
+    LISTING_TEMPLATE: 'Lista ŝablono - elementoj estos la listo de ĉiuj agoj en la laborfluo (sinonimo al agoj). Ankaŭ disponeblos ĉiuj atributoj de la aktuala laborflua elemento.'
     MEMBERNOTE: "Ĉi tiuj kampoj pleniĝos de la membro kiu iniciatos la sciigan agon. Ekzemple,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Sciiga retpoŝto'
     NOTIFICATIONNOTE: 'Retpoŝto sendiĝos al ĉiuj uzuloj ligitaj al la laborfluo, kiam la ago ruliĝos.'

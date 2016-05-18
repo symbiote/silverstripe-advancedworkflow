@@ -1,1 +1,91 @@
-it: {}
+it:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Flusso di lavoro Avanzato'
+    APPLY_WORKFLOW: 'Applica Flusso di Lavoro'
+    APPLY_WORKFLOW_HELP: 'Gli utenti possono applicare flussi di lavoro agli oggetti'
+    CREATE_WORKFLOW: 'Crea flusso di lavoro'
+    CREATE_WORKFLOW_HELP: 'Gli utenti possono creare definizioni di flussi di lavoro'
+    DELETE_WORKFLOW: 'Cancella flusso di lavoro'
+    VIEWACTIVE: 'Visualizza flussi di lavoro attivi'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'Devi essere loggato'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Tutti gli oggetti in sospeso'
+    LastEdited: Cambiato
+    MENUTITLE: Flussi di lavoro
+    SORTORDERSAVED: 'L''ordinamento e'' stato salvato.'
+    Title: Titolo
+    WorkflowStatus: 'Azione corrente'
+  AllowEditing:
+    ContentSettings: 'Impostazioni Contenuto'
+    NoString: 'No'
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Assegna Utenti'
+    GROUPS: Gruppi
+    USERS: Utenti
+  CancelWorkflowAction:
+    PLURALNAME: 'Cancella azioni del flusso di lavoro'
+    SINGULARNAME: 'Cancella azione del flusso di lavoro'
+  FrontEndWorkflowController:
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'Non hai i permessi per eseguire quest''azione'
+  GridAction:
+    EXPORT_DESCRIPTION: Esporta
+    Export: Esporta
+  GridFieldEditButton_ss:
+    EXPORT: Esporta
+  NotifyUsersWorkflowAction:
+    FIELDNAME: 'Nome del campo'
+  PublishItemWorkflowAction:
+    DELAYPUBDAYSAFTER: 'giorni'
+    DELAYPUBDAYSBEFORE: 'Ritarda pubblicazione'
+  Workflow:
+    WorkflowActionsTabTitle: 'Azioni del flusso di lavoro'
+  WorkflowAction:
+    Author: Autore
+    COMMENT: Commento
+    CommentLabel: Commento
+    ExecutedLabel: Eseguito
+    FRONTENDCOMMENT: Commento
+    FinishedLabel: Finito
+    PLURALNAME: 'Azioni del flusso di lavoro'
+    SINGULARNAME: 'Azione del flusso di lavoro'
+    TITLE: Titolo
+    TypeLabel: Tipo
+  WorkflowActionInstance:
+    Title: Titolo
+  WorkflowDefinition:
+    DESCRIPTION: Descrizione
+    GROUPS: 'Ristretto ai Gruppi'
+    LATEST_VERSION: 'L''ultima versione e'' %s'
+    REMINDEREMAIL: 'Email di Reminder'
+    SENDREMINDERDAYSAFTER: 'giorni senza azioni.'
+    TEMPLATE_INFO: 'Template Info'
+    TEMPLATE_NAME: 'Sorgente Template'
+    TEMPLATE_VERSION: 'Versione Template'
+    TITLE: Titolo
+    USERS: 'Ristretto agli Utenti'
+    WORKFLOW: Flusso di lavoro
+  WorkflowDefinitionImporter:
+    INVALID_YML_FORMAT_NO_HEADER: 'Formatto YAML non valido'
+    INVALID_YML_FORMAT_NO_PARSE: 'Formatto YAML non valido. Impossibile fare il parse.'
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Attivo
+    CompletedWorkflowStateTitle: Completato
+  WorkflowField:
+    AddTransitionAction: 'Aggiungi Transazione'
+    CreateAction: 'Crea un azione'
+    CreateLabel: Crea
+    DeleteAction: Cancella
+    EditAction: Modifica
+  WorkflowInstance:
+    ActionLogTitle: Log
+    TITLE_FOR_DO: '%s - %s'
+    TITLE_STUB: 'Istanza di #%s di %s'
+    TitleLabel: Titolo
+  WorkflowTransition:
+    ACTION: Azione
+    Active: Attivo
+    NEXT_ACTION: 'Prossima Azione'
+    Passive: Passivo
+    SELECTONE: '(Seleziona uno)'
+    TYPE: Tipo

@@ -1,7 +1,7 @@
 {
-    "Workflow.DeleteQuestion": "Are you sure you want to permanently delete this?",
-    "Workflow.EMBARGOMESSAGETIME": "Saved drafts of this page will auto publish today at <a>%s</a>",
-    "Workflow.EMBARGOMESSAGEDATE": "Saved drafts of this page will auto publish on <a>%s</a>",
-    "Workflow.EMBARGOMESSAGEDATETIME": "Saved drafts of this page will auto publish on <a>%s at %s</a>",
-    "Workflow.ProcessError": "Could not process workflow"
+    "Workflow.DeleteQuestion": "Da li ste sigurni da želite trajno obrisati ovo?",
+    "Workflow.EMBARGOMESSAGETIME": "Spremljeni draft ove stranice će biti automatski objavljen danas u <a>%s</a>",
+    "Workflow.EMBARGOMESSAGEDATE": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s</a>",
+    "Workflow.EMBARGOMESSAGEDATETIME": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s u %s</a>",
+    "Workflow.ProcessError": "Ne mogu obraditi proces \"workflow\""
 }

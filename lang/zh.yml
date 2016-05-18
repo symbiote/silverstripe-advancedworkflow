@@ -53,7 +53,6 @@ zh:
     FORMATTINGHELP: '格式化帮助'
     FORMATTINGNOTE: "通知邮件可以含 HTML 格式。以下特殊变量分别以邮件标题、发件人和模板/主体各自的值替换。"
     INITIATORNOTE: "这些字段将填充发起工作流程请求的成员信息。例如，\n{$Initiator.Email}。"
-    LISTING_TEMPLATE: "列表模板 - 列出工作流中的所有操作项（操作的同义词）。\n\n同时当前工作流实例的所有属性都将可用"
     MEMBERNOTE: "这些字段将填充发起通知操作的成员信息。例如，\n\n{$Member.FirstName}。"
     NOTIFICATIONEMAIL: '通知邮件'
     NOTIFICATIONNOTE: '该动作开始时所有该工作流程相关用户均会受到一封邮件'

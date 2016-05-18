@@ -49,7 +49,6 @@ mi:
     FORMATTINGHELP: 'Āwhina Whakahōputu'
     FORMATTINGNOTE: "Ka whai hōputu HTML pea ngā īmēra whakamōhio. Ka whakakapia ēnei taurangi motuhake ki ngā\n\t\t\tuara hāngai i roto i te kaupapa īmerā, i te īmērā mai, me te tātauira/tinana."
     INITIATORNOTE: "Ka whakakīa ēnei āpure i te mema ka tīmata i te tono reremahi. Hei tauira,\n\t\t\t{$Initiator.Email}."
-    LISTING_TEMPLATE: "Tātauira Whakarārangi- Ko ngā tuemi te rārangi o ngā hohenga katoa i te reremahi (kupu haurite ki ngā Hohenga). \n\t\t\t\t\tKa wātea hoki ngā āhuatanga katoa o te Tauira Reremahi o nāianei"
     MEMBERNOTE: "Ka whakakīa ēnei āpure i te mema ka tīmata i te hohenga whakamōhio. Hei tauira,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Īmēra Whakamōhio'
     NOTIFICATIONNOTE: 'Ka tukuna he īmēra ki ngā kaiwhakamahi katoa e tāpiritia ana ki te reremahi ina whakahaeretia tēnei hohenga.'

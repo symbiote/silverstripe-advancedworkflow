@@ -83,11 +83,22 @@ en:
     PLURALNAME: 'Publish Item Workflow Actions'
     PUBLICATIONDELAY: 'Publication Delay'
     SINGULARNAME: 'Publish Item Workflow Action'
+  SetPropertyWorkflowAction:
+    PLURALNAME: 'Set Property Workflow Actions'
+    PROPERTY: Property
+    PROPERTYTITLE: 'Property to set; if this exists as a setter method, will be called passing the value'
+    SINGULARNAME: 'Set Property Workflow Action'
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple Approval Workflow Actions'
     SINGULARNAME: 'Simple Approval Workflow Action'
   SiteTree:
     WorkflowOptions: 'Workflow options'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: ' days'
+    DELAYUNPUBDAYSBEFORE: 'Delay unpublishing by '
+    PLURALNAME: 'Unpublish Item Workflow Actions'
+    SINGULARNAME: 'Unpublish Item Workflow Action'
+    UNPUBLICATIONDELAY: 'Delay Un-publishing'
   Workflow:
     WorkflowActionsTabTitle: 'Workflow Actions'
   WorkflowAction:
