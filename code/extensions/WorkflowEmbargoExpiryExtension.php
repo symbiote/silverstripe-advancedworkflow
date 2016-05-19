@@ -55,10 +55,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @param FieldList $fields
 	 */
 	public function updateCMSFields(FieldList $fields) {
-	    
+
 	    // requirements
 	    // ------------
-	    
+
 		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
 
 		// Add timepicker functionality
@@ -116,7 +116,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				)->setDisabled(true)
 			));
 		} else {
-		    
+
 		    // remove fields that have been automatically added that we don't want
 			$fields->removeByName('DesiredPublishDate');
 			$fields->removeByName('DesiredUnPublishDate');
@@ -236,7 +236,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		// while the same could be said for the unpublish, the 'publish' state
 		// is the one that must be avoided so we allow setting the 'unpublish'
 		// date for as-yet-not-published content.
-		if (Versioned::current_stage() === 'Live') return;
+		if (Versioned::get_stage() === Versioned::LIVE) {
+            return;
+        }
 
 		/*
 		 * Without checking if there's actually a workflow in effect, simply saving

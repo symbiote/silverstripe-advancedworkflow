@@ -374,12 +374,13 @@ class WorkflowDefinition extends DataObject {
 		return $incomingTitle;
 	}
 
-	/**
-	 *
-	 * @param Member $member
-	 * @return boolean
-	 */
-	public function canCreate($member=null) {
+    /**
+     *
+     * @param Member $member
+     * @param array $context
+     * @return bool
+     */
+	public function canCreate($member = null, $context = array()) {
 		if (is_null($member)) {
 			if (!Member::currentUserID()) {
 				return false;
@@ -433,11 +434,12 @@ class WorkflowDefinition extends DataObject {
 		return Permission::checkMember($member, 'DELETE_WORKFLOW');
 	}
 
-	/**
-	 * Checks whether the passed user is able to view this ModelAdmin
-	 *
-	 * @param $memberID
-	 */
+    /**
+     * Checks whether the passed user is able to view this ModelAdmin
+     *
+     * @param Member $member
+     * @return bool
+     */
 	protected function userHasAccess($member) {
 		if (!$member) {
 			if (!Member::currentUserID()) {

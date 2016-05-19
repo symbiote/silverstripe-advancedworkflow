@@ -9,6 +9,8 @@
  * Therefore, any logic around whether the workflow can proceed should be
  * managed within this method.
  *
+ * @method WorkflowAction Action()
+ * @method WorkflowAction NextAction()
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
@@ -182,14 +184,15 @@ class WorkflowTransition extends DataObject {
 		return $return !== false;
 	}
 
-	/**
-	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
-	 *
-	 * @param  Member $member
-	 * @return bool
-	 */
-	public function canCreate($member = null) {
-		return $this->Action()->WorkflowDef()->canCreate($member);
+    /**
+     * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
+     *
+     * @param  Member $member
+     * @param array $context
+     * @return bool
+     */
+	public function canCreate($member = null, $context = array()) {
+		return $this->Action()->WorkflowDef()->canCreate($member, $context);
 	}
 
 	/**

@@ -51,7 +51,7 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 * If set to true, actions that cannot be executed by the user will not show
-	 * on the frontend (just like the backend). 
+	 * on the frontend (just like the backend).
 	 *
 	 * @var boolean
 	 */
@@ -189,7 +189,7 @@ class WorkflowInstance extends DataObject {
 		if($this->TargetID && $this->TargetClass) {
 			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
 			if($versionable) {
-				Versioned::set_reading_mode("Stage.Stage");
+				Versioned::set_stage(Versioned::DRAFT);
 			}
 
 			// Default
@@ -559,7 +559,7 @@ class WorkflowInstance extends DataObject {
 		$options   = $action->getValidTransitions();
 		$actions   = new FieldList();
 
-		$hide_disabled_actions_on_frontend = $this->config()->hide_disabled_actions_on_frontend; 
+		$hide_disabled_actions_on_frontend = $this->config()->hide_disabled_actions_on_frontend;
 
 		foreach ($options as $option) {
 			$btn = new FormAction("transition_{$option->ID}", $option->Title);
@@ -635,7 +635,7 @@ class WorkflowInstance extends DataObject {
 	public function getVersionedConnection($recordID, $userID, $wasPublished = 0) {
 		// Turn this into an array and run through implode()
 		$filter = "RecordID = {$recordID} AND AuthorID = {$userID} AND WasPublished = {$wasPublished}";
-		$query = new SQLQuery();
+		$query = new SQLSelect();
 		$query->setFrom('"SiteTree_versions"')->setSelect('COUNT("ID")')->setWhere($filter);
 		$query->firstRow();
 		$hasAuthored = $query->execute();
