@@ -59,15 +59,15 @@ class WorkflowApplicable extends DataExtension {
 	 * @var WorkflowService
 	 */
 	public $workflowService;
-	
+
 	/**
-	 * 
+	 *
 	 * A cache var for the current workflow instance
 	 *
 	 * @var WorkflowInstance
 	 */
 	protected $currentInstance;
-	
+
 	public function updateSettingsFields(FieldList $fields) {
 		$this->updateFields($fields);
 	}
@@ -86,7 +86,7 @@ class WorkflowApplicable extends DataExtension {
 		if (!$this->owner->ID) {
 			return $fields;
 		}
-		
+
 		$tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
 		if(Permission::check('APPLY_WORKFLOW')) {
@@ -106,7 +106,6 @@ class WorkflowApplicable extends DataExtension {
 					_t('WorkflowApplicable.ADDITIONAL_WORKFLOW_DEFINITIONS', 'Additional Workflows')
 				));
 				$additional->setSource($definitions);
-				$additional->setMultiple(true);
 			}
 		}
 
@@ -125,7 +124,7 @@ class WorkflowApplicable extends DataExtension {
 			$config = new GridFieldConfig_Base();
 			$config->addComponent(new GridFieldEditButton());
 			$config->addComponent(new GridFieldDetailForm());
-			
+
 			$insts = $this->owner->WorkflowInstances();
 			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
 
@@ -140,7 +139,7 @@ class WorkflowApplicable extends DataExtension {
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
-						'WorkflowOptions', 
+						'WorkflowOptions',
 						_t('SiteTree.WorkflowOptions', 'Workflow options', 'Expands a view for workflow specific buttons')
 					);
 
@@ -152,9 +151,9 @@ class WorkflowApplicable extends DataExtension {
 					}
 
 					$menu->push($workflowOptions);
-					
+
 					$transitions = $active->CurrentAction()->getValidTransitions();
-					
+
 					foreach ($transitions as $transition) {
 						if ($transition->canExecute($active)) {
 							$action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
@@ -204,23 +203,23 @@ class WorkflowApplicable extends DataExtension {
 						}
 					}
 				}
-				
+
 			}
 		}
 	}
-	
+
 	protected function createActionMenu() {
 		$rootTabSet = new TabSet('ActionMenus');
 		$rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
 		return $rootTabSet;
 	}
-	
+
 	/**
-	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction. 
+	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
 	 * Returns an absolute link to the CMS UI for a Page object
-	 * 
+	 *
 	 * @return string | null
-	 */	
+	 */
 	public function AbsoluteEditLink() {
 		$CMSEditLink = null;
 
@@ -236,11 +235,11 @@ class WorkflowApplicable extends DataExtension {
 
 		return Controller::join_links(Director::absoluteBaseURL(), $CMSEditLink);
 	}
-	
+
 	/**
-	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction. 
+	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
 	 * Allows users to select a link in an email for direct access to the transition-selection dropdown in the CMS UI.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function LinkToPendingItems() {
@@ -249,7 +248,7 @@ class WorkflowApplicable extends DataExtension {
 		$urlInst = $this->getWorkflowInstance();
 		return Controller::join_links($urlBase, $urlFrag, 'PendingObjects', 'item', $urlInst->ID, 'edit');
 	}
-	
+
 	/**
 	 * After a workflow item is written, we notify the
 	 * workflow so that it can take action if needbe

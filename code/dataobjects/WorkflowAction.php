@@ -4,6 +4,7 @@
  * the action(s) that occur while in that state. An action can then have
  * subsequent transitions out of the current state.
  *
+ * @method WorkflowDefinition WorkflowDef()
  * @author  marcus@silverstripe.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
@@ -79,14 +80,15 @@ class WorkflowAction extends DataObject {
 		return null;
 	}
 
-	/**
-	 * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
-	 *
-	 * @param  Member $member
-	 * @return bool
-	 */
-	public function canCreate($member = null) {
-		return $this->WorkflowDef()->canCreate($member);
+    /**
+     * Allows users who have permission to create a WorkflowDefinition, to create actions on it too.
+     *
+     * @param Member $member
+     * @param array $context
+     * @return bool
+     */
+	public function canCreate($member = null, $context = array()) {
+		return $this->WorkflowDef()->canCreate($member, $context);
 	}
 
 	/**

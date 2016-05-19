@@ -16,11 +16,12 @@
 	],
 	"require":
 	{
-		"silverstripe/cms": ">=3.0.0"
+        "silverstripe/cms": "^4",
+        "silverstripe/framework": "^4"
 	},
 	"extra": {
 		"branch-alias": {
-			"dev-master": "3.3.x-dev"
+			"dev-master": "4.0.x-dev"
 		}
 	}
 }
