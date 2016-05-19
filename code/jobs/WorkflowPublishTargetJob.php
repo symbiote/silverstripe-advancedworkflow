@@ -1,4 +1,10 @@
 <?php
+
+// Prevent failure if queuedjobs module isn't installed.
+if (!class_exists('AbstractQueuedJob', false)) {
+    return;
+}
+
 /**
  * A queued job that publishes a target after a delay.
  *

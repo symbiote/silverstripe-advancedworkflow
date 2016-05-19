@@ -10,6 +10,12 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		parent::setUp();
 
 		SS_Datetime::set_mock_now('2014-01-05 12:00:00');
+
+
+        // Prevent failure if queuedjobs module isn't installed.
+        if (!class_exists('AbstractQueuedJob', false)) {
+            $this->markTestSkipped("This test requires queuedjobs");
+        }
 	}
 
 	public function tearDown() {
