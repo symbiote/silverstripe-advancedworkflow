@@ -52,10 +52,12 @@ class WorkflowActionInstance extends DataObject {
         $fieldDiff = DataDifferencer::create($liveTarget, $draftTarget)->ChangedFields();
 
         foreach($fieldDiff as $field) {
-            $display = ReadonlyField::create('workflow-'. $field->Name, $field->Title, $field->Diff)
-                ->setDontEscape(true)
-                ->addExtraClass('workflow-field-diff');
-            $fields->push($display);
+            if (!in_array($field->Name, array('LastEdited', 'Created'))) {
+                $display = ReadonlyField::create('workflow-' . $field->Name, $field->Title, $field->Diff)
+                    ->setDontEscape(true)
+                    ->addExtraClass('workflow-field-diff');
+                $fields->push($display);
+            }
         }
 
 		if ($this->BaseAction()->AllowCommenting) {
