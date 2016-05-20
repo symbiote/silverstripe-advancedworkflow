@@ -45,6 +45,18 @@ class WorkflowActionInstance extends DataObject {
 	 * Gets fields for when this is part of an active workflow
 	 */
 	public function updateWorkflowFields($fields) {
+        $workflow = $this->Workflow();
+        $liveTarget = $workflow->Target(true);
+        $draftTarget = $workflow->Target();
+
+        $fieldDiff = DataDifferencer::create($liveTarget, $draftTarget)->ChangedFields();
+
+        foreach($fieldDiff as $field) {
+            $display = ReadonlyField::create('workflow-'. $field->Name, $field->Title, $field->Diff)
+                ->setDontEscape(true);
+            $fields->push($display);
+        }
+
 		if ($this->BaseAction()->AllowCommenting) {
 			$fields->push(new TextareaField('Comment', _t('WorkflowAction.COMMENT', 'Comment')));
 		}

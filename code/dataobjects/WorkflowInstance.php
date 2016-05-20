@@ -183,13 +183,18 @@ class WorkflowInstance extends DataObject {
 	 * Sets Versioned::set_reading_mode() to allow fetching of Draft _and_ Published
 	 * content.
 	 *
+     * @param Boolean $getLive
 	 * @return (null | DataObject)
 	 */
-	public function getTarget() {
+	public function getTarget($getLive = false) {
 		if($this->TargetID && $this->TargetClass) {
 			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
+
+			if(!$versionable && $getLive) {
+				return;
+			}
 			if($versionable) {
-				Versioned::set_stage(Versioned::DRAFT);
+				Versioned::set_stage($getLive ? Versioned::LIVE : Versioned::DRAFT);
 			}
 
 			// Default
@@ -199,11 +204,12 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 *
+     * @param Boolean $getLive
 	 * @see {@link {$this->getTarget()}
 	 * @return (null | DataObject)
 	 */
-	public function Target() {
-		return $this->getTarget();
+	public function Target($getLive = false) {
+		return $this->getTarget($getLive);
 	}
 
 	/**
