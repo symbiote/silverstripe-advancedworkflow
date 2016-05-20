@@ -5,9 +5,11 @@ SiteTree:
   published-object:
     ID: 44
     Title: 'Page is Published'
+    Content: 'Published'
   draft-object:
     ID: 45
     Title: 'Page is Draft'
+    Content: 'Draft'
 
 WorkflowInstance:
   target-is-published:

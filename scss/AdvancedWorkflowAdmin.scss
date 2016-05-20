@@ -9,3 +9,16 @@
 		}
 	}
 }
+
+.workflow-field-diff {
+    del {
+        background-color: #FDD;
+        color: #f44;
+        padding: 2px;
+    }
+    ins {
+        background-color: #DFD;
+        padding: 2px;
+        text-decoration: none;
+    }
+}

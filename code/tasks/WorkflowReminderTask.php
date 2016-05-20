@@ -37,7 +37,8 @@ class WorkflowReminderTask extends BuildTask {
 				$email->setTemplate('WorkflowReminderEmail');
 				$email->populateTemplate(array(
 					'Instance' => $instance,
-					'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
+					'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : '',
+                    'Diff'     => $instance->getTargetDiff()
 				));
 
 				$email->send();
