@@ -212,6 +212,22 @@ class WorkflowInstance extends DataObject {
 		return $this->getTarget($getLive);
 	}
 
+    public function getTargetDiff() {
+        return $this->TargetDiff();
+    }
+
+    public function TargetDiff() {
+        $liveTarget = $this->Target(true);
+        $draftTarget = $this->Target();
+
+        $diff = DataDifferencer::create($liveTarget, $draftTarget)->ChangedFields();
+
+        $diff = $diff->filterByCallback(function ($field) {
+            return !in_array($field->Name, array('LastEdited', 'Created'));
+        });
+        return $diff;
+    }
+
 	/**
 	 * Start a workflow based on a particular definition for a particular object.
 	 *
