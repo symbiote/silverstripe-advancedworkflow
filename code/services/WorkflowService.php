@@ -7,46 +7,46 @@
  * @package advancedworkflow
  */
 class WorkflowService implements PermissionProvider {
-	
+
 	/**
 	 * An array of templates that we can create from
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $templates;
-	
+
 	public function  __construct() {
 	}
 
-	
+
 	/**
 	 * Set the list of templates that can be created
-	 * 
-	 * @param type $templates 
+	 *
+	 * @param type $templates
 	 */
 	public function setTemplates($templates) {
 		$this->templates = $templates;
 	}
-	
+
 	/**
 	 * Return the list of available templates
-	 * @return type 
+	 * @return type
 	 */
 	public function getTemplates() {
 		return $this->templates;
 	}
-	
+
 	/**
 	 * Get a template by name
-	 * 
-	 * @param string $name 
+	 *
+	 * @param string $name
 	 * @return WorkflowTemplate
 	 */
 	public function getNamedTemplate($name) {
 		if($importedTemplate = singleton('WorkflowDefinitionImporter')->getImportedWorkflows($name)) {
 			return $importedTemplate;
 		}
-		
+
 		if (!is_array($this->templates)) {
 			return;
 		}
@@ -59,7 +59,7 @@ class WorkflowService implements PermissionProvider {
 
 	/**
 	 * Gets the workflow definition for a given dataobject, if there is one
-	 * 
+	 *
 	 * Will recursively query parent elements until it finds one, if available
 	 *
 	 * @param DataObject $dataObject
@@ -168,7 +168,7 @@ class WorkflowService implements PermissionProvider {
 	public function getWorkflowHistoryFor($item, $limit = null){
 		if($active = $this->getWorkflowFor($item, true)){
 			$limit = $limit ? "0,$limit" : '';
-			return $active->Actions('', 'ID DESC ', null, $limit);	
+			return $active->Actions('', 'ID DESC ', null, $limit);
 		}
 	}
 
@@ -187,7 +187,7 @@ class WorkflowService implements PermissionProvider {
 	 *
 	 * In the normal case, this will load the current workflow instance for the object
 	 * and then transition as expected. However, in some cases (eg to start the workflow)
-	 * it is necessary to instead create a new instance. 
+	 * it is necessary to instead create a new instance.
 	 *
 	 * @param DataObject $target
 	 * @param int $transitionId
@@ -213,8 +213,8 @@ class WorkflowService implements PermissionProvider {
 
 	/**
 	 * Starts the workflow for the given data object, assuming it or a parent has
-	 * a definition specified. 
-	 * 
+	 * a definition specified.
+	 *
 	 * @param DataObject $object
 	 */
 	public function startWorkflow(DataObject $object, $workflowID = null) {
@@ -243,24 +243,24 @@ class WorkflowService implements PermissionProvider {
 			$instance->execute();
 		}
 	}
-	
+
 	/**
 	 * Get all the workflows that this user is responsible for
-	 * 
-	 * @param Member $user 
+	 *
+	 * @param Member $user
 	 *				The user to get workflows for
-	 * 
+	 *
 	 * @return ArrayList
 	 *				The list of workflow instances this user owns
 	 */
 	public function usersWorkflows(Member $user) {
-		
+
 		$groupIds = $user->Groups()->column('ID');
-		
+
 		$groupInstances = null;
-		
+
 		$filter = array('');
-		
+
 		if (is_array($groupIds)) {
 			$groupInstances = DataList::create('WorkflowInstance')
 				->filter(array('Group.ID:ExactMatchMulti' => $groupIds))
@@ -276,7 +276,7 @@ class WorkflowService implements PermissionProvider {
 		} else {
 			$userInstances = array();
 		}
-		
+
 		if ($groupInstances) {
 			$groupInstances = $groupInstances->toArray();
 		} else {
@@ -284,13 +284,13 @@ class WorkflowService implements PermissionProvider {
 		}
 
 		$all = array_merge($groupInstances, $userInstances);
-		
+
 		return ArrayList::create($all);
 	}
 
 	/**
 	 * Get items that the passed-in user has awaiting for them to action
-	 * 
+	 *
 	 * @param Member $member
 	 * @return DataList $userInstances
 	 */
@@ -311,7 +311,7 @@ class WorkflowService implements PermissionProvider {
 			}
 			$instances->push($inst);
 		}
-		
+
 		return $instances;
 	}
 
@@ -333,31 +333,33 @@ class WorkflowService implements PermissionProvider {
 
 		return $userInstances;
 	}
-	
+
 	/**
 	 * Generate a workflow definition based on a template
-	 * 
+	 *
 	 * @param WorkflowDefinition $definition
-	 * @param string $templateName 
+	 * @param string $templateName
 	 */
 	public function defineFromTemplate(WorkflowDefinition $definition, $templateName) {
 		$template = null;
 		/* @var $template WorkflowTemplate */
-		
+
 		if (!is_array($this->templates)) {
 			return;
 		}
 
-		$template = $this->getNamedTemplate($templateName);		
-		
+		$template = $this->getNamedTemplate($templateName);
+
 		if (!$template) {
 			return;
 		}
 
 		$template->createRelations($definition);
-		
+
 		// Set the version and do the write at the end so that we don't trigger an infinite loop!!
-		$definition->Description = $template->getDescription();
+        if (!$definition->Description) {
+            $definition->Description = $template->getDescription();
+        }
 		$definition->TemplateVersion = $template->getVersion();
 		$definition->RemindDays = $template->getRemindDays();
 		$definition->Sort = $template->getSort();
@@ -390,7 +392,7 @@ class WorkflowService implements PermissionProvider {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return array
 	 */
 	public function providePermissions() {
@@ -427,7 +429,7 @@ class WorkflowService implements PermissionProvider {
 			)
 		);
 	}
-	
+
 }
 
 class ExistingWorkflowException extends Exception {};
