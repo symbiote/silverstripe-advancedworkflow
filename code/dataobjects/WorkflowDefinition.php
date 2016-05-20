@@ -47,7 +47,7 @@ class WorkflowDefinition extends DataObject {
 		'Groups' => 'Group'
 	);
 
-	public static $icon = 'advancedworkflow/images/definition.png';
+	private static $icon = 'advancedworkflow/images/definition.png';
 
 	public static $default_workflow_title_base = 'My Workflow';
 
