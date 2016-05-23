@@ -192,6 +192,9 @@ en:
   WorkflowReminderEmail:
     Action: 'Click here to action this workflow'
     Content: "This is an automated reminder that the workflow '{title}' you are currently\n	assigned to has not been actioned for {days} days. The\n	workflow was last updated on {date} at {time}."
+    Differences: 'These are the changes made'
+    HeadingTitle: 'Title'
+    HeadingDiff: 'Differences'
   WorkflowReminderTask:
     SAVE: Save
   WorkflowService:

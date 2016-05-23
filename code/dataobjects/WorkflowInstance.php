@@ -183,13 +183,18 @@ class WorkflowInstance extends DataObject {
 	 * Sets Versioned::set_reading_mode() to allow fetching of Draft _and_ Published
 	 * content.
 	 *
+     * @param Boolean $getLive
 	 * @return (null | DataObject)
 	 */
-	public function getTarget() {
+	public function getTarget($getLive = false) {
 		if($this->TargetID && $this->TargetClass) {
 			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
+
+			if(!$versionable && $getLive) {
+				return;
+			}
 			if($versionable) {
-				Versioned::set_stage(Versioned::DRAFT);
+				Versioned::set_stage($getLive ? Versioned::LIVE : Versioned::DRAFT);
 			}
 
 			// Default
@@ -199,12 +204,30 @@ class WorkflowInstance extends DataObject {
 
 	/**
 	 *
+     * @param Boolean $getLive
 	 * @see {@link {$this->getTarget()}
 	 * @return (null | DataObject)
 	 */
-	public function Target() {
-		return $this->getTarget();
+	public function Target($getLive = false) {
+		return $this->getTarget($getLive);
 	}
+
+    /**
+     * Returns the field differences between the older version and current version of Target
+     *
+     * @return ArrayList
+     */
+    public function getTargetDiff() {
+        $liveTarget = $this->Target(true);
+        $draftTarget = $this->Target();
+
+        $diff = DataDifferencer::create($liveTarget, $draftTarget)->ChangedFields();
+
+        $diff = $diff->filterByCallback(function ($field) {
+            return !in_array($field->Name, array('LastEdited', 'Created'));
+        });
+        return $diff;
+    }
 
 	/**
 	 * Start a workflow based on a particular definition for a particular object.
