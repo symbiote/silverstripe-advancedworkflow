@@ -13,7 +13,7 @@ class PublishItemWorkflowAction extends WorkflowAction {
 		'PublishDelay' => 'Int'
 	);
 
-	public static $icon = 'advancedworkflow/images/publish.png';
+	private static $icon = 'advancedworkflow/images/publish.png';
 
 	public function execute(WorkflowInstance $workflow) {
 		if (!$target = $workflow->getTarget()) {

@@ -19,7 +19,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		'EmailTemplate'			=> 'Text'
 	);
 
-	public static $icon = 'advancedworkflow/images/notify.png';
+	private static $icon = 'advancedworkflow/images/notify.png';
 
 	public function getCMSFields() {
 		$fields = parent::getCMSFields();
@@ -67,7 +67,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$initiatorFields = $this->getMemberFields($initiator);
 
 		$variables = array();
-		
+
 		foreach($contextFields as $field => $val) $variables["\$Context.$field"] = $val;
 		foreach($memberFields as $field => $val)  $variables["\$Member.$field"] = $val;
 		foreach($initiatorFields as $field => $val)  $variables["\$Initiator.$field"] = $val;
@@ -98,7 +98,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			));
 		}
 
-		
+
 		$view = SSViewer::fromString($this->EmailTemplate);
 		$this->extend('updateView', $view);
 
@@ -163,7 +163,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 
 		return $result;
 	}
-	
+
 
 	/**
 	 * Returns a basic set of instructions on how email templates are populated with variables.

@@ -44,7 +44,7 @@ class WorkflowAction extends DataObject {
 	 */
 	private static $instance_class = 'WorkflowActionInstance';
 
-	public static $icon = 'advancedworkflow/images/action.png';
+	private static $icon = 'advancedworkflow/images/action.png';
 
 	/**
 	 * Can documents in the current workflow state be edited?
