@@ -6,7 +6,7 @@
  */
 class WorkflowFieldItemController extends Controller {
 
-	public static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'index',
 		'edit',
 		'delete',
