@@ -212,11 +212,12 @@ class WorkflowInstance extends DataObject {
 		return $this->getTarget($getLive);
 	}
 
+    /**
+     * Returns the field differences between the older version and current version of Target
+     *
+     * @return ArrayList
+     */
     public function getTargetDiff() {
-        return $this->TargetDiff();
-    }
-
-    public function TargetDiff() {
         $liveTarget = $this->Target(true);
         $draftTarget = $this->Target();
 
