@@ -6,12 +6,12 @@
  */
 class WorkflowFieldActionController extends RequestHandler {
 
-	public static $url_handlers = array(
+	private static $url_handlers = array(
 		'new/$Class' => 'handleAdd',
 		'item/$ID'   => 'handleItem'
 	);
 
-	public static $allowed_actions = array(
+	private static $allowed_actions = array(
 		'handleAdd',
 		'handleItem'
 	);
