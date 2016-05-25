@@ -222,13 +222,10 @@ class WorkflowInstance extends DataObject {
         $draftTarget = $this->Target();
 
         $diff = DataDifferencer::create($liveTarget, $draftTarget);
-        $diff->ignoreFields(array('workflowService'));
+        $diff->ignoreFields(array('LastEdited', 'Created', 'workflowService'));
 
         $fields = $diff->ChangedFields();
 
-        $fields = $fields->filterByCallback(function ($field) {
-            return !in_array($field->Name, array('LastEdited', 'Created'));
-        });
         return $fields;
     }
 
