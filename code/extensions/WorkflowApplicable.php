@@ -162,9 +162,9 @@ class WorkflowApplicable extends DataExtension {
 						}
 					}
 
-//					$action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
-//						->setAttribute('data-icon', 'navigation');
-//					$actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+					// $action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+					// 	->setAttribute('data-icon', 'navigation');
+					// $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
 				// Instantiate the workflow definition initial actions.
@@ -181,7 +181,6 @@ class WorkflowApplicable extends DataExtension {
 					$tab = Tab::create(
 						'AdditionalWorkflows'
 					);
-					$menu->insertBefore($tab, 'MoreOptions');
 					$addedFirst = false;
 					foreach($definitions as $definition) {
 						if($definition->getInitialAction()) {
@@ -191,7 +190,6 @@ class WorkflowApplicable extends DataExtension {
 							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
 
 							// The first element is the main workflow definition, and will be displayed as a major action.
-
 							if(!$addedFirst) {
 								$addedFirst = true;
 								$action->setAttribute('data-icon', 'navigation');
@@ -202,8 +200,11 @@ class WorkflowApplicable extends DataExtension {
 							}
 						}
 					}
+					// Only display menu if actions pushed to it
+					if ($tab->Fields()->exists()) {
+						$menu->insertBefore($tab, 'MoreOptions');
+					}
 				}
-
 			}
 		}
 	}
