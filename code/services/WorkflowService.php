@@ -6,8 +6,8 @@
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-	
-class WorkflowService extends Object implements PermissionProvider {
+
+class WorkflowService implements PermissionProvider {
 	/**
 	 * An array of templates that we can create from
 	 * 

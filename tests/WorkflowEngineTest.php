@@ -291,6 +291,9 @@ class WorkflowEngineTest extends SapphireTest {
 		$this->assertTrue($testPage->getExistsOnLive());
 	}
 
+    /**
+     * Test the diff showing only fields that have changes made to it in a data object.
+     */
     public function testInstanceDiff()
     {
         $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
