@@ -57,6 +57,17 @@ class WorkflowInstance extends DataObject {
 	 */
 	private static $hide_disabled_actions_on_frontend = false;
 
+    /**
+     * Fields to ignore when generating a diff for data objects.
+     */
+    private static $diff_ignore_fields = array(
+        'LastEdited',
+        'Created',
+        'workflowService',
+        'ParentID',
+        'Sort'
+    );
+
 	/**
 	 * Get the CMS view of the instance. This is used to display the log of
 	 * this workflow, and options to reassign if the workflow hasn't been
@@ -223,12 +234,12 @@ class WorkflowInstance extends DataObject {
         $liveTarget = $this->Target(true);
         $draftTarget = $this->Target();
 
-        $diff = DataDifferencer::create($liveTarget, $draftTarget)->ChangedFields();
+        $diff = DataDifferencer::create($liveTarget, $draftTarget);
+        $diff->ignoreFields($this->stat('diff_ignore_fields'));
 
-        $diff = $diff->filterByCallback(function ($field) {
-            return !in_array($field->Name, array('LastEdited', 'Created'));
-        });
-        return $diff;
+        $fields = $diff->ChangedFields();
+
+        return $fields;
     }
 
 	/**
