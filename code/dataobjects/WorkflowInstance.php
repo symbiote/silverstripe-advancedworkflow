@@ -66,16 +66,18 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function getCMSFields() {
 		$fields = new FieldList();
+        $fields->push(new TabSet('Root', new Tab('Main')));
 
 		if (Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
 			if ($this->WorkflowStatus == 'Paused' || $this->WorkflowStatus == 'Active') {
 				$cmsUsers = Member::mapInCMSGroups();
 
-				$fields->push(new HiddenField('DirectUpdate', '', 1));
-
-				$fields->push(new HeaderField('InstanceReassignHeader',_t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')));
-				$fields->push(new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
-				$fields->push(new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
+                $fields->addFieldsToTab('Root.Main', array(
+                    new HiddenField('DirectUpdate', '', 1),
+                    new HeaderField('InstanceReassignHeader',_t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')),
+                    new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers),
+                    new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
+                ));
 
 			}
 		}
@@ -84,7 +86,7 @@ class WorkflowInstance extends DataObject {
 			$action = $this->CurrentAction();
 			if ($action->exists()) {
 				$actionFields = $this->getWorkflowFields();
-				$fields->merge($actionFields);
+				$fields->addFieldsToTab('Root.Main', $actionFields);
 
 				$transitions = $action->getValidTransitions();
 				if ($transitions) {
@@ -104,7 +106,7 @@ class WorkflowInstance extends DataObject {
 			$items
 		);
 
-		$fields->push($grid);
+		$fields->addFieldsToTab('Root.Main', $grid);
 
 		return $fields;
 	}
