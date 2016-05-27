@@ -13,7 +13,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction {
 		'UnpublishDelay' => 'Int'
 	);
 
-	public static $icon = 'advancedworkflow/images/unpublish.png';
+	private static $icon = 'advancedworkflow/images/unpublish.png';
 
 	public function execute(WorkflowInstance $workflow) {
 		if (!$target = $workflow->getTarget()) {
@@ -32,7 +32,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction {
 			$target->DesiredUnPublishDate = '';
 			$target->DesiredPublishDate = '';
 			$target->write();
-			
+
 			if ($target->hasMethod('doUnpublish')) {
 				$target->doUnpublish();
 			}

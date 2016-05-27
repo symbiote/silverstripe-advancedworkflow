@@ -35,7 +35,7 @@ class WorkflowTransition extends DataObject {
 		'Groups' => 'Group'
 	);
 
-	public static $icon = 'advancedworkflow/images/transition.png';
+	private static $icon = 'advancedworkflow/images/transition.png';
 
 	/**
 	 *
