@@ -309,7 +309,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         if ($embargo && $expiry) {
             $flags['embargo_expiry'] = array(
-                'text' => _t('WorkflowEmbargoExpiryExtension.BADGE_PUBLISH_UNPUBLISH', 'Embargo & Expiry'),
+                'text' => _t('WorkflowEmbargoExpiryExtension.BADGE_PUBLISH_UNPUBLISH', 'Embargo+Expiry'),
                 'title' => sprintf('%s: %s, %s: %s',
                     _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date'),
                     $this->owner->PublishOnDate,
