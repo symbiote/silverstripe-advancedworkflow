@@ -9,3 +9,19 @@
 		}
 	}
 }
+
+#cms-content-tools-CMSMain .cms-tree.jstree span.badge {
+    &.status-embargo {
+        color: #53aa24;
+    }
+    &.status-expiry {
+        color: #bb3344;
+    }
+    &.status-embargo_expiry {
+        color: #ddcc00;
+    }
+    &.status-embargo, &.status-expiry, &.status-embargo_expiry {
+        -webkit-box-shadow: 0px 0px 6px 2px #fff7f2;
+        box-shadow: 0px 0px 6px 2px #fff7f2;
+    }
+}

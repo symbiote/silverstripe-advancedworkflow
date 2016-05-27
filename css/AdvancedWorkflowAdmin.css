@@ -1,3 +1,19 @@
-.icon.icon-16.icon-advancedworkflowadmin { background-image: url(../images/workflow-menu-icon.png); }
+.icon.icon-16.icon-advancedworkflowadmin {
+  background-image: url(../images/workflow-menu-icon.png); }
 
-.field.date .message.required, .field.datetime .message.required { position: relative; top: 10px; }
+.field.date .message.required, .field.datetime .message.required {
+  position: relative;
+  top: 10px; }
+
+.cms-tree.jstree span.badge.status-embargo {
+  background-color: #fff7f2;
+  color: #53aa24; }
+.cms-tree.jstree span.badge.status-expiry {
+  background-color: #fff7f2;
+  color: #bb3344; }
+.cms-tree.jstree span.badge.status-embargo_expiry {
+  background-color: #fff7f2;
+  color: #bbaa00; }
+#cms-content-tools-CMSMain .cms-tree.jstree span.badge.status-embargo, #cms-content-tools-CMSMain .cms-tree.jstree span.badge.status-expiry, #cms-content-tools-CMSMain .cms-tree.jstree span.badge.status-embargo_expiry {
+  -webkit-box-shadow: 0px 0px 6px 2px #fff7f2;
+  box-shadow: 0px 0px 6px 2px #fff7f2; }
