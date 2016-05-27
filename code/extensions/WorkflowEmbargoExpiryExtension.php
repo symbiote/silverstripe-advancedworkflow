@@ -272,7 +272,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 		// We should have a publish job if:
 		if($publishTime && ( // We have a date
-			$unPublishTime < $publishTime // it occurs after an unpublish date (or there is no unpublish)
+			$unPublishTime < $publishTime // it occurs before an unpublish date (or there is no unpublish)
 			|| $unPublishTime > $now // or the unpublish date hasn't passed
 		)) {
 			// Trigger time immediately if passed
