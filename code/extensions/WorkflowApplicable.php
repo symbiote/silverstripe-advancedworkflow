@@ -125,7 +125,7 @@ class WorkflowApplicable extends DataExtension {
 			$config->addComponent(new GridFieldEditButton());
 			$config->addComponent(new GridFieldDetailForm());
 
-			$insts = $this->owner->WorkflowInstances()->sort('Created', 'desc');
+			$insts = $this->owner->WorkflowInstances();
 			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
 
 			$tab->push($log);
