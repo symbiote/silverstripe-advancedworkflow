@@ -294,6 +294,75 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertEmpty($publish);
     }
 
+    /**
+     * Tests that checking for publishing scheduled state is working
+     */
+    public function testIsPublishScheduled() {
+        $page = SiteTree::create();
+        $page->Title = 'stuff';
+
+        $this->assertFalse($page->getIsPublishScheduled());
+
+        $page->PublishOnDate = '2016-02-01 00:00:00';
+        SS_Datetime::set_mock_now('2016-01-16 00:00:00');
+        $this->assertTrue($page->getIsPublishScheduled());
+
+        SS_Datetime::set_mock_now('2016-02-16 00:00:00');
+        $this->assertFalse($page->getIsPublishScheduled());
+    }
+
+    /**
+     * Tests that checking for un-publishing scheduled state is working
+     */
+    public function testIsUnPublishScheduled() {
+        $page = SiteTree::create();
+        $page->Title = 'stuff';
+
+        $this->assertFalse($page->getIsUnPublishScheduled());
+
+        $page->UnPublishOnDate = '2016-02-01 00:00:00';
+        SS_Datetime::set_mock_now('2016-01-16 00:00:00');
+        $this->assertTrue($page->getIsUnPublishScheduled());
+
+        SS_Datetime::set_mock_now('2016-02-16 00:00:00');
+        $this->assertFalse($page->getIsUnPublishScheduled());
+    }
+
+    /**
+     * Tests that status flags (badges) are added properly for a page
+     */
+    public function testStatusFlags() {
+        $page = SiteTree::create();
+        $page->Title = 'stuff';
+        SS_Datetime::set_mock_now('2016-01-16 00:00:00');
+
+        $flags = $page->getStatusFlags(false);
+        $this->assertNotContains('embargo_expiry', array_keys($flags));
+        $this->assertNotContains('embargo', array_keys($flags));
+        $this->assertNotContains('expiry', array_keys($flags));
+
+        $page->PublishOnDate = '2016-02-01 00:00:00';
+        $page->UnPublishOnDate = null;
+        $flags = $page->getStatusFlags(false);
+        $this->assertNotContains('embargo_expiry', array_keys($flags));
+        $this->assertContains('embargo', array_keys($flags));
+        $this->assertNotContains('expiry', array_keys($flags));
+
+        $page->PublishOnDate = null;
+        $page->UnPublishOnDate = '2016-02-01 00:00:00';
+        $flags = $page->getStatusFlags(false);
+        $this->assertNotContains('embargo_expiry', array_keys($flags));
+        $this->assertNotContains('embargo', array_keys($flags));
+        $this->assertContains('expiry', array_keys($flags));
+
+        $page->PublishOnDate = '2016-02-01 00:00:00';
+        $page->UnPublishOnDate = '2016-02-08 00:00:00';
+        $flags = $page->getStatusFlags(false);
+        $this->assertContains('embargo_expiry', array_keys($flags));
+        $this->assertNotContains('embargo', array_keys($flags));
+        $this->assertNotContains('expiry', array_keys($flags));
+    }
+
     protected function createDefinition()
     {
         $definition = new WorkflowDefinition();
