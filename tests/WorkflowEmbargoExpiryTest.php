@@ -297,7 +297,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * Tests that checking for publishing scheduled state is working
      */
-    public function testIsPublishScheduled() {
+    public function testIsPublishScheduled()
+    {
         $page = SiteTree::create();
         $page->Title = 'stuff';
 
@@ -314,7 +315,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * Tests that checking for un-publishing scheduled state is working
      */
-    public function testIsUnPublishScheduled() {
+    public function testIsUnPublishScheduled()
+    {
         $page = SiteTree::create();
         $page->Title = 'stuff';
 
@@ -331,7 +333,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * Tests that status flags (badges) are added properly for a page
      */
-    public function testStatusFlags() {
+    public function testStatusFlags()
+    {
         $page = SiteTree::create();
         $page->Title = 'stuff';
         SS_Datetime::set_mock_now('2016-01-16 00:00:00');
