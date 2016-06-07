@@ -127,7 +127,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		if (!$target) {
 			return $result;
 		}
-		$fields = $target->inheritedDatabaseFields();
+
+		$fields = $target->db();
+        unset($fields['ID']);
 
 		foreach($fields as $field => $fieldDesc) {
 			$result[$field] = $target->$field;
