@@ -50,7 +50,7 @@ class WorkflowInstance extends DataObject {
 	);
 
     private static $default_sort = array(
-        'Created' => 'desc'
+        '"Created"' => 'DESC'
     );
 
 	/**
