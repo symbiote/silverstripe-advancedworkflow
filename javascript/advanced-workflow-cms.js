@@ -1,38 +1,36 @@
 ;(function($) {
-	$(function() {
+    $(function() {
+        $.entwine('ss', function($) {
 
-		$.entwine('ss', function($) {
-			
-			$('.cms-edit-form .Actions #ActionMenus_WorkflowOptions .action').entwine({
-				onclick: function(e) {
-					var transitionId = $(this).attr('data-transitionid');
-					var buttonName = $(this).attr('name');
-					
-					buttonName = buttonName.replace(/-\d+/, '');
-					$(this).attr('name', buttonName);
-					
-					$('input[name=TransitionID]').val(transitionId);
-					
-					this._super(e);
-				}
-			});
+            $('.cms-edit-form').find('.Actions, .btn-toolbar').find('#ActionMenus_WorkflowOptions .action').entwine({
+                onclick: function(e) {
+                    var transitionId = $(this).attr('data-transitionid');
+                    var buttonName = $(this).attr('name');
 
-			$('.cms-edit-form .Actions .action.start-workflow').entwine({
-				onmouseup: function(e) {
+                    buttonName = buttonName.replace(/-\d+/, '');
+                    $(this).attr('name', buttonName);
 
-					// Populate the hidden form field with the selected workflow definition.
+                    $('input[name=TransitionID]').val(transitionId);
 
-					var action = $(this);
-					$('input[name=TriggeredWorkflowID]').val(action.data('workflow'));
+                    this._super(e);
+                }
+            });
 
-					// Update the element name to exclude the ID, therefore submitting correctly.
+            $('.cms-edit-form').find('.Actions, .btn-toolbar').find('.action.start-workflow').entwine({
+                onmouseup: function(e) {
 
-					var name = action.attr('name');
-					action.attr('name', name.replace(/-\d+/, ''));
-					this._super(e);
-				}
-			});
-		});
+                    // Populate the hidden form field with the selected workflow definition.
 
-	});
+                    var action = $(this);
+                    $('input[name=TriggeredWorkflowID]').val(action.data('workflow'));
+
+                    // Update the element name to exclude the ID, therefore submitting correctly.
+
+                    var name = action.attr('name');
+                    action.attr('name', name.replace(/-\d+/, ''));
+                    this._super(e);
+                }
+            });
+        });
+    });
 })(jQuery);
