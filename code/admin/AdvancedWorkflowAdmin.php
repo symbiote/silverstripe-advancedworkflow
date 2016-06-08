@@ -238,7 +238,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 			$instance->setField('Title',$target->getField('Title'));
 			$instance->setField('LastEdited',$target->getField('LastEdited'));
 			if (method_exists($target, 'CMSEditLink')) {
-				$instance->setField('ObjectRecordLink', Controller::join_links(Director::absoluteBaseURL(), $target->CMSEditLink()));
+				$instance->setField('ObjectRecordLink', $target->CMSEditLink());
 			}
 
 			$list->push($instance);
