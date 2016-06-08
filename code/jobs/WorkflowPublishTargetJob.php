@@ -1,7 +1,7 @@
 <?php
 
 // Prevent failure if queuedjobs module isn't installed.
-if (!class_exists('AbstractQueuedJob', false)) {
+if (!class_exists('AbstractQueuedJob')) {
     return;
 }
 
