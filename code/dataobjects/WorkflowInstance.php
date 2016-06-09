@@ -49,6 +49,10 @@ class WorkflowInstance extends DataObject {
 		'Created'
 	);
 
+    private static $default_sort = array(
+        '"Created"' => 'DESC'
+    );
+
 	/**
 	 * If set to true, actions that cannot be executed by the user will not show
 	 * on the frontend (just like the backend).
