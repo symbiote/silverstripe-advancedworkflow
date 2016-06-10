@@ -358,4 +358,174 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function getIsWorkflowInEffect() {
 		return $this->isWorkflowInEffect;
 	}
+
+    /**
+     * Returns whether a publishing date has been set and is after the current date
+     *
+     * @return bool
+     */
+    public function getIsPublishScheduled()
+    {
+        if (!$this->owner->PublishOnDate) {
+            return false;
+        }
+        $now = strtotime(SS_Datetime::now()->getValue());
+        $publish = strtotime($this->owner->PublishOnDate);
+
+        return $now < $publish;
+    }
+
+    /**
+     * Returns whether an unpublishing date has been set and is after the current date
+     *
+     * @return bool
+     */
+    public function getIsUnPublishScheduled()
+    {
+        if (!$this->owner->UnPublishOnDate) {
+            return false;
+        }
+        $now = strtotime(SS_Datetime::now()->getValue());
+        $unpublish = strtotime($this->owner->UnPublishOnDate);
+
+        return $now < $unpublish;
+    }
+
+    /**
+     * Set future time flag on the query for further queries to use.
+     */
+    public function augmentDataQueryCreation(SQLSelect &$query, DataQuery &$dataQuery)
+    {
+
+        // TODO: Grab time from the request, maybe helper like controller->getTime() to check either the GET param or session?
+        // And use strtotime to get it in a consistent format for the SQL queries
+        $curr = Controller::curr();
+
+        if ($curr) {
+            $req = $curr->getRequest();
+            $time = $req->getVar('ft');
+        }
+
+        // If time is set then flag it up for queries
+        if ($time) {
+            $dataQuery->setQueryParam('Future.time', $time);
+        }
+    }
+
+    public function updateInheritableQueryParams(&$params)
+    {
+        // TODO: Set the future time in here for related objects as well (linked pages etc.) if necessary
+    }
+
+    /**
+     * Alter SQL queries for this object so that the version matching the time that is passed is returned.
+     */
+    public function augmentSQL(SQLSelect $query, DataQuery $dataQuery = null)
+    {
+        $time = $dataQuery->getQueryParam('Future.time');
+
+        if (!$time) {
+            return;
+        }
+
+        // Only trigger future state when viewing "Stage", this ensures the query works with Versioned::augmentSQL()
+        $stage = $dataQuery->getQueryParam('Versioned.stage');
+        if ($stage === Versioned::DRAFT) {
+            $baseTable = ClassInfo::baseDataClass($dataQuery->dataClass());
+
+            foreach($query->getFrom() as $alias => $join) {
+                if(!$this->isTableVersioned($alias)) {
+                    continue;
+                }
+
+                if($alias != $baseTable) {
+                    // Make sure join includes version as well
+                    $query->setJoinFilter(
+                        $alias,
+                        "\"{$alias}_versions\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\""
+                        . " AND \"{$alias}_versions\".\"Version\" = \"{$baseTable}_versions\".\"Version\""
+                    );
+                }
+                $query->renameTable($alias, $alias . '_versions');
+            }
+
+            // Add all <basetable>_versions columns
+            foreach(Config::inst()->get('Versioned', 'db_for_versions_table') as $name => $type) {
+                $query->selectField(sprintf('"%s_versions"."%s"', $baseTable, $name), $name);
+            }
+
+            // Alias the record ID as the row ID, and ensure ID filters are aliased correctly
+            $query->selectField("\"{$baseTable}_versions\".\"RecordID\"", "ID");
+            $query->replaceText("\"{$baseTable}_versions\".\"ID\"", "\"{$baseTable}_versions\".\"RecordID\"");
+
+            // However, if doing count, undo rewrite of "ID" column
+            $query->replaceText(
+                "count(DISTINCT \"{$baseTable}_versions\".\"RecordID\")",
+                "count(DISTINCT \"{$baseTable}_versions\".\"ID\")"
+            );
+
+            // Query the _versions table to find either
+            // the latest draft record where requested embargo <= time <= requested expiry (it must be the latest draft also) OR
+            // the latest published record where time <= scheduled expiry (it must be the latest published also).
+            // Once published the scheduled embargo is irrelevant and in fact is removed from SiteTree and SiteTree_Live tables.
+            // NULL for any of the embargo/expiry fields infers immediately publish/never expire.
+            $query->addWhere([
+                "\"{$baseTable}_versions\".\"Version\" IN
+                (SELECT LatestVersion FROM
+                    (SELECT
+                        \"{$baseTable}_versions\".\"RecordID\",
+                        MAX(\"{$baseTable}_versions\".\"Version\") AS LatestVersion
+                        FROM \"{$baseTable}_versions\"
+                        WHERE
+                            (
+                                (\"{$baseTable}_versions\".\"DesiredPublishDate\" <= ? OR \"{$baseTable}_versions\".\"DesiredPublishDate\" IS NULL)
+                                AND
+                                (\"{$baseTable}_versions\".\"DesiredUnPublishDate\" >= ? OR \"{$baseTable}_versions\".\"DesiredUnPublishDate\" IS NULL)
+                                AND
+                                \"SiteTree_versions\".\"WasPublished\" = 0
+                                AND
+                                \"SiteTree_versions\".\"Version\" IN (
+                                    SELECT MAX(Version) AS LatestDraftVersion
+                                    FROM \"SiteTree_versions\" AS LatestDrafts
+                                    WHERE \"LatestDrafts\".\"RecordID\" = \"SiteTree_versions\".\"RecordID\"
+                                    AND \"WasPublished\" = 0
+                                )
+                            )
+                            OR
+                            (
+                                (\"{$baseTable}_versions\".\"UnPublishOnDate\" >= ? OR \"{$baseTable}_versions\".\"UnPublishOnDate\" IS NULL)
+                                AND
+                                \"{$baseTable}_versions\".\"WasPublished\" = 1
+                                AND
+                                \"SiteTree_versions\".\"Version\" IN (
+                                    SELECT MAX(Version) AS LatestPublishedVersion
+                                    FROM \"SiteTree_versions\" AS LatestPublished
+                                    WHERE \"LatestPublished\".\"RecordID\" = \"SiteTree_versions\".\"RecordID\"
+                                    AND \"WasPublished\" = 1
+                                )
+                            )
+                        GROUP BY \"{$baseTable}_versions\".\"RecordID\"
+                    ) AS \"{$baseTable}_versions_latest\"
+                    WHERE \"{$baseTable}_versions_latest\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
+                )"
+                => [$time, $time, $time]
+            ]);
+        }
+    }
+
+    /**
+     * Helper method copied from Versioned for checking whether a table is versioned or not.
+     *
+     * @todo Refactor out this copy pasta?
+     * @param  string  $table Name of table to check
+     * @return boolean        True if table is versioned
+     */
+    protected function isTableVersioned($table)
+    {
+        if(!class_exists($table)) {
+            return false;
+        }
+        $baseClass = ClassInfo::baseDataClass($this->owner);
+        return is_a($table, $baseClass, true);
+    }
 }
