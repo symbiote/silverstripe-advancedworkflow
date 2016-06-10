@@ -42,6 +42,8 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
             }
             $item->PublishOnDate = '';
             $item->UnPublishOnDate = '';
+            $item->clearPublishJob();
+            $item->clearUnPublishJob();
             $item->write();
         }
 

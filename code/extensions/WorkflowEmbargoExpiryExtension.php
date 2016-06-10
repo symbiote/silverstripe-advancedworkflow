@@ -155,7 +155,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing publish job against this dataobject
 	 */
-	protected function clearPublishJob() {
+	public function clearPublishJob() {
 		$job = $this->owner->PublishJob();
 		if($job && $job->exists()) {
 			$job->delete();
@@ -166,7 +166,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing unpublish job
 	 */
-	protected function clearUnPublishJob() {
+    public function clearUnPublishJob() {
 		// Cancel any in-progress unpublish job
 		$job = $this->owner->UnPublishJob();
 		if ($job && $job->exists()) {
