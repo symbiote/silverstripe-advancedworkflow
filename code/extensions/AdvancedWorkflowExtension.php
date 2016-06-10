@@ -15,11 +15,19 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
         'cancelembargoexpiry',
 	);
 
+    /**
+     * Handle cancelling the scheduled embargo and expiry dates
+     *
+     * @param $data
+     * @param $form
+     * @param $request
+     * @return HTMLText|ViewableData_Customised|void
+     */
     public function cancelembargoexpiry($data, $form, $request)
     {
         $item = $form->getRecord();
 
-        if (!$item || !$item->canEdit() || !$item->userHasCancelAccess()) {
+        if (!$item || !$item->canEdit() || !$item->hasMethod('userHasCancelAccess') || !$item->userHasCancelAccess()) {
             return;
         }
         $this->saveAsDraftWithAction($form, $item);

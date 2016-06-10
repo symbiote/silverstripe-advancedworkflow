@@ -185,25 +185,12 @@ class WorkflowApplicable extends DataExtension {
                         );
                     }
 
-                    // button to cancel the existing embargo dates
-                    if ($this->userHasCancelAccess() &&
-                        $this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
-                        ($this->owner->PublishOnDate || $this->owner->UnPublishOnDate)
-                        ) {
-                        $options = $menu->fieldByName('MoreOptions');
-                        if (is_null($tab)) {
-                            $tab = Tab::create(
-                                'MoreOptions'
-                            );
-                        }
-                        $options->push($cancel = FormAction::create(
-                            "cancelembargoexpiry",
-                            _t('WorkflowApplicable', 'Cancel Embargo & Expiry')
-                        ));
-                    }
-
+                    $enableCancel = false;
 					$addedFirst = false;
 					foreach($definitions as $definition) {
+                        // any difinitions configured to enable cancel
+                        $enableCancel = $enableCancel || $definition->EnableCancelEmbargo;
+
 						if($definition->getInitialAction()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
@@ -221,7 +208,26 @@ class WorkflowApplicable extends DataExtension {
 							}
 						}
 					}
-					// Only display menu if actions pushed to it
+
+                    // button to cancel the existing embargo dates
+                    if ($enableCancel &&
+                        $this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
+                        ($this->owner->PublishOnDate || $this->owner->UnPublishOnDate) && // any embargo or expiry present
+                        $this->userHasCancelAccess() // the user is given the permission to cancel
+                    ) {
+                        $options = $menu->fieldByName('MoreOptions');
+                        if (is_null($tab)) {
+                            $tab = Tab::create(
+                                'MoreOptions'
+                            );
+                        }
+                        $options->push($cancel = FormAction::create(
+                            "cancelembargoexpiry",
+                            _t('WorkflowApplicable', 'Cancel Embargo & Expiry')
+                        ));
+                    }
+
+                    // Only display menu if actions pushed to it
 					if ($tab->Fields()->exists()) {
 						$menu->insertBefore($tab, 'MoreOptions');
 					}
