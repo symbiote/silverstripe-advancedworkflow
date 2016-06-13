@@ -358,4 +358,26 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function getIsWorkflowInEffect() {
 		return $this->isWorkflowInEffect;
 	}
+
+    /**
+     * Add edit check for when publishing has been scheduled
+     */
+    public function canEdit($member) {
+        $disabled = false;
+        $definitions = $this->workflowService->getDefinitionsFor($this->owner);
+
+        if ($definitions) {
+            foreach ($definitions as $definition) {
+                $disabled = $disabled || $definition->DisableBeforeEmbargo;
+            }
+            if ($disabled) {
+                $now = strtotime(SS_Datetime::now()->getValue());
+                $publishTime = strtotime($this->owner->PublishOnDate);
+
+                if ($publishTime && $publishTime > $now) {
+                    return false;
+                }
+            }
+        }
+    }
 }

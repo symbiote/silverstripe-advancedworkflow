@@ -24,6 +24,7 @@ class WorkflowDefinition extends DataObject {
 		'TemplateVersion'	=> 'Varchar',
 		'RemindDays'		=> 'Int',
 		'Sort'				=> 'Int',
+        'DisableBeforeEmbargo' => 'Boolean',
 		'InitialActionButtonText' => 'Varchar'
 	);
 
@@ -195,6 +196,8 @@ class WorkflowDefinition extends DataObject {
 				new LabelField('ReminderEmailAfter', $after)
 			));
 		}
+
+        $fields->addFieldToTab('Root.Main', CheckboxField::create('DisableBeforeEmbargo', _t('WorkflowDefinition.DISABLE_BEFORE_EMBARGO', 'Disable editing before scheduled publish date')));
 
 		if($this->ID) {
 			if ($this->Template) {
