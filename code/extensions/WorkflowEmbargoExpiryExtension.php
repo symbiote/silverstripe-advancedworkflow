@@ -493,7 +493,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             $now = strtotime(DBDatetime::now()->getValue());
             $publishTime = strtotime($this->owner->PublishOnDate);
 
-            if ($publishTime && $publishTime > $now) {
+            if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
+                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
+                (!$publishTime && $this->owner->PublishJobID != 0)
+            ) {
                 return false;
             }
         }
