@@ -284,6 +284,38 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertEmpty($publish);
 	}
 
+    /**
+     * Test workflow definition "Can disable edits during embargo"
+     * Make sure page cannot be edited when an embargo is in place
+     */
+    public function testCanEditConfig() {
+
+        $page = SiteTree::create();
+        $page->Title = 'My page';
+        $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->write();
+
+        $memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
+
+        $page->PublishOnDate = '2020-01-01 00:00:00';
+        $page->write();
+        $this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
+
+        $this->logOut();
+        $memberID = $this->logInWithPermission('ADMIN');
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
+
+        $this->logOut();
+        $memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
+
+        $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->write();
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
+
+    }
+
 	protected function createDefinition() {
 		$definition = new WorkflowDefinition();
 		$definition->Title = 'Dummy Workflow Definition';
@@ -307,5 +339,10 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 
 		return $definition;
 	}
+
+    protected function logOut() {
+        if($member = Member::currentUser()) $member->logOut();
+    }
+
 
 }

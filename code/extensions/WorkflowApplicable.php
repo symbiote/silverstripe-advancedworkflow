@@ -183,7 +183,7 @@ class WorkflowApplicable extends DataExtension {
 					);
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-						if($definition->getInitialAction()) {
+						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
