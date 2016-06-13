@@ -392,21 +392,31 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Get any future time set in GET param.
+     *
+     * @return string Time in format useful for SQL comparison.
+     */
+    private function getFutureTime()
+    {
+        $time = null;
+        $curr = Controller::curr();
+
+        if ($curr) {
+            $ft = $curr->getRequest()->getVar('ft');
+            if ($ft) {
+                $time = date('Y-m-d H:i:s', strtotime($ft));
+            }
+        }
+        return $time;
+    }
+
+    /**
      * Set future time flag on the query for further queries to use.
      */
     public function augmentDataQueryCreation(SQLSelect &$query, DataQuery &$dataQuery)
     {
-
-        // TODO: Grab time from the request, maybe helper like controller->getTime() to check either the GET param or session?
-        // And use strtotime to get it in a consistent format for the SQL queries
-        $curr = Controller::curr();
-
-        if ($curr) {
-            $req = $curr->getRequest();
-            $time = $req->getVar('ft');
-        }
-
         // If time is set then flag it up for queries
+        $time = $this->getFutureTime();
         if ($time) {
             $dataQuery->setQueryParam('Future.time', $time);
         }
