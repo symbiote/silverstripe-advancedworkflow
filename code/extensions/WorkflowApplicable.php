@@ -169,7 +169,7 @@ class WorkflowApplicable extends DataExtension {
 			} else {
 				// Instantiate the workflow definition initial actions.
 				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
-				if($definitions) {
+				if($definitions && $this->owner->canEdit()) {
 					$menu = $actions->fieldByName('ActionMenus');
 					if(is_null($menu)) {
 
