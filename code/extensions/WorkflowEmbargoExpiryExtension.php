@@ -360,7 +360,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	}
 
     /**
-     * Add edit check for when publishing has been scheduled
+     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
      */
     public function canEdit($member) {
         $disabled = false;

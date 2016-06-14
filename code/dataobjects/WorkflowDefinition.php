@@ -197,7 +197,8 @@ class WorkflowDefinition extends DataObject {
 			));
 		}
 
-        $fields->addFieldToTab('Root.Main', CheckboxField::create('DisableBeforeEmbargo', _t('WorkflowDefinition.DISABLE_BEFORE_EMBARGO', 'Disable editing before scheduled publish date')));
+        // disable editing a page when it has been embargoed, this works well with the "Cancel embargo & expiry" button
+        $fields->addFieldToTab('Root.Main', CheckboxField::create('DisableBeforeEmbargo', _t('WorkflowDefinition.DISABLE_BEFORE_EMBARGO', 'Disable editing for item before a scheduled publish date')));
 
 		if($this->ID) {
 			if ($this->Template) {
