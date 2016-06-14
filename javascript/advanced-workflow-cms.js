@@ -2,7 +2,7 @@
     $(function() {
         $.entwine('ss', function($) {
 
-            $('.cms-edit-form .btn-toolbar #ActionMenus_WorkflowOptions .action').entwine({
+            $('.cms-edit-form').find('.Actions, .btn-toolbar').find('#ActionMenus_WorkflowOptions .action').entwine({
                 onclick: function(e) {
                     var transitionId = $(this).attr('data-transitionid');
                     var buttonName = $(this).attr('name');
@@ -16,7 +16,7 @@
                 }
             });
 
-            $('.cms-edit-form .btn-toolbar .action.start-workflow').entwine({
+            $('.cms-edit-form').find('.Actions, .btn-toolbar').find('.action.start-workflow').entwine({
                 onmouseup: function(e) {
 
                     // Populate the hidden form field with the selected workflow definition.
