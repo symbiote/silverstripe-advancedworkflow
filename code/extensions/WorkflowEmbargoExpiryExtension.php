@@ -8,6 +8,15 @@
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
+    /**
+     * Config flag for which point to use for future state, after workflow is started
+     * or after it is finished. This alters how the query behaves.
+     *
+     * @config
+     * @var string Values of either 'workflow_start' for after start or 'workflow_end' for after end of workflow
+     */
+    private static $future_state_trigger = 'workflow_start';
+
 	private static $db = array(
 		'DesiredPublishDate'	=> 'SS_Datetime',
 		'DesiredUnPublishDate'	=> 'SS_Datetime',
@@ -396,7 +405,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return string Time in format useful for SQL comparison.
      */
-    private function getFutureTime()
+    public function getFutureTime()
     {
         $time = null;
         $curr = Controller::curr();
@@ -475,10 +484,25 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             );
 
             // Query the _versions table to find either
-            // the latest draft record where requested embargo <= time <= requested expiry (it must be the latest draft also) OR
+            // the latest draft record where requested embargo <= time <= requested expiry (it must be the latest draft also) AND
+            // the page must either be in a workflow or have had a workflow approved (be in the publish queue) see depending on the feature flag set below OR
             // the latest published record where time <= scheduled expiry (it must be the latest published also).
             // Once published the scheduled embargo is irrelevant and in fact is removed from SiteTree and SiteTree_Live tables.
             // NULL for any of the embargo/expiry fields infers immediately publish/never expire.
+
+            // Feature flag to alter the query so that when a page has started workflow it is included in future state query,
+            // otherwise the behaviour is to only check that a page has been approved by a workflow and is sitting in the publish queue
+            $wfiJoin = '';
+            $wfiWhere = '';
+            if (Config::inst()->get(__CLASS__, 'future_state_trigger') == 'workflow_start') {
+                $wfiJoin = "LEFT JOIN \"WorkflowInstance\"
+                    ON \"{$baseTable}_versions\".\"RecordID\" = \"WorkflowInstance\".\"TargetID\"
+                    AND \"WorkflowInstance\".\"TargetClass\" = '{$baseTable}'
+                    AND \"WorkflowInstance\".\"WorkflowStatus\" != 'Complete'
+                    AND \"WorkflowInstance\".\"WorkflowStatus\" != 'Cancelled'";
+                $wfiWhere = "OR \"WorkflowInstance\".\"ID\" IS NOT NULL";
+            }
+
             $query->addWhere([
                 "\"{$baseTable}_versions\".\"Version\" IN
                 (SELECT LatestVersion FROM
@@ -486,20 +510,23 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                         \"{$baseTable}_versions\".\"RecordID\",
                         MAX(\"{$baseTable}_versions\".\"Version\") AS LatestVersion
                         FROM \"{$baseTable}_versions\"
+                        $wfiJoin
                         WHERE
                             (
                                 (\"{$baseTable}_versions\".\"DesiredPublishDate\" <= ? OR \"{$baseTable}_versions\".\"DesiredPublishDate\" IS NULL)
                                 AND
                                 (\"{$baseTable}_versions\".\"DesiredUnPublishDate\" >= ? OR \"{$baseTable}_versions\".\"DesiredUnPublishDate\" IS NULL)
                                 AND
-                                \"SiteTree_versions\".\"WasPublished\" = 0
+                                \"{$baseTable}_versions\".\"WasPublished\" = 0
                                 AND
-                                \"SiteTree_versions\".\"Version\" IN (
+                                \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(Version) AS LatestDraftVersion
-                                    FROM \"SiteTree_versions\" AS LatestDrafts
-                                    WHERE \"LatestDrafts\".\"RecordID\" = \"SiteTree_versions\".\"RecordID\"
+                                    FROM \"{$baseTable}_versions\" AS LatestDrafts
+                                    WHERE \"LatestDrafts\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"WasPublished\" = 0
                                 )
+                                AND
+                                (\"{$baseTable}_versions\".\"PublishJobID\" != 0 $wfiWhere)
                             )
                             OR
                             (
@@ -507,10 +534,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 AND
                                 \"{$baseTable}_versions\".\"WasPublished\" = 1
                                 AND
-                                \"SiteTree_versions\".\"Version\" IN (
+                                \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(Version) AS LatestPublishedVersion
-                                    FROM \"SiteTree_versions\" AS LatestPublished
-                                    WHERE \"LatestPublished\".\"RecordID\" = \"SiteTree_versions\".\"RecordID\"
+                                    FROM \"{$baseTable}_versions\" AS LatestPublished
+                                    WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"WasPublished\" = 1
                                 )
                             )
