@@ -485,7 +485,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
             // Query the _versions table to find either
             // the latest draft record where requested embargo <= time <= requested expiry (it must be the latest draft also) AND
-            // the page must either be in a workflow or have had a workflow approved (be in the publish queue) see depending on the feature flag set below OR
+            // the page must either be in a workflow or have had a workflow approved (be in the publish queue) depending on the feature flag set in config OR
             // the latest published record where time <= scheduled expiry (it must be the latest published also).
             // Once published the scheduled embargo is irrelevant and in fact is removed from SiteTree and SiteTree_Live tables.
             // NULL for any of the embargo/expiry fields infers immediately publish/never expire.
