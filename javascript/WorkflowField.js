@@ -160,7 +160,7 @@ jQuery.entwine("ss.workflow", function($) {
      * Simple implementation of the jQuery-UI timepicker widget
      * @see: http://trentrichardson.com/examples/timepicker/ for more config options
      */
-    $('#Root_PublishingSchedule  input.hasTimePicker').entwine({
+    $('#Root_PublishingSchedule input.hasTimePicker').entwine({
         onmatch: function () {
             var defaultTime = function() {
                     var date = new Date();

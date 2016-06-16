@@ -32,7 +32,7 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
         }
         $this->saveAsDraftWithAction($form, $item);
 
-        // Shifting scheduled to desired after save draft, since they're not saveable fields
+        // Shifting scheduled to desired after save draft, since they're not savable fields
         if ($item->hasExtension('WorkflowEmbargoExpiryExtension')) {
             if (!$item->DesiredPublishDate) {
                 $item->DesiredPublishDate = $item->PublishOnDate;

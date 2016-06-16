@@ -188,7 +188,7 @@ class WorkflowApplicable extends DataExtension {
                     $enableCancel = false;
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-                        // any difinitions configured to enable cancel
+                        // any definitions configured to enable cancel
                         $enableCancel = $enableCancel || $definition->EnableCancelEmbargo;
 
 						if($definition->getInitialAction()) {
@@ -322,7 +322,8 @@ class WorkflowApplicable extends DataExtension {
      * Checks whether the given user is in the list of users assigned to this
      * workflow
      *
-     * @param $memberID
+     * @param $member
+     * @return boolean
      */
     public function userHasCancelAccess($member = null) {
         if (!$member) {
