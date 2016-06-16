@@ -264,7 +264,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		if(!$this->owner->ID) return;
 
 		// Check requested dates of publish / unpublish, and whether the page should have already been unpublished
-		$now = strtotime(SS_Datetime::now()->getValue());
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publishTime = strtotime($this->owner->PublishOnDate);
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
@@ -371,7 +371,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 $disabled = $disabled || $definition->DisableBeforeEmbargo;
             }
             if ($disabled) {
-                $now = strtotime(SS_Datetime::now()->getValue());
+                $now = strtotime(DBDatetime::now()->getValue());
                 $publishTime = strtotime($this->owner->PublishOnDate);
 
                 if ($publishTime && $publishTime > $now) {
