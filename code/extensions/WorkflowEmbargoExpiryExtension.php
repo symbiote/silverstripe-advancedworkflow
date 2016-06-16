@@ -159,7 +159,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing publish job against this dataobject
 	 */
-	protected function clearPublishJob() {
+	public function clearPublishJob() {
 		$job = $this->owner->PublishJob();
 		if($job && $job->exists()) {
 			$job->delete();
@@ -170,7 +170,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing unpublish job
 	 */
-	protected function clearUnPublishJob() {
+    public function clearUnPublishJob() {
 		// Cancel any in-progress unpublish job
 		$job = $this->owner->UnPublishJob();
 		if ($job && $job->exists()) {
@@ -278,7 +278,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		// Jobs can only be queued for records that already exist
 		if(!$this->owner->ID) return;
 
-		// Check requested dates of publish / unpublish, and whether the page should have already been unpublished
+		// Check scheduled dates of publish / unpublish, and whether the page should have already been unpublished
 		$now = strtotime(SS_Datetime::now()->getValue());
 		$publishTime = strtotime($this->owner->PublishOnDate);
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);

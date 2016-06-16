@@ -24,7 +24,8 @@ class WorkflowDefinition extends DataObject {
 		'TemplateVersion'	=> 'Varchar',
 		'RemindDays'		=> 'Int',
 		'Sort'				=> 'Int',
-		'InitialActionButtonText' => 'Varchar'
+		'InitialActionButtonText' => 'Varchar',
+        'EnableCancelEmbargo' => 'Boolean',
 	);
 
 	private static $default_sort = 'Sort';
@@ -35,6 +36,9 @@ class WorkflowDefinition extends DataObject {
 	);
 
 	/**
+     * The users or groups defined in the workflow definition determines if they have permission to cancel an embargo
+     * and expiry if either is present.
+	 *
 	 * By default, a workflow definition is bound to a particular set of users or groups.
 	 *
 	 * This is covered across to the workflow instance - it is up to subsequent
@@ -195,6 +199,11 @@ class WorkflowDefinition extends DataObject {
 				new LabelField('ReminderEmailAfter', $after)
 			));
 		}
+
+        // add option to enable a 'Cancel embargo & expiry' button
+        $fields->removeByName('EnableCancelEmbargo');
+        $enableCancel = CheckboxField::create('EnableCancelEmbargo', _t('WorkflowDefinition.ENABLECANCELEMBARGO', 'Enable cancel embargo & expiry'));
+        $fields->addFieldToTab('Root.Main', $enableCancel);
 
 		if($this->ID) {
 			if ($this->Template) {
