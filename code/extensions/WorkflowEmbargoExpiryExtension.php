@@ -1,4 +1,5 @@
 <?php
+use SilverStripe\Model\FieldType\DBDatetime;
 
 /**
  * Adds embargo period and expiry dates to content items
