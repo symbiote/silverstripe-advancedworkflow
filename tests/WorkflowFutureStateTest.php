@@ -30,8 +30,6 @@ class WorkflowFutureStateTest extends FunctionalTest {
         if (!class_exists('AbstractQueuedJob')) {
             $this->markTestSkipped("This test requires queuedjobs");
         }
-
-        Injector::inst()->get('Logger')->debug(new LogWrapper('how about here'));
     }
 
     public function tearDown()
