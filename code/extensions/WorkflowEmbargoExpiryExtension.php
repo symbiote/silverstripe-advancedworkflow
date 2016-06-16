@@ -484,7 +484,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Get any future time set in GET param.
+     * Get any future time set in GET param. Recommended to use ISO-8601 for url readability.
      *
      * @return string Time in format useful for SQL comparison.
      */
@@ -496,10 +496,29 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         if ($curr) {
             $ft = $curr->getRequest()->getVar('ft');
             if ($ft) {
-                $time = date('Y-m-d H:i:s', strtotime($ft));
+                // Convert some characters
+                $time = date('Y-m-d H:i', strtotime($ft));
             }
         }
         return $time;
+    }
+
+    /**
+     * Get link for a future date and time. Resulting format is ISO-8601 compliant.
+     *
+     * @param  string $futureTime Date that can be parsed by strtotime
+     * @return string|null        Either the URL with future time added or null if time cannot be parsed
+     */
+    public function getFutureTimeLink($futureTime)
+    {
+        $parsed = strtotime($futureTime);
+        if ($parsed) {
+            return Controller::join_links(
+                $this->owner->PreviewLink(),
+                '?stage=Stage',
+                '?ft=' . date('Ymd\THi', $parsed)
+            );
+        }
     }
 
     /**

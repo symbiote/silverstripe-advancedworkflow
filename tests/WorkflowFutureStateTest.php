@@ -476,4 +476,37 @@ class WorkflowFutureStateTest extends FunctionalTest {
             ]);
         $this->assertEquals(1, $pages->count());
     }
+
+    /**
+     * The helper to return links in a future state format.
+     */
+    public function testFutureStateLink()
+    {
+        $draft = $this->objFromFixture('SiteTree', 'wideEmbargoAndExpiry');
+        $preview = $draft->PreviewLink();
+
+        $link = $draft->getFutureTimeLink($draft->DesiredPublishDate);
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160620T0000');
+
+        $link = $draft->getFutureTimeLink($draft->DesiredUnPublishDate);
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160629T0000');
+
+        $link = $draft->getFutureTimeLink('2016-06-17T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+
+        $link = $draft->getFutureTimeLink('2016-06-17 00:00:00');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+
+        $link = $draft->getFutureTimeLink('2016-06-17 00:00');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+
+        $link = $draft->getFutureTimeLink('2016-06-17');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+
+        $link = $draft->getFutureTimeLink('2016-06');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160601T0000');
+
+        $link = $draft->getFutureTimeLink('');
+        $this->assertEquals($link, null);
+    }
 }
