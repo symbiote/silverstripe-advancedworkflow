@@ -1,4 +1,5 @@
 <?php
+use SilverStripe\Model\FieldType\DBDatetime;
 
 /**
  * Adds embargo period and expiry dates to content items
@@ -451,4 +452,25 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         return $now < $unpublish;
     }
 
+    /**
+     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
+     */
+    public function canEdit($member) {
+        $disabled = false;
+        $definitions = $this->workflowService->getDefinitionsFor($this->owner);
+
+        if ($definitions) {
+            foreach ($definitions as $definition) {
+                $disabled = $disabled || $definition->DisableBeforeEmbargo;
+            }
+            if ($disabled) {
+                $now = strtotime(DBDatetime::now()->getValue());
+                $publishTime = strtotime($this->owner->PublishOnDate);
+
+                if ($publishTime && $publishTime > $now) {
+                    return false;
+                }
+            }
+        }
+    }
 }

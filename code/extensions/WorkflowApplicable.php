@@ -168,10 +168,9 @@ class WorkflowApplicable extends DataExtension {
 					// $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
-                // Instantiate the workflow definition initial actions.
-                $definitions = $this->workflowService->getDefinitionsFor($this->owner);
-
-				if($definitions) {
+				// Instantiate the workflow definition initial actions.
+				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+				if($definitions && $this->owner->canEdit()) {
                     $menu = $actions->fieldByName('ActionMenus');
                     if(is_null($menu)) {
                         // Instantiate a new action menu for any data objects.
