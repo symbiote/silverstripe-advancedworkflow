@@ -137,7 +137,6 @@ class WorkflowFutureStateTest extends FunctionalTest {
 
     /**
      * When multiple drafts exist the latest is the one returned if any are returned.
-     * Because of join with WorkflowInstance this test is a little redundant.
      */
     public function testMultipleDrafts()
     {
