@@ -1,0 +1,46 @@
+SiteTree:
+  basic:
+    Title: 'Basic page'
+  inWorkflow:
+    Title: 'In Workflow'
+  inQueue:
+    Title: 'Past workflow, in Queue'
+    PublishOnDate: '2020-01-01 00:00:00'
+  multiDraft:
+    Title: 'Multi'
+  embargoOnly:
+    Title: 'Embargo Only'
+    DesiredPublishDate: '2016-06-15 00:00:01'
+  expiryOnly:
+    Title: 'Expiry Only'
+    DesiredUnPublishDate: '2016-06-17 00:00:01'
+  embargoAndExpiry:
+    Title: 'Embargo and Expiry'
+    DesiredPublishDate: '2016-06-18 00:00:01'
+    DesiredUnPublishDate: '2016-06-19 00:00:01'
+  wideEmbargoAndExpiry:
+    Title: 'Wide Embargo and Expiry'
+    DesiredPublishDate: '2016-06-20 00:00:01'
+    DesiredUnPublishDate: '2016-06-29 00:00:01'
+
+WorkflowInstance:
+  one:
+    WorkflowStatus: Paused
+    TargetClass: 'SiteTree'
+    TargetID: =>SiteTree.inWorkflow
+  embargoOnly:
+    WorkflowStatus: Active
+    TargetClass: 'SiteTree'
+    TargetID: =>SiteTree.embargoOnly
+  expiryOnly:
+    WorkflowStatus: Paused
+    TargetClass: 'SiteTree'
+    TargetID: =>SiteTree.expiryOnly
+  embargoAndExpiry:
+    WorkflowStatus: Paused
+    TargetClass: 'SiteTree'
+    TargetID: =>SiteTree.embargoAndExpiry
+  wideEmbargoAndExpiry:
+    WorkflowStatus: Paused
+    TargetClass: 'SiteTree'
+    TargetID: =>SiteTree.wideEmbargoAndExpiry
