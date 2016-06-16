@@ -415,30 +415,26 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             $ft = $curr->getRequest()->getVar('ft');
             if ($ft) {
                 // Convert some characters
-                $ft = str_replace(array('T', 'H', 'M'), array(' ', ':', ''), $ft);
-                $time = date('Y-m-d H:i', strtotime($ft));
+                $time = date('Ymd\THi', strtotime($ft));
             }
         }
         return $time;
     }
 
     /**
-     * Get link for a future date and time. Also accepts the format: 2016-06-17T00H00M
+     * Get link for a future date and time.
      *
      * @param  string $futureTime Date that can be parsed by strtotime
      * @return string|null        Either the URL with future time added or null if time cannot be parsed
      */
     public function getFutureTimeLink($futureTime)
     {
-        // Replace T, H and M to support the format Y-m-d\TH\Hi\M
-        $replaced = str_replace(array('T', 'H', 'M'), array(' ', ':', ''), $futureTime);
-
-        $parsed = strtotime($replaced);
+        $parsed = strtotime($futureTime);
         if ($parsed) {
             return Controller::join_links(
                 $this->owner->PreviewLink(),
                 '?stage=Stage',
-                '?ft=' . date('Y-m-d\TH\Hi\M', $parsed)
+                '?ft=' . date('Ymd\THi', $parsed)
             );
         }
     }
