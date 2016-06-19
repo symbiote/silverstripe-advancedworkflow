@@ -421,7 +421,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Get link for a future date and time. Resulting format is ISO-8601 compliant.
+     * Get link for a future date and time. Resulting format is ISO-8601 compliant. As the underlying
+     * SQL query for future state relies on versioning the link is only returned if Versioned extension
+     * is applied.
      *
      * @param  string $futureTime Date that can be parsed by strtotime
      * @return string|null        Either the URL with future time added or null if time cannot be parsed
@@ -429,7 +431,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     public function getFutureTimeLink($futureTime)
     {
         $parsed = strtotime($futureTime);
-        if ($parsed) {
+        if ($parsed && $this->owner->has_extension('Versioned')) {
             return Controller::join_links(
                 $this->owner->PreviewLink(),
                 '?stage=Stage',
@@ -439,30 +441,29 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Set future time flag on the query for further queries to use.
+     * Set future time flag on the query for further queries to use. Only set if Versioned
+     * extension is applied as the query relies on _versions tables.
      */
     public function augmentDataQueryCreation(SQLSelect &$query, DataQuery &$dataQuery)
     {
         // If time is set then flag it up for queries
         $time = $this->getFutureTime();
-        if ($time) {
+        if ($time && $this->owner->has_extension('Versioned')) {
             $dataQuery->setQueryParam('Future.time', $time);
         }
     }
 
-    public function updateInheritableQueryParams(&$params)
-    {
-        // TODO: Set the future time in here for related objects as well (linked pages etc.) if necessary
-    }
-
     /**
      * Alter SQL queries for this object so that the version matching the time that is passed is returned.
+     * Relies on Versioned extension as it queries the _versions table and is only triggered when viewing the staging
+     * site e.g: ?stage=Stage. This has the side effect that Versioned::canViewVersioned() is used to restrict
+     * access.
      */
     public function augmentSQL(SQLSelect $query, DataQuery $dataQuery = null)
     {
         $time = $dataQuery->getQueryParam('Future.time');
 
-        if (!$time) {
+        if (!$time || !$this->owner->has_extension('Versioned')) {
             return;
         }
 
@@ -472,7 +473,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             $baseTable = ClassInfo::baseDataClass($dataQuery->dataClass());
 
             foreach($query->getFrom() as $alias => $join) {
-                if(!$this->isTableVersioned($alias)) {
+
+                if (!class_exists($alias) || !is_a($alias, $baseTable, true)) {
                     continue;
                 }
 
@@ -567,21 +569,5 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 => [$time, $time, $time]
             ]);
         }
-    }
-
-    /**
-     * Helper method copied from Versioned for checking whether a table is versioned or not.
-     *
-     * @todo Refactor out this copy pasta?
-     * @param  string  $table Name of table to check
-     * @return boolean        True if table is versioned
-     */
-    protected function isTableVersioned($table)
-    {
-        if(!class_exists($table)) {
-            return false;
-        }
-        $baseClass = ClassInfo::baseDataClass($this->owner);
-        return is_a($table, $baseClass, true);
     }
 }
