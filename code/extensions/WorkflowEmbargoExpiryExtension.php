@@ -155,7 +155,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         // ----------------------
 
         if ($this->getEmbargoExpiryStatus()) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->setEmbargoExpiryMessage()), 'Title');
+            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->getEmbargoExpiryMessage()), 'Title');
         }
 	}
 
@@ -367,12 +367,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	}
 
     /**
-     * Output the current embargo/expiry status as a string - Pending|Paused|Completed
+     * Output the current embargo/expiry status as a string - Pending|Paused|Complete
      * or return false if no embargo/expiry date has been saved and workflow is not in effect
      *
-     * - Pending:   the changes are saved as draft but not pushed into a workflow
-     * - Paused:    the page has started a workflow and paused during the workflow
-     * - Completed: the workflow is approved and completed
+     * - Pending:  the changes are saved as draft but not pushed into a workflow
+     * - Paused:   the page has started a workflow and paused during the workflow
+     * - Complete: the workflow is approved and completed
      *
      * @return string|boolean
      */
@@ -389,12 +389,18 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             }
 
             // Paused
-            else if ($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active' &&
+            elseif ($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active' &&
                      $this->owner->DesiredPublishDate || $this->owner->DesiredUnPublishDate)
             {
                 return 'Paused';
             }
-            // TODO: 144 return string for case: 'Completed'
+
+            // Complete
+            elseif ($instance->WorkflowStatus === 'Complete' &&
+                    $this->owner->PublishOnDate || $this->owner->UnPublishOnDate)
+            {
+                return 'Complete';
+            }
         }
         else {
             return false;
@@ -407,43 +413,48 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * The message contains:
      * - Style          The message's CSS class warning|info
-     * - Title          Title stating the workflow's state for Pending|Paused|Completed
+     * - Title          Title stating the workflow's state for Pending|Paused|Complete
      * - Author         Author's full name
      * - DatePublish    Formatted desired|scheduled publish date & time
      * - DateUnPublish  Formatted desired|scheduled expiry date & time
      *
      * @return \SilverStripe\Model\FieldType\DBHTMLText
      */
-    private function setEmbargoExpiryMessage() {
-        $authorID = Versioned::get_latest_version($this->owner->ClassName, $this->owner->ID)->AuthorID;
+    private function getEmbargoExpiryMessage() {
         $noPubDate = _t('WorkflowMessage.PUBLISH_DATE_NONE','Immediately');
         $noUnPubDate = _t('WorkflowMessage.UNPUBLISH_DATE_NONE', 'Never');
+        $authorID = Versioned::get_latest_version($this->owner->ClassName, $this->owner->ID)->AuthorID;
+        $prefixRequested = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Requested');
+        $prefixScheduled = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Scheduled');
 
         $message = array(
             'Style' => '',
             'Title' => _t('WorkflowMessage.TITLE_DEFAULT', 'Workflow status'),
             'Author' => Member::get()->byID($authorID)->getName(),
             'DatePrefix' => '',
-            'DatePublish' => $noPubDate,
-            'DateUnPublish' => $noUnPubDate,
         );
 
         switch ($this->getEmbargoExpiryStatus()) {
             case 'Pending':
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PENDING', 'Embargo/expiry saved in draft');
-                $message['DatePrefix'] = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Requested');
+                $message['DatePrefix'] = $prefixRequested;
                 $message['DatePublish'] = $this->owner->DesiredPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredPublishDate)) : $noPubDate;
                 $message['DateUnPublish'] = $this->owner->DesiredUnPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredUnPublishDate)) : $noUnPubDate;
                 break;
             case 'Paused':
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PAUSED', 'Awaiting approval');
-                $message['DatePrefix'] = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Requested');
+                $message['DatePrefix'] = $prefixRequested;
                 $message['DatePublish'] = $this->owner->DesiredPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredPublishDate)) : $noPubDate;
                 $message['DateUnPublish'] = $this->owner->DesiredUnPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredUnPublishDate)) : $noUnPubDate;
                 break;
-            // TODO: Case for 'Completed'
+            case 'Complete':
+                $message['Style'] = 'notice';
+                $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Change approved');
+                $message['DatePrefix'] = $prefixScheduled;
+                $message['DatePublish'] = $this->owner->PublishOnDate ? date('h:i A (e) l j F Y', strtotime($this->owner->PublishOnDate)) : $noPubDate;
+                $message['DateUnPublish'] = $this->owner->UnPublishOnDate ? date('h:i A (e) l j F Y', strtotime($this->owner->UnPublishOnDate)) : $noUnPubDate;
         }
 
         $message = $this->owner->customise(
