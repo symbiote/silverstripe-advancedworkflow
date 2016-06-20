@@ -56,7 +56,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 */
 	public function updateCMSFields(FieldList $fields) {
 
-	    // requirements
+	    // Requirements
 	    // ------------
 
 		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
@@ -75,8 +75,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		);
 		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
 
-        // Fields
-        // ------
+        // Fields: Publishing Schedule
+        // ---------------------------
 
 		// we never show these explicitly in admin
 		$fields->removeByName('PublishJobID');
@@ -146,10 +146,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
 
 		// Enable a jQuery-UI timepicker widget
-		if(self::$showTimePicker) {
+		if (self::$showTimePicker) {
 			$dt->getTimeField()->addExtraClass('hasTimePicker');
 			$ut->getTimeField()->addExtraClass('hasTimePicker');
 		}
+
+        // Fields: Status message
+        // ----------------------
+
+        if ($this->getEmbargoExpiryStatus()) {
+            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->setEmbargoExpiryMessage()), 'Title');
+        }
 	}
 
 	/**
@@ -358,4 +365,74 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function getIsWorkflowInEffect() {
 		return $this->isWorkflowInEffect;
 	}
+
+    /**
+     * Output the current embargo/expiry status as a string - pending|progressing|approved
+     * or return false if no embargo/expiry date has been saved and workflow is not in effect
+     * - pending:     the changes are saved as draft but not pushed into a workflow
+     * - progressing: the page is currently progressing through a workflow
+     * - approved:    the workflow is approved and completed
+     *
+     * @return string|boolean
+     */
+    private function getEmbargoExpiryStatus() {
+        // Draft state with desired embargo and/or expiry saved
+        if (Versioned::get_stage() === Versioned::DRAFT &&
+            $this->owner->DesiredPublishDate || $this->owner->DesiredUnPublishDate)
+        {
+            return 'pending';
+        }
+        // TODO: 143 return string for a workflow in progress
+        // TODO: 144 return string for 'embargo / expiry approved'
+        else {
+            return false;
+        }
+    }
+
+    /**
+     * Show a message box showing an embargo/expiry overview at the top of CMS,
+     * rendered by an SS include template.
+     *
+     * The message contains:
+     * - Style          The message's CSS class warning|info
+     * - Title          Title stating the workflow's state for pending|progressing|approved
+     * - Author         Author's full name
+     * - DatePublish    Formatted desired|scheduled publish date & time
+     * - DateUnPublish  Formatted desired|scheduled expiry date & time
+     *
+     * @return \SilverStripe\Model\FieldType\DBHTMLText
+     */
+    private function setEmbargoExpiryMessage() {
+        $authorID = Versioned::get_latest_version($this->owner->ClassName, $this->owner->ID)->AuthorID;
+        $noPubDate = _t('WorkflowMessage.PUBLISH_DATE_NONE','Immediately');
+        $noUnPubDate = _t('WorkflowMessage.UNPUBLISH_DATE_NONE', 'Never');
+
+        $message = array(
+            'Style' => 'info',
+            'Title' => 'Workflow status',
+            'Author' => Member::get()->byID($authorID)->getName(),
+            'DatePrefix' => '',
+            'DatePublish' => $noPubDate,
+            'DateUnPublish' => $noUnPubDate,
+        );
+
+        switch ($this->getEmbargoExpiryStatus()) {
+            case 'pending':
+                $message['Style'] = 'warning';
+                $message['Title'] = _t('WorkflowMessage.TITLE_PENDING', 'Embargo/expiry saved in draft');
+                $message['DatePrefix'] = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Requested');
+                $message['DatePublish'] = $this->owner->DesiredPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredPublishDate)) : $noPubDate;
+                $message['DateUnPublish'] = $this->owner->DesiredUnPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredUnPublishDate)) : $noUnPubDate;
+                break;
+            // TODO: Change title to match the workflow status, i.e. cases for 'progressing', 'approved'
+        }
+
+        $message = $this->owner->customise(
+            array(
+                'WorkflowMessage' => $message,
+            )
+        )->renderWith('WorkflowStatusMessage');
+
+        return $message;
+    }
 }
