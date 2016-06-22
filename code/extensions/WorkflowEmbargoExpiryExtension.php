@@ -101,11 +101,15 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				$dt = Datetimefield::create(
 					'DesiredPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
-				),
+				)->setRightTitle(
+                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                ),
 				$ut = Datetimefield::create(
 					'DesiredUnPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
-				),
+				)->setRightTitle(
+                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                ),
 				Datetimefield::create(
 					'PublishOnDate',
 					_t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date')
