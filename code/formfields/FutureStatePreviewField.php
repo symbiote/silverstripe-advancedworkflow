@@ -3,22 +3,24 @@
 use SilverStripe\Model\FieldType\DBField;
 
 /**
- * A form field that allows easy accessibility to view the Future state of a page, or possibly object.
+ * A form field that allows easy accessibility to view the Future state of a page, or possibly other object.
  *
  * @package advancedworkflow
  */
 class FutureStatePreviewField extends DatetimeField
 {
-
+    /**
+     * Remove name from date and time fields and add no-change-tracking, since value is not submitted
+     */
     public function __construct($name, $title = null, $value = "")
     {
         parent::__construct($name, $title, $value);
         $this->dateField
             ->setName('')
-            ->addExtraClass('workflow-future-preview-datetime');
+            ->addExtraClass('no-change-track workflow-future-preview-datetime');
         $this->timeField
             ->setName('')
-            ->addExtraClass('workflow-future-preview-datetime');
+            ->addExtraClass('no-change-track workflow-future-preview-datetime');
     }
 
     /**

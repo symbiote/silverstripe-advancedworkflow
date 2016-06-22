@@ -6,17 +6,25 @@ jQuery.entwine('ss.workflow', function ($) {
 
             return false;
         },
+        /*
+         * Adds padding if it is a single digit
+         */
         pad: function (number) {
             if (number < 10) {
                 return '0' + number;
             }
             return number;
         },
+        /*
+         * Copied from LeftAndMain in framework
+         */
         statusMessage: function (text, type) {
             text = jQuery('<div/>').text(text).html();
             jQuery.noticeAdd({ text: text, type: type, stayTime: 5000, inEffect: { left: '0', opacity: 'show' } });
         },
-        // returns date in the format yyyymmdd
+        /*
+         * returns date in the format yyyymmdd
+         */
         getISODate: function () {
             var self = this,
                 inputDate = self.closest('.workflow-future-preview-datetime').find(':input.date').datepicker('getDate'),
@@ -28,7 +36,9 @@ jQuery.entwine('ss.workflow', function ($) {
 
             return outputDate;
         },
-        // returns the time in format hhmm
+        /*
+         * returns the time in format hhmm
+         */
         getISOTime: function () {
             var self = this,
                 input = self.closest('.workflow-future-preview-datetime').find(':input.time'),
@@ -44,7 +54,9 @@ jQuery.entwine('ss.workflow', function ($) {
 
             return outputTime;
         },
-        // returns the datetime in ISO8601 format yyyymmddThhmmZ
+        /*
+         * returns the datetime in ISO8601 format yyyymmddThhmmZ
+         */
         getISODateTime: function () {
             var self = this,
                 isoDate = self.getISODate(),
@@ -54,6 +66,9 @@ jQuery.entwine('ss.workflow', function ($) {
                 return isoDate + 'T' + isoTime + 'Z';
             }
         },
+        /*
+         * Opens the link for the desired future state, notifies user if something is wrong
+         */
         openLink: function () {
             var self = this,
                 futureDateTime = self.getISODateTime(),

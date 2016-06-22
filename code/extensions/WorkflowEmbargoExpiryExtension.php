@@ -140,7 +140,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			));
 		}
 
-        // add fields we want in this context
+        // add future state preview fields to easily browse different future state dates
         $fields->addFieldsToTab('Root.PublishingSchedule', array(
             HeaderField::create(
                 'FuturePreviewHeader',
