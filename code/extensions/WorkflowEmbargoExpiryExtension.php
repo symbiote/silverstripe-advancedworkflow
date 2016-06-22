@@ -147,13 +147,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_HEADER', 'Preview Future State'),
                 3
             ),
-            $ft = Datetimefield::create(
+            $ft = FutureStatePreviewField::create(
                 'FuturePreviewDate',
                 _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_DATE', 'Set preview date')
-            )->addExtraClass('workflow-future-preview-datetime')
-            ->setRightTitle('<a href="#" class="preview-action">' .
-                Convert::raw2xml(_t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_ACTION', 'View in new window')) .
-                '</a>'),
+            )->addExtraClass('workflow-future-preview-datetime'),
         ));
 
 		$dt->getDateField()->setConfig('showcalendar', true);
