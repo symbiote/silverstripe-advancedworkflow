@@ -31,9 +31,11 @@ class PublishItemWorkflowAction extends WorkflowAction {
 			// set this value regardless
 			$target->UnPublishOnDate = $target->DesiredUnPublishDate;
 			$target->DesiredUnPublishDate = '';
-			if ($target->DesiredPublishDate) {
-				$target->PublishOnDate = $target->DesiredPublishDate;
-				$target->DesiredPublishDate = '';
+
+            $target->PublishOnDate = $target->DesiredPublishDate;
+            $target->DesiredPublishDate = '';
+
+			if ($target->PublishOnDate) {
 				$target->write();
 			} else {
 				if ($target->hasMethod('doPublish')) {

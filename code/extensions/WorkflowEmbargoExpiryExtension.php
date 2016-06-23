@@ -521,6 +521,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                     FROM \"{$baseTable}_versions\" AS LatestDrafts
                                     WHERE \"LatestDrafts\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"WasPublished\" = 0
+                                    AND \"LatestDrafts\".\"Version\" > (
+                                        SELECT CASE WHEN COUNT(1) > 0 THEN MAX(Version) ELSE 0 END AS LatestPublishedVersion
+                                        FROM \"{$baseTable}_versions\" AS LatestPublished
+                                        WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
+                                        AND \"WasPublished\" = 1
+                                    )
                                 )
                                 AND
                                 (\"{$baseTable}_versions\".\"PublishJobID\" != 0)

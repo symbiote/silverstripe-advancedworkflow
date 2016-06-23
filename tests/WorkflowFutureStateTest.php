@@ -494,6 +494,174 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
+     * When expiry is cleared for a page that is published.
+     */
+    public function testExpiryCleared()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $title = $draft->Title;
+        $this->assertTrue($draft->isPublished());
+        $this->assertEquals('2016-06-17 00:00:01', $draft->UnPublishOnDate);
+
+        // New version with embargo no expiry
+        $draft->Title = 'New Change to Title';
+        $draft->DesiredPublishDate = '2016-06-15 00:00:01';
+        $draft->DesiredUnPublishDate = '';
+        $draft = $this->finishWorkflow($draft);
+
+        // Request prior to new publish date should get live
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('-1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($title, $pages->first()->Title);
+
+        // Request after new publish date should get draft
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request after published unpublish date should get draft
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-17 00:00:01')
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $afterDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+    }
+
+    /**
+     * When embargo is cleared for a page which is in the queue to be published.
+     */
+    public function testEmbargoCleared()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
+        $this->assertFalse($draft->isPublished()); // In the queue waiting
+        $this->assertEquals('2016-06-15 00:00:01', $draft->PublishOnDate);
+
+        // New version with expiry no embargo
+        $draft->Title = 'New Change to Title';
+        $draft->DesiredPublishDate = '';
+        $draft->DesiredUnPublishDate = '2016-06-18 00:00:01';
+        $draft = $this->finishWorkflow($draft);
+        $this->assertTrue($draft->isPublished());
+
+        // Request prior to previous embargo should get new version
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-15 00:00:01')
+            ->modify('-1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request after previous embargo date should get new version
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-15 00:00:01')
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request after new expiry date should get nothing
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(0, $pages->count());
+    }
+
+    /**
+     * When embargo and expiry are both cleared the new version is returned.
+     */
+    public function testEmbargoAndExpiryCleared()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoAndExpiry'));
+        $this->assertFalse($draft->isPublished()); // In the queue waiting
+        $this->assertEquals('2016-06-18 00:00:01', $draft->PublishOnDate);
+        $this->assertEquals('2016-06-19 00:00:01', $draft->UnPublishOnDate);
+
+        // New version with expiry no embargo
+        $draft->Title = 'New Change to Title';
+        $draft->DesiredPublishDate = '';
+        $draft->DesiredUnPublishDate = '';
+        $draft = $this->finishWorkflow($draft);
+        $this->assertTrue($draft->isPublished());
+
+        // Request prior to previous embargo should get new version
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-18 00:00:01')
+            ->modify('-1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request after previous embargo date should get new version
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-18 00:00:01')
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request after previous expiry should get new version
+        $date = DateTime::createFromFormat('Y-m-d H:i:s', '2016-06-19 00:00:01')
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $date,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+    }
+
+    /**
      * The helper to return links in a future state format.
      */
     public function testFutureStateLink()
