@@ -1,59 +1,43 @@
 WorkflowDefinition:
-  first:
-    Title: 'First definition'
+  requestPublication:
+    Title: 'Request Publish'
+  approvePublication:
+    Title: 'Approve Publish'
+
+WorkflowFutureStateTest_DummyWorkflowAction:
+  requestPublication:
+    Title: 'Approve'
+    WorkflowDefID: =>WorkflowDefinition.requestPublication
+
+PublishItemWorkflowAction:
+  approvePublication:
+    Title: 'Publish'
+    WorkflowDefID: =>WorkflowDefinition.approvePublication
 
 SiteTree:
   basic:
     Title: 'Basic page'
   inWorkflow:
     Title: 'In Workflow'
-  inQueue:
-    Title: 'Past workflow, in Queue'
-    PublishOnDate: '2020-01-01 00:00:00'
   multiDraft:
     Title: 'Multi'
   embargoOnly:
     Title: 'Embargo Only'
     DesiredPublishDate: '2016-06-15 00:00:01'
-    WorkflowDefinitionID: =>WorkflowDefinition.first
   expiryOnly:
     Title: 'Expiry Only'
     DesiredUnPublishDate: '2016-06-17 00:00:01'
-    WorkflowDefinitionID: =>WorkflowDefinition.first
   embargoAndExpiry:
     Title: 'Embargo and Expiry'
     DesiredPublishDate: '2016-06-18 00:00:01'
     DesiredUnPublishDate: '2016-06-19 00:00:01'
-    WorkflowDefinitionID: =>WorkflowDefinition.first
+  distantExpiry:
+    Title: 'Wide Embargo and Expiry'
+    DesiredUnPublishDate: '2016-06-29 00:00:01'
   wideEmbargoAndExpiry:
     Title: 'Wide Embargo and Expiry'
     DesiredPublishDate: '2016-06-20 00:00:01'
     DesiredUnPublishDate: '2016-06-29 00:00:01'
-    WorkflowDefinitionID: =>WorkflowDefinition.first
-
-WorkflowInstance:
-  one:
-    WorkflowStatus: Paused
-    TargetClass: 'SiteTree'
-    TargetID: =>SiteTree.inWorkflow
-    DefinitionID: =>WorkflowDefinition.first
-  embargoOnly:
-    WorkflowStatus: Active
-    TargetClass: 'SiteTree'
-    TargetID: =>SiteTree.embargoOnly
-    DefinitionID: =>WorkflowDefinition.first
-  expiryOnly:
-    WorkflowStatus: Paused
-    TargetClass: 'SiteTree'
-    TargetID: =>SiteTree.expiryOnly
-    DefinitionID: =>WorkflowDefinition.first
-  embargoAndExpiry:
-    WorkflowStatus: Paused
-    TargetClass: 'SiteTree'
-    TargetID: =>SiteTree.embargoAndExpiry
-    DefinitionID: =>WorkflowDefinition.first
-  wideEmbargoAndExpiry:
-    WorkflowStatus: Paused
-    TargetClass: 'SiteTree'
-    TargetID: =>SiteTree.wideEmbargoAndExpiry
-    DefinitionID: =>WorkflowDefinition.first
+  expiryDateCleared:
+    Title: 'Expiry date which is then cleared'
+    DesiredUnPublishDate: '2016-06-17 00:00:01'

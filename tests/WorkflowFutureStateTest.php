@@ -2,8 +2,11 @@
 
 use SilverStripe\Model\FieldType\DBDatetime;
 
-class WorkflowFutureStateTest extends FunctionalTest {
-
+/**
+ * Testing future state in various scenarios.
+ */
+class WorkflowFutureStateTest extends FunctionalTest
+{
     protected static $fixture_file = 'workflowfuturestate.yml';
 
     protected $requiredExtensions = array(
@@ -21,16 +24,39 @@ class WorkflowFutureStateTest extends FunctionalTest {
     );
 
     /**
-     * Set an object into a state as if it had passed through a workflow.
+     * Start a workflow for a page, this will set it into a state where a workflow
+     * is currently being processed.
      *
-     * @param DataObject $obj   The object to set
+     * @param  SiteTree $obj
+     * @return SiteTree
      */
-    private function setIntoPostWorkflowState($obj, $extra = null)
+    private function startWorkflow($obj)
     {
-        $obj->PublishOnDate = $obj->DesiredPublishDate;
-        $obj->UnPublishOnDate = $obj->DesiredUnPublishDate;
-        $obj->setIsWorkflowInEffect();
+        $workflow = $this->objFromFixture('WorkflowDefinition', 'requestPublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
         $obj->write();
+
+        $svc = singleton('WorkflowService');
+        $svc->startWorkflow($obj, $draft->WorkflowDefinitionID);
+        return $obj;
+    }
+
+    /**
+     * Start and finish a workflow which will publish the page immediately basically.
+     *
+     * @param  SiteTree $obj
+     * @return SiteTree
+     */
+    private function finishWorkflow($obj)
+    {
+        $workflow = $this->objFromFixture('WorkflowDefinition', 'approvePublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
+        $obj->write();
+
+        $svc = singleton('WorkflowService');
+        $svc->startWorkflow($obj, $draft->WorkflowDefinitionID);
+
+        $obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
         return $obj;
     }
 
@@ -76,40 +102,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $res = $this->get($draft->Link());
         $this->assertEquals(404, $res->getStatusCode());
 
-        // Another way to test the same thing
-        $pages = SiteTree::get()
-            ->setDataQueryParam([
-                'Versioned.stage' => Versioned::LIVE
-            ]);
-        $this->assertEquals(0, $pages->count());
-
-        // When requesting a page for future time the draft is NOT returned
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => '2016-06-14 00:00:01',
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(0, $pages->count());
-    }
-
-    /**
-     * Draft pages are not returned for future state queries.
-     */
-    public function testDraftOnlyAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'basic'));
-
-        // Check that there is no live version
-        $this->assertTrue($draft->isOnDraft());
-        $this->assertFalse($draft->isPublished());
-
-        // No live page exists
-        $res = $this->get($draft->Link());
-        $this->assertEquals(404, $res->getStatusCode());
-
-        // Another way to test the same thing
+        // Another way to test no live page returned
         $pages = SiteTree::get()
             ->setDataQueryParam([
                 'Versioned.stage' => Versioned::LIVE
@@ -133,8 +126,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testDraftInWorkflow()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-        $draft = $this->objFromFixture('SiteTree', 'inWorkflow');
+        $draft = $this->startWorkflow($this->objFromFixture('SiteTree', 'inWorkflow'));
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -144,14 +136,14 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $res = $this->get($draft->Link());
         $this->assertEquals(404, $res->getStatusCode());
 
-        // When requesting a page for future time the draft in workflow is returned
+        // When requesting a page for future time the draft in workflow is not returned
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
                 'Future.time' => '2016-06-14 00:00:01',
                 'Versioned.stage' => Versioned::DRAFT
             ]);
-        $this->assertEquals(1, $pages->count());
+        $this->assertEquals(0, $pages->count());
     }
 
     /**
@@ -160,28 +152,39 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testDraftInQueue()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
 
-        // Dummy PublishOnDate set on this record in order to create a job for it
-        $draft = $this->objFromFixture('SiteTree', 'inQueue');
+        // Currently in the publish queue
         $this->assertTrue($draft->PublishJobID > 0);
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
         $this->assertFalse($draft->isPublished());
 
-        // No live page exists
-        $res = $this->get($draft->Link());
-        $this->assertEquals(404, $res->getStatusCode());
-
-        // When requesting a page for future time the draft in queue is returned
+        // Request for date after publish returns draft
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
-                'Future.time' => '2016-06-14 00:00:01',
+                'Future.time' => $afterDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
         $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Request for date before publish returns nothing
+        $beforeDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('-1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $beforeDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(0, $pages->count());
     }
 
     /**
@@ -189,8 +192,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testMultipleDrafts()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-        $draft = $this->objFromFixture('SiteTree', 'inWorkflow');
+        $draft = $this->objFromFixture('SiteTree', 'multiDraft');
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -199,14 +201,14 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $draft->Title = 'New title here';
         $draft->write();
 
+        // Finish a workflow for the draft
+        $draft->Title = 'Another new title';
+        $draft = $this->finishWorkflow($draft);
+
         $versions = Versioned::get_all_versions('SiteTree', $draft->ID);
-
-        // Write one more draft with a publish job attched
-        $draft->PublishOnDate = '2020-01-01 00:00:00';
-        $draft->write();
-
         $this->assertEquals($versions->Count(), 3);
 
+        // Get date in the future should be the latest version for this page
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
@@ -218,45 +220,11 @@ class WorkflowFutureStateTest extends FunctionalTest {
     }
 
     /**
-     * When multiple drafts exist the latest is the one returned if any are returned.
-     */
-    public function testMultipleDraftsAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'basic'));
-
-        // Check that there is no live version
-        $this->assertTrue($draft->isOnDraft());
-        $this->assertFalse($draft->isPublished());
-
-        $draft->Title = 'New title here';
-        $draft->write();
-
-        $versions = Versioned::get_all_versions('SiteTree', $draft->ID);
-
-        // Write one more draft with a publish job attched
-        $draft->PublishOnDate = '2020-01-01 00:00:00';
-        $draft->write();
-
-        $this->assertEquals($versions->Count(), 4);
-
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => '2016-06-14 00:00:01',
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals($pages->count(), 1);
-        $this->assertEquals($pages->first()->Version, 4);
-    }
-
-    /**
      * Drafts that are embargoed are returned from and including the desired embargo date.
      */
     public function testDraftEmbargo()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-        $draft = $this->objFromFixture('SiteTree', 'embargoOnly');
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -275,59 +243,14 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
-                'Future.time' => $draft->DesiredPublishDate,
+                'Future.time' => $draft->PublishOnDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
         // Request future state for after embargo
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('+1 day')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-    }
-
-    /**
-     * Drafts that are embargoed are returned from and including the desired embargo date.
-     */
-    public function testDraftEmbargoAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'embargoOnly'));
-
-        // Check that there is no live version
-        $this->assertTrue($draft->isOnDraft());
-        $this->assertFalse($draft->isPublished());
-
-        // Request future state for now which is a mocked date
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => DBDatetime::now(),
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(0, $pages->count());
-
-        // Request future state for embargo
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $draft->DesiredPublishDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-
-        // Request future state for after embargo
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('+1 day')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -345,56 +268,9 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testDraftExpiry()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-        $draft = $this->objFromFixture('SiteTree', 'expiryOnly');
-
-        // Check that there is no live version
-        $this->assertTrue($draft->isOnDraft());
-        $this->assertFalse($draft->isPublished());
-
-        // Request future state for now which is a mocked date
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => DBDatetime::now(),
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-
-        // Request future state for expiry
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $draft->DesiredUnPublishDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-
-        // Request future state for after expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
-            ->modify('+1 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(0, $pages->count());
-    }
-
-    /**
-     * Drafts that are expired are returned up to and including the desired expiry date.
-     */
-    public function testDraftExpiryAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
 
         // At the end of the workflow this page is published immediately
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $this->assertTrue($draft->isPublished());
 
         // Request future state for now which is a mocked date
@@ -411,14 +287,14 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
-                'Future.time' => $draft->DesiredUnPublishDate,
+                'Future.time' => $draft->UnPublishOnDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
         // Request future state for after expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('+1 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -435,10 +311,9 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testDraftEmbargoExpiry()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-        $draft = $this->objFromFixture('SiteTree', 'embargoAndExpiry');
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoAndExpiry'));
 
-        // Check that there is no live version
+        // Check that there is no live version after workflow
         $this->assertTrue($draft->isOnDraft());
         $this->assertFalse($draft->isPublished());
 
@@ -452,10 +327,10 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $this->assertEquals(0, $pages->count());
 
         // Request future state for after embargo and before expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('+6 hour')
             ->format('Y-m-d H:i:s');
-        $this->assertTrue(strtotime($afterDate) < strtotime($draft->DesiredUnPublishDate));
+        $this->assertTrue(strtotime($afterDate) < strtotime($draft->UnPublishOnDate));
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
@@ -466,55 +341,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
         // Request future state for after expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
-            ->modify('+6 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(0, $pages->count());
-    }
-
-    /**
-     * Drafts are returned for dates that fall inside their embargo expiry.
-     */
-    public function testDraftEmbargoExpiryAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'embargoAndExpiry'));
-
-        // Check that there is no live version
-        $this->assertTrue($draft->isOnDraft());
-        $this->assertFalse($draft->isPublished());
-
-        // Request future state for now which is before embargo
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => DBDatetime::now(),
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(0, $pages->count());
-
-        // Request future state for after embargo and before expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('+6 hour')
-            ->format('Y-m-d H:i:s');
-        $this->assertTrue(strtotime($afterDate) < strtotime($draft->DesiredUnPublishDate));
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-
-        // Request future state for after expiry
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('+6 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -532,21 +359,18 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testPublishedDraftEmbargo()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
 
-        // Publish draft
-        $draft = $this->objFromFixture('SiteTree', 'embargoOnly');
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
         $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $this->assertTrue($draft->isPublished());
 
         // New draft version and embargo with date 4 days later
         $draft->Title = 'New Title';
         $draft->DesiredPublishDate = '2016-06-20 00:00:01';
-        $draft->write();
+        $draft = $this->finishWorkflow($draft);
 
         // Request prior to new embargo which should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('-1 day')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -559,54 +383,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $this->assertEquals($title, $pages->first()->Title);
 
         // Request after new embargo should get new draft page
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('+1 day')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-    }
-
-    /**
-     * Current published record is returned for dates prior to new draft's embargo,
-     * other new draft is returned rather than published version.
-     */
-    public function testPublishedDraftEmbargoAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-
-        // Publish draft
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'embargoOnly'));
-        $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
-        $this->assertTrue($draft->isPublished());
-
-        // New draft version and embargo with date 4 days later
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'embargoOnly'));
-        $draft->Title = 'New Title';
-        $draft->DesiredPublishDate = '2016-06-20 00:00:01';
-        $draft->write();
-
-        // Request prior to new embargo which should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('-1 day')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $priorDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
-
-        // Request after new embargo should get new draft page
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('+1 day')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -625,21 +402,17 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testPublishedDraftExpiry()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-
         // Publish draft
-        $draft = $this->objFromFixture('SiteTree', 'expiryOnly');
-        $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
         $this->assertTrue($draft->isPublished());
 
         // New draft version and expiry with date 2 days earlier
         $draft->Title = 'New Title';
         $draft->DesiredUnPublishDate = '2016-06-15 00:00:01';
-        $draft->write();
+        $draft = $this->finishWorkflow($draft);
 
-        // Request after the new expiry but before the published expiry should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
+        // Request after the new expiry but before the previously published expiry should get no page
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('+1 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -648,11 +421,10 @@ class WorkflowFutureStateTest extends FunctionalTest {
                 'Future.time' => $priorDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
+        $this->assertEquals(0, $pages->count());
 
-        // Request before the new expiry should get the draft page
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
+        // Request before the new expiry should get new page
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('-1 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -663,113 +435,6 @@ class WorkflowFutureStateTest extends FunctionalTest {
             ]);
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
-    }
-
-    /**
-     * Current published record is returned for dates that do not match the expiry of the
-     * new draft.
-     */
-    public function testPublishedDraftExpiryAlt()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-
-        // Publish draft
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'expiryOnly'));
-        $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
-        $this->assertTrue($draft->isPublished());
-
-        // New draft version and expiry with date 2 days earlier
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'expiryOnly'));
-        $draft->Title = 'New Title';
-        $draft->DesiredUnPublishDate = '2016-06-15 00:00:01';
-        $draft->write();
-
-        // Request after the new expiry but before the published expiry should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
-            ->modify('+1 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $priorDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
-
-        // Request before the new expiry should cannot get the draft page as it will be published immediately after workflow_end
-        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
-            ->modify('-1 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $afterDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
-    }
-
-    /**
-     * Current published record is returned for times outside of the new embargo/expiry period
-     * for the new draft page.
-     */
-    public function testPublishedDraftEmbargoExpiry()
-    {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_start');
-
-        // Publish draft
-        $draft = $this->objFromFixture('SiteTree', 'wideEmbargoAndExpiry');
-        $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
-        $this->assertTrue($draft->isPublished());
-
-        // New draft version and expiry with a shorter embargo/expiry period encompased by current live
-        $draft->Title = 'New Title';
-        $draft->DesiredPublishDate = '2016-06-22 00:00:01';
-        $draft->DesiredUnPublishDate = '2016-06-24 00:00:01';
-        $draft->write();
-
-        // Request prior to new embargo date should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('-1 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $priorDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
-
-        // Request between new embargo/expiry dates should get draft page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
-            ->modify('+4 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $priorDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
-
-        // Request after new expiry should get current live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
-            ->modify('+1 hour')
-            ->format('Y-m-d H:i:s');
-        $pages = SiteTree::get()
-            ->filter('ID', $draft->ID)
-            ->setDataQueryParam([
-                'Future.time' => $priorDate,
-                'Versioned.stage' => Versioned::DRAFT
-            ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
     }
 
     /**
@@ -778,23 +443,18 @@ class WorkflowFutureStateTest extends FunctionalTest {
      */
     public function testPublishedDraftEmbargoExpiryAlt()
     {
-        Config::inst()->update('WorkflowEmbargoExpiryExtension', 'future_state_trigger', 'workflow_end');
-
-        // Publish draft
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'wideEmbargoAndExpiry'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'distantExpiry'));
         $title = $draft->Title;
-        $draft->copyVersionToStage(Versioned::DRAFT, Versioned::LIVE);
         $this->assertTrue($draft->isPublished());
 
         // New draft version and expiry with a shorter embargo/expiry period encompased by current live
-        $draft = $this->setIntoPostWorkflowState($this->objFromFixture('SiteTree', 'wideEmbargoAndExpiry'));
         $draft->Title = 'New Title';
         $draft->DesiredPublishDate = '2016-06-22 00:00:01';
         $draft->DesiredUnPublishDate = '2016-06-24 00:00:01';
-        $draft->write();
+        $draft = $this->finishWorkflow($draft);
 
         // Request prior to new embargo date should get live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('-1 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -807,7 +467,7 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $this->assertEquals($title, $pages->first()->Title);
 
         // Request between new embargo/expiry dates should get draft page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredPublishDate)
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
             ->modify('+4 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -819,8 +479,8 @@ class WorkflowFutureStateTest extends FunctionalTest {
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
-        // Request after new expiry should get current live page
-        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->DesiredUnPublishDate)
+        // Request after new expiry but before live expiry should get current live page
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('+1 hour')
             ->format('Y-m-d H:i:s');
         $pages = SiteTree::get()
@@ -864,5 +524,15 @@ class WorkflowFutureStateTest extends FunctionalTest {
 
         $link = $draft->getFutureTimeLink('');
         $this->assertEquals($link, null);
+    }
+}
+
+/**
+ * For creating a state for a page where it is currently in the middle of a workflow.
+ */
+class WorkflowFutureStateTest_DummyWorkflowAction extends WorkflowAction
+{
+    public function execute(WorkflowInstance $workflow) {
+        return false;
     }
 }
