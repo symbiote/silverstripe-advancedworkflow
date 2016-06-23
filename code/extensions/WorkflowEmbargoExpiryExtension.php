@@ -598,9 +598,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * @return string|boolean
      */
     private function getEmbargoExpiryStatus() {
+        $instance = null;
         if ($this->getIsWorkflowInEffect()) {
             $instance = $this->workflowService->getWorkflowFor($this->owner, true);
+        }
 
+        if ($instance) {
             // Pending
             if (!$instance->CurrentActionID &&
                 Versioned::get_stage() === Versioned::DRAFT &&
