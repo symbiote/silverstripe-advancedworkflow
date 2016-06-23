@@ -314,8 +314,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		// Jobs can only be queued for records that already exist
 		if(!$this->owner->ID) return;
 
-		// Check scheduled dates of publish / unpublish, and whether the page should have already been unpublished
-		$now = strtotime(SS_Datetime::now()->getValue());
+		// Check requested dates of publish / unpublish, and whether the page should have already been unpublished
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publishTime = strtotime($this->owner->PublishOnDate);
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
@@ -491,20 +491,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
      */
     public function canEdit($member) {
-        $disabled = false;
-        $definitions = $this->workflowService->getDefinitionsFor($this->owner);
+        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW')) {
+            $now = strtotime(DBDatetime::now()->getValue());
+            $publishTime = strtotime($this->owner->PublishOnDate);
 
-        if ($definitions) {
-            foreach ($definitions as $definition) {
-                $disabled = $disabled || $definition->DisableBeforeEmbargo;
-            }
-            if ($disabled) {
-                $now = strtotime(DBDatetime::now()->getValue());
-                $publishTime = strtotime($this->owner->PublishOnDate);
-
-                if ($publishTime && $publishTime > $now) {
-                    return false;
-                }
+            if ($publishTime && $publishTime > $now) {
+                return false;
             }
         }
     }

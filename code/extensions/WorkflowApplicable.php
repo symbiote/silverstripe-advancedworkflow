@@ -170,7 +170,7 @@ class WorkflowApplicable extends DataExtension {
 			} else {
 				// Instantiate the workflow definition initial actions.
 				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
-				if($definitions && $this->owner->canEdit()) {
+				if($definitions) {
                     $menu = $actions->fieldByName('ActionMenus');
                     if(is_null($menu)) {
                         // Instantiate a new action menu for any data objects.
@@ -190,7 +190,7 @@ class WorkflowApplicable extends DataExtension {
                         // any definitions configured to enable cancel
                         $enableCancel = $enableCancel || $definition->EnableCancelEmbargo;
 
-						if($definition->getInitialAction()) {
+						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title

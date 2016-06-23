@@ -372,38 +372,30 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testCanEditConfig()
     {
-        $definition = $this->createDefinition();
 
         $page = SiteTree::create();
         $page->Title = 'My page';
-        $page->WorkflowDefinitionID = $definition->ID;
         $page->PublishOnDate = '2010-01-01 00:00:00';
         $page->write();
 
         $memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
-
-        $definition->DisableBeforeEmbargo = true;
-        $definition->write();
-
-        $this->assertTrue($page->canEdit(), 'Can edit page with disable but no embargo');
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
 
         $page->PublishOnDate = '2020-01-01 00:00:00';
         $page->write();
-
-        $definition->DisableBeforeEmbargo = false;
-        $definition->write();
-
-        $this->assertTrue($page->canEdit(), 'Can edit page without disable');
-
-        $definition->DisableBeforeEmbargo = true;
-        $definition->write();
-
-        $this->assertFalse($page->canEdit(), 'Cannot edit page with disable');
+        $this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
 
         $this->logOut();
         $memberID = $this->logInWithPermission('ADMIN');
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
 
-        $this->assertFalse($page->canEdit(), 'Cannot edit page with disable as Admin');
+        $this->logOut();
+        $memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
+
+        $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->write();
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
 
     }
 
