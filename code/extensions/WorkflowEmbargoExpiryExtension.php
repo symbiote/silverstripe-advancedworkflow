@@ -399,7 +399,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     public function getFutureTime()
     {
         $time = null;
-        $curr = Controller::curr();
+        $curr = Controller::has_curr() ? Controller::curr() : false;
 
         if ($curr) {
             $ft = $curr->getRequest()->getVar('ft');
