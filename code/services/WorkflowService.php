@@ -426,7 +426,13 @@ class WorkflowService implements PermissionProvider {
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
 				'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Users can reassign active workflows to different users and groups'),
 				'sort'     => 0
-			)
+            ),
+            'CANCEL_EMBARGO_EXPIRY_WORKFLOW' => array(
+                'name'     => _t('AdvancedWorkflow.CANCEL_EMBARGOEXPIRY', 'Cancel embargo and expiry'),
+                'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+                'help'     => _t('AdvancedWorkflow.CANCEL_EMBARGOEXPIRY_HELP', 'Users can cancel an embargo and expiry for a workflow approved page'),
+                'sort'     => 6
+            )
 		);
 	}
 

@@ -25,7 +25,6 @@ class WorkflowDefinition extends DataObject {
 		'RemindDays'		=> 'Int',
 		'Sort'				=> 'Int',
 		'InitialActionButtonText' => 'Varchar',
-        'EnableCancelEmbargo' => 'Boolean',
 	);
 
 	private static $default_sort = 'Sort';
@@ -199,11 +198,6 @@ class WorkflowDefinition extends DataObject {
 				new LabelField('ReminderEmailAfter', $after)
 			));
 		}
-
-        // add option to enable a 'Cancel embargo & expiry' button
-        $fields->removeByName('EnableCancelEmbargo');
-        $enableCancel = CheckboxField::create('EnableCancelEmbargo', _t('WorkflowDefinition.ENABLECANCELEMBARGO', 'Enable cancel embargo & expiry'));
-        $fields->addFieldToTab('Root.Main', $enableCancel);
 
 		if($this->ID) {
 			if ($this->Template) {
