@@ -693,6 +693,103 @@ class WorkflowFutureStateTest extends FunctionalTest
         $link = $draft->getFutureTimeLink('');
         $this->assertEquals($link, null);
     }
+
+    /**
+     * Archived pages do not have entries in the SiteTree or SiteTree_Live tables and should be ignored.
+     */
+    public function testArchivedPagesIgnored()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+
+        // At the end of the workflow this page is published immediately
+        $this->assertTrue($draft->isPublished());
+
+        // Request future state for now which is a mocked date
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Log in as admin so can archive the page
+        $this->logInWithPermission();
+        $draft->doArchive();
+
+        $this->assertFalse($draft->isPublished());
+        $this->assertFalse($draft->isOnDraft());
+
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(0, $pages->count());
+    }
+
+    /**
+     * Unpublished pages only use published versions for future state.
+     */
+    public function testUnpublishedPages()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $title = $draft->Title;
+        $this->assertTrue($draft->isPublished());
+
+        // New draft version and embargo with date 4 days later
+        $draft->Title = 'New Title';
+        $draft->DesiredPublishDate = '2016-06-20 00:00:01';
+        $draft = $this->finishWorkflow($draft);
+
+        // Request prior to new embargo which should get live page
+        $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('-1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $priorDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($title, $pages->first()->Title);
+
+        // Request after new embargo should get new draft page
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $afterDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($draft->Title, $pages->first()->Title);
+
+        // Log in as admin and delete page from draft
+        $this->logInWithPermission();
+        $draft->deleteFromStage(Versioned::DRAFT);
+
+        $this->assertTrue($draft->isPublished());
+        $this->assertFalse($draft->isOnDraft());
+
+        // Request after new embargo should get live page as new draft has been removed
+        $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->PublishOnDate)
+            ->modify('+1 day')
+            ->format('Y-m-d H:i:s');
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => $afterDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($title, $pages->first()->Title);
+    }
 }
 
 /**
