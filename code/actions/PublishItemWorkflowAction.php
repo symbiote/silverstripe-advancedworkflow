@@ -43,7 +43,9 @@ class PublishItemWorkflowAction extends WorkflowAction {
 		} else {
 			if ($target->hasMethod('doPublish')) {
 				$target->doPublish();
-			}
+			} else if ($target->hasMethod('publish')) {
+                $target->publish('Stage', 'Live');
+            }
 		}
 
 		return true;
