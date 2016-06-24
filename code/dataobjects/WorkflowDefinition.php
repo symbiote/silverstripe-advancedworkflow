@@ -26,7 +26,6 @@ class WorkflowDefinition extends DataObject {
 		'Sort'				=> 'Int',
         'DisableBeforeEmbargo' => 'Boolean',
 		'InitialActionButtonText' => 'Varchar',
-        'EnableCancelEmbargo' => 'Boolean',
 	);
 
 	private static $default_sort = 'Sort';
@@ -200,14 +199,6 @@ class WorkflowDefinition extends DataObject {
 				new LabelField('ReminderEmailAfter', $after)
 			));
 		}
-
-        // add option to enable a 'Cancel embargo & expiry' button
-        $fields->removeByName('EnableCancelEmbargo');
-        $enableCancel = CheckboxField::create('EnableCancelEmbargo', _t('WorkflowDefinition.ENABLECANCELEMBARGO', 'Enable cancel embargo & expiry'));
-        $fields->addFieldToTab('Root.Main', $enableCancel);
-
-        // disable editing a page when it has been embargoed, this works well with the "Cancel embargo & expiry" button
-        $fields->addFieldToTab('Root.Main', CheckboxField::create('DisableBeforeEmbargo', _t('WorkflowDefinition.DISABLE_BEFORE_EMBARGO', 'Disable editing for item before a scheduled publish date')));
 
 		if($this->ID) {
 			if ($this->Template) {

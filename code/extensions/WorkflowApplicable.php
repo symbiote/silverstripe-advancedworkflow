@@ -134,6 +134,7 @@ class WorkflowApplicable extends DataExtension {
 
 	public function updateCMSActions(FieldList $actions) {
 		$c = Controller::curr();
+
 		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
             $active = $this->workflowService->getWorkflowFor($this->owner);
 
@@ -170,9 +171,10 @@ class WorkflowApplicable extends DataExtension {
 			} else {
 				// Instantiate the workflow definition initial actions.
 				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+
 				if($definitions) {
                     $menu = $actions->fieldByName('ActionMenus');
-                    if(is_null($menu)) {
+                    if (is_null($menu)) {
                         // Instantiate a new action menu for any data objects.
                         $menu = $this->createActionMenu();
                         $actions->push($menu);
@@ -184,12 +186,8 @@ class WorkflowApplicable extends DataExtension {
                         );
                     }
 
-                    $enableCancel = false;
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-                        // any definitions configured to enable cancel
-                        $enableCancel = $enableCancel || $definition->EnableCancelEmbargo;
-
 						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
@@ -209,10 +207,9 @@ class WorkflowApplicable extends DataExtension {
 					}
 
                     // button to cancel the existing embargo dates
-                    if ($enableCancel &&
-                        $this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
+                    if ($this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
                         ($this->owner->PublishOnDate || $this->owner->UnPublishOnDate) && // any embargo or expiry present
-                        $this->userHasCancelAccess() // the user is given the permission to cancel
+                        Permission::check('CANCEL_EMBARGO_EXPIRY_WORKFLOW') // the user is given the permission to cancel
                     ) {
                         $options = $menu->fieldByName('MoreOptions');
                         if (is_null($tab)) {
@@ -307,7 +304,6 @@ class WorkflowApplicable extends DataExtension {
 		return $this->currentInstance;
 	}
 
-
 	/**
 	 * Gets the history of a workflow instance
 	 *
@@ -316,40 +312,6 @@ class WorkflowApplicable extends DataExtension {
 	public function getWorkflowHistory($limit = null) {
 		return $this->workflowService->getWorkflowHistoryFor($this->owner, $limit);
 	}
-
-    /**
-     * Checks whether the given user is in the list of users assigned to this
-     * workflow
-     *
-     * @param $member
-     * @return boolean
-     */
-    public function userHasCancelAccess($member = null) {
-        if (!$member) {
-            if (!Member::currentUserID()) {
-                return false;
-            }
-            $member = Member::currentUser();
-        }
-
-        if(Permission::checkMember($member, "ADMIN")) {
-            return true;
-        }
-        // Instantiate the workflow definition initial actions.
-        $definitions = $this->workflowService->getDefinitionsFor($this->owner);
-
-        // This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to users assigned-to that WorkflowInstance.
-        // However; lowly authors (users entering items into a workflow) are not assigned - but we still wish them to see their submitted content.
-        $inWorkflowGroupOrUserTables = false;
-
-        // Check each definition and see if any grants the user permission
-        foreach ($definitions as $definition) {
-            $inWorkflowGroupOrUserTables = $inWorkflowGroupOrUserTables ||
-                $member->inGroups($definition->Groups()) ||
-                $definition->Users()->find('ID', $member->ID);
-        }
-        return $inWorkflowGroupOrUserTables;
-    }
 
 	/**
 	 * Check all recent WorkflowActionIntances and return the most recent one with a Comment
