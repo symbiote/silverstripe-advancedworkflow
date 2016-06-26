@@ -318,7 +318,10 @@ class WorkflowApplicable extends DataExtension {
 		}
 
 		if ($active = $this->getWorkflowInstance()) {
-			return $active->canPublishTarget($this->owner);
+			$publish = $active->canPublishTarget($this->owner);
+            if (!is_null($publish)) {
+                return $publish;
+            }
 		}
 
 		// otherwise, see if there's any workflows applied. If there are, then we shouldn't be able
