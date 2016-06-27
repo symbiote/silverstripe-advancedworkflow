@@ -426,18 +426,16 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     {
         $d = DBDatetime::create();
         $d->setValue($date);
+        $date = strtotime($d->getValue());
 
-        if ($d->value)
+        if ($date)
         {
-            $now = new DateTime();
-            $date = new DateTime($date);
+            $now = strtotime(DBDatetime::now()->getValue());
 
-            // Date is in the future
             if ($date > $now)
             {
                  return $d->FormatFromSettings();
             }
-            // Date has already passed
             else
             {
                 if ($type === 'embargo')
