@@ -150,7 +150,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             $ft = FutureStatePreviewField::create(
                 'FuturePreviewDate',
                 _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_DATE', 'Set preview date')
-            )->addExtraClass('workflow-future-preview-datetime'),
+            ),
         ));
 
 		$dt->getDateField()->setConfig('showcalendar', true);

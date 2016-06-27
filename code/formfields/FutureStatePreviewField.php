@@ -17,10 +17,10 @@ class FutureStatePreviewField extends DatetimeField
         parent::__construct($name, $title, $value);
         $this->dateField
             ->setName('')
-            ->addExtraClass('no-change-track workflow-future-preview-datetime');
+            ->addExtraClass('no-change-track');
         $this->timeField
             ->setName('')
-            ->addExtraClass('no-change-track workflow-future-preview-datetime');
+            ->addExtraClass('no-change-track');
     }
 
     /**

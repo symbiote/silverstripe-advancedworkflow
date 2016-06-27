@@ -1,5 +1,5 @@
 jQuery.entwine('ss.workflow', function ($) {
-    $('.workflow-future-preview-datetime .preview-action').entwine({
+    $('.futurestatepreview .preview-action').entwine({
         onclick: function () {
             var self = this;
             self.openLink();
@@ -27,7 +27,7 @@ jQuery.entwine('ss.workflow', function ($) {
          */
         getISODate: function () {
             var self = this,
-                inputDate = self.closest('.workflow-future-preview-datetime').find(':input.date').datepicker('getDate'),
+                inputDate = self.closest('.futurestatepreview').find(':input.date').datepicker('getDate'),
                 outputDate;
 
             if (inputDate) {
@@ -41,7 +41,7 @@ jQuery.entwine('ss.workflow', function ($) {
          */
         getISOTime: function () {
             var self = this,
-                input = self.closest('.workflow-future-preview-datetime').find(':input.time'),
+                input = self.closest('.futurestatepreview').find(':input.time'),
                 inputTime = input.datepicker('getDate'),
                 outputTime;
 
