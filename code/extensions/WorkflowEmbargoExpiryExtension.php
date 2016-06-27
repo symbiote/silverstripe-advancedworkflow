@@ -529,15 +529,15 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(\"LatestDrafts\".\"Version\") AS LatestDraftVersion
                                     FROM \"{$baseTable}_versions\" AS LatestDrafts
-                                    INNER JOIN \"{$baseTable}\" ON \"{$baseTable}\".\"ID\" = \"LatestDrafts\".\"RecordID\"
+                                    INNER JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\"
                                     WHERE \"LatestDrafts\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
-                                    AND \"{$baseTable}\".\"ID\" IS NOT NULL
-                                    AND \"WasPublished\" = 0
+                                    AND \"Base\".\"ID\" IS NOT NULL
+                                    AND \"LatestDrafts\".\"WasPublished\" = 0
                                     AND \"LatestDrafts\".\"Version\" > (
                                         SELECT CASE WHEN COUNT(1) > 0 THEN MAX(Version) ELSE 0 END AS LatestPublishedVersion
                                         FROM \"{$baseTable}_versions\" AS LatestPublished
                                         WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
-                                        AND \"WasPublished\" = 1
+                                        AND \"LatestPublished\".\"WasPublished\" = 1
                                     )
                                 )
                             )
@@ -558,7 +558,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                     INNER JOIN \"{$baseTable}_Live\" ON \"{$baseTable}_Live\".\"ID\" = \"LatestPublished\".\"RecordID\"
                                     WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"{$baseTable}_Live\".\"ID\" IS NOT NULL
-                                    AND \"WasPublished\" = 1
+                                    AND \"LatestPublished\".\"WasPublished\" = 1
                                 )
                             )
                         GROUP BY \"{$baseTable}_versions\".\"RecordID\"
@@ -569,14 +569,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             ]);
 
             // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query
-            // cleaner solution doesn't really exist unfortunately
             $query->replaceText(
-                "INNER JOIN \"{$baseTable}_versions\" ON \"{$baseTable}_versions\".\"RecordID\" = \"LatestDrafts\".\"RecordID\"",
-                "INNER JOIN \"{$baseTable}\" ON \"{$baseTable}\".\"ID\" = \"LatestDrafts\".\"RecordID\""
-            );
-            $query->replaceText(
-                "AND \"{$baseTable}_versions\".\"RecordID\" IS NOT NULL",
-                "AND \"{$baseTable}\".\"ID\" IS NOT NULL"
+                "INNER JOIN \"{$baseTable}_versions\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\"",
+                "INNER JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\""
             );
         }
     }
