@@ -639,23 +639,31 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * Secondly, if a $type (i.e. embargo|expiry) is specified,
      * then it returns the respective fallback string.
      *
-     * @param $date
-     * @param $type [optional] embargo|expiry specify a date type to return fallback string
+     * @param string $date
+     * @param string $type [optional] embargo|expiry specify a date type to return fallback string
+     * @param boolean $link [optional] whether or not to output html hyperlink to preview the future state
      * @return DBDatetime|string|false
      */
-    private function getEmbargoExpiryDate($date, $type = '')
+    private function getEmbargoExpiryDate($date, $type = '', $link = false)
     {
         $d = DBDatetime::create();
         $d->setValue($date);
-        $date = strtotime($d->getValue());
+        $parsed = strtotime($d->getValue());
 
-        if ($date)
+        if ($parsed)
         {
             $now = strtotime(DBDatetime::now()->getValue());
 
-            if ($date > $now)
+            if ($parsed > $now)
             {
-                 return $d->FormatFromSettings();
+                if ($link)
+                {
+                    return '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $d->FormatFromSettings() . '</a>';
+                }
+                else
+                {
+                    return $d->FormatFromSettings();
+                }
             }
             else
             {
@@ -723,8 +731,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 $message['Style'] = 'notice';
                 $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Change approved');
                 $message['DatePrefix'] = $prefixScheduled;
-                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->PublishOnDate, 'embargo');
-                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->UnPublishDate, 'expiry');
+                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->PublishOnDate, 'embargo', true);
+                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->UnPublishDate, 'expiry', true);
         }
 
         $message = $this->owner->customise(
