@@ -27,7 +27,7 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
     {
         $item = $form->getRecord();
 
-        if (!$item || !$item->canEdit() || !Permission::check('CANCEL_EMBARGO_EXPIRY_WORKFLOW')) {
+        if (!$item || !Permission::check('CANCEL_EMBARGO_EXPIRY_WORKFLOW')) {
             return;
         }
         $this->saveAsDraftWithAction($form, $item);
