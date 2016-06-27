@@ -51,6 +51,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'fieldValid'=>true
 	);
 
+    public function __construct() {
+        // Queued jobs descriptor is required for this extension
+        if (class_exists('QueuedJobDescriptor')) {
+            return parent::__construct();
+        }
+    }
+
 	/**
 	 * @param FieldList $fields
 	 */
@@ -495,12 +502,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 "count(DISTINCT \"{$baseTable}_versions\".\"ID\")"
             );
 
-            // Query the _versions table to find either
-            // the latest draft record where requested embargo <= time <= requested expiry (it must be the latest draft also) AND
-            // the page must either be in a workflow or have had a workflow approved (be in the publish queue) depending on the feature flag set in config OR
-            // the latest published record where time <= scheduled expiry (it must be the latest published also).
-            // Once published the scheduled embargo is irrelevant and in fact is removed from SiteTree and SiteTree_Live tables.
-            // NULL for any of the embargo/expiry fields infers immediately publish/never expire.
+            // Querying the _versions table to find the most recent draft or published record that would be published at the time requested. When
+            // embargo is NULL it is assumed that the record is published immediately. When expiry is NULL it is assumed taht the record is never unpublished.
             $query->addWhere([
                 "\"{$baseTable}_versions\".\"Version\" IN
                 (SELECT LatestVersion FROM
@@ -509,12 +512,19 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                         MAX(\"{$baseTable}_versions\".\"Version\") AS LatestVersion
                         FROM \"{$baseTable}_versions\"
                         WHERE
+                            /*
+                             * Get the latest draft version where the embargo and expiry encompass the time requested, the draft has been approved
+                             * for publishing and it is currently waiting in the queue. It must be the latest draft version and more recent than
+                             * the latest live version. It also must have a matching record in the basetable to ensure it has not been archived.
+                             */
                             (
                                 (\"{$baseTable}_versions\".\"PublishOnDate\" <= ? OR \"{$baseTable}_versions\".\"PublishOnDate\" IS NULL)
                                 AND
                                 (\"{$baseTable}_versions\".\"UnPublishOnDate\" >= ? OR \"{$baseTable}_versions\".\"UnPublishOnDate\" IS NULL)
                                 AND
                                 \"{$baseTable}_versions\".\"WasPublished\" = 0
+                                AND
+                                (\"{$baseTable}_versions\".\"PublishJobID\" != 0)
                                 AND
                                 \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(\"LatestDrafts\".\"Version\") AS LatestDraftVersion
@@ -530,9 +540,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                         AND \"WasPublished\" = 1
                                     )
                                 )
-                                AND
-                                (\"{$baseTable}_versions\".\"PublishJobID\" != 0)
                             )
+                            /*
+                             * If no draft records match then look for a live record where expiry is greater than the time requested, the record was
+                             * published and the record is the most recent published. It also must have a matching record in basetable_Live to ensure
+                             * it has not been unpublished.
+                             */
                             OR
                             (
                                 (\"{$baseTable}_versions\".\"UnPublishOnDate\" >= ? OR \"{$baseTable}_versions\".\"UnPublishOnDate\" IS NULL)

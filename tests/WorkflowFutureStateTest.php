@@ -102,13 +102,6 @@ class WorkflowFutureStateTest extends FunctionalTest
         $res = $this->get($draft->Link());
         $this->assertEquals(404, $res->getStatusCode());
 
-        // Another way to test no live page returned
-        $pages = SiteTree::get()
-            ->setDataQueryParam([
-                'Versioned.stage' => Versioned::LIVE
-            ]);
-        $this->assertEquals(0, $pages->count());
-
         // When requesting a page for future time the draft is NOT returned
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
