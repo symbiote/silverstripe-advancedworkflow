@@ -554,24 +554,39 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 AND
                                 \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(\"LatestPublished\".\"Version\") AS LatestPublishedVersion
+
                                     FROM \"{$baseTable}_versions\" AS LatestPublished
                                     INNER JOIN \"{$baseTable}_Live\" ON \"{$baseTable}_Live\".\"ID\" = \"LatestPublished\".\"RecordID\"
+
                                     WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"{$baseTable}_Live\".\"ID\" IS NOT NULL
                                     AND \"LatestPublished\".\"WasPublished\" = 1
+                                )
+                                AND
+                                /*
+                                 * There is no draft that is waiting in the queue and will be published prior to the date requested which will
+                                 * replace the current live record.
+                                 */
+                                \"{$baseTable}_versions\".\"Version\" >= (
+                                    SELECT  CASE WHEN COUNT(1) > 0 THEN \"Base\".\"Version\" ELSE 0 END AS LatestDraftVersion
+                                    FROM \"{$baseTable}\" AS Base
+                                    WHERE \"Base\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+                                    AND \"Base\".\"PublishOnDate\" <= ? OR \"Base\".\"PublishOnDate\" IS NULL
+                                    AND \"Base\".\"PublishJobID\" != 0
                                 )
                             )
                         GROUP BY \"{$baseTable}_versions\".\"RecordID\"
                     ) AS \"{$baseTable}_versions_latest\"
                     WHERE \"{$baseTable}_versions_latest\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                 )"
-                => [$time, $time, $time]
+                => [$time, $time, $time, $time]
             ]);
 
-            // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query
+            // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query,
+            // there are places where we do want to use {$baseTable}
             $query->replaceText(
-                "INNER JOIN \"{$baseTable}_versions\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\"",
-                "INNER JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\""
+                "\"{$baseTable}_versions\" AS Base",
+                "\"{$baseTable}\" AS Base"
             );
         }
     }
