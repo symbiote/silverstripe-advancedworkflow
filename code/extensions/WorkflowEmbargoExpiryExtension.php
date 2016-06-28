@@ -606,25 +606,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             $instance = $this->workflowService->getWorkflowFor($this->owner, true);
         }
 
-        if ($instance) {
-            // Paused
+        if ($instance && $instance->exists()) {
             if (($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') &&
-                ($this->getEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate)))
-            {
+                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate))) {
                 return 'Paused';
             }
         }
 
-        // Pending
         if (Versioned::get_stage() === Versioned::DRAFT &&
-            ($this->getEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate)))
-        {
+            ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate))) {
             return 'Pending';
-        }
-
-        // Complete
-        if ($this->getEmbargoExpiryDate($this->owner->PublishOnDate) || $this->getEmbargoExpiryDate($this->owner->UnPublishOnDate))
-        {
+        } elseif ($this->checkValidEmbargoExpiryDate($this->owner->PublishOnDate) || $this->checkValidEmbargoExpiryDate($this->owner->UnPublishOnDate)) {
             return 'Complete';
         }
 
@@ -632,62 +624,85 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Checks if the embargo/expiry date is valid, which is:
-     * - A string in ISO 8601 standard
-     * - The date is in the future
+     * Checks an embargo/expiry date's validity:
+     * - true:  date is in the future
+     * - false: the date has already passed
+     * - null:  no date was specified (the CMS date input field was left blank)
      *
-     * Secondly, if a $type (i.e. embargo|expiry) is specified,
-     * then it returns the respective fallback string.
-     *
-     * @param string $date
-     * @param string $type [optional] embargo|expiry specify a date type to return fallback string
-     * @param boolean $link [optional] whether or not to output html hyperlink to preview the future state
-     * @return DBDatetime|string|false
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @return true|false|null
      */
-    private function getEmbargoExpiryDate($date, $type = '', $link = false)
+    private function checkValidEmbargoExpiryDate($date)
     {
+        $valid = null;
         $d = DBDatetime::create();
         $d->setValue($date);
         $parsed = strtotime($d->getValue());
 
-        if ($parsed)
-        {
+        if ($parsed) {
             $now = strtotime(DBDatetime::now()->getValue());
+            $valid = $parsed > $now;
+        }
 
-            if ($parsed > $now)
-            {
-                if ($link)
-                {
-                    return '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $d->FormatFromSettings() . '</a>';
-                }
-                else
-                {
-                    return $d->FormatFromSettings();
-                }
+        return $valid;
+    }
+
+    /**
+     * Get formatted embargo/expiry date as a string.
+     * If the $date is invalid and a $type embargo|expiry is specified
+     * then it returns a respective fallback string.
+     *
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @param string $type embargo|expiry
+     * @return string
+     */
+    private function getEmbargoExpiryDate($date, $type)
+    {
+        $result = '';
+        $valid = $this->checkValidEmbargoExpiryDate($date);
+
+        // $date is in the future
+        if ($valid) {
+            $d = DBDatetime::create();
+            $d->setValue($date);
+            $result = $d->FormatFromSettings();
+        }
+        // $date is not in the future
+        elseif ($valid === false) {
+            if ($type === 'embargo') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_PUBLISHED', 'Published');
+            } elseif ($type === 'expiry') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_EXPIRED', 'Expired');
             }
-            else
-            {
-                if ($type === 'embargo')
-                {
-                    return _t('WorkflowMessage.PUBLISH_DATE_PUBLISHED', 'Published');
-                }
-                if ($type === 'expiry')
-                {
-                    return _t('WorkflowMessage.PUBLISH_DATE_EXPIRED', 'Expired');
-                }
+        }
+        // the date input field was left blank
+        elseif (is_null($valid)) {
+            if ($type === 'embargo') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_NOW', 'Immediately');
+            } elseif ($type === 'expiry') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_NEVER', 'Never');
             }
         }
 
-        if ($type === 'embargo')
-        {
-            return _t('WorkflowMessage.PUBLISH_DATE_NOW', 'Immediately');
-        }
-        elseif ($type === 'expiry')
-        {
-            return _t('WorkflowMessage.PUBLISH_DATE_NEVER', 'Never');
+        return $result;
+    }
+
+    /**
+     * Render a valid embargo/expiry date with its future time link
+     *
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @param string $type embargo|expiry
+     * @return string
+     */
+    private function renderEmbargoExpiryDateLink($date, $type)
+    {
+        $result = $this->getEmbargoExpiryDate($date, $type);
+
+        if ($this->checkValidEmbargoExpiryDate($date)) {
+            $result = '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>';
         }
 
-        return false;
+        return $result;
     }
 
     /**
@@ -731,8 +746,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 $message['Style'] = 'notice';
                 $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Change approved');
                 $message['DatePrefix'] = $prefixScheduled;
-                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->PublishOnDate, 'embargo', true);
-                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->UnPublishDate, 'expiry', true);
+                $message['DatePublish'] = $this->renderEmbargoExpiryDateLink($this->owner->PublishOnDate, 'embargo');
+                $message['DateUnPublish'] = $this->renderEmbargoExpiryDateLink($this->owner->UnPublishDate, 'expiry');
+                break;
         }
 
         $message = $this->owner->customise(
