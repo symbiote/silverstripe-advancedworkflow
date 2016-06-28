@@ -502,8 +502,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 "count(DISTINCT \"{$baseTable}_versions\".\"ID\")"
             );
 
-            // Querying the _versions table to find the most recent draft or published record that would be published at the time requested. When
-            // embargo is NULL it is assumed that the record is published immediately. When expiry is NULL it is assumed taht the record is never unpublished.
+            /*
+             * Querying the _versions table to find the most recent draft or published record that would be published at
+             * the time requested. When embargo is NULL it is assumed that the record is published immediately. When
+             * expiry is NULL it is assumed that the record is never unpublished.
+             */
             $query->addWhere([
                 "\"{$baseTable}_versions\".\"Version\" IN
                 (SELECT LatestVersion FROM

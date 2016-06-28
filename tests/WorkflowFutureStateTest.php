@@ -19,7 +19,8 @@ class WorkflowFutureStateTest extends FunctionalTest
 
     protected $illegalExtensions = array(
         'SiteTree' => array(
-            'Translatable'
+            'Translatable',
+            'SiteTreeSubsites'
         )
     );
 
@@ -113,7 +114,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
-     * Draft pages that are in a workflow are returned for future state queries.
+     * Draft pages that are in a workflow do not show in future state.
      * This essentially tests blank embargo and expiry dates for a page which infer immediate publish
      * and never unpublish.
      */
@@ -348,7 +349,7 @@ class WorkflowFutureStateTest extends FunctionalTest
 
     /**
      * Current published record is returned for dates prior to new draft's embargo,
-     * other new draft is returned rather than published version.
+     * otherwise new draft is returned rather than published version.
      */
     public function testPublishedDraftEmbargo()
     {
