@@ -554,10 +554,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 AND
                                 \"{$baseTable}_versions\".\"Version\" IN (
                                     SELECT MAX(\"LatestPublished\".\"Version\") AS LatestPublishedVersion
-
                                     FROM \"{$baseTable}_versions\" AS LatestPublished
                                     INNER JOIN \"{$baseTable}_Live\" ON \"{$baseTable}_Live\".\"ID\" = \"LatestPublished\".\"RecordID\"
-
                                     WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                                     AND \"{$baseTable}_Live\".\"ID\" IS NOT NULL
                                     AND \"LatestPublished\".\"WasPublished\" = 1
