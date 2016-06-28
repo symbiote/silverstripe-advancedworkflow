@@ -18,7 +18,9 @@ class FutureStatePreviewTest extends SapphireTest {
         $time = $preview->getTimeField();
 
         $this->assertContains('no-change-track', $date->extraClass(), 'Date field contains "no-change-track" class');
+        $this->assertEquals('', $date->getName(), 'Date field does not have a name');
         $this->assertContains('no-change-track', $time->extraClass(), 'Time field contains "no-change-track" class');
+        $this->assertEquals('', $time->getName(), 'Time field does not have a name');
 
         $readonly = $preview->performReadonlyTransformation();
 
