@@ -10,8 +10,13 @@
 class PublishItemWorkflowAction extends WorkflowAction {
 
 	private static $db = array(
-		'PublishDelay' => 'Int'
+		'PublishDelay'          => 'Int',
+        'AllowEmbargoedEditing' => 'Boolean',
 	);
+
+    private static $defaults = array(
+        'AllowEmbargoedEditing' => true
+    );
 
 	private static $icon = 'advancedworkflow/images/publish.png';
 
@@ -24,8 +29,17 @@ class PublishItemWorkflowAction extends WorkflowAction {
 			$job   = new WorkflowPublishTargetJob($target);
 			$days  = $this->PublishDelay;
 			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
-			singleton('QueuedJobService')->queueJob($job, $after);
+
+            // disable editing, and embargo the delay if using WorkflowEmbargoExpiryExtension
+            if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+                $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
+                $target->PublishOnDate = $after;
+                $target->write();
+            } else {
+                singleton('QueuedJobService')->queueJob($job, $after);
+            }
 		} else if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+            $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
 			// setting future date stuff if needbe
 
 			// set this value regardless
@@ -55,13 +69,18 @@ class PublishItemWorkflowAction extends WorkflowAction {
 		if (class_exists('AbstractQueuedJob')) {
 			$before = _t('PublishItemWorkflowAction.DELAYPUBDAYSBEFORE', 'Delay publication ');
 			$after  = _t('PublishItemWorkflowAction.DELAYPUBDAYSAFTER', ' days');
+            $allowEmbargoed =  _t('PublishItemWorkflowAction.ALLOWEMBARGOEDEDITING',
+                'Allow editing while item is embargoed? (does not apply without embargo)');
 
-			$fields->addFieldToTab('Root.Main', new FieldGroup(
-				_t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay'),
-				new LabelField('PublishDelayBefore', $before),
-				new NumericField('PublishDelay', ''),
-				new LabelField('PublishDelayAfter', $after)
-			));
+			$fields->addFieldsToTab('Root.Main', array(
+                new CheckboxField('AllowEmbargoedEditing', $allowEmbargoed),
+                new FieldGroup(
+                    _t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay'),
+                    new LabelField('PublishDelayBefore', $before),
+                    new NumericField('PublishDelay', ''),
+                    new LabelField('PublishDelayAfter', $after)
+                ),
+            ));
 		}
 
 		return $fields;

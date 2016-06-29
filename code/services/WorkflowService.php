@@ -407,26 +407,32 @@ class WorkflowService implements PermissionProvider {
 				'name' => _t('AdvancedWorkflow.DELETE_WORKFLOW', 'Delete workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
 				'help' => _t('AdvancedWorkflow.DELETE_WORKFLOW_HELP', 'Users can delete workflow definitions and active workflows'),
-				'sort' => 0
+				'sort' => 1
 			),
 			'APPLY_WORKFLOW' => array(
 				'name' => _t('AdvancedWorkflow.APPLY_WORKFLOW', 'Apply workflow'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
 				'help' => _t('AdvancedWorkflow.APPLY_WORKFLOW_HELP', 'Users can apply workflows to items'),
-				'sort' => 0
+				'sort' => 2
 			),
 			'VIEW_ACTIVE_WORKFLOWS' => array(
 				'name'     => _t('AdvancedWorkflow.VIEWACTIVE', 'View active workflows'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
 				'help'     => _t('AdvancedWorkflow.VIEWACTIVEHELP', 'Users can view active workflows via the workflows admin panel'),
-				'sort'     => 0
+				'sort'     => 3
 			),
 			'REASSIGN_ACTIVE_WORKFLOWS' => array(
 				'name'     => _t('AdvancedWorkflow.REASSIGNACTIVE', 'Reassign active workflows'),
 				'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
 				'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Users can reassign active workflows to different users and groups'),
-				'sort'     => 0
-			)
+				'sort'     => 4
+			),
+            'EDIT_EMBARGOED_WORKFLOW' => array(
+                'name'     => _t('AdvancedWorkflow.EDITEMBARGO', 'Editable embargoed item in workflow'),
+                'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+                'help'     => _t('AdvancedWorkflow.EDITEMBARGOHELP', 'Allow users to edit items that have been embargoed by a workflow'),
+                'sort'     => 5
+            ),
 		);
 	}
 

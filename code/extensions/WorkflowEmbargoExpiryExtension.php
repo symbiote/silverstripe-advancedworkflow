@@ -1,4 +1,5 @@
 <?php
+use SilverStripe\Model\FieldType\DBDatetime;
 
 /**
  * Adds embargo period and expiry dates to content items
@@ -13,6 +14,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'DesiredUnPublishDate'	=> 'SS_Datetime',
 		'PublishOnDate'			=> 'SS_Datetime',
 		'UnPublishOnDate'		=> 'SS_Datetime',
+        'AllowEmbargoedEditing' => 'Boolean',
 	);
 
 	private static $has_one = array(
@@ -23,6 +25,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
+
+    private static $defaults = array(
+        'AllowEmbargoedEditing' => true
+    );
 
 	// This "config" option, might better be handled in _config
 	public static $showTimePicker = true;
@@ -268,7 +274,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		if(!$this->owner->ID) return;
 
 		// Check requested dates of publish / unpublish, and whether the page should have already been unpublished
-		$now = strtotime(SS_Datetime::now()->getValue());
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publishTime = strtotime($this->owner->PublishOnDate);
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
@@ -362,4 +368,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function getIsWorkflowInEffect() {
 		return $this->isWorkflowInEffect;
 	}
+
+    /**
+     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
+     */
+    public function canEdit($member) {
+        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
+            !$this->AllowEmbargoedEditing) { // item flagged as not editable
+            $now = strtotime(DBDatetime::now()->getValue());
+            $publishTime = strtotime($this->owner->PublishOnDate);
+
+            if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
+                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
+                (!$publishTime && $this->owner->PublishJobID != 0)
+            ) {
+                return false;
+            }
+        }
+    }
 }
