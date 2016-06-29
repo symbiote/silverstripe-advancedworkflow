@@ -14,6 +14,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'DesiredUnPublishDate'	=> 'SS_Datetime',
 		'PublishOnDate'			=> 'SS_Datetime',
 		'UnPublishOnDate'		=> 'SS_Datetime',
+        'AllowEmbargoedEditing' => 'Boolean',
 	);
 
 	private static $has_one = array(
@@ -24,6 +25,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	private static $dependencies = array(
 		'workflowService'		=> '%$WorkflowService',
 	);
+
+    private static $defaults = array(
+        'AllowEmbargoedEditing' => true
+    );
 
 	// This "config" option, might better be handled in _config
 	public static $showTimePicker = true;
@@ -364,7 +369,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
      */
     public function canEdit($member) {
-        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW')) {
+        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
+            !$this->AllowEmbargoedEditing) { // item flagged as not editable
             $now = strtotime(DBDatetime::now()->getValue());
             $publishTime = strtotime($this->owner->PublishOnDate);
 
