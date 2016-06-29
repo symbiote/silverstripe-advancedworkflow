@@ -605,8 +605,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 "count(DISTINCT \"{$baseTable}_versions\".\"ID\")"
             );
 
-            // Querying the _versions table to find the most recent draft or published record that would be published at the time requested. When
-            // embargo is NULL it is assumed that the record is published immediately. When expiry is NULL it is assumed taht the record is never unpublished.
+            /*
+             * Querying the _versions table to find the most recent draft or published record that would be published at
+             * the time requested. When embargo is NULL it is assumed that the record is published immediately. When
+             * expiry is NULL it is assumed that the record is never unpublished.
+             */
             $query->addWhere([
                 "\"{$baseTable}_versions\".\"Version\" IN
                 (SELECT LatestVersion FROM
@@ -614,67 +617,65 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                         \"{$baseTable}_versions\".\"RecordID\",
                         MAX(\"{$baseTable}_versions\".\"Version\") AS LatestVersion
                         FROM \"{$baseTable}_versions\"
+
+                        /* The Draft copy, it is the source of truth for the most part when referencing embargo and expiry dates */
+                        LEFT JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+
+                        /* The Live copy, only used as source of truth if the Draft copy cannot be */
+                        LEFT JOIN \"{$baseTable}_Live\" AS Live ON \"Live\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+
                         WHERE
-                            /*
-                             * Get the latest draft version where the embargo and expiry encompass the time requested, the draft has been approved
-                             * for publishing and it is currently waiting in the queue. It must be the latest draft version and more recent than
-                             * the latest live version. It also must have a matching record in the basetable to ensure it has not been archived.
-                             */
+                            /* Get the latest Draft version */
                             (
-                                (\"{$baseTable}_versions\".\"PublishOnDate\" <= ? OR \"{$baseTable}_versions\".\"PublishOnDate\" IS NULL)
-                                AND
-                                (\"{$baseTable}_versions\".\"UnPublishOnDate\" >= ? OR \"{$baseTable}_versions\".\"UnPublishOnDate\" IS NULL)
-                                AND
                                 \"{$baseTable}_versions\".\"WasPublished\" = 0
                                 AND
-                                (\"{$baseTable}_versions\".\"PublishJobID\" != 0)
+                                /* Within the embargo and expiry range */
+                                (\"Base\".\"PublishOnDate\" <= ? OR \"Base\".\"PublishOnDate\" IS NULL)
                                 AND
-                                \"{$baseTable}_versions\".\"Version\" IN (
-                                    SELECT MAX(\"LatestDrafts\".\"Version\") AS LatestDraftVersion
-                                    FROM \"{$baseTable}_versions\" AS LatestDrafts
-                                    INNER JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\"
-                                    WHERE \"LatestDrafts\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
-                                    AND \"Base\".\"ID\" IS NOT NULL
-                                    AND \"LatestDrafts\".\"WasPublished\" = 0
-                                    AND \"LatestDrafts\".\"Version\" > (
-                                        SELECT CASE WHEN COUNT(1) > 0 THEN MAX(Version) ELSE 0 END AS LatestPublishedVersion
-                                        FROM \"{$baseTable}_versions\" AS LatestPublished
-                                        WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
-                                        AND \"LatestPublished\".\"WasPublished\" = 1
-                                    )
-                                )
+                                (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                AND
+                                /* Approved, which is marked by a PublishJobID */
+                                (\"Base\".\"PublishJobID\" != 0)
+                                AND
+                                /* Draft exists */
+                                \"Base\".\"ID\" IS NOT NULL
                             )
-                            /*
-                             * If no draft records match then look for a live record where expiry is greater than the time requested, the record was
-                             * published and the record is the most recent published. It also must have a matching record in basetable_Live to ensure
-                             * it has not been unpublished.
-                             */
                             OR
+                            /* Get the latest Published version */
                             (
-                                (\"{$baseTable}_versions\".\"UnPublishOnDate\" >= ? OR \"{$baseTable}_versions\".\"UnPublishOnDate\" IS NULL)
-                                AND
                                 \"{$baseTable}_versions\".\"WasPublished\" = 1
                                 AND
-                                \"{$baseTable}_versions\".\"Version\" IN (
-                                    SELECT MAX(\"LatestPublished\".\"Version\") AS LatestPublishedVersion
-                                    FROM \"{$baseTable}_versions\" AS LatestPublished
-                                    INNER JOIN \"{$baseTable}_Live\" ON \"{$baseTable}_Live\".\"ID\" = \"LatestPublished\".\"RecordID\"
-                                    WHERE \"LatestPublished\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
-                                    AND \"{$baseTable}_Live\".\"ID\" IS NOT NULL
-                                    AND \"LatestPublished\".\"WasPublished\" = 1
+                                (
+                                    /* Draft exists, check Draft's unpublish date */
+                                    (
+                                        \"Base\".\"ID\" IS NOT NULL
+                                        AND
+                                        (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                    )
+                                    OR
+                                    /* Draft doesn't exist, check Live's unpublish date */
+                                    (
+                                        \"Base\".\"ID\" IS NULL
+                                        AND
+                                        (\"Live\".\"UnPublishOnDate\" >= ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
+                                    )
                                 )
+                                AND
+                                /* Live exists */
+                                \"Live\".\"ID\" IS NOT NULL
                             )
                         GROUP BY \"{$baseTable}_versions\".\"RecordID\"
                     ) AS \"{$baseTable}_versions_latest\"
                     WHERE \"{$baseTable}_versions_latest\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
                 )"
-                => [$time, $time, $time]
+                => [$time, $time, $time, $time]
             ]);
 
-            // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query
+            // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query,
+            // there are places where we do want to use {$baseTable}
             $query->replaceText(
-                "INNER JOIN \"{$baseTable}_versions\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\"",
-                "INNER JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"LatestDrafts\".\"RecordID\""
+                "\"{$baseTable}_versions\" AS Base",
+                "\"{$baseTable}\" AS Base"
             );
         }
     }

@@ -19,7 +19,8 @@ class WorkflowFutureStateTest extends FunctionalTest
 
     protected $illegalExtensions = array(
         'SiteTree' => array(
-            'Translatable'
+            'Translatable',
+            'SiteTreeSubsites'
         )
     );
 
@@ -37,7 +38,7 @@ class WorkflowFutureStateTest extends FunctionalTest
         $obj->write();
 
         $svc = singleton('WorkflowService');
-        $svc->startWorkflow($obj, $draft->WorkflowDefinitionID);
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
         return $obj;
     }
 
@@ -54,7 +55,7 @@ class WorkflowFutureStateTest extends FunctionalTest
         $obj->write();
 
         $svc = singleton('WorkflowService');
-        $svc->startWorkflow($obj, $draft->WorkflowDefinitionID);
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
 
         $obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
         return $obj;
@@ -113,7 +114,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
-     * Draft pages that are in a workflow are returned for future state queries.
+     * Draft pages that are in a workflow do not show in future state.
      * This essentially tests blank embargo and expiry dates for a page which infer immediate publish
      * and never unpublish.
      */
@@ -348,7 +349,7 @@ class WorkflowFutureStateTest extends FunctionalTest
 
     /**
      * Current published record is returned for dates prior to new draft's embargo,
-     * other new draft is returned rather than published version.
+     * otherwise new draft is returned rather than published version.
      */
     public function testPublishedDraftEmbargo()
     {
@@ -434,13 +435,13 @@ class WorkflowFutureStateTest extends FunctionalTest
      * Current published record is returned for times outside of the new embargo/expiry period
      * for the new draft page.
      */
-    public function testPublishedDraftEmbargoExpiryAlt()
+    public function testPublishedDraftEmbargoExpiry()
     {
         $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'distantExpiry'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
 
-        // New draft version and expiry with a shorter embargo/expiry period encompased by current live
+        // New draft version with a shorter embargo/expiry period encompased by current live
         $draft->Title = 'New Title';
         $draft->DesiredPublishDate = '2016-06-22 00:00:01';
         $draft->DesiredUnPublishDate = '2016-06-24 00:00:01';
@@ -456,6 +457,7 @@ class WorkflowFutureStateTest extends FunctionalTest
                 'Future.time' => $priorDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
+
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($title, $pages->first()->Title);
 
@@ -472,7 +474,8 @@ class WorkflowFutureStateTest extends FunctionalTest
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
-        // Request after new expiry but before live expiry should get current live page
+        // Request after new expiry but before live expiry should get 404 as the new draft will have replaced
+        // the current live page and have expired by this time
         $priorDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
             ->modify('+1 hour')
             ->format('Y-m-d H:i:s');
@@ -482,8 +485,7 @@ class WorkflowFutureStateTest extends FunctionalTest
                 'Future.time' => $priorDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($title, $pages->first()->Title);
+        $this->assertEquals(0, $pages->count());
     }
 
     /**
@@ -724,15 +726,15 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
-     * Unpublished pages only use published versions for future state.
+     * Pages deleted from draft only use published versions for future state.
      */
-    public function testUnpublishedPages()
+    public function testDeletedFromDraftPagesIgnored()
     {
         $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
 
-        // New draft version and embargo with date 4 days later
+        // New draft version and embargo with date several days later
         $draft->Title = 'New Title';
         $draft->DesiredPublishDate = '2016-06-20 00:00:01';
         $draft = $this->finishWorkflow($draft);
@@ -782,6 +784,45 @@ class WorkflowFutureStateTest extends FunctionalTest
             ]);
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($title, $pages->first()->Title);
+    }
+
+    /**
+     * Unpublished pages are not included as they have been removed from the _Live table.
+     */
+    public function testUnpublishedPagesIgnored()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $title = $draft->Title;
+
+        $this->assertTrue($draft->isPublished());
+        $this->assertTrue($draft->isOnDraft());
+
+        // Request should get current live as there is no embargo
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now()->getValue(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($title, $pages->first()->Title);
+
+        // Remove page from _Live table
+        $this->logInWithPermission();
+        $draft->deleteFromStage(Versioned::LIVE);
+
+        $this->assertFalse($draft->isPublished());
+        $this->assertTrue($draft->isOnDraft());
+
+        // Request should get no results as page has moved back to draft and is not queued up
+        // any longer
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now()->getValue(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(0, $pages->count());
     }
 }
 
