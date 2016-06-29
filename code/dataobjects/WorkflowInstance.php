@@ -69,7 +69,9 @@ class WorkflowInstance extends DataObject {
         'Created',
         'workflowService',
         'ParentID',
-        'Sort'
+        'Sort',
+        'PublishJobID',
+        'UnPublishJobID'
     );
 
 	/**
