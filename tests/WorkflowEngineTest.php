@@ -290,4 +290,22 @@ class WorkflowEngineTest extends SapphireTest {
 		// Check $testPage is _still_ published, post-deletion (getStatusFlags() returns empty array)
 		$this->assertTrue($testPage->getExistsOnLive());
 	}
+
+    /**
+     * Test the diff showing only fields that have changes made to it in a data object.
+     */
+    public function testInstanceDiff()
+    {
+        $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
+        $target = $instance->getTarget();
+        $target->doPublish();
+
+        $target->Title = 'New title for target';
+        $target->write();
+
+        $diff = $instance->getTargetDiff()->column('Name');
+        $this->assertContains('Title', $diff);
+        $this->assertNotContains('Content', $diff);
+    }
+
 }
