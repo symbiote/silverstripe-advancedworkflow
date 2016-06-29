@@ -728,7 +728,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     /**
      * Pages deleted from draft only use published versions for future state.
      */
-    public function testDeletedFromDraftPages()
+    public function testDeletedFromDraftPagesIgnored()
     {
         $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
         $title = $draft->Title;
@@ -784,6 +784,45 @@ class WorkflowFutureStateTest extends FunctionalTest
             ]);
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($title, $pages->first()->Title);
+    }
+
+    /**
+     * Unpublished pages are not included as they have been removed from the _Live table.
+     */
+    public function testUnpublishedPagesIgnored()
+    {
+        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $title = $draft->Title;
+
+        $this->assertTrue($draft->isPublished());
+        $this->assertTrue($draft->isOnDraft());
+
+        // Request should get current live as there is no embargo
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now()->getValue(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->count());
+        $this->assertEquals($title, $pages->first()->Title);
+
+        // Remove page from _Live table
+        $this->logInWithPermission();
+        $draft->deleteFromStage(Versioned::LIVE);
+
+        $this->assertFalse($draft->isPublished());
+        $this->assertTrue($draft->isOnDraft());
+
+        // Request should get no results as page has moved back to draft and is not queued up
+        // any longer
+        $pages = SiteTree::get()
+            ->filter('ID', $draft->ID)
+            ->setDataQueryParam([
+                'Future.time' => DBDatetime::now()->getValue(),
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(0, $pages->count());
     }
 }
 
