@@ -520,6 +520,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
                         /* The Live copy, only used as source of truth if the Draft copy cannot be */
                         LEFT JOIN \"{$baseTable}_Live\" AS Live ON \"Live\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+
                         WHERE
                             /* Get the latest Draft version */
                             (
@@ -535,7 +536,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 AND
                                 /* Draft exists */
                                 \"Base\".\"ID\" IS NOT NULL
-                                    )
+                            )
                             OR
                             /* Get the latest Published version */
                             (
@@ -547,12 +548,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                         \"Base\".\"ID\" IS NOT NULL
                                         AND
                                         (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
-                                )
+                                    )
                                     OR
                                     /* Draft doesn't exist, check Live's unpublish date */
                                     (
                                         \"Base\".\"ID\" IS NULL
-                                AND
+                                        AND
                                         (\"Live\".\"UnPublishOnDate\" >= ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
                                     )
                                 )
