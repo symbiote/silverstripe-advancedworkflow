@@ -27,9 +27,14 @@ jQuery.entwine('ss.workflow', function ($) {
          */
         getISODate: function () {
             var self = this,
-                inputDate = self.closest('.futurestatepreview').find(':input.date').datepicker('getDate'),
+                input = self.closest('.futurestatepreview').find(':input.date'),
+                inputDate = input.datepicker('getDate'),
                 outputDate;
 
+            if (!input.val()) {
+                inputDate = new Date();
+                input.datepicker('setDate', inputDate);
+            }
             if (inputDate) {
                 outputDate = '' + inputDate.getFullYear() + self.pad(inputDate.getMonth() + 1) + self.pad(inputDate.getDate());
             }
@@ -45,11 +50,11 @@ jQuery.entwine('ss.workflow', function ($) {
                 inputTime = input.datepicker('getDate'),
                 outputTime;
 
-            if (inputTime) {
-                outputTime = '' + self.pad(inputTime.getHours()) + self.pad(inputTime.getMinutes());
-            } else {
+            if (!input.val()) {
                 input.val('00:00');
                 outputTime = '0000';
+            } else if (inputTime) {
+                outputTime = '' + self.pad(inputTime.getHours()) + self.pad(inputTime.getMinutes());
             }
 
             return outputTime;
