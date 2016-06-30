@@ -293,6 +293,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $page = SiteTree::create();
         $page->Title = 'My page';
         $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->AllowEmbargoedEditing = false;
         $page->write();
 
         $memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
