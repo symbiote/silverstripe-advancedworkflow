@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
 /**
  * An overall definition of a workflow
  *

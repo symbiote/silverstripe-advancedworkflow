@@ -1,5 +1,11 @@
 <?php
-use SilverStripe\Model\FieldType\DBDatetime;
+
+use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DataExtension;
+
 
 /**
  * Adds embargo period and expiry dates to content items
@@ -10,10 +16,10 @@ use SilverStripe\Model\FieldType\DBDatetime;
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 	private static $db = array(
-		'DesiredPublishDate'	=> 'SS_Datetime',
-		'DesiredUnPublishDate'	=> 'SS_Datetime',
-		'PublishOnDate'			=> 'SS_Datetime',
-		'UnPublishOnDate'		=> 'SS_Datetime',
+		'DesiredPublishDate'	=> 'DBDatetime',
+		'DesiredUnPublishDate'	=> 'DBDatetime',
+		'PublishOnDate'			=> 'DBDatetime',
+		'UnPublishOnDate'		=> 'DBDatetime',
         'AllowEmbargoedEditing' => 'Boolean',
 	);
 
@@ -465,7 +471,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         if (!$this->owner->PublishOnDate) {
             return false;
         }
-        $now = strtotime(SS_Datetime::now()->getValue());
+        $now = strtotime(DBDatetime::now()->getValue());
         $publish = strtotime($this->owner->PublishOnDate);
 
         return $now < $publish;
@@ -481,7 +487,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         if (!$this->owner->UnPublishOnDate) {
             return false;
         }
-        $now = strtotime(SS_Datetime::now()->getValue());
+        $now = strtotime(DBDatetime::now()->getValue());
         $unpublish = strtotime($this->owner->UnPublishOnDate);
 
         return $now < $unpublish;
@@ -536,7 +542,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     public function getFutureTimeLink($futureTime)
     {
         $parsed = strtotime($futureTime);
-        if ($parsed && $this->owner->has_extension('Versioned')) {
+        if ($parsed && $this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
             return Controller::join_links(
                 $this->owner->PreviewLink(),
                 '?stage=Stage',
@@ -553,7 +559,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     {
         // If time is set then flag it up for queries
         $time = $this->getFutureTime();
-        if ($time && $this->owner->has_extension('Versioned')) {
+        if ($time && $this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
             $dataQuery->setQueryParam('Future.time', $time);
         }
     }
@@ -567,7 +573,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     public function augmentSQL(SQLSelect $query, DataQuery $dataQuery = null) {
         $time = $dataQuery->getQueryParam('Future.time');
 
-        if (!$time || !$this->owner->has_extension('Versioned')) {
+        if (!$time || !$this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
             return;
         }
 
@@ -594,7 +600,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             }
 
             // Add all <basetable>_versions columns
-            foreach (Config::inst()->get('Versioned', 'db_for_versions_table') as $name => $type) {
+            foreach (Config::inst()->get('SilverStripe\\ORM\\Versioning\\Versioned', 'db_for_versions_table') as $name => $type) {
                 $query->selectField(sprintf('"%s_versions"."%s"', $baseTable, $name), $name);
             }
 

@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\ArrayList;
 /**
  * A workflow action that allows additional users or groups to be assigned to
  * the workflow part-way through the workflow path.

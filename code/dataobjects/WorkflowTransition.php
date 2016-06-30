@@ -1,4 +1,8 @@
 <?php
+
+use SilverStripe\ORM\DB;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ArrayList;
 /**
  * A workflow transition.
  *

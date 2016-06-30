@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\ORM\ValidationException;
 /**
  * Utility class to facilitate a simple YML-import via the standard CMS ImportForm() logic.
  *

@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Versioning\Versioned;
 /**
  * Tests for the workflow engine.
  *
