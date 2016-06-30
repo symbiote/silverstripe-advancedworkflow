@@ -1,5 +1,8 @@
 <?php
 
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\DataObject;
+
 /**
  * @author marcus@silverstripe.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
@@ -9,7 +12,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	public function setUp() {
 		parent::setUp();
 
-		SS_Datetime::set_mock_now('2014-01-05 12:00:00');
+		DBDatetime::set_mock_now('2014-01-05 12:00:00');
 
 
         // Prevent failure if queuedjobs module isn't installed.
@@ -18,8 +21,9 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         }
 	}
 
-	public function tearDown() {
-		SS_Datetime::clear_mock_now();
+	public function tearDown()
+	{
+		DBDatetime::clear_mock_now();
 		parent::tearDown();
 	}
 
@@ -29,7 +33,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	protected $requiredExtensions = array(
 		'SiteTree' => array(
 			'WorkflowEmbargoExpiryExtension',
-			'Versioned',
+			'SilverStripe\\ORM\\Versioning\\Versioned',
 		)
 	);
 
@@ -42,15 +46,17 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		)
 	);
 
-	public function __construct() {
-		if(!class_exists('AbstractQueuedJob')) {
+	public function __construct()
+	{
+		if (!class_exists('AbstractQueuedJob')) {
 			$this->skipTest = true;
 		}
 		parent::__construct();
 	}
 
-	public function testFutureDatesJobs() {
-		$page = new Page();
+	public function testFutureDatesJobs()
+	{
+		$page = new SiteTree();
 
 		$page->PublishOnDate = '2020-01-01 00:00:00';
 		$page->UnPublishOnDate = '2020-01-01 01:00:00';
@@ -63,7 +69,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertTrue($page->UnPublishJobID > 0);
 
 		// Check date ranges
-		$now = strtotime(SS_Datetime::now()->getValue());
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publish = strtotime($page->PublishJob()->StartAfter);
 		$unPublish = strtotime($page->UnPublishJob()->StartAfter);
 
@@ -72,8 +78,9 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertGreaterThan($publish, $unPublish);
 	}
 
-	public function testDesiredRemovesJobs() {
-		$page = new Page();
+	public function testDesiredRemovesJobs()
+	{
+		$page = new SiteTree();
 
 		$page->PublishOnDate = '2020-01-01 00:00:00';
 		$page->UnPublishOnDate = '2020-01-01 01:00:00';
@@ -86,7 +93,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertTrue($page->UnPublishJobID > 0);
 
 		// Check date ranges
-		$now = strtotime(SS_Datetime::now()->getValue());
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publish = strtotime($page->PublishJob()->StartAfter);
 		$unPublish = strtotime($page->UnPublishJob()->StartAfter);
 
@@ -103,11 +110,12 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertTrue($page->UnPublishJobID == 0);
 	}
 
-	public function testPublishActionWithFutureDates() {
+	public function testPublishActionWithFutureDates()
+	{
 		$action = new PublishItemWorkflowAction();
 		$instance = new WorkflowInstance();
 
-		$page = new Page();
+		$page = new SiteTree();
 		$page->Title = 'stuff';
 		$page->DesiredPublishDate = '2020-02-01 00:00:00';
 		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
@@ -119,12 +127,12 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 
 		$action->execute($instance);
 
-		$page = DataObject::get_by_id('Page', $page->ID);
+		$page = DataObject::get_by_id('SiteTree', $page->ID);
 		$this->assertTrue($page->PublishJobID > 0);
 		$this->assertTrue($page->UnPublishJobID > 0);
 
 		// Check date ranges
-		$now = strtotime(SS_Datetime::now()->getValue());
+		$now = strtotime(DBDatetime::now()->getValue());
 		$publish = strtotime($page->PublishJob()->StartAfter);
 		$unPublish = strtotime($page->UnPublishJob()->StartAfter);
 
@@ -136,8 +144,9 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 	/**
 	 * Test that a page with a past publish date creates the correct jobs
 	 */
-	public function testPastPublishThenUnpublish() {
-		$page = new Page();
+	public function testPastPublishThenUnpublish()
+	{
+		$page = new SiteTree();
 		$page->Title = 'My Page';
 		$page->write();
 
@@ -183,14 +192,15 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$publish = strtotime($page->PublishJob()->StartAfter);
 		$unpublish = strtotime($page->UnPublishJob()->StartAfter);
 		$this->assertEmpty($publish); // for immediate run
-		$this->assertGreaterThan(strtotime(SS_Datetime::now()->getValue()), $unpublish); // for later run
+		$this->assertGreaterThan(strtotime(DBDatetime::now()->getValue()), $unpublish); // for later run
 	}
 
 	/**
 	 * Test that a page with a past unpublish date creates the correct jobs
 	 */
-	public function testPastUnPublishThenPublish() {
-		$page = new Page();
+	public function testPastUnPublishThenPublish()
+	{
+		$page = new SiteTree();
 		$page->Title = 'My Page';
 		$page->write();
 
@@ -236,13 +246,14 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$publish = strtotime($page->PublishJob()->StartAfter);
 		$unpublish = strtotime($page->UnPublishJob()->StartAfter);
 		$this->assertEmpty($unpublish); // for immediate run
-		$this->assertGreaterThan(strtotime(SS_Datetime::now()->getValue()), $publish); // for later run
+		$this->assertGreaterThan(strtotime(DBDatetime::now()->getValue()), $publish); // for later run
 	}
 
-	public function testPastPublishWithWorkflowInEffect() {
+	public function testPastPublishWithWorkflowInEffect()
+	{
 		$definition = $this->createDefinition();
 
-		$page = new Page();
+		$page = new SiteTree();
 		$page->Title = 'My page';
 		$page->WorkflowDefinitionID = $definition->ID;
 		$page->write();
@@ -269,7 +280,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$action->execute($instance);
 
 		// re-fetch the Page again.
-		$page = Page::get()->byId($page->ID);
+		$page = SiteTree::get()->byId($page->ID);
 
 		// We now have a PublishOnDate field set
 		$this->assertEquals('2010-01-01 00:00:00', $page->PublishOnDate);
@@ -284,37 +295,37 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		$this->assertEmpty($publish);
 	}
 
-    /**
-     * Test workflow definition "Can disable edits during embargo"
-     * Make sure page cannot be edited when an embargo is in place
-     */
-    public function testCanEditConfig() {
+	/**
+	 * Test workflow definition "Can disable edits during embargo"
+	 * Make sure page cannot be edited when an embargo is in place
+	 */
+	public function testCanEditConfig() {
 
-        $page = SiteTree::create();
-        $page->Title = 'My page';
-        $page->PublishOnDate = '2010-01-01 00:00:00';
-        $page->write();
+		$page = SiteTree::create();
+		$page->Title = 'My page';
+		$page->PublishOnDate = '2010-01-01 00:00:00';
+		$page->write();
 
-        $memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
-        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
+		$memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
+		$this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
 
-        $page->PublishOnDate = '2020-01-01 00:00:00';
-        $page->write();
-        $this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
+		$page->PublishOnDate = '2020-01-01 00:00:00';
+		$page->write();
+		$this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
 
-        $this->logOut();
-        $memberID = $this->logInWithPermission('ADMIN');
-        $this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
+		$this->logOut();
+		$memberID = $this->logInWithPermission('ADMIN');
+		$this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
 
-        $this->logOut();
-        $memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
-        $this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
+		$this->logOut();
+		$memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
+		$this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
 
-        $page->PublishOnDate = '2010-01-01 00:00:00';
-        $page->write();
-        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
+		$page->PublishOnDate = '2010-01-01 00:00:00';
+		$page->write();
+		$this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
 
-    }
+	}
 
 	protected function createDefinition() {
 		$definition = new WorkflowDefinition();

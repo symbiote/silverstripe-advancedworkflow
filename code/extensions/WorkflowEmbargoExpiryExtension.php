@@ -1,5 +1,11 @@
 <?php
-use SilverStripe\Model\FieldType\DBDatetime;
+
+use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DataExtension;
+
 
 /**
  * Adds embargo period and expiry dates to content items
@@ -10,11 +16,11 @@ use SilverStripe\Model\FieldType\DBDatetime;
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 	private static $db = array(
-		'DesiredPublishDate'	=> 'SS_Datetime',
-		'DesiredUnPublishDate'	=> 'SS_Datetime',
-		'PublishOnDate'			=> 'SS_Datetime',
-		'UnPublishOnDate'		=> 'SS_Datetime',
-        'AllowEmbargoedEditing' => 'Boolean',
+		'DesiredPublishDate'	=> 'DBDatetime',
+		'DesiredUnPublishDate'	=> 'DBDatetime',
+		'PublishOnDate'			=> 'DBDatetime',
+		'UnPublishOnDate'		=> 'DBDatetime',
+		'AllowEmbargoedEditing' => 'Boolean',
 	);
 
 	private static $has_one = array(
@@ -369,21 +375,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $this->isWorkflowInEffect;
 	}
 
-    /**
-     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
-     */
-    public function canEdit($member) {
-        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
-            !$this->AllowEmbargoedEditing) { // item flagged as not editable
-            $now = strtotime(DBDatetime::now()->getValue());
-            $publishTime = strtotime($this->owner->PublishOnDate);
+	/**
+	 * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
+	 */
+	public function canEdit($member) {
+		if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
+			!$this->AllowEmbargoedEditing) { // item flagged as not editable
+			$now = strtotime(DBDatetime::now()->getValue());
+			$publishTime = strtotime($this->owner->PublishOnDate);
 
-            if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
-                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
-                (!$publishTime && $this->owner->PublishJobID != 0)
-            ) {
-                return false;
-            }
-        }
-    }
+			if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
+				// when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
+				(!$publishTime && $this->owner->PublishJobID != 0)
+			) {
+				return false;
+			}
+		}
+	}
+
 }

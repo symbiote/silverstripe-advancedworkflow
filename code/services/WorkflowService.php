@@ -1,4 +1,8 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\ArrayList;
 /**
  * A central point for interacting with workflows
  *

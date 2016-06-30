@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
  * type of functionality wherever you need UI interaction with workflow. 

@@ -1,4 +1,10 @@
 <?php
+
+use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Versioning\DataDifferencer;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\Queries\SQLSelect;
 /**
  * A WorkflowInstance is created whenever a user 'starts' a workflow.
  *
@@ -207,7 +213,7 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function getTarget($getLive = false) {
 		if($this->TargetID && $this->TargetClass) {
-			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('Versioned');
+			$versionable = Injector::inst()->get($this->TargetClass)->has_extension('SilverStripe\\ORM\\Versioning\\Versioned');
 
 			if(!$versionable && $getLive) {
 				return;
