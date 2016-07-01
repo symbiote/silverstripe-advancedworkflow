@@ -1,5 +1,10 @@
 <?php
 
+// Queued jobs descriptor is required for this extension
+if (!class_exists('QueuedJobDescriptor')) {
+    return;
+}
+
 /**
  * Adds embargo period and expiry dates to content items
  *
@@ -50,13 +55,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'fieldMsg'	=>null,
 		'fieldValid'=>true
 	);
-
-    public function __construct() {
-        // Queued jobs descriptor is required for this extension
-        if (class_exists('QueuedJobDescriptor')) {
-            return parent::__construct();
-        }
-    }
 
 	/**
 	 * @param FieldList $fields
