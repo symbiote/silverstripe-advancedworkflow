@@ -665,28 +665,85 @@ class WorkflowFutureStateTest extends FunctionalTest
         $preview = $draft->PreviewLink();
 
         $link = $draft->getFutureTimeLink($draft->DesiredPublishDate);
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160620T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160620T0000Z');
 
         $link = $draft->getFutureTimeLink($draft->DesiredUnPublishDate);
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160629T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160629T0000Z');
 
-        $link = $draft->getFutureTimeLink('2016-06-17T0000');
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+        $link = $draft->getFutureTimeLink('2016-06-17T0000Z');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000Z');
 
         $link = $draft->getFutureTimeLink('2016-06-17 00:00:00');
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000Z');
 
         $link = $draft->getFutureTimeLink('2016-06-17 00:00');
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000Z');
 
         $link = $draft->getFutureTimeLink('2016-06-17');
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160617T0000Z');
 
         $link = $draft->getFutureTimeLink('2016-06');
-        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160601T0000');
+        $this->assertEquals(str_replace($preview, '', $link), '?stage=Stage&ft=20160601T0000Z');
 
         $link = $draft->getFutureTimeLink('');
         $this->assertEquals($link, null);
+    }
+
+    /**
+     * Time parsing is timezone agnostic.
+     */
+    public function testFutureTimeResolution()
+    {
+        $tz = date_default_timezone_get();
+        $draft = $this->objFromFixture('SiteTree', 'basic');
+        $controller = new Controller();
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160703T1150Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T1200Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T2359Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set($tz);
     }
 
     /**
