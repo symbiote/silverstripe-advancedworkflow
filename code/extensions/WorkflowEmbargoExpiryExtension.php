@@ -6,6 +6,10 @@ use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\DataExtension;
 
+// Queued jobs descriptor is required for this extension
+if (!class_exists('QueuedJobDescriptor')) {
+    return;
+}
 
 /**
  * Adds embargo period and expiry dates to content items
@@ -62,13 +66,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		'fieldMsg'	=>null,
 		'fieldValid'=>true
 	);
-
-    public function __construct() {
-        // Queued jobs descriptor is required for this extension
-        if (class_exists('QueuedJobDescriptor')) {
-            return parent::__construct();
-        }
-    }
 
 	/**
 	 * @param FieldList $fields
@@ -512,20 +509,24 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Get any future time set in GET param. Recommended to use ISO-8601 for url readability.
+     * Get any future time set in GET param. Must use ISO-8601 format for time to be parsed correctly.
+     * e.g: 20160513T2359Z
      *
+     * @param  $ctrl  Optional for supplying a controller, useful for unit testing
      * @return string Time in format useful for SQL comparison.
      */
-    public function getFutureTime()
+    public function getFutureTime($ctrl = null)
     {
         $time = null;
-        $curr = Controller::has_curr() ? Controller::curr() : false;
+        $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
 
         if ($curr) {
             $ft = $curr->getRequest()->getVar('ft');
             if ($ft) {
-                // Convert some characters
-                $time = date('Y-m-d H:i', strtotime($ft));
+
+                // Force timezone to UTC so that it does not apply current timezone offset
+                $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
+                $time = $dt->format('Y-m-d H:i');
             }
         }
         return $time;
@@ -546,7 +547,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             return Controller::join_links(
                 $this->owner->PreviewLink(),
                 '?stage=Stage',
-                '?ft=' . date('Ymd\THi', $parsed)
+                '?ft=' . date('Ymd\THi\Z', $parsed)
             );
         }
     }
