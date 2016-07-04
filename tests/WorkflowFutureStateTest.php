@@ -1,6 +1,11 @@
 <?php
 
-use SilverStripe\Model\FieldType\DBDatetime;
+
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\DataObject;
+
+
 
 /**
  * Testing future state in various scenarios.
@@ -13,7 +18,7 @@ class WorkflowFutureStateTest extends FunctionalTest
         'SiteTree' => array(
             'WorkflowEmbargoExpiryExtension',
             'WorkflowApplicable',
-            'Versioned'
+            'SilverStripe\\ORM\\Versioning\\Versioned'
         )
     );
 
