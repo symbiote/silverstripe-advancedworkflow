@@ -145,15 +145,31 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			));
 		}
 
+        // add future state preview fields to easily browse different future state dates
+        $fields->addFieldsToTab('Root.PublishingSchedule', array(
+            HeaderField::create(
+                'FuturePreviewHeader',
+                _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_HEADER', 'Preview Future State'),
+                3
+            ),
+            $ft = FutureStatePreviewField::create(
+                'FuturePreviewDate',
+                _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_DATE', 'Set preview date')
+            ),
+        ));
+
 		$dt->getDateField()->setConfig('showcalendar', true);
-		$ut->getDateField()->setConfig('showcalendar', true);
-		$dt->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
-		$ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
+        $ut->getDateField()->setConfig('showcalendar', true);
+        $ft->getDateField()->setConfig('showcalendar', true);
+		$dt->getTimeField()->setConfig('timeformat', 'HH:mm');
+        $ut->getTimeField()->setConfig('timeformat', 'HH:mm');
+        $ft->getTimeField()->setConfig('timeformat', 'HH:mm');
 
 		// Enable a jQuery-UI timepicker widget
 		if(self::$showTimePicker) {
 			$dt->getTimeField()->addExtraClass('hasTimePicker');
-			$ut->getTimeField()->addExtraClass('hasTimePicker');
+            $ut->getTimeField()->addExtraClass('hasTimePicker');
+            $ft->getTimeField()->addExtraClass('hasTimePicker');
 		}
 	}
 
