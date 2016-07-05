@@ -1,10 +1,11 @@
 <?php
 
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\DataQuery;
-use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\Versioning\Versioned;
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {
@@ -189,9 +190,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         // Fields: Status message
         // ----------------------
-
-        if ($this->getEmbargoExpiryStatus()) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->getEmbargoExpiryMessage()), 'Title');
+        if ($this->getEmbargoExpiryStatuses()) {
+            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->renderEmbargoExpiryMessages()), 'Title');
         }
 	}
 
@@ -691,105 +691,211 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Output the current embargo/expiry status as a string - Pending|Paused|Complete
-     * or return false if no embargo/expiry date has been saved and workflow is not in effect
+     * @return boolean
+     */
+    private function checkIsEmbargoExpiryPending() {
+        return Versioned::get_stage() === Versioned::DRAFT &&
+               $this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) ||
+               $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate);
+    }
+
+    /**
+     * Get the page's workflow status(es), which could be:
      *
      * - Pending:  the changes are saved as draft but not pushed into a workflow
      * - Paused:   the page has started a workflow and paused during the workflow
      * - Complete: the workflow is approved and completed
      *
-     * @return string|boolean
+     * @return array
      */
-    private function getEmbargoExpiryStatus() {
+    private function getEmbargoExpiryStatuses() {
+        $statuses = array();
         $instance = null;
+
         if ($this->getIsWorkflowInEffect()) {
             $instance = $this->workflowService->getWorkflowFor($this->owner, true);
         }
 
-        if ($instance) {
-            // Pending
-            if (!$instance->CurrentActionID &&
-                Versioned::get_stage() === Versioned::DRAFT &&
-                $this->owner->DesiredPublishDate || $this->owner->DesiredUnPublishDate)
-            {
-                return 'Pending';
-            }
-
-            // Paused
-            elseif ($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active' &&
-                     $this->owner->DesiredPublishDate || $this->owner->DesiredUnPublishDate)
-            {
-                return 'Paused';
-            }
-
-            // Complete
-            elseif ($instance->WorkflowStatus === 'Complete' &&
-                    $this->owner->PublishOnDate || $this->owner->UnPublishOnDate)
-            {
-                return 'Complete';
-            }
+        if ($this->checkValidEmbargoExpiryDate($this->owner->PublishOnDate) || $this->checkValidEmbargoExpiryDate($this->owner->UnPublishOnDate)) {
+            array_push($statuses, 'Complete');
         }
-        else {
-            return false;
+
+        if ($instance && $instance->exists()) {
+            if (($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') &&
+                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate))) {
+                array_push($statuses, 'Paused');
+            } else {
+                if ($this->checkIsEmbargoExpiryPending() && $instance->WorkflowStatus === 'Complete') {
+                    array_push($statuses, 'Pending');
+                }
+            }
+        } elseif ($this->checkIsEmbargoExpiryPending()) {
+            array_push($statuses, 'Pending');
         }
+
+        return $statuses;
     }
 
     /**
-     * Show a message box showing an embargo/expiry overview at the top of CMS,
-     * rendered by an SS include template.
+     * Checks an embargo/expiry date's validity:
+     * - true:  date is in the future
+     * - false: the date has already passed
+     * - null:  no date was specified (the CMS date input field was left blank)
      *
-     * The message contains:
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @return true|false|null
+     */
+    public function checkValidEmbargoExpiryDate($date)
+    {
+        $valid = null;
+        $d = DBDatetime::create();
+        $d->setValue($date);
+        $parsed = strtotime($d->getValue());
+
+        if ($parsed) {
+            $now = strtotime(DBDatetime::now()->getValue());
+            $valid = $parsed > $now;
+        }
+
+        return $valid;
+    }
+
+    /**
+     * Get formatted embargo/expiry date as a string.
+     * If the $date is invalid and a $type embargo|expiry is specified
+     * then it returns a respective fallback string.
+     *
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @param string $type embargo|expiry
+     * @return string
+     */
+    private function getEmbargoExpiryDate($date, $type)
+    {
+        $result = '';
+        $valid = $this->checkValidEmbargoExpiryDate($date);
+
+        // $date is in the future
+        if ($valid) {
+            $d = DBDatetime::create();
+            $d->setValue($date);
+            $result = $d->FormatFromSettings();
+        }
+        // $date is not in the future
+        elseif ($valid === false) {
+            if ($type === 'embargo') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_INVALID', 'N/A');
+            } elseif ($type === 'expiry') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_INVALID', 'N/A');
+            }
+        }
+        elseif (is_null($valid)) {
+            if ($type === 'embargo') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_IMMEDIATELY', 'Immediately');
+            } elseif ($type === 'expiry') {
+                $result = _t('WorkflowMessage.PUBLISH_DATE_NEVER', 'Never');
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get the embargo/expiry author's full name
+     *
+     * @param string $status Pending|Paused|Complete
+     * @return string
+     */
+    private function getEmbargoExpiryAuthor($status)
+    {
+        $author = '';
+        $authorID = null;
+
+        if ($status === 'Pending') {
+            $authorID = Versioned::get_latest_version($this->owner->ClassName, $this->owner->ID)->AuthorID;
+        } else {
+            $instance = null;
+
+            if ($this->getIsWorkflowInEffect()) {
+                $instance = $this->workflowService->getWorkflowFor($this->owner, true);
+            }
+
+            if ($instance && $instance->exists() && $status === 'Paused' || $status === 'Complete') {
+                $authorID = $instance->InitiatorID;
+            }
+        }
+
+        if (!is_null($authorID)) {
+            $author = Member::get()->byID($authorID)->getName();
+        }
+
+        return $author;
+    }
+
+    /**
+     * Generate values for each workflow status message box, which includes:
+     *
      * - Style          The message's CSS class warning|info
      * - Title          Title stating the workflow's state for Pending|Paused|Complete
-     * - Author         Author's full name
+     * - Author         The author's full name
      * - DatePublish    Formatted desired|scheduled publish date & time
      * - DateUnPublish  Formatted desired|scheduled expiry date & time
      *
-     * @return \SilverStripe\Model\FieldType\DBHTMLText
+     * @param string $status Pending|Paused|Complete
+     * @return array
      */
-    private function getEmbargoExpiryMessage() {
-        $noPubDate = _t('WorkflowMessage.PUBLISH_DATE_NONE','Immediately');
-        $noUnPubDate = _t('WorkflowMessage.UNPUBLISH_DATE_NONE', 'Never');
-        $authorID = Versioned::get_latest_version($this->owner->ClassName, $this->owner->ID)->AuthorID;
+    private function getEmbargoExpiryMessage($status)
+    {
+        $message = array();
+
         $prefixRequested = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Requested');
         $prefixScheduled = _t('WorkflowMessage.DATE_PREFIX_REQUESTED', 'Scheduled');
 
-        $message = array(
-            'Style' => '',
-            'Title' => _t('WorkflowMessage.TITLE_DEFAULT', 'Workflow status'),
-            'Author' => Member::get()->byID($authorID)->getName(),
-            'DatePrefix' => '',
-        );
+        $message['Author'] = $this->getEmbargoExpiryAuthor($status);
 
-        switch ($this->getEmbargoExpiryStatus()) {
+        switch ($status) {
             case 'Pending':
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PENDING', 'Embargo/expiry saved in draft');
                 $message['DatePrefix'] = $prefixRequested;
-                $message['DatePublish'] = $this->owner->DesiredPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredPublishDate)) : $noPubDate;
-                $message['DateUnPublish'] = $this->owner->DesiredUnPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredUnPublishDate)) : $noUnPubDate;
+                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredPublishDate, 'embargo');
+                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate, 'expiry');
                 break;
             case 'Paused':
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PAUSED', 'Awaiting approval');
                 $message['DatePrefix'] = $prefixRequested;
-                $message['DatePublish'] = $this->owner->DesiredPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredPublishDate)) : $noPubDate;
-                $message['DateUnPublish'] = $this->owner->DesiredUnPublishDate ? date('h:i A (e) l j F Y', strtotime($this->owner->DesiredUnPublishDate)) : $noUnPubDate;
+                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredPublishDate, 'embargo');
+                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate, 'expiry');
                 break;
             case 'Complete':
                 $message['Style'] = 'notice';
-                $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Change approved');
+                $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Approved changes');
                 $message['DatePrefix'] = $prefixScheduled;
-                $message['DatePublish'] = $this->owner->PublishOnDate ? date('h:i A (e) l j F Y', strtotime($this->owner->PublishOnDate)) : $noPubDate;
-                $message['DateUnPublish'] = $this->owner->UnPublishOnDate ? date('h:i A (e) l j F Y', strtotime($this->owner->UnPublishOnDate)) : $noUnPubDate;
+                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->PublishOnDate, 'embargo');
+                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->UnPublishOnDate, 'expiry');
         }
 
-        $message = $this->owner->customise(
+        return $message;
+    }
+
+    /**
+     * @return \SilverStripe\ORM\FieldType\DBHTMLText
+     */
+    private function renderEmbargoExpiryMessages()
+    {
+        $messages = ArrayList::create();
+        $statuses = $this->getEmbargoExpiryStatuses();
+
+        foreach ($statuses as $status) {
+            $messages->add($this->getEmbargoExpiryMessage($status));
+        }
+
+        $view = $this->owner->customise(
             array(
-                'WorkflowMessage' => $message,
+                'WorkflowMessages' => $messages
             )
         )->renderWith('WorkflowStatusMessage');
 
-        return $message;
+        return $view;
     }
 }

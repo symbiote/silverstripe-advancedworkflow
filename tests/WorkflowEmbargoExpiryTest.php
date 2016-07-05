@@ -432,5 +432,4 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     {
         if($member = Member::currentUser()) $member->logOut();
     }
-
 }
