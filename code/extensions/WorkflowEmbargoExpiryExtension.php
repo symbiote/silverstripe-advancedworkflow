@@ -162,7 +162,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         // Fields: Status message
         // ----------------------
         if ($this->getEmbargoExpiryStatus()) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->getEmbargoExpiryMessage()), 'Title');
+            $message = LiteralField::create('WorkflowStatusMessage', $this->getEmbargoExpiryMessage());
+
+            $tab = $fields->findOrMakeTab('Root.Main');
+            $tab->unshift($message);
         }
 	}
 
