@@ -691,12 +691,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Checks if the current page is in the Pending workflow status
+     *
      * @return boolean
      */
     private function checkIsEmbargoExpiryPending() {
         return Versioned::get_stage() === Versioned::DRAFT &&
-               $this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) ||
-               $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate);
+               ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate));
     }
 
     /**
@@ -879,6 +880,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Renders the embargo expiry message(s) to view
+     *
      * @return \SilverStripe\ORM\FieldType\DBHTMLText
      */
     private function renderEmbargoExpiryMessages()
