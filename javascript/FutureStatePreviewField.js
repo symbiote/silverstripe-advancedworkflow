@@ -31,7 +31,8 @@ jQuery.entwine('ss.workflow', function ($) {
                 inputDate = input.datepicker('getDate'),
                 outputDate;
 
-            if (!input.val()) {
+            // no date given, use date NOW
+            if (input.val() === '') {
                 inputDate = new Date();
                 input.datepicker('setDate', inputDate);
             }
@@ -50,10 +51,13 @@ jQuery.entwine('ss.workflow', function ($) {
                 inputTime = input.datepicker('getDate'),
                 outputTime;
 
-            if (!input.val()) {
-                input.val('00:00');
-                outputTime = '0000';
-            } else if (inputTime) {
+            // no time given, use time NOW
+            if (input.val() === '') {
+                inputTime = new Date();
+                input.datepicker('setDate', inputTime);
+                input.val('');
+            }
+            if (inputTime) {
                 outputTime = '' + self.pad(inputTime.getHours()) + self.pad(inputTime.getMinutes());
             }
 
