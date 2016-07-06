@@ -191,7 +191,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         // Fields: Status message
         // ----------------------
         if ($this->getEmbargoExpiryStatuses()) {
-            $fields->addFieldToTab('Root.Main', LiteralField::create('WorkflowStatusMessage', $this->renderEmbargoExpiryMessages()), 'Title');
+            $message = LiteralField::create('WorkflowStatusMessage', $this->renderEmbargoExpiryMessages());
+
+            $tab = $fields->findOrMakeTab('Root.Main');
+            $tab->unshift($message);
         }
 	}
 
@@ -835,6 +838,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Render a valid embargo/expiry date with its future time link
+     *
+     * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
+     * @param string $type embargo|expiry
+     * @return string
+     */
+    private function renderEmbargoExpiryDateLink($date, $type)
+    {
+        $result = $this->getEmbargoExpiryDate($date, $type);
+        if ($this->checkValidEmbargoExpiryDate($date)) {
+            $result = '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>';
+        }
+        return $result;
+    }
+
+    /**
      * Generate values for each workflow status message box, which includes:
      *
      * - Style          The message's CSS class warning|info
@@ -874,8 +893,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 $message['Style'] = 'notice';
                 $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Approved changes');
                 $message['DatePrefix'] = $prefixScheduled;
-                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->PublishOnDate, 'embargo');
-                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->UnPublishOnDate, 'expiry');
+                $message['DatePublish'] = $this->renderEmbargoExpiryDateLink($this->owner->PublishOnDate, 'embargo');
+                $message['DateUnPublish'] = $this->renderEmbargoExpiryDateLink($this->owner->UnPublishOnDate, 'expiry');
         }
 
         return $message;
