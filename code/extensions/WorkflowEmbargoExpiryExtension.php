@@ -713,6 +713,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         $statuses = array();
         $instance = null;
 
+        $this->setIsWorkflowInEffect();
+
         if ($this->getIsWorkflowInEffect()) {
             $instance = $this->workflowService->getWorkflowFor($this->owner, true);
         }
