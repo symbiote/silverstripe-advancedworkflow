@@ -266,15 +266,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		 * - Check if there's a workflow attached to this content
 		 * - Reset values if it's safe to do so
 		 */
-		$resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
-		if ($resetPublishOnDate && !$this->getIsWorkflowInEffect()) {
-			$this->owner->PublishOnDate = '';
-		}
+        if (!$this->getIsWorkflowInEffect()) {
+            $resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
+            if ($resetPublishOnDate) {
+                $this->owner->PublishOnDate = null;
+            }
 
-		$resetUnPublishOnDate = $this->owner->DesiredUnPublishDate && $this->owner->UnPublishOnDate;
-		if ($resetUnPublishOnDate && !$this->getIsWorkflowInEffect()) {
-			$this->owner->UnPublishOnDate = '';
-		}
+            $resetUnPublishOnDate = $this->owner->DesiredUnPublishDate && $this->owner->UnPublishOnDate;
+            if ($resetUnPublishOnDate) {
+                $this->owner->UnPublishOnDate = null;
+            }
+        }
 
 		// Jobs can only be queued for records that already exist
 		if(!$this->owner->ID) return;
@@ -306,6 +308,51 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			$this->clearUnPublishJob();
 		}
 	}
+
+    /**
+     * Add badges to the site tree view to show that a page has been scheduled for publishing or unpublishing
+     *
+     * @param $flags
+     */
+    public function updateStatusFlags(&$flags)
+    {
+        $embargo = $this->getIsPublishScheduled();
+        $expiry = $this->getIsUnPublishScheduled();
+
+        if ($embargo || $expiry) {
+            unset($flags['addedtodraft'], $flags['modified']);
+        }
+
+        if ($embargo && $expiry) {
+            $flags['embargo_expiry'] = array(
+                'text' => _t('WorkflowEmbargoExpiryExtension.BADGE_PUBLISH_UNPUBLISH', 'Embargo+Expiry'),
+                'title' => sprintf('%s: %s, %s: %s',
+                    _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date'),
+                    $this->owner->PublishOnDate,
+                    _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date'),
+                    $this->owner->UnPublishOnDate
+                ),
+            );
+        }
+        elseif ($embargo) {
+            $flags['embargo'] = array(
+                'text' => _t('WorkflowEmbargoExpiryExtension.BADGE_PUBLISH', 'Embargo'),
+                'title' => sprintf('%s: %s',
+                    _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date'),
+                    $this->owner->PublishOnDate
+                ),
+            );
+        }
+        elseif ($expiry) {
+            $flags['expiry'] = array(
+                'text' => _t('WorkflowEmbargoExpiryExtension.BADGE_UNPUBLISH', 'Expiry'),
+                'title' => sprintf('%s: %s',
+                    _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date'),
+                    $this->owner->UnPublishOnDate
+                ),
+            );
+        }
+    }
 
 	/*
 	 * Define an array of message-parts for use by {@link getIntroMessage()}
@@ -375,9 +422,45 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $this->isWorkflowInEffect;
 	}
 
-	/**
-	 * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
-	 */
+    /**
+     * Returns whether a publishing date has been set and is after the current date
+     *
+     * @return bool
+     */
+    public function getIsPublishScheduled()
+    {
+        if (!$this->owner->PublishOnDate) {
+            return false;
+        }
+        $now = strtotime(DBDatetime::now()->getValue());
+        $publish = strtotime($this->owner->PublishOnDate);
+
+        return $now < $publish;
+    }
+
+    /**
+     * Returns whether an unpublishing date has been set and is after the current date
+     *
+     * @return bool
+     */
+    public function getIsUnPublishScheduled()
+    {
+        if (!$this->owner->UnPublishOnDate) {
+            return false;
+        }
+        $now = strtotime(DBDatetime::now()->getValue());
+        $unpublish = strtotime($this->owner->UnPublishOnDate);
+
+        return $now < $unpublish;
+    }
+
+    /**
+     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be
+     * disabled.
+     *
+     * @param $member
+     * @return bool
+     */
 	public function canEdit($member) {
 		if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
 			!$this->AllowEmbargoedEditing) { // item flagged as not editable

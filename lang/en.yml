@@ -154,6 +154,9 @@ en:
     INVALID_YML_FORMAT_NO_PARSE: 'Invalid YAML format. Unable to parse.'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Active
+    BADGE_PUBLISH: 'Embargo'
+    BADGE_UNPUBLISH: 'Expiry'
+    BADGE_PUBLISH_UNPUBLISH: 'Embargo & Expiry'
     CompletedWorkflowStateTitle: Completed
     PUBLISH_ON: 'Scheduled publish date'
     REQUESTED_PUBLISH_DATE: 'Requested publish date'
