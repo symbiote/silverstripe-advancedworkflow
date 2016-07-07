@@ -789,16 +789,17 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         // $date is not in the future
         elseif ($valid === false) {
             if ($type === 'embargo') {
-                $result = _t('WorkflowMessage.PUBLISH_DATE_INVALID', 'N/A');
+                $result = _t('WorkflowMessage.EMBARGO_DATE_INVALID', 'Immediately');
             } elseif ($type === 'expiry') {
-                $result = _t('WorkflowMessage.PUBLISH_DATE_INVALID', 'N/A');
+                $result = _t('WorkflowMessage.EXPIRY_DATE_INVALID', 'Never');
             }
         }
+        // the datetime fields were blank and saved
         elseif (is_null($valid)) {
             if ($type === 'embargo') {
-                $result = _t('WorkflowMessage.PUBLISH_DATE_IMMEDIATELY', 'Immediately');
+                $result = _t('WorkflowMessage.EMBARGO_DATE_NULL', 'Immediately');
             } elseif ($type === 'expiry') {
-                $result = _t('WorkflowMessage.PUBLISH_DATE_NEVER', 'Never');
+                $result = _t('WorkflowMessage.EXPIRY_DATE_NULL', 'Never');
             }
         }
 
