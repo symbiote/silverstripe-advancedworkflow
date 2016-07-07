@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\ORM\ArrayList;
 /**
  * A form field that allows workflow actions and transitions to be edited,
  * while showing a visual overview of the flow.

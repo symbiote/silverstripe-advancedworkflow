@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ValidationException;
 /**
  * Workflow definition import-specific logic. @see {@link WorkflowDefinitionExporter}.
  * 

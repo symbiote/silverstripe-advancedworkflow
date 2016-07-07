@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
 /**
  * This DataObject replaces the SilverStripe cache as the repository for
  * imported WorkflowDefinitions.

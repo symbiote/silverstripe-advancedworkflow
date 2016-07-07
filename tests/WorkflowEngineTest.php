@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Versioning\Versioned;
 /**
  * Tests for the workflow engine.
  *
@@ -107,18 +110,18 @@ class WorkflowEngineTest extends SapphireTest {
 		$action = new PublishItemWorkflowAction;
 		$instance = new WorkflowInstance();
 
-		$page = new Page();
+		$page = new SiteTree();
 		$page->Title = 'stuff';
 		$page->write();
 
-		$instance->TargetClass = 'Page';
+		$instance->TargetClass = 'SiteTree';
 		$instance->TargetID = $page->ID;
 
 		$this->assertFalse($page->isPublished());
 
 		$action->execute($instance);
 
-		$page = DataObject::get_by_id('Page', $page->ID);
+		$page = DataObject::get_by_id('SiteTree', $page->ID);
 		$this->assertTrue($page->isPublished());
 
 	}
@@ -222,7 +225,7 @@ class WorkflowEngineTest extends SapphireTest {
 	public function testDeleteWorkflowTargetStillWorks() {
 		// 1). Create a workflow definition
 		$def = $this->createDefinition();
-		$page = Page::create();
+		$page = SiteTree::create();
 		$page->Title = 'dummy test';
 		$page->WorkflowDefinitionID = $def->ID;	// Normally done via CMS
 		Versioned::set_stage(Versioned::DRAFT);
@@ -238,7 +241,7 @@ class WorkflowEngineTest extends SapphireTest {
 		$instance->execute();
 
 		// Check the content is assigned
-		$testPage = DataObject::get_by_id('Page', $page->ID);
+		$testPage = DataObject::get_by_id('SiteTree', $page->ID);
 		$this->assertEquals($instance->TargetID, $testPage->ID);
 
 		// 3). Delete the workflow

@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\ORM\DataObject;
+
 /**
  * Handles actions triggered from external sources, eg emails or web frontend
  *

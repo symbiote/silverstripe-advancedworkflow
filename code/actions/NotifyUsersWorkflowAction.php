@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\DataObject;
 /**
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
  *
@@ -75,7 +78,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$pastActions = $workflow->Actions()->sort('Created DESC');
 		$variables["\$CommentHistory"] = $this->customise(array(
 			'PastActions'=>$pastActions,
-			'Now'=>SS_Datetime::now()
+			'Now'=>DBDatetime::now()
 		))->renderWith('CommentHistory');
 
 		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);

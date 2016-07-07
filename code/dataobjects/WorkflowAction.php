@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
  * the action(s) that occur while in that state. An action can then have

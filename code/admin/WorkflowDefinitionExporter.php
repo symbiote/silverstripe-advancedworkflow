@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\ORM\DataObject;
 /**
  * Allows workflow definitions to be exported from one SilverStripe install, ready for import into another.
  * 

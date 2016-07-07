@@ -125,7 +125,7 @@ EOD;
 	 */
 	public function testParseBadYAMLMalformedImport() {
 		$importer = new WorkflowDefinitionImporter();
-		$this->setExpectedException('ValidationException', 'Invalid YAML format. Unable to parse.');
+		$this->setExpectedException('SilverStripe\\ORM\\ValidationException', 'Invalid YAML format. Unable to parse.');
 		$source = <<<'EOD'
 ---
 Name: exportedworkflow
