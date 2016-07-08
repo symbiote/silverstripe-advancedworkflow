@@ -20,6 +20,14 @@ if (!class_exists('QueuedJobDescriptor')) {
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
+    /**
+     * For storing future time from request when request object is replaced
+     * within a single request e.g: ErrorPage::response_for()
+     *
+     * @var null|string The future time
+     */
+    private static $future_time = null;
+
 	private static $db = array(
 		'DesiredPublishDate'	=> 'DBDatetime',
 		'DesiredUnPublishDate'	=> 'DBDatetime',
@@ -520,19 +528,21 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      */
     public function getFutureTime($ctrl = null)
     {
-        $time = null;
-        $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
+        // Lazy load future time
+        if (!static::$future_time) {
 
-        if ($curr) {
-            $ft = $curr->getRequest()->getVar('ft');
-            if ($ft) {
+            $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
 
-                // Force timezone to UTC so that it does not apply current timezone offset
-                $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
-                $time = $dt->format('Y-m-d H:i');
+            if ($curr) {
+                $ft = $curr->getRequest()->getVar('ft');
+                if ($ft) {
+                    // Force timezone to UTC so that it does not apply current timezone offset
+                    $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
+                    static::$future_time = $dt->format('Y-m-d H:i');
+                }
             }
         }
-        return $time;
+        return static::$future_time;
     }
 
     /**
