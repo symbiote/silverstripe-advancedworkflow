@@ -26,7 +26,7 @@ class WorkflowInstanceTest extends SapphireTest {
 	 */
 	public function setUp() {
 		parent::setUp();
-		$this->currentMember = $this->objFromFixture('Member', 'ApproverMember01');
+		$this->currentMember = $this->objFromFixture('SilverStripe\\Security\\Member', 'ApproverMember01');
 	}
 
 	/**
@@ -93,8 +93,8 @@ class WorkflowInstanceTest extends SapphireTest {
 		$instance = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance06');
 		$transition1 = $this->objFromFixture('WorkflowTransition', 'Transition05');
 		$transition2 = $this->objFromFixture('WorkflowTransition', 'Transition06');
-		$member1 = $this->objFromFixture('Member', 'Transition05Member');
-		$member2 = $this->objFromFixture('Member', 'Transition06Member');
+		$member1 = $this->objFromFixture('SilverStripe\\Security\\Member', 'Transition05Member');
+		$member2 = $this->objFromFixture('SilverStripe\\Security\\Member', 'Transition06Member');
 
 		// Given logged in as admin, check that there are two actions
 		$this->logInWithPermission('ADMIN');

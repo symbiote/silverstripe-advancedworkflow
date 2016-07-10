@@ -2,6 +2,9 @@
 
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+
 /**
  * An overall definition of a workflow
  *
@@ -27,7 +30,7 @@ class WorkflowDefinition extends DataObject {
 		'TemplateVersion'	=> 'Varchar',
 		'RemindDays'		=> 'Int',
 		'Sort'				=> 'Int',
-		'InitialActionButtonText' => 'Varchar'
+		'InitialActionButtonText' => 'Varchar',
 	);
 
 	private static $default_sort = 'Sort';
@@ -46,8 +49,8 @@ class WorkflowDefinition extends DataObject {
 	 * @var array
 	 */
 	private static $many_many = array(
-		'Users' => 'Member',
-		'Groups' => 'Group'
+		'Users' => 'SilverStripe\\Security\\Member',
+		'Groups' => 'SilverStripe\\Security\\Group'
 	);
 
 	private static $icon = 'advancedworkflow/images/definition.png';
@@ -184,7 +187,7 @@ class WorkflowDefinition extends DataObject {
 		));
 		if($this->ID) {
 			$fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
-			$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group'));
+			$fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'SilverStripe\\Security\\Group'));
 		}
 
 		if (class_exists('AbstractQueuedJob')) {

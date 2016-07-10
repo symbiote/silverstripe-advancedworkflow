@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\SecurityToken;
+
 /**
  * A form field that allows workflow actions and transitions to be edited,
  * while showing a visual overview of the flow.

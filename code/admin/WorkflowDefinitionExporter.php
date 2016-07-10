@@ -1,6 +1,9 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+
 /**
  * Allows workflow definitions to be exported from one SilverStripe install, ready for import into another.
  * 

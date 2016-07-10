@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Member;
 /**
  *
  * @package advancedworkflow
