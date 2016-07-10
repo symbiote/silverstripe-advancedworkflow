@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\SecurityToken;
+
 /**
  * Handles individual record data editing or deleting.
  *

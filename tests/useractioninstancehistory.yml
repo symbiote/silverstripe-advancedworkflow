@@ -1,8 +1,8 @@
 #
 # Models the first part of the default _config YML template as a fixture as though it's been run and is part way through
 #
-    
-Member:
+
+SilverStripe\Security\Member:
   ApproverMember01:
     ID: 1
     FirstName: General
@@ -16,15 +16,15 @@ Member:
     FirstName: Six
     Surname: Executer
     Email: six.executor@localhost
-  
-Group:
+
+SilverStripe\Security\Group:
   BaseAction01Group:
     Title: Approvers
-    Members: =>Member.ApproverMember01
+    Members: =>SilverStripe\Security\Member.ApproverMember01
   Transition05Group:
     Title: CanExecuteTransition05
-    Members: =>Member.Transition05Member
-    
+    Members: =>SilverStripe\Security\Member.Transition05Member
+
 WorkflowTransition:
   Transition01:
     Title: notify
@@ -36,27 +36,27 @@ WorkflowTransition:
     Title: Reject
   Transition05:
     Title: 'Transition with Groups'
-    Groups: =>Group.Transition05Group
+    Groups: =>SilverStripe\Security\Group.Transition05Group
   Transition06:
     Title: 'Transition with User'
-    Users: =>Member.Transition06Member
+    Users: =>SilverStripe\Security\Member.Transition06Member
 
 AssignUsersToWorkflowAction:
   BaseAction01:
     Title: Assign
     Transitions: =>WorkflowTransition.Transition01
-    Groups: =>Group.BaseAction01Group
+    Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction011:
     Title: 'Another Assignment'
     Transitions: =>WorkflowTransition.Transition01
   BaseAction012:
     Title: 'Assigned Again'
     Transitions: =>WorkflowTransition.Transition01
-    Groups: =>Group.BaseAction01Group
+    Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction013:
     Title: 'Assigned Me'
     Transitions: =>WorkflowTransition.Transition01
-    Groups: =>Group.BaseAction01Group
+    Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction014:
     Title: 'Not Re-Assigned Me'
     Transitions: =>WorkflowTransition.Transition01
@@ -66,14 +66,14 @@ NotifyUsersWorkflowAction:
     Transitions: =>WorkflowTransition.Transition02
   BaseAction021:
     Title: 'Notify users'
-    Transitions: =>WorkflowTransition.Transition02   
+    Transitions: =>WorkflowTransition.Transition02
 SimpleApprovalWorkflowAction:
   BaseAction03:
     Title: Approval
     Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04
   BaseAction031:
     Title: Approval
-    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04 
+    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04
   BaseAction032:
     Title: Approval
     Transitions: =>WorkflowTransition.Transition05,=>WorkflowTransition.Transition06
@@ -88,7 +88,7 @@ WorkflowActionInstance:
     Finished: 1
     BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
   ActionInstance03:
-    Created: '2014-02-17 16:15:02'      
+    Created: '2014-02-17 16:15:02'
     Finished: 1
     BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
   ActionInstance04:
@@ -96,21 +96,21 @@ WorkflowActionInstance:
     Finished: 1
     BaseAction: =>AssignUsersToWorkflowAction.BaseAction011
   ActionInstance05:
-    Created: '2014-02-17 16:15:00'      
+    Created: '2014-02-17 16:15:00'
     Finished: 1
     BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
   ActionInstance06:
-    Created: '2014-02-17 16:15:01'      
+    Created: '2014-02-17 16:15:01'
     Finished: 1
     BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
   ActionInstance07:
-    Created: '2014-02-17 16:15:02'      
+    Created: '2014-02-17 16:15:02'
     Finished: 1
     BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
   ActionInstance08:
-    Created: '2014-02-17 16:15:03'      
+    Created: '2014-02-17 16:15:03'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011 
+    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011
   ActionInstance09:
     Created: '2014-02-17 16:15:00'
     Finished: 1
@@ -132,18 +132,18 @@ WorkflowActionInstance:
     Finished: 1
     BaseAction: =>NotifyUsersWorkflowAction.BaseAction021
   ActionInstance14:
-    Created: '2014-02-17 16:15:02'      
+    Created: '2014-02-17 16:15:02'
     Finished: 1
-    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction031  
+    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction031
   ActionInstance15:
-    Created: '2014-02-17 16:15:03'      
+    Created: '2014-02-17 16:15:03'
     Finished: 1
     BaseAction: =>AssignUsersToWorkflowAction.BaseAction014
   ActionInstance16:
     Created: '2014-02-17 16:15:00'
     Finished: 1
     BaseAction: =>SimpleApprovalWorkflowAction.BaseAction032
-  
+
 WorkflowInstance:
   WorkflowInstance01:
     Title: 'Test WorkflowInstance 01'

@@ -5,6 +5,9 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\DataDifferencer;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Member;
+
 /**
  * A WorkflowInstance is created whenever a user 'starts' a workflow.
  *
@@ -32,7 +35,7 @@ class WorkflowInstance extends DataObject {
 	private static $has_one = array(
 		'Definition'    => 'WorkflowDefinition',
 		'CurrentAction' => 'WorkflowActionInstance',
-		'Initiator'		=> 'Member',
+		'Initiator'		=> 'SilverStripe\\Security\\Member',
 	);
 
 	private static $has_many = array(
@@ -45,8 +48,8 @@ class WorkflowInstance extends DataObject {
 	 * @var array
 	 */
 	private static $many_many = array(
-		'Users'			=> 'Member',
-		'Groups'		=> 'Group'
+		'Users'			=> 'SilverStripe\\Security\\Member',
+		'Groups'		=> 'SilverStripe\\Security\\Group'
 	);
 
 	private static $summary_fields = array(
@@ -99,7 +102,7 @@ class WorkflowInstance extends DataObject {
                     new HiddenField('DirectUpdate', '', 1),
                     new HeaderField('InstanceReassignHeader',_t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')),
                     new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers),
-                    new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'Group')
+                    new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'SilverStripe\\Security\\Group')
                 ));
 
 			}

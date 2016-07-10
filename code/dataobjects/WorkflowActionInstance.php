@@ -2,6 +2,8 @@
 
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
  * and is either currently running, or has finished.
@@ -23,7 +25,7 @@ class WorkflowActionInstance extends DataObject {
 	private static $has_one = array(
 		'Workflow'   => 'WorkflowInstance',
 		'BaseAction' => 'WorkflowAction',
-		'Member'     => 'Member'
+		'Member'     => 'SilverStripe\\Security\\Member'
 	);
 
 	private static $summary_fields = array(

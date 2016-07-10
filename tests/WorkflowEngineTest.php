@@ -130,7 +130,11 @@ class WorkflowEngineTest extends SapphireTest {
 		$definition = new WorkflowDefinition();
 		$definition->Title = "";
 		$definition->write();
-		$this->assertContains('My Workflow',$definition->Title,'Workflow created without title is assigned a default title.');
+		$this->assertContains(
+			'My Workflow',
+			$definition->Title,
+			'Workflow created without title is assigned a default title.'
+		);
 	}
 
 	protected function createDefinition() {
@@ -202,12 +206,12 @@ class WorkflowEngineTest extends SapphireTest {
 
 		// Test a user with lame permissions
 		$memberID = $this->logInWithPermission('SITETREE_VIEW_ALL');
-		$member = DataObject::get_by_id('Member', $memberID);
+		$member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
 		$this->assertFalse($def->canCreate($member));
 
 		// Test a user with good permissions
 		$memberID = $this->logInWithPermission('CREATE_WORKFLOW');
-		$member = DataObject::get_by_id('Member', $memberID);
+		$member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
 		$this->assertTrue($def->canCreate($member));
 	}
 
@@ -270,7 +274,10 @@ class WorkflowEngineTest extends SapphireTest {
 
 		// Check the content is assigned to the new Workflow Definition correctly
 		$this->assertEquals($newDef->ID, $testPage->WorkflowDefinitionID);
-		$this->assertEquals($newDef->Actions()->count(), DataObject::get('WorkflowAction')->filter('WorkflowDefID', $newDef->ID)->count());
+		$this->assertEquals(
+			$newDef->Actions()->count(),
+			DataObject::get('WorkflowAction')->filter('WorkflowDefID', $newDef->ID)->count()
+		);
 
 		// 5). Check that the object under workflow, maintains its status
 		$newDef2 = $this->createDefinition();
@@ -287,7 +294,8 @@ class WorkflowEngineTest extends SapphireTest {
 		$instance->beginWorkflow($newDef2, $testPage);
 		$instance->execute();
 
-		// Now delete the related WorkflowDefinition and ensure status is the same (i.e. so it's not 'modified' for example)
+		// Now delete the related WorkflowDefinition and ensure status is the same
+		// (i.e. so it's not 'modified' for example)
 		$newDef2->delete();
 
 		// Check $testPage is _still_ published, post-deletion (getStatusFlags() returns empty array)
