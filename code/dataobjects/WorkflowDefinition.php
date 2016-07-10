@@ -379,6 +379,26 @@ class WorkflowDefinition extends DataObject {
 	}
 
     /**
+     * Determines if target can be published directly when no workflow has started yet
+     * Opens extension hook to allow an extension to determine if this is allowed as well
+     *
+     * By default returns false
+     *
+     * @param $member
+     * @param $target
+     * @return Boolean
+     */
+    public function canWorkflowPublish($member, $target)
+    {
+        $publish = $this->extendedCan('canWorkflowPublish', $member, $target);
+
+        if (is_null($publish)) {
+            return false;
+        }
+        return $publish;
+    }
+
+    /**
      *
      * @param Member $member
      * @param array $context

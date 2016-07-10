@@ -323,11 +323,19 @@ class WorkflowApplicable extends DataExtension {
 			return $active->canPublishTarget($this->owner);
 		}
 
-		// otherwise, see if there's any workflows applied. If there are, then we shouldn't be able
-		// to directly publish
-		if ($effective = $this->workflowService->getDefinitionFor($this->owner)) {
-			return false;
-		}
+        // use definition to determine if publishing directly is allowed
+        $definition = $this->workflowService->getDefinitionFor($this->owner);
+
+        if ($definition) {
+            if (!Member::currentUserID()) {
+                return false;
+            }
+            $member = Member::currentUser();
+
+            $canPublish = $definition->canWorkflowPublish($member, $this->owner);
+
+            return $canPublish;
+        }
 	}
 
 	/**
