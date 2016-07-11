@@ -3,6 +3,9 @@
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+
 /**
  * A workflow transition.
  *
@@ -35,8 +38,8 @@ class WorkflowTransition extends DataObject {
 	);
 
 	private static $many_many = array(
-		'Users'  => 'Member',
-		'Groups' => 'Group'
+		'Users'  => 'SilverStripe\\Security\\Member',
+		'Groups' => 'SilverStripe\\Security\\Group'
 	);
 
 	private static $icon = 'advancedworkflow/images/transition.png';
@@ -131,7 +134,7 @@ class WorkflowTransition extends DataObject {
 			_t('WorkflowTransition.TabTitle', 'Restrict to users')
 		);
 		$fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
-		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
+		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'SilverStripe\\Security\\Group'));
 
 		$this->extend('updateCMSFields', $fields);
 

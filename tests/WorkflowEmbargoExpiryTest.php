@@ -3,6 +3,7 @@
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Security\Member;
 
 /**
  * @author marcus@silverstripe.com.au
@@ -342,7 +343,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     public function testIsPublishScheduled()
     {
         $page = SiteTree::create();
-        $page->Title = 'stuff';
+        $page->Title = 'My page';
+        $page->write();
 
         $this->assertFalse($page->getIsPublishScheduled());
 
@@ -360,7 +362,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     public function testIsUnPublishScheduled()
     {
         $page = SiteTree::create();
-        $page->Title = 'stuff';
+        $page->Title = 'My page';
+        $page->write();
 
         $this->assertFalse($page->getIsUnPublishScheduled());
 

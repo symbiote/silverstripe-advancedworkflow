@@ -2,6 +2,8 @@
 
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
+
 /**
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
  *

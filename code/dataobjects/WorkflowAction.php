@@ -32,7 +32,7 @@ class WorkflowAction extends DataObject {
 
 	private static $has_one = array(
 		'WorkflowDef' => 'WorkflowDefinition',
-		'Member'      => 'Member'
+		'Member'      => 'SilverStripe\\Security\\Member'
 	);
 
 	private static $has_many = array(

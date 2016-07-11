@@ -2,6 +2,8 @@
 
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\Member;
+
 /**
  * A workflow action that allows additional users or groups to be assigned to
  * the workflow part-way through the workflow path.
@@ -17,8 +19,8 @@ class AssignUsersToWorkflowAction extends WorkflowAction {
 	);
 
 	private static $many_many = array(
-		'Users'  => 'Member',
-		'Groups' => 'Group'
+		'Users'  => 'SilverStripe\\Security\\Member',
+		'Groups' => 'SilverStripe\\Security\\Group'
 	);
 
 	private static $icon = 'advancedworkflow/images/assign.png';
@@ -50,7 +52,7 @@ SQL;
 			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
 			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
 			$users = CheckboxSetField::create('Users', $this->fieldLabel('Users'), $cmsUsers),
-			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'Group')
+			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'SilverStripe\\Security\\Group')
 		));
 
 		// limit to the users which actually can access the CMS

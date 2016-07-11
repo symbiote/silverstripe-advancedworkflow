@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\Security\Permission;
 /**
  * This class is a {@link GridField} component that adds an export action for 
  * WorkflowDefinition objects shown in GridFields.

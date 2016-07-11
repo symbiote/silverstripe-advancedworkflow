@@ -1,4 +1,6 @@
 <?php
+
+use SilverStripe\Security\Member;
 /**
  * Tests for workflow import/export logic.
  *

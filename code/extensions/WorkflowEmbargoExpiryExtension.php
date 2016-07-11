@@ -1,11 +1,13 @@
 <?php
 
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {
@@ -308,12 +310,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         if (!$this->getIsWorkflowInEffect()) {
             $resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
             if ($resetPublishOnDate) {
-                $this->owner->PublishOnDate = '';
+                $this->owner->PublishOnDate = null;
             }
 
             $resetUnPublishOnDate = $this->owner->DesiredUnPublishDate && $this->owner->UnPublishOnDate;
             if ($resetUnPublishOnDate) {
-                $this->owner->UnPublishOnDate = '';
+                $this->owner->UnPublishOnDate = null;
             }
         }
 
@@ -494,7 +496,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
-     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be disabled.
+     * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be
+     * disabled.
+     *
+     * @param $member
+     * @return bool
      */
     public function canEdit($member) {
         if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit

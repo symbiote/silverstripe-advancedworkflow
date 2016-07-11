@@ -375,11 +375,11 @@ class WorkflowTemplate {
 		$hasUsers = false;
 		$hasGroups = false;
 		if($manyMany = $object->stat('many_many')) {
-			if(in_array('Member', $manyMany)) {
+			if(in_array('SilverStripe\\Security\\Member', $manyMany)) {
 				$hasUsers = true;
 				$userRelationName = array_keys($manyMany);
 			}
-			if(in_array('Group', $manyMany)) {
+			if(in_array('SilverStripe\\Security\\Group', $manyMany)) {
 				$hasGroups = true;
 				$groupRelationName = array_keys($manyMany);
 			}			
@@ -394,7 +394,7 @@ class WorkflowTemplate {
 			if(isset($source['users']) && is_array($source['users'])) {
 				foreach ($source['users'] as $user) {
 					$email = Convert::raw2sql($user['email']);
-					if($_user = DataObject::get_one('Member', "Email = '".$email."'")) {
+					if($_user = DataObject::get_one('SilverStripe\\Security\\Member', "Email = '".$email."'")) {
 						$object->Users()->add($_user);
 					}
 				}			
@@ -410,7 +410,7 @@ class WorkflowTemplate {
 			if(isset($source['groups']) && is_array($source['groups'])) {
 				foreach ($source['groups'] as $group) {
 					$title = Convert::raw2sql($group['title']);
-					if($_group = DataObject::get_one('Group', "Title = '".$title."'")) {
+					if($_group = DataObject::get_one('SilverStripe\\Security\\Group', "Title = '".$title."'")) {
 						$object->Groups()->add($_group);
 					}
 				}

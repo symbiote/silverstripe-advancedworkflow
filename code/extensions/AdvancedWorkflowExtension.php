@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Permission;
+
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
  * type of functionality wherever you need UI interaction with workflow.
