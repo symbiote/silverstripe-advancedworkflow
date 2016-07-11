@@ -442,6 +442,12 @@ class WorkflowService implements PermissionProvider {
                 'help'     => _t('AdvancedWorkflow.EDITEMBARGOHELP', 'Allow users to edit items that have been embargoed by a workflow'),
                 'sort'     => 5
             ),
+            'CANCEL_EMBARGO_EXPIRY_WORKFLOW' => array(
+                'name'     => _t('AdvancedWorkflow.CANCEL_EMBARGOEXPIRY', 'Cancel embargo and expiry'),
+                'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
+                'help'     => _t('AdvancedWorkflow.CANCEL_EMBARGOEXPIRY_HELP', 'Users can cancel an embargo and expiry for a workflow approved page'),
+                'sort'     => 6
+            )
 		);
 	}
 

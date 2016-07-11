@@ -375,6 +375,34 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $this->assertNotContains('expiry', array_keys($flags));
     }
 
+    /**
+     * Test the permission check for canCancelEmbargoExpiry
+     */
+    public function testCancelEmbargoExpiry()
+    {
+        $page = SiteTree::create();
+
+        // by default without Publish or UnPublish dates, it shouldn't be true
+        $this->assertFalse($page->canCancelEmbargoExpiry());
+
+        $page->PublishOnDate = '2020-01-01 00:00:00';
+        $page->UnPublishOnDate = '2020-01-02 00:00:00';
+
+        // has global permission to cancel
+        $memberID = $this->logInWithPermission('CANCEL_EMBARGO_EXPIRY_WORKFLOW');
+        $this->assertTrue($page->canCancelEmbargoExpiry());
+
+        $page->CanCancelEmbargoExpiry = true;
+
+        // flag is enabled for cancelling, but do not have publish permission
+        $this->logOut();
+        $this->assertNotTrue($page->canCancelEmbargoExpiry());
+
+        // sets canPublish() permission to true
+        $page->setIsPublishJobRunning(true);
+        $this->assertTrue($page->canCancelEmbargoExpiry());
+    }
+
 	/**
 	 * Test workflow definition "Can disable edits during embargo"
 	 * Make sure page cannot be edited when an embargo is in place

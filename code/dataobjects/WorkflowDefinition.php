@@ -41,6 +41,9 @@ class WorkflowDefinition extends DataObject {
 	);
 
 	/**
+     * The users or groups defined in the workflow definition determines if they have permission to cancel an embargo
+     * and expiry if either is present.
+	 *
 	 * By default, a workflow definition is bound to a particular set of users or groups.
 	 *
 	 * This is covered across to the workflow instance - it is up to subsequent
