@@ -528,8 +528,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      */
     public function getFutureTime($ctrl = null)
     {
-        // Lazy load future time
-        if (!static::$future_time) {
+        // Lazy load future time unless we are passing in a controller object explicitly
+        if (!static::$future_time || $ctrl) {
 
             $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
 
@@ -655,7 +655,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 /* Within the embargo and expiry range */
                                 (\"Base\".\"PublishOnDate\" <= ? OR \"Base\".\"PublishOnDate\" IS NULL)
                                 AND
-                                (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
                                 AND
                                 /* Approved, which is marked by a PublishJobID */
                                 (\"Base\".\"PublishJobID\" != 0)
@@ -673,14 +673,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                     (
                                         \"Base\".\"ID\" IS NOT NULL
                                         AND
-                                        (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                        (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
                                     )
                                     OR
                                     /* Draft doesn't exist, check Live's unpublish date */
                                     (
                                         \"Base\".\"ID\" IS NULL
                                         AND
-                                        (\"Live\".\"UnPublishOnDate\" >= ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
+                                        (\"Live\".\"UnPublishOnDate\" > ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
                                     )
                                 )
                                 AND

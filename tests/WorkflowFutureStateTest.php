@@ -282,15 +282,14 @@ class WorkflowFutureStateTest extends FunctionalTest
         $this->assertEquals(1, $pages->count());
         $this->assertEquals($draft->Title, $pages->first()->Title);
 
-        // Request future state for expiry
+        // Request future state for expiry exactly
         $pages = SiteTree::get()
             ->filter('ID', $draft->ID)
             ->setDataQueryParam([
                 'Future.time' => $draft->UnPublishOnDate,
                 'Versioned.stage' => Versioned::DRAFT
             ]);
-        $this->assertEquals(1, $pages->count());
-        $this->assertEquals($draft->Title, $pages->first()->Title);
+        $this->assertEquals(0, $pages->count());
 
         // Request future state for after expiry
         $afterDate = DateTime::createFromFormat('Y-m-d H:i:s', $draft->UnPublishOnDate)
@@ -695,63 +694,6 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
-     * Time parsing is timezone agnostic.
-     */
-    public function testFutureTimeResolution()
-    {
-        $tz = date_default_timezone_get();
-        $draft = $this->objFromFixture('SiteTree', 'basic');
-        $controller = new Controller();
-
-        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160703T1150Z'));
-        $controller->setRequest($request);
-
-        date_default_timezone_set('Pacific/Auckland');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
-
-        date_default_timezone_set('America/Mexico_City');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
-
-        date_default_timezone_set('GMT');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
-
-        date_default_timezone_set('UTC');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
-
-        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T1200Z'));
-        $controller->setRequest($request);
-
-        date_default_timezone_set('Pacific/Auckland');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
-
-        date_default_timezone_set('America/Mexico_City');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
-
-        date_default_timezone_set('GMT');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
-
-        date_default_timezone_set('UTC');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
-
-        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T2359Z'));
-        $controller->setRequest($request);
-
-        date_default_timezone_set('Pacific/Auckland');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
-
-        date_default_timezone_set('America/Mexico_City');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
-
-        date_default_timezone_set('GMT');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
-
-        date_default_timezone_set('UTC');
-        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
-
-        date_default_timezone_set($tz);
-    }
-
-    /**
      * Archived pages do not have entries in the SiteTree or SiteTree_Live tables and should be ignored.
      */
     public function testArchivedPagesIgnored()
@@ -885,6 +827,64 @@ class WorkflowFutureStateTest extends FunctionalTest
                 'Versioned.stage' => Versioned::DRAFT
             ]);
         $this->assertEquals(0, $pages->count());
+    }
+
+    /**
+     * Time parsing is timezone agnostic.
+     */
+    public function testFutureTimeResolution()
+    {
+        $tz = date_default_timezone_get();
+        $draft = $this->objFromFixture('SiteTree', 'basic');
+        $controller = new Controller();
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160703T1150Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-03 11:50');
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T1200Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 12:00');
+
+        $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160704T2359Z'));
+        $controller->setRequest($request);
+
+        date_default_timezone_set('Pacific/Auckland');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('America/Mexico_City');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('GMT');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        date_default_timezone_set('UTC');
+        $this->assertEquals($draft->getFutureTime($controller), '2016-07-04 23:59');
+
+        // Make sure default timezone is set back to original state
+        $this->assertTrue(date_default_timezone_set($tz));
     }
 }
 
