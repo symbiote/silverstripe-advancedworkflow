@@ -698,7 +698,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return boolean
      */
-    private function checkIsEmbargoExpiryPending() {
+    public function checkIsEmbargoExpiryPending() {
         return Versioned::get_stage() === Versioned::DRAFT &&
                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate));
     }
@@ -712,7 +712,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return array
      */
-    private function getEmbargoExpiryStatuses() {
+    public function getEmbargoExpiryStatuses() {
         $statuses = array();
         $instance = null;
 
