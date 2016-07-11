@@ -727,8 +727,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         }
 
         if ($instance && $instance->exists()) {
-            if (($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') &&
-                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate))) {
+            if ($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') {
                 array_push($statuses, 'Paused');
             } else {
                 if ($this->checkIsEmbargoExpiryPending() && $instance->WorkflowStatus === 'Complete') {
