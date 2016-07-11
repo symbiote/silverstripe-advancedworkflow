@@ -597,9 +597,6 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNotContains('Complete', $statuses, 'check the page\'s statuses array does not contain Complete, because the desired embargo & expiry dates are invalid');
     }
 
-
-    // Test Complete state
-
     protected function createDefinition()
     {
         $definition = new WorkflowDefinition();
