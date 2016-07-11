@@ -2,6 +2,7 @@
 
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Versioning\Versioned;
 
 /**
  * @author marcus@silverstripe.com.au
@@ -9,6 +10,7 @@ use SilverStripe\ORM\DataObject;
  */
 class WorkflowEmbargoExpiryTest extends SapphireTest
 {
+    protected static $fixture_file = 'workflowembargoexpiry.yml';
 
     public function setUp()
     {
@@ -47,6 +49,43 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
             "Translatable",
         )
     );
+
+    /**
+     * Start a workflow for a page,
+     * this will set it into a state where a workflow is currently being processes
+     *
+     * @param SiteTree $obj
+     * @return SiteTree
+     */
+    private function startWorkflow($obj)
+    {
+        $workflow = $this->objFromFixture('WorkflowDefinition', 'requestPublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
+        $obj->write();
+
+        $svc = singleton('WorkflowService');
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
+        return $obj;
+    }
+
+    /**
+     * Start and finish a workflow which will publish the page immediately basically.
+     *
+     * @param SiteTree $obj
+     * @return SiteTree
+     */
+    private function finishWorkflow($obj)
+    {
+        $workflow = $this->objFromFixture('WorkflowDefinition', 'approvePublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
+        $obj->write();
+
+        $svc = singleton('WorkflowService');
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
+
+        $obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
+        return $obj;
+    }
 
     public function __construct()
     {
@@ -400,8 +439,163 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $page->PublishOnDate = '2010-01-01 00:00:00';
         $page->write();
         $this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
-
     }
+
+    /**
+     * Test valid embargo/expiry dates
+     */
+    public function testCheckValidEmbargoExpiryDate()
+    {
+        $page = SiteTree::create();
+        $now = strtotime(DBDatetime::now());
+
+        $future = $now + 86400;
+        $this->assertTrue($page->checkValidEmbargoExpiryDate($future),
+            'check that future date is valid');
+
+        $past = $now - 86400;
+        $this->assertFalse($page->checkValidEmbargoExpiryDate($past),
+            'check that past date is invalid');
+
+        $this->assertFalse($page->checkValidEmbargoExpiryDate($now),
+            'check that present date is invalid');
+
+        $blank = null;
+        $this->assertNull($page->checkValidEmbargoExpiryDate($blank),
+            'check that blank entries return null');
+
+        $wrongType = false;
+        $this->assertNull($page->checkValidEmbargoExpiryDate($wrongType),
+            'check that incorrect entries return null');
+
+        $wrongString = 'Christmas';
+        $this->assertNull($page->checkValidEmbargoExpiryDate($wrongString),
+            'check that incorrect date strings return null');
+    }
+
+    /**
+     * Test we're getting the Pending embargo/expiry status
+     */
+    public function testGetEmbargoExpiryStatusesPending()
+    {
+        $page = SiteTree::create();
+        $page->set_stage(Versioned::DRAFT);
+
+        $page->DesiredPublishDate = '2014-01-12 00:00:00';
+        $page->DesiredUnPublishDate = '2014-01-19 00:00:00';
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertContains('Pending', $statuses, 'check the page\'s statuses array contains Pending, when both desired embargo & expiry dates are entered');
+
+        $page->DesiredPublishDate = '2014-01-12 00:00:00';
+        $page->DesiredUnPublishDate = null;
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertContains('Pending', $statuses, 'check the page\'s statuses array contains Pending, when only desired embargo date is entered');
+
+        $page->DesiredPublishDate = null;
+        $page->DesiredUnPublishDate = '2014-01-19 00:00:00';
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertContains('Pending', $statuses, 'check the page\'s statuses array contains Pending, when only desired expiry date is entered');
+
+        $page->DesiredPublishDate = null;
+        $page->DesiredUnPublishDate = null;
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array does not contain Pending, when no desired embargo & expiry dates are entered');
+
+        $page->DesiredPublishDate = '2014-01-01 00:00:00';
+        $page->DesiredUnPublishDate = '2013-01-19 00:00:00';
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array does not contain Pending, when invalid desired embargo & expiry dates are entered');
+    }
+
+    /**
+     * Test Paused state
+     */
+    public function testGetEmbargoExpiryStatusesPaused()
+    {
+        $page = SiteTree::create();
+        $page->set_stage(Versioned::DRAFT);
+
+        $page->DesiredPublishDate = '2014-01-12 00:00:00';
+        $page->DesiredUnPublishDate = '2014-01-19 00:00:00';
+        $page->write();
+        $page = $this->startWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertContains('Paused', $statuses, 'check the page\'s statuses array contains Paused');
+        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array excludes Pending');
+
+        $page = SiteTree::create();
+        $page->set_stage(Versioned::DRAFT);
+        $page = $this->startWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because there are no embargo expiry dates');
+        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array excludes Pending, because there are no embargo expiry dates');
+
+        $page = SiteTree::create();
+        $page->set_stage(Versioned::DRAFT);
+        $page->DesiredPublishDate = '2013-01-12 00:00:00';
+        $page->DesiredUnPublishDate = '2013-01-19 00:00:00';
+        $page->write();
+        $page = $this->startWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the embargo expiry dates are invalid');
+        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array excludes Pending, because the embargo expiry dates are invalid');
+    }
+
+    /**
+     * Test Complete state
+     */
+    public function testGetEmbargoExpiryStatusesComplete()
+    {
+        $page = SiteTree::create();
+        $page->DesiredPublishDate = '2014-01-12 00:00:00';
+        $page->write();
+        $page = $this->finishWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the page has been approved');
+        $this->assertContains('Complete', $statuses, 'check the page\'s statuses array contains Complete');
+
+        $page = SiteTree::create();
+        $page->DesiredUnPublishDate = '2014-01-19 00:00:00';
+        $page->write();
+        $page = $this->finishWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the page has been approved');
+        $this->assertContains('Complete', $statuses, 'check the page\'s statuses array contains Complete');
+
+        $page = SiteTree::create();
+        $page->DesiredPublishDate = '2014-01-12 00:00:00';
+        $page->DesiredUnPublishDate = '2014-01-19 00:00:00';
+        $page->write();
+        $page = $this->finishWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the page has been approved');
+        $this->assertContains('Complete', $statuses, 'check the page\'s statuses array contains Complete');
+
+        $page->DesiredPublishDate = '2014-01-19 00:00:00';
+        $page->DesiredUnPublishDate = '2014-01-26 00:00:00';
+        $page->write();
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the page has been approved');
+        $this->assertContains('Complete', $statuses, 'check the page\'s statuses array contains Complete');
+        $this->assertContains('Pending', $statuses, 'check the page\'s statuses array contains Pending');
+
+        $page = SiteTree::create();
+        $page->DesiredPublishDate = '2013-01-12 00:00:00';
+        $page->DesiredUnPublishDate = '2013-01-19 00:00:00';
+        $page->write();
+        $page = $this->finishWorkflow($page);
+        $statuses = $page->getEmbargoExpiryStatuses();
+        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the page has been approved');
+        $this->assertNotContains('Complete', $statuses, 'check the page\'s statuses array does not contain Complete, because the desired embargo & expiry dates are invalid');
+    }
+
+
+    // Test Complete state
 
     protected function createDefinition()
     {
@@ -431,5 +625,13 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     protected function logOut()
     {
         if($member = Member::currentUser()) $member->logOut();
+    }
+}
+
+class WorkflowEmbargoExpiryTest_DummyWorkflowAction extends WorkflowAction
+{
+    public function execute(WorkflowInstance $workflow)
+    {
+        return false;
     }
 }

@@ -1,0 +1,19 @@
+WorkflowDefinition:
+  requestPublication:
+    Title: 'Request Publish'
+  approvePublication:
+      Title: 'Approve Publish'
+
+WorkflowEmbargoExpiryTest_DummyWorkflowAction:
+  requestPublication:
+    Title: 'Approve'
+    WorkflowDefID: =>WorkflowDefinition.requestPublication
+
+PublishItemWorkflowAction:
+  approvePublication:
+    Title: 'Publish'
+    WorkflowDefID: =>WorkflowDefinition.approvePublication
+
+SiteTree:
+  inWorkflow:
+    Title: 'In workflow'
