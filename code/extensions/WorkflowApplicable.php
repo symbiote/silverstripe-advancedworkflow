@@ -1,8 +1,9 @@
 <?php
 
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Permission;
+use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -188,7 +189,7 @@ class WorkflowApplicable extends DataExtension {
 					);
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-						if($definition->getInitialAction() && $this->owner->canEdit()) {
+						if($definition->getInitialAction() && $this->owner->canEdit() && !$this->isArchived()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
@@ -368,4 +369,29 @@ class WorkflowApplicable extends DataExtension {
 		}
 		return false;
 	}
+
+    /**
+     * Counts as "archived" if the current record is a different version from both live and draft.
+     *
+     * @return boolean
+     */
+    private function isArchived()
+    {
+        if (!$this->owner->hasExtension('SilverStripe\ORM\Versioning\Versioned')) {
+            return false;
+        }
+
+        if (!isset($this->owner->_cached_isArchived)) {
+            $baseClass = $this->owner->baseClass();
+            $currentDraft = Versioned::get_by_stage($baseClass, Versioned::DRAFT)->byID($this->owner->ID);
+            $currentLive = Versioned::get_by_stage($baseClass, Versioned::LIVE)->byID($this->owner->ID);
+
+            $this->owner->_cached_isArchived = (
+                (!$currentDraft || ($currentDraft && $this->owner->Version != $currentDraft->Version))
+                && (!$currentLive || ($currentLive && $this->owner->Version != $currentLive->Version))
+            );
+        }
+
+        return $this->owner->_cached_isArchived;
+    }
 }
