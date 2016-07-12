@@ -708,7 +708,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return boolean
      */
-    private function checkIsEmbargoExpiryPending() {
+    public function checkIsEmbargoExpiryPending() {
         return Versioned::get_stage() === Versioned::DRAFT &&
                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate));
     }
@@ -722,7 +722,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return array
      */
-    private function getEmbargoExpiryStatuses() {
+    public function getEmbargoExpiryStatuses() {
         $statuses = array();
         $instance = null;
 
@@ -737,8 +737,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         }
 
         if ($instance && $instance->exists()) {
-            if (($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') &&
-                ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate))) {
+            if ($instance->WorkflowStatus === 'Paused' || $instance->WorkflowStatus === 'Active') {
                 array_push($statuses, 'Paused');
             } else {
                 if ($this->checkIsEmbargoExpiryPending() && $instance->WorkflowStatus === 'Complete') {
