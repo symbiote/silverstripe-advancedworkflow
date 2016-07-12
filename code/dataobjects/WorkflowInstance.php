@@ -521,8 +521,6 @@ class WorkflowInstance extends DataObject {
 	 */
 	public function getWorkflowFields() {
 		$action    = $this->CurrentAction();
-		$options   = $this->validTransitions();
-		$wfOptions = $options->map('ID', 'Title', ' ');
 		$fields    = new FieldList();
 
 		$fields->push(new HeaderField('WorkflowHeader', $action->Title));
@@ -530,8 +528,15 @@ class WorkflowInstance extends DataObject {
 		$fields->push(HiddenField::create('TransitionID', ''));
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.
-		$action->updateWorkflowFields($fields);
-		$action->invokeWithExtensions('updateWorkflowFields', $fields);
+        $content = $this->customise(array(
+            'PastActions' => $this->Actions()->sort('Created DESC'),
+            'Now' => SS_Datetime::now()
+        ))->renderWith('CommentHistory');
+
+        $fields->push(new LiteralField('CurrentComments', $content));
+        
+        $action->invokeWithExtensions('updateWorkflowFields', $fields);
+
 		return $fields;
 	}
 
