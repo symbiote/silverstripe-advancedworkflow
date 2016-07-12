@@ -94,29 +94,35 @@ class AdvancedWorkflowExtension extends LeftAndMainExtension {
 		$svc = singleton('WorkflowService');
 		$p = $form->getRecord();
 		$workflow = $svc->getWorkflowFor($p);
-		$action = $workflow->CurrentAction();
+        
+        
+        if (!$workflow) {
+            return;
+        }
+        
+        $action = $workflow->CurrentAction();
 
-		if (!$p || !$p->canEditWorkflow()) {
-			return;
-		}
+        if (!$p || !$p->canEditWorkflow()) {
+            return;
+        }
 
-		$allowedFields = $workflow->getWorkflowFields()->saveableFields();
-		unset($allowedFields['TransitionID']);
+        $allowedFields = $workflow->getWorkflowFields()->saveableFields();
+        unset($allowedFields['TransitionID']);
 
-		$allowed = array_keys($allowedFields);
-		if (count($allowed)) {
-			$form->saveInto($action, $allowed);
-			$action->write();
-		}
+        $allowed = array_keys($allowedFields);
+        if (count($allowed)) {
+            $form->saveInto($action, $allowed);
+            $action->write();
+        }
 
-		if (isset($data['TransitionID']) && $data['TransitionID']) {
-			$svc->executeTransition($p, $data['TransitionID']);
-		} else {
-			// otherwise, just try to execute the current workflow to see if it
-			// can now proceed based on user input
-			$workflow->execute();
-		}
-
+        if (isset($data['TransitionID']) && $data['TransitionID']) {
+            $svc->executeTransition($p, $data['TransitionID']);
+        } else {
+            // otherwise, just try to execute the current workflow to see if it
+            // can now proceed based on user input
+            $workflow->execute();
+        }
+		
 		return $this->returnResponse($form);
 	}
 	
