@@ -532,7 +532,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $page->set_stage(Versioned::DRAFT);
         $page = $this->startWorkflow($page);
         $statuses = $page->getEmbargoExpiryStatuses();
-        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because there are no embargo expiry dates');
+        $this->assertContains('Paused', $statuses, 'check the page\'s statuses array includes Paused');
         $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array excludes Pending, because there are no embargo expiry dates');
 
         $page = SiteTree::create();
@@ -542,7 +542,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $page->write();
         $page = $this->startWorkflow($page);
         $statuses = $page->getEmbargoExpiryStatuses();
-        $this->assertNotContains('Paused', $statuses, 'check the page\'s statuses array excludes Paused, because the embargo expiry dates are invalid');
+        $this->assertContains('Paused', $statuses, 'check the page\'s statuses array includes Paused');
         $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array excludes Pending, because the embargo expiry dates are invalid');
     }
 
