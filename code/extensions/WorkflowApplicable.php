@@ -141,7 +141,7 @@ class WorkflowApplicable extends DataExtension {
 	public function updateCMSActions(FieldList $actions) {
 		$c = Controller::curr();
 
-		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+		if ($c && $c->hasExtension('AdvancedWorkflowExtension') && !$this->isArchived()) {
             $active = $this->workflowService->getWorkflowFor($this->owner);
 
 			if ($active) {
@@ -194,7 +194,7 @@ class WorkflowApplicable extends DataExtension {
 
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-						if($definition->getInitialAction() && $this->owner->canEdit() && !$this->isArchived()) {
+						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
