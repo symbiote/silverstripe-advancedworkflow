@@ -16,9 +16,10 @@
 class WorkflowTransition extends DataObject {
 
 	private static $db = array(
-		'Title' 	=> 'Varchar(128)',
-		'Sort'  	=> 'Int',
-		'Type' 		=> "Enum('Active, Passive', 'Active')"
+		'Title'             => 'Varchar(128)',
+		'Sort'              => 'Int',
+		'Type'              => "Enum('Active, Passive', 'Active')",
+        'BlockInitiator'    => 'Boolean',
 	);
 
 	private static $default_sort = 'Sort';
@@ -127,6 +128,8 @@ class WorkflowTransition extends DataObject {
 		$fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
 		$fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'Group'));
 
+        $fields->addFieldToTab('Root.RestrictToUsers', CheckboxField::create('BlockInitiator', _t('WorkflowDefinition.BLOCK_INITIATOR', 'Block initiator')));
+        
 		$this->extend('updateCMSFields', $fields);
 
 		return $fields;
@@ -173,6 +176,12 @@ class WorkflowTransition extends DataObject {
 				$return = false;
 			}
 		}
+        
+        if ($this->BlockInitiator) {
+            if (Member::currentUserID() == $workflow->InitiatorID) {
+                return false;
+            }
+        }
 
 		if($return) {
 			$extended = $this->extend('extendCanExecute', $workflow);
