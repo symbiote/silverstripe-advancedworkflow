@@ -139,9 +139,11 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
 		$c = Controller::curr();
-		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+        $navigator = SilverStripeNavigatorItem_CMSLink::create($this->owner);
+		if ($c && $c->hasExtension('AdvancedWorkflowExtension') && !$navigator->isArchived()) {
+            $active = $this->workflowService->getWorkflowFor($this->owner);
+
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
@@ -189,7 +191,7 @@ class WorkflowApplicable extends DataExtension {
 					);
 					$addedFirst = false;
 					foreach($definitions as $definition) {
-						if($definition->getInitialAction() && $this->owner->canEdit() && !$this->isArchived()) {
+						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
@@ -370,28 +372,4 @@ class WorkflowApplicable extends DataExtension {
 		return false;
 	}
 
-    /**
-     * Counts as "archived" if the current record is a different version from both live and draft.
-     *
-     * @return boolean
-     */
-    private function isArchived()
-    {
-        if (!$this->owner->hasExtension('SilverStripe\ORM\Versioning\Versioned')) {
-            return false;
-        }
-
-        if (!isset($this->owner->_cached_isArchived)) {
-            $baseClass = $this->owner->baseClass();
-            $currentDraft = Versioned::get_by_stage($baseClass, Versioned::DRAFT)->byID($this->owner->ID);
-            $currentLive = Versioned::get_by_stage($baseClass, Versioned::LIVE)->byID($this->owner->ID);
-
-            $this->owner->_cached_isArchived = (
-                (!$currentDraft || ($currentDraft && $this->owner->Version != $currentDraft->Version))
-                && (!$currentLive || ($currentLive && $this->owner->Version != $currentLive->Version))
-            );
-        }
-
-        return $this->owner->_cached_isArchived;
-    }
 }
