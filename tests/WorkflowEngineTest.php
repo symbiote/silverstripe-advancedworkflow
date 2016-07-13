@@ -214,12 +214,12 @@ class WorkflowEngineTest extends SapphireTest
 
         // Test a user with lame permissions
         $memberID = $this->logInWithPermission('SITETREE_VIEW_ALL');
-        $member = DataObject::get_by_id('Member', $memberID);
+        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
         $this->assertFalse($def->canCreate($member));
 
         // Test a user with good permissions
         $memberID = $this->logInWithPermission('CREATE_WORKFLOW');
-        $member = DataObject::get_by_id('Member', $memberID);
+        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
         $this->assertTrue($def->canCreate($member));
     }
 
