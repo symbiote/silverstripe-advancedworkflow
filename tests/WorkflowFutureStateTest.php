@@ -830,6 +830,62 @@ class WorkflowFutureStateTest extends FunctionalTest
     }
 
     /**
+     * Sort order changes for pages is correctly reflected in future state as it will be when
+     * the pages are actually published to live.
+     */
+    public function testSaveTreeNodeSortingVersions() {
+
+        $this->loginWithPermission('ADMIN');
+
+        // Use a couple of root pages and reorder them, assume that "basic" is the first page in the fixture
+        $basic = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $this->assertEquals(1, $basic->Sort);
+
+        $embargo = $this->objFromFixture('SiteTree', 'embargoOnly');
+        $this->assertFalse($embargo->Sort == 1);
+
+        // Move embargo page up
+        $data = array(
+            'SiblingIDs' => array(
+                $embargo->ID,
+                $basic->ID
+            ),
+            'ID' => $embargo->ID,
+            'ParentID' => 0
+        );
+        Config::inst()->update('LeftAndMain', 'tree_class', 'SiteTree');
+        $response = $this->post('LeftAndMain/savetreenode', $data);
+        $this->assertEquals(200, $response->getStatusCode());
+
+        // New sort order is correctly reflecting changes
+        $obj = DataObject::get_by_id('SiteTree', $embargo->ID);
+        $this->assertEquals(1, $obj->Sort);
+
+        $basic = DataObject::get_by_id('SiteTree', $basic->ID);
+        $this->assertEquals(2, $basic->Sort);
+
+        // Embargo the page
+        $obj = $this->finishWorkflow($obj);
+
+        // Check that in future state the sort order is correct
+        $pages = SiteTree::get()
+            ->filter('ID', $obj->ID)
+            ->setDataQueryParam([
+                'Future.time' => $embargo->PublishOnDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(1, $pages->first()->Sort);
+
+        $pages = SiteTree::get()
+            ->filter('ID', $basic->ID)
+            ->setDataQueryParam([
+                'Future.time' => $embargo->PublishOnDate,
+                'Versioned.stage' => Versioned::DRAFT
+            ]);
+        $this->assertEquals(2, $pages->first()->Sort);
+    }
+
+    /**
      * Time parsing is timezone agnostic.
      */
     public function testFutureTimeResolution()

@@ -6,6 +6,7 @@ use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\DB;
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {
@@ -355,6 +356,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			$this->clearUnPublishJob();
 		}
 	}
+
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+
+        // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
+        // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
+        DB::prepared_query("
+            UPDATE \"SiteTree_versions\", \"SiteTree\"
+            SET \"SiteTree_versions\".\"Sort\" = \"SiteTree\".\"Sort\"
+            WHERE \"SiteTree_versions\".\"RecordID\" = \"SiteTree\".\"ID\"
+            AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
+            AND \"SiteTree_versions\".\"ParentID\" = ?",
+            array($this->owner->ParentID)
+        );
+    }
 
     /**
      * Add badges to the site tree view to show that a page has been scheduled for publishing or unpublishing
