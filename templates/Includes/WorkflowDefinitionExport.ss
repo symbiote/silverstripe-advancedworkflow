@@ -59,6 +59,10 @@ Injector:
 		    <% end_loop %>
 			<% end_if %>
 		  <% end_loop %>
+          properties:
+          <% loop exportData %>
+            $Name: $Value
+          <% end_loop %>
 		  <% end_if %>
 	  <% end_loop %>
 	  <% end_if %>
