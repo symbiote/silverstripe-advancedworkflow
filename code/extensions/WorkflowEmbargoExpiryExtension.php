@@ -243,6 +243,15 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			->queueJob($job, $when ? date('Y-m-d H:i:s', $when) : null);
 	}
 
+    public function onBeforeDuplicate($original, $doWrite) {
+        $clone = $this->owner;
+
+        $clone->PublishOnDate = null;
+        $clone->UnPublishOnDate = null;
+        $clone->PublishJobID = 0;
+        $clone->UnPublishJobID = 0;
+    }
+
 	/**
 	 * {@see PublishItemWorkflowAction} for approval of requested publish dates
 	 */

@@ -433,6 +433,29 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
 		return $definition;
 	}
 
+    public function testDuplicateRemoveEmbargoExpiry() {
+        $page = SiteTree::create();
+
+        $page->Title = 'My page';
+        $page->PublishOnDate = '2020-01-01 00:00:00';
+        $page->UnPublishOnDate = '2020-01-01 01:00:00';
+
+        // fake publish jobs
+        $page->PublishJobID = 1;
+        $page->UnPublishJobID = 2;
+        $page->write();
+
+        $dupe = $page->duplicate();
+        $this->assertNotNull($page->PublishOnDate, 'Not blank publish on date');
+        $this->assertNotNull($page->UnPublishOnDate, 'Not blank unpublish on date');
+        $this->assertNotEquals($page->PublishJobID, 0, 'Publish job ID still set');
+        $this->assertNotEquals($page->UnPublishJobID, 0, 'Unpublish job ID still set');
+        $this->assertNull($dupe->PublishOnDate, 'Blank publish on date');
+        $this->assertNull($dupe->UnPublishOnDate, 'Blank unpublish on date');
+        $this->assertEquals($dupe->PublishJobID, 0, 'Publish job ID unset');
+        $this->assertEquals($dupe->UnPublishJobID, 0, 'Unpublish job ID unset');
+    }
+
     protected function logOut()
     {
         if($member = Member::currentUser()) $member->logOut();
