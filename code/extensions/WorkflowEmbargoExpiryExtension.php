@@ -7,6 +7,8 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\ORM\DB;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {
@@ -128,13 +130,19 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 					'DesiredPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    )
                 ),
 				$ut = Datetimefield::create(
 					'DesiredUnPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredUnPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    )
                 ),
 				Datetimefield::create(
 					'PublishOnDate',
@@ -875,7 +883,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     {
         $result = $this->getEmbargoExpiryDate($date, $type);
         if ($this->checkValidEmbargoExpiryDate($date)) {
-            $result = '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>';
+            $result = LiteralField::create("$type-link", '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>');
         }
         return $result;
     }

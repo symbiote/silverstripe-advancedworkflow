@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Permission;
+
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
  * workflow definition applied to them. At some point, the workflow definition is then

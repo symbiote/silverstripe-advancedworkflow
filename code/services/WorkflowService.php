@@ -3,6 +3,7 @@
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\Security\PermissionProvider;
 /**
  * A central point for interacting with workflows
  *
@@ -12,7 +13,7 @@ use SilverStripe\ORM\ArrayList;
  */
 
 class WorkflowService implements PermissionProvider {
-    
+
 	/**
 	 * An array of templates that we can create from
 	 *
