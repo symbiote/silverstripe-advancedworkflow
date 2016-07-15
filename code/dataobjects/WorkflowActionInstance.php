@@ -53,8 +53,7 @@ class WorkflowActionInstance extends DataObject {
         $fieldDiff = $this->Workflow()->getTargetDiff();
 
         foreach($fieldDiff as $field) {
-            $display = ReadonlyField::create('workflow-' . $field->Name, $field->Title, $field->Diff)
-                ->setDontEscape(true)
+            $display = HTMLReadonlyField::create('workflow-' . $field->Name, $field->Title, $field->Diff)
                 ->addExtraClass('workflow-field-diff');
             $fields->push($display);
         }
