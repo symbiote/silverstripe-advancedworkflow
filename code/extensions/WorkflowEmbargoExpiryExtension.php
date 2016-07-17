@@ -369,16 +369,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     {
         parent::onAfterWrite();
 
-        // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
-        // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
-        DB::prepared_query("
-            UPDATE \"SiteTree_versions\", \"SiteTree\"
-            SET \"SiteTree_versions\".\"Sort\" = \"SiteTree\".\"Sort\"
-            WHERE \"SiteTree_versions\".\"RecordID\" = \"SiteTree\".\"ID\"
-            AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
-            AND \"SiteTree_versions\".\"ParentID\" = ?",
-            array($this->owner->ParentID)
-        );
+        /*
+         * Make sure this is for SiteTree first..
+         * Can make a copy of this for other classes (in a separate extension) that may depend on Sorting as well
+         */
+        if ($this->owner instanceof SiteTree) {
+            // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
+            // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
+            DB::prepared_query("
+                UPDATE \"SiteTree_versions\", \"SiteTree\"
+                SET \"SiteTree_versions\".\"Sort\" = \"SiteTree\".\"Sort\"
+                WHERE \"SiteTree_versions\".\"RecordID\" = \"SiteTree\".\"ID\"
+                AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
+                AND \"SiteTree_versions\".\"ParentID\" = ?",
+                array($this->owner->ParentID)
+            );
+        }
     }
 
     /**
