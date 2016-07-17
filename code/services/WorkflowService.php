@@ -16,7 +16,7 @@ use SilverStripe\Security\PermissionProvider;
  */
 
 class WorkflowService implements PermissionProvider {
-    
+
 	/**
 	 * An array of templates that we can create from
 	 *

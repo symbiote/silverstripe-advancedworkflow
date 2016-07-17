@@ -3,6 +3,7 @@
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Versioning\Versioned;
@@ -21,6 +22,14 @@ if (!class_exists('QueuedJobDescriptor')) {
  * @license BSD License http://silverstripe.org/bsd-license/
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {
+
+    /**
+     * For storing future time from request when request object is replaced
+     * within a single request e.g: ErrorPage::response_for()
+     *
+     * @var null|string The future time
+     */
+    private static $future_time = null;
 
 	private static $db = array(
 		'DesiredPublishDate'	=> 'DBDatetime',
@@ -121,13 +130,19 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 					'DesiredPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    )
                 ),
 				$ut = Datetimefield::create(
 					'DesiredUnPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredUnPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    )
                 ),
 				Datetimefield::create(
 					'PublishOnDate',
@@ -350,6 +365,28 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		}
 	}
 
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+
+        /*
+         * Make sure this is for SiteTree first..
+         * Can make a copy of this for other classes (in a separate extension) that may depend on Sorting as well
+         */
+        if ($this->owner instanceof SiteTree) {
+            // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
+            // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
+            DB::prepared_query("
+                UPDATE \"SiteTree_versions\", \"SiteTree\"
+                SET \"SiteTree_versions\".\"Sort\" = \"SiteTree\".\"Sort\"
+                WHERE \"SiteTree_versions\".\"RecordID\" = \"SiteTree\".\"ID\"
+                AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
+                AND \"SiteTree_versions\".\"ParentID\" = ?",
+                array($this->owner->ParentID)
+            );
+        }
+    }
+
     /**
      * Add badges to the site tree view to show that a page has been scheduled for publishing or unpublishing
      *
@@ -526,19 +563,21 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      */
     public function getFutureTime($ctrl = null)
     {
-        $time = null;
-        $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
+        // Lazy load future time unless we are passing in a controller object explicitly
+        if (!static::$future_time || $ctrl) {
 
-        if ($curr) {
-            $ft = $curr->getRequest()->getVar('ft');
-            if ($ft) {
+            $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
 
-                // Force timezone to UTC so that it does not apply current timezone offset
-                $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
-                $time = $dt->format('Y-m-d H:i');
+            if ($curr) {
+                $ft = $curr->getRequest()->getVar('ft');
+                if ($ft) {
+                    // Force timezone to UTC so that it does not apply current timezone offset
+                    $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
+                    static::$future_time = $dt->format('Y-m-d H:i');
+                }
             }
         }
-        return $time;
+        return static::$future_time;
     }
 
     /**
@@ -651,7 +690,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                 /* Within the embargo and expiry range */
                                 (\"Base\".\"PublishOnDate\" <= ? OR \"Base\".\"PublishOnDate\" IS NULL)
                                 AND
-                                (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
                                 AND
                                 /* Approved, which is marked by a PublishJobID */
                                 (\"Base\".\"PublishJobID\" != 0)
@@ -669,14 +708,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                                     (
                                         \"Base\".\"ID\" IS NOT NULL
                                         AND
-                                        (\"Base\".\"UnPublishOnDate\" >= ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                        (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
                                     )
                                     OR
                                     /* Draft doesn't exist, check Live's unpublish date */
                                     (
                                         \"Base\".\"ID\" IS NULL
                                         AND
-                                        (\"Live\".\"UnPublishOnDate\" >= ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
+                                        (\"Live\".\"UnPublishOnDate\" > ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
                                     )
                                 )
                                 AND
@@ -882,7 +921,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     {
         $result = $this->getEmbargoExpiryDate($date, $type);
         if ($this->checkValidEmbargoExpiryDate($date)) {
-            $result = '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>';
+            $result = LiteralField::create("$type-link", '<a href="' . $this->getFutureTimeLink($date) . '" target="_blank">' . $result . '</a>');
         }
         return $result;
     }
