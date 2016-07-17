@@ -138,9 +138,11 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
 		$c = Controller::curr();
+
 		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+            $active = $this->workflowService->getWorkflowFor($this->owner);
+
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
@@ -172,20 +174,23 @@ class WorkflowApplicable extends DataExtension {
 					// $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
 				}
 			} else {
-				// Instantiate the workflow definition initial actions.
-				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
-				if($definitions) {
-					$menu = $actions->fieldByName('ActionMenus');
-					if(is_null($menu)) {
+                // Instantiate the workflow definition initial actions.
+                $definitions = $this->workflowService->getDefinitionsFor($this->owner);
 
-						// Instantiate a new action menu for any data objects.
+				if ($definitions) {
+                    $menu = $actions->fieldByName('ActionMenus');
+                    if (is_null($menu)) {
+                        // Instantiate a new action menu for any data objects.
+                        $menu = $this->createActionMenu();
+                        $actions->push($menu);
+                    }
+                    $tab = $menu->fieldByName('AdditionalWorkflows');
+                    if (is_null($tab)) {
+                        $tab = Tab::create(
+                            'AdditionalWorkflows'
+                        );
+                    }
 
-						$menu = $this->createActionMenu();
-						$actions->push($menu);
-					}
-					$tab = Tab::create(
-						'AdditionalWorkflows'
-					);
 					$addedFirst = false;
 					foreach($definitions as $definition) {
 						if($definition->getInitialAction() && $this->owner->canEdit()) {
@@ -205,8 +210,25 @@ class WorkflowApplicable extends DataExtension {
 							}
 						}
 					}
-					// Only display menu if actions pushed to it
-					if ($tab->Fields()->exists()) {
+
+                    // button to cancel the existing embargo dates
+                    if ($this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
+                        $this->owner->canCancelEmbargoExpiry() // the user is given the permission to cancel
+                    ) {
+                        $options = $menu->fieldByName('MoreOptions');
+                        if (is_null($tab)) {
+                            $tab = Tab::create(
+                                'MoreOptions'
+                            );
+                        }
+                        $options->push($cancel = FormAction::create(
+                            "cancelembargoexpiry",
+                            _t('WorkflowApplicable', 'Cancel Embargo & Expiry')
+                        ));
+                    }
+
+                    // Only display menu if actions pushed to it
+					if ($tab && $tab->Fields()->exists()) {
 						$menu->insertBefore($tab, 'MoreOptions');
 					}
 				}
@@ -285,7 +307,6 @@ class WorkflowApplicable extends DataExtension {
 
 		return $this->currentInstance;
 	}
-
 
 	/**
 	 * Gets the history of a workflow instance

@@ -14,6 +14,7 @@ class PublishItemWorkflowAction extends WorkflowAction {
 	private static $db = array(
 		'PublishDelay'          => 'Int',
         'AllowEmbargoedEditing' => 'Boolean',
+        'CanCancelEmbargoExpiry' => 'Boolean'
 	);
 
     private static $defaults = array(
@@ -35,6 +36,7 @@ class PublishItemWorkflowAction extends WorkflowAction {
             // disable editing, and embargo the delay if using WorkflowEmbargoExpiryExtension
             if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
                 $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
+                $target->CanCancelEmbargoExpiry = $this->CanCancelEmbargoExpiry;
                 $target->PublishOnDate = $after;
                 $target->write();
             } else {
@@ -42,6 +44,7 @@ class PublishItemWorkflowAction extends WorkflowAction {
             }
 		} else if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
             $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
+            $target->CanCancelEmbargoExpiry = $this->CanCancelEmbargoExpiry;
 			// setting future date stuff if needbe
 
 			// set this value regardless
@@ -73,9 +76,11 @@ class PublishItemWorkflowAction extends WorkflowAction {
 			$after  = _t('PublishItemWorkflowAction.DELAYPUBDAYSAFTER', ' days');
             $allowEmbargoed =  _t('PublishItemWorkflowAction.ALLOWEMBARGOEDEDITING',
                 'Allow editing while item is embargoed? (does not apply without embargo)');
+            $cancelLabel = _t('PublishItemWorkflowAction.CANCELEMBARGOEXPIRY', 'Allow cancelling embargo and expiry (if applicable)');
 
 			$fields->addFieldsToTab('Root.Main', array(
                 new CheckboxField('AllowEmbargoedEditing', $allowEmbargoed),
+                new CheckboxField('CanCancelEmbargoExpiry', $cancelLabel),
                 new FieldGroup(
                     _t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay'),
                     new LabelField('PublishDelayBefore', $before),

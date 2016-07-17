@@ -24,11 +24,12 @@ if (!class_exists('QueuedJobDescriptor')) {
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 	private static $db = array(
-		'DesiredPublishDate'	=> 'DBDatetime',
-		'DesiredUnPublishDate'	=> 'DBDatetime',
-		'PublishOnDate'			=> 'DBDatetime',
-		'UnPublishOnDate'		=> 'DBDatetime',
-		'AllowEmbargoedEditing' => 'Boolean',
+		'DesiredPublishDate'     => 'DBDatetime',
+		'DesiredUnPublishDate'   => 'DBDatetime',
+		'PublishOnDate'          => 'DBDatetime',
+		'UnPublishOnDate'        => 'DBDatetime',
+        'AllowEmbargoedEditing'  => 'Boolean',
+        'CanCancelEmbargoExpiry' => 'Boolean',
 	);
 
 	private static $has_one = array(
@@ -179,7 +180,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing publish job against this dataobject
 	 */
-	protected function clearPublishJob() {
+	public function clearPublishJob() {
 		$job = $this->owner->PublishJob();
 		if($job && $job->exists()) {
 			$job->delete();
@@ -190,7 +191,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing unpublish job
 	 */
-	protected function clearUnPublishJob() {
+    public function clearUnPublishJob() {
 		// Cancel any in-progress unpublish job
 		$job = $this->owner->UnPublishJob();
 		if ($job && $job->exists()) {
@@ -469,6 +470,36 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         $unpublish = strtotime($this->owner->UnPublishOnDate);
 
         return $now < $unpublish;
+    }
+
+    /**
+     * Defines whether the "Cancel embargo & expiry" is allowed
+     *
+     * @return bool|null
+     */
+    public function canCancelEmbargoExpiry($member = null) {
+        // any embargo or expiry populated or in the past
+        if (!$this->owner->getIsPublishScheduled() &&
+            !$this->owner->getIsUnPublishScheduled()) {
+            return false;
+        }
+
+        // extension hook for overriding default behaviour
+        $permission = $this->owner->extend('canCancelWorkflowEmbargoExpiry');
+
+        if (!is_null($permission)) {
+            return $permission;
+        }
+
+        // has the override global permission
+        if (Permission::check('CANCEL_EMBARGO_EXPIRY_WORKFLOW')) {
+            return true;
+        }
+
+        // user has permission to publish and this has been enabled for cancelling
+        if ($this->owner->canPublish($member) && $this->owner->CanCancelEmbargoExpiry) {
+            return true;
+        }
     }
 
     /**
