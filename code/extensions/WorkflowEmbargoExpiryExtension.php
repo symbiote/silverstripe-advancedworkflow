@@ -378,7 +378,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
             DB::prepared_query("
                 UPDATE \"SiteTree_versions\"
-                SET \"SiteTree_versions\".\"Sort\" = (
+                SET \"Sort\" = (
                     SELECT \"SiteTree\".\"Sort\"
                     FROM \"SiteTree\"
                     WHERE  \"SiteTree\".\"ID\" = \"SiteTree_versions\".\"RecordID\"
