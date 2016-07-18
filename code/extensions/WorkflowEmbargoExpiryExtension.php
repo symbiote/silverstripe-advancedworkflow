@@ -889,6 +889,34 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Get the name of the Member who's approved this page.
+     * Only use for workflow status Complete
+     *
+     * @return string
+     */
+    private function getEmbargoExpiryApprover()
+    {
+        $approver = null;
+        $instance = null;
+
+        if ($this->getIsWorkflowInEffect()) {
+            $instance = $this->workflowService->getWorkflowFor($this->owner, true);
+        }
+
+        if ($instance && $instance->exists()) {
+            $approverID = WorkflowActionInstance::get()
+                ->filter(array(
+                    'Finished' => 1,
+                    'WorkflowID' => $instance->ID))
+                ->last()
+                ->MemberID;
+            $approver = is_int($approverID) ? Member::get()->byID($approverID)->getName() : null;
+        }
+
+        return $approver;
+    }
+
+    /**
      * Render a valid embargo/expiry date with its future time link
      *
      * @param string $date DesiredPublishDate|DesiredUnPublishDate|PublishOnDate|UnPublishOnDate
@@ -943,6 +971,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             case 'Complete':
                 $message['Style'] = 'notice';
                 $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Approved changes');
+                $message['Approver'] = $this->getEmbargoExpiryApprover();
                 $message['DatePrefix'] = $prefixScheduled;
                 $message['DatePublish'] = $this->renderEmbargoExpiryDateLink($this->owner->PublishOnDate, 'embargo');
                 $message['DateUnPublish'] = $this->renderEmbargoExpiryDateLink($this->owner->UnPublishOnDate, 'expiry');
