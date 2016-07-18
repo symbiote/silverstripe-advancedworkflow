@@ -633,6 +633,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $page->PublishJobID = 1;
         $page->UnPublishJobID = 2;
         $page->write();
+        $page->write();
 
         $dupe = $page->duplicate();
         $this->assertNotNull($page->PublishOnDate, 'Not blank publish on date');

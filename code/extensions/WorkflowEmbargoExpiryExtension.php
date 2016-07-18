@@ -285,8 +285,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     public function onBeforeDuplicate($original, $doWrite) {
         $clone = $this->owner;
 
-        $clone->PublishOnDate = '';
-        $clone->UnPublishOnDate = '';
+        $clone->PublishOnDate = null;
+        $clone->UnPublishOnDate = null;
         $clone->PublishJobID = 0;
         $clone->UnPublishJobID = 0;
     }
