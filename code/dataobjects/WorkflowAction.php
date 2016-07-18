@@ -257,4 +257,31 @@ class WorkflowAction extends DataObject {
 	public function Icon() {
 		return $this->stat('icon');
 	}
+
+    /**
+     * Returns the list of fields defined on the action that should be included in exports
+     */
+    public function exportData() {
+        $fields = array('AllowEditing', 'AllowCommenting');
+        if ($this->class != 'WorkflowAction') {
+            $extras = (array) Config::inst()->get($this->class, 'db', Config::UNINHERITED);
+            if (count($extras)) {
+                $fields = array_merge($fields, array_keys($extras));
+            }
+        }
+
+        $export = array();
+        foreach ($fields as $fieldName) {
+            $val = $this->$fieldName;
+
+            if (strpos($val, "\n")) {
+                $val = "|\n              " . str_replace("\n", "\n              ", $val);
+            }
+            $export[] = array(
+                'Name' => $fieldName,
+                'Value' => $val
+            );
+        }
+        return ArrayList::create($export);
+    }
 }

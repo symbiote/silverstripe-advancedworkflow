@@ -165,7 +165,7 @@ class WorkflowApplicable extends DataExtension {
 					foreach ($transitions as $transition) {
 						if ($transition->canExecute($active)) {
 							$action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
-								->setAttribute('data-transitionid', $transition->ID);
+								->setAttribute('data-transitionid', $transition->ID)->setUseButtonTag(true);
 							$workflowOptions->push($action);
 						}
 					}
@@ -198,7 +198,7 @@ class WorkflowApplicable extends DataExtension {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
-							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
+							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID)->setUseButtonTag(true);
 
 							// The first element is the main workflow definition, and will be displayed as a major action.
 							if(!$addedFirst) {
