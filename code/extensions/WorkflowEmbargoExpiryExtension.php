@@ -385,7 +385,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                     AND `SiteTree_versions`.`Version` = `SiteTree`.`Version`
                     AND `SiteTree_versions`.`ParentID` = 62
                 )
-                WHERE(
+                WHERE EXISTS (
                     SELECT `SiteTree`.`Sort`
                     FROM `SiteTree`
                     WHERE  `SiteTree`.`ID` = `SiteTree_versions`.`RecordID`
