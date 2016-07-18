@@ -14,7 +14,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 	private static $whitelist_template_variables = false;
 
 	private static $db = array(
-		'EmailSubject'			=> 'Varchar(100)',
+		'EmailSubject'			=> 'Varchar(255)',
 		'EmailFrom'				=> 'Varchar(50)',
 		'EmailTemplate'			=> 'Text'
 	);
@@ -138,6 +138,12 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		} else if ($target->hasMethod('WorkflowLink')) {
 			$result['CMSLink'] = $target->WorkflowLink();
 		}
+        
+        // we can't use invokeWithExtensions here because it doesn't accept byref parameters
+        if (method_exists($target, 'updateWorkflowNotificationKeywords')) {
+            $target->updateWorkflowNotificationKeywords($result);
+        }
+        $target->extend('updateWorkflowNotificationKeywords', $result);
 
 		return $result;
 	}
