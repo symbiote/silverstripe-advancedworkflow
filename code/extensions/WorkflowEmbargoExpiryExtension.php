@@ -248,8 +248,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         $clone->PublishOnDate = null;
         $clone->UnPublishOnDate = null;
-        $clone->PublishJobID = 0;
-        $clone->UnPublishJobID = 0;
+        $clone->clearPublishJob();
+        $clone->clearUnPublishJob();
     }
 
 	/**
