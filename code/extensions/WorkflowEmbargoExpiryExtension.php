@@ -377,7 +377,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
             // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
             DB::prepared_query("
-                UPDATE \"SiteTree_versions\", \"SiteTree\"
+                UPDATE \"SiteTree_versions\".\"SiteTree\"
                 SET \"SiteTree_versions\".\"Sort\" = \"SiteTree\".\"Sort\"
                 WHERE \"SiteTree_versions\".\"RecordID\" = \"SiteTree\".\"ID\"
                 AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
