@@ -7,6 +7,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
+use SilverStripe\ORM\FieldType\DBDatetime;
 
 /**
  * A WorkflowInstance is created whenever a user 'starts' a workflow.
@@ -579,16 +580,16 @@ class WorkflowInstance extends DataObject {
 		$fields->push(HiddenField::create('TransitionID', ''));
 		// Let the Active Action update the fields that the user can interact with so that data can be
 		// stored for the workflow.
-        
+
         $action->invokeWithExtensions('updateWorkflowFields', $fields);
-        
+
         $content = $this->customise(array(
             'PastActions' => $this->Actions()->sort('Created DESC'),
-            'Now' => SS_Datetime::now()
+            'Now' => DBDatetime::now()
         ))->renderWith('CommentHistory');
 
         $fields->push(new LiteralField('CurrentComments', $content));
-        
+
 
 		return $fields;
 	}
