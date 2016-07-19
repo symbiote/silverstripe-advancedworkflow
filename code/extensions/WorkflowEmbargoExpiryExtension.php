@@ -998,7 +998,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             array(
                 'WorkflowMessages' => $messages
             )
-        )->renderWith('WorkflowStatusMessage');
+        )->renderWith('Includes/WorkflowStatusMessage');
 
         return $view;
     }
