@@ -7,6 +7,7 @@ use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\ORM\DB;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 
@@ -1002,7 +1003,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             array(
                 'WorkflowMessages' => $messages
             )
-        )->renderWith('WorkflowStatusMessage');
+        )->renderWith('Includes/WorkflowStatusMessage');
 
         return $view;
     }
