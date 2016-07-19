@@ -582,7 +582,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                     static::$future_time = $dt->format('Y-m-d H:i');
                 }
             }
+            $time = static::$future_time;
+
+            $this->owner->extend('getWorkflowFutureTime', $time, $ctrl);
+
+            static::$future_time = $time;
         }
+
         return static::$future_time;
     }
 
