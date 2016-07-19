@@ -248,8 +248,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         $clone->PublishOnDate = null;
         $clone->UnPublishOnDate = null;
-        $clone->PublishJobID = 0;
-        $clone->UnPublishJobID = 0;
+        $clone->clearPublishJob();
+        $clone->clearUnPublishJob();
     }
 
 	/**
@@ -257,12 +257,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 */
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
-
-		// if we've been duplicated, the old job IDs will be hanging around, so explicitly clear
-		if (!$this->owner->ID) {
-			$this->owner->PublishJobID = 0;
-			$this->owner->UnPublishJobID = 0;
-		}
 
 		// only operate on staging content for this extension; otherwise, you
 		// need to publish the page to be able to set a 'future' publish...
@@ -304,10 +298,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
 		// We should have a publish job if:
-		if($publishTime && ( // We have a date
-			$unPublishTime < $publishTime // it occurs after an unpublish date (or there is no unpublish)
-			|| $unPublishTime > $now // or the unpublish date hasn't passed
-		)) {
+		if((!$unPublishTime || $unPublishTime > $now) // the unpublish date not set or hasn't passed
+            && (
+                ($unPublishTime && $publishTime < $unPublishTime) // publish date happens before unpublish date
+                || ($publishTime < $now) // publish date not set or has passed (so immediately)
+            )
+		) {
 			// Trigger time immediately if passed
 			$this->ensurePublishJob($publishTime < $now ? null : $publishTime);
 		} else {
@@ -315,10 +311,12 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		}
 
 		// We should have an unpublish job if:
-		if($unPublishTime && ( // we have a date
-			$publishTime < $unPublishTime // it occurs after a publish date (or there is no publish)
-			|| $publishTime > $now // or the publish date hasn't passed
-		)) {
+		if($unPublishTime // we have a unpublish date
+            && (
+                ($unPublishTime < $now) // unpublish has passed
+                || ($publishTime <= $unPublishTime) // publish date is before or equal to unpublish date
+            )
+        ) {
 			// Trigger time immediately if passed
 			$this->ensureUnPublishJob($unPublishTime < $now ? null : $unPublishTime);
 		} else {
