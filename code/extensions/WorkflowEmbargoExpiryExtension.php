@@ -412,6 +412,36 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $required;
 	}
 
+    public function extendedRequiredFieldsEmbargoExpiry($data)
+    {
+        $response = array(
+            'fieldName'	 => 'DesiredUnPublishDate[date]',
+            'fieldField' => null,
+            'fieldMsg'	 => null,
+            'fieldValid' => true
+        );
+
+        if (isset($data['DesiredPublishDate'], $data['DesiredUnPublishDate'])) {
+            $publish = $data['DesiredPublishDate'];
+            $unpublish = $data['DesiredUnPublishDate'];
+
+            // the times are the same
+            if (strtotime($publish) == strtotime($unpublish)) {
+                $response = array_merge($response, array(
+                    'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDSAMEEMBARGOEXPIRY', 'The publish date and unpublish date cannot be the same.'),
+                    'fieldValid' => false
+                ));
+            } elseif (strtotime($publish) > strtotime($unpublish)) {
+                $response = array_merge($response, array(
+                    'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDEXPIRY', 'The unpublish date cannot be before the publish date.'),
+                    'fieldValid' => false
+                ));
+            }
+        }
+
+        return $response;
+    }
+
 	/*
 	 * Format a date according to member/user preferences
 	 *
