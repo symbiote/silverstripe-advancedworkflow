@@ -1,7 +1,5 @@
 <?php
 
-use SilverStripe\Model\FieldType\DBField;
-
 /**
  * A form field that allows easy accessibility to view the Future state of a page, or possibly other object.
  *
