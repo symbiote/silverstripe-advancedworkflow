@@ -179,7 +179,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing publish job against this dataobject
 	 */
-	protected function clearPublishJob() {
+	public function clearPublishJob() {
 		$job = $this->owner->PublishJob();
 		if($job && $job->exists()) {
 			$job->delete();
@@ -190,7 +190,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing unpublish job
 	 */
-	protected function clearUnPublishJob() {
+	public function clearUnPublishJob() {
 		// Cancel any in-progress unpublish job
 		$job = $this->owner->UnPublishJob();
 		if ($job && $job->exists()) {
@@ -298,10 +298,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
 		// We should have a publish job if:
-		if((!$unPublishTime || $unPublishTime > $now) // the unpublish date not set or hasn't passed
-            && (
-                ($publishTime < $now) // publish date not set or has passed (so immediately)
-                || ($unPublishTime && $publishTime < $unPublishTime) // publish date happens before unpublish date
+		// if no unpublish or publish time, then the Workflow Publish Action will publish without a job
+		if((!$unPublishTime && $publishTime) // the unpublish date is not set
+            || (
+                $unPublishTime > $now // unpublish date has not passed
+                && $publishTime < $unPublishTime // publish date not set or happens before unpublish date
             )
 		) {
 			// Trigger time immediately if passed
@@ -311,11 +312,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		}
 
 		// We should have an unpublish job if:
-		if($unPublishTime // we have a unpublish date
-            && (
-                ($unPublishTime < $now) // unpublish has passed
-                || ($publishTime < $unPublishTime) // publish date is before to unpublish date
-            )
+		if($unPublishTime // we have an unpublish date
+            &&
+            $publishTime < $unPublishTime // publish date is before to unpublish date
         ) {
 			// Trigger time immediately if passed
 			$this->ensureUnPublishJob($unPublishTime < $now ? null : $unPublishTime);
@@ -412,6 +411,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		return $required;
 	}
 
+    /**
+     * This is called in the AWRequiredFields class, this validates whether an Embargo and Expiry are not equal and that
+     * Embargo is before Expiry, returning the appropriate message when it fails.
+     *
+     * @param $data
+     * @return array
+     */
     public function extendedRequiredFieldsEmbargoExpiry($data)
     {
         $response = array(
