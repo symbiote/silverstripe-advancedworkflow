@@ -584,7 +584,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             }
             $time = static::$future_time;
 
-            $this->owner->extend('getWorkflowFutureTime', $time, $ctrl);
+            $this->owner->extend('getWorkflowFutureTime', $time, $curr);
 
             static::$future_time = $time;
         }
