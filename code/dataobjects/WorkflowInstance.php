@@ -586,7 +586,7 @@ class WorkflowInstance extends DataObject {
         $content = $this->customise(array(
             'PastActions' => $this->Actions()->sort('Created DESC'),
             'Now' => DBDatetime::now()
-        ))->renderWith('CommentHistory');
+        ))->renderWith('Includes/CommentHistory');
 
         $fields->push(new LiteralField('CurrentComments', $content));
 
