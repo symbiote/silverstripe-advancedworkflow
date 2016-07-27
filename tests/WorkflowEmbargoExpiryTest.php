@@ -51,12 +51,20 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         )
     );
 
+    public function __construct()
+    {
+        if (!class_exists('AbstractQueuedJob')) {
+            $this->skipTest = true;
+        }
+        parent::__construct();
+    }
+
     /**
      * Start a workflow for a page,
      * this will set it into a state where a workflow is currently being processes
      *
-     * @param SiteTree $obj
-     * @return SiteTree
+     * @param DataObject $obj
+     * @return DataObject
      */
     private function startWorkflow($obj)
     {
@@ -72,8 +80,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * Start and finish a workflow which will publish the page immediately basically.
      *
-     * @param SiteTree $obj
-     * @return SiteTree
+     * @param DataObject $obj
+     * @return DataObject
      */
     private function finishWorkflow($obj)
     {
@@ -88,254 +96,229 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         return $obj;
     }
 
-    public function __construct()
+    /**
+     * Retrieves the live version for an object
+     *
+     * @param DataObject $obj
+     * @return DataObject
+     */
+    private function getLive($obj)
     {
-        if (!class_exists('AbstractQueuedJob')) {
-            $this->skipTest = true;
-        }
-        parent::__construct();
-    }
+        $oldMode = Versioned::get_reading_mode();
+        Versioned::set_reading_mode(Versioned::LIVE);
+        $live = DataObject::get_by_id($obj->ClassName, $obj->ID);
+        Versioned::set_reading_mode($oldMode);
 
-    public function testFutureDatesJobs()
-    {
-        $page = new SiteTree();
 
-        $page->PublishOnDate = '2020-01-01 00:00:00';
-        $page->UnPublishOnDate = '2020-01-01 01:00:00';
-
-        // Two writes are necessary for this to work on new objects
-        $page->write();
-        $page->write();
-
-        $this->assertTrue($page->PublishJobID > 0);
-        $this->assertTrue($page->UnPublishJobID > 0);
-
-        // Check date ranges
-        $now = strtotime(DBDatetime::now()->getValue());
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unPublish = strtotime($page->UnPublishJob()->StartAfter);
-
-        $this->assertGreaterThan($now, $publish);
-        $this->assertGreaterThan($now, $unPublish);
-        $this->assertGreaterThan($publish, $unPublish);
-    }
-
-    public function testDesiredRemovesJobs()
-    {
-        $page = new SiteTree();
-
-        $page->PublishOnDate = '2020-01-01 00:00:00';
-        $page->UnPublishOnDate = '2020-01-01 01:00:00';
-
-        // Two writes are necessary for this to work on new objects
-        $page->write();
-        $page->write();
-
-        $this->assertTrue($page->PublishJobID > 0);
-        $this->assertTrue($page->UnPublishJobID > 0);
-
-        // Check date ranges
-        $now = strtotime(DBDatetime::now()->getValue());
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unPublish = strtotime($page->UnPublishJob()->StartAfter);
-
-        $this->assertGreaterThan($now, $publish);
-        $this->assertGreaterThan($now, $unPublish);
-        $this->assertGreaterThan($publish, $unPublish);
-
-        $page->DesiredPublishDate = '2020-02-01 00:00:00';
-        $page->DesiredUnPublishDate = '2020-02-01 02:00:00';
-
-        $page->write();
-
-        $this->assertTrue($page->PublishJobID == 0);
-        $this->assertTrue($page->UnPublishJobID == 0);
-    }
-
-    public function testPublishActionWithFutureDates()
-    {
-        $action = new PublishItemWorkflowAction();
-        $instance = new WorkflowInstance();
-
-        $page = new SiteTree();
-        $page->Title = 'stuff';
-        $page->DesiredPublishDate = '2020-02-01 00:00:00';
-        $page->DesiredUnPublishDate = '2020-02-01 02:00:00';
-
-        $page->write();
-
-        $instance->TargetClass = $page->ClassName;
-        $instance->TargetID = $page->ID;
-
-        $action->execute($instance);
-
-        $page = DataObject::get_by_id('SiteTree', $page->ID);
-        $this->assertTrue($page->PublishJobID > 0);
-        $this->assertTrue($page->UnPublishJobID > 0);
-
-        // Check date ranges
-        $now = strtotime(DBDatetime::now()->getValue());
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unPublish = strtotime($page->UnPublishJob()->StartAfter);
-
-        $this->assertGreaterThan($now, $publish);
-        $this->assertGreaterThan($now, $unPublish);
-        $this->assertGreaterThan($publish, $unPublish);
+        return $live;
     }
 
     /**
-     * Test that a page with a past publish date creates the correct jobs
+     * Test when embargo and expiry are both empty.
+     *
+     * No jobs should be created, but page is published by the workflow action.
      */
-    public function testPastPublishThenUnpublish()
+    public function testEmptyEmbargoExpiry()
     {
-        $page = new SiteTree();
-        $page->Title = 'My Page';
-        $page->write();
+        $page = $this->objFromFixture('SiteTree', 'emptyEmbargoExpiry');
+        $page->Content = 'Content to go live';
 
-        // No publish
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
+        $live = $this->getLive($page);
 
-        // Set a past publish date
-        $page->PublishOnDate = '2010-01-01 00:00:00';
-        $page->write();
+        $this->assertEmpty($live->Content);
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
 
-        // We should still have a job to publish this page, but not unpublish
-        $this->assertNotEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
+        $page = $this->finishWorkflow($page);
 
-        // Check that this job is set for immediate run
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $this->assertEmpty($publish);
+        $live = $this->getLive($page);
 
-        // Now add an expiry date in the past, but after the current publish job,
-        // and ensure that this correctly overrides the open publish request
-        $page->UnPublishOnDate = '2010-01-02 00:00:00';
-        $page->write();
-
-        // Now we should have an unpublish job, but the publish job is noticably absent
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertNotEmpty($page->UnPublishJobID);
-
-        // Check that this unpublish job is set for immediate run
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
-        $this->assertEmpty($unpublish);
-
-        // Now add an expiry date in the future, and ensure that we get the correct combination of
-        // publish and unpublish jobs
-        $page->UnPublishOnDate = '2015-01-01 12:00:00';
-        $page->write();
-
-        // Both jobs exist
-        $this->assertNotEmpty($page->PublishJobID);
-        $this->assertNotEmpty($page->UnPublishJobID);
-
-        // Check that this unpublish job is set for immediate run and the unpublish for future
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
-        $this->assertEmpty($publish); // for immediate run
-        $this->assertGreaterThan(strtotime(DBDatetime::now()->getValue()), $unpublish); // for later run
+        $this->assertNotEmpty($live->Content);
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
     }
 
     /**
-     * Test that a page with a past unpublish date creates the correct jobs
+     * Test for embargo in the past
+     *
+     * Creates a publish job which is queued for immediately
      */
-    public function testPastUnPublishThenPublish()
+    public function testPastEmbargo()
     {
-        $page = new SiteTree();
-        $page->Title = 'My Page';
-        $page->write();
+        $page = $this->objFromFixture('SiteTree', 'pastEmbargo');
 
-        // No publish
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
+        $page = $this->finishWorkflow($page);
 
-        // Set a past unpublish date
-        $page->UnPublishOnDate = '2010-01-01 00:00:00';
-        $page->write();
+        $this->assertNotEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
 
-        // We should still have a job to unpublish this page, but not publish
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertNotEmpty($page->UnPublishJobID);
-
-        // Check that this job is set for immediate run
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
-        $this->assertEmpty($unpublish);
-
-        // Now add an publish date in the past, but after the unpublish job,
-        // and ensure that this correctly overrides the open unpublish request
-        $page->PublishOnDate = '2010-01-02 00:00:00';
-        $page->write();
-
-        // Now we should have an publish job, but the unpublish job is noticably absent
-        $this->assertNotEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
-
-        // Check that this publish job is set for immediate run
         $publish = strtotime($page->PublishJob()->StartAfter);
-        $this->assertEmpty($publish);
 
-        // Now add a publish date in the future, and ensure that we get the correct combination of
-        // publish and unpublish jobs
-        $page->PublishOnDate = '2015-01-01 12:00:00';
-        $page->write();
-
-        // Both jobs exist
-        $this->assertNotEmpty($page->PublishJobID);
-        $this->assertNotEmpty($page->UnPublishJobID);
-
-        // Check that this unpublish job is set for immediate run and the unpublish for future
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
-        $this->assertEmpty($unpublish); // for immediate run
-        $this->assertGreaterThan(strtotime(DBDatetime::now()->getValue()), $publish); // for later run
+        $this->assertFalse($publish);
     }
 
-    public function testPastPublishWithWorkflowInEffect()
+    /**
+     * Test for expiry in the past
+     *
+     * Creates an unpublish job which is queued for immediately
+     */
+    public function testPastExpiry()
     {
-        $definition = $this->createDefinition();
+        $page = $this->objFromFixture('SiteTree', 'pastExpiry');
 
-        $page = new SiteTree();
-        $page->Title = 'My page';
-        $page->WorkflowDefinitionID = $definition->ID;
-        $page->write();
+        $page = $this->finishWorkflow($page);
 
-        // No publish
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
 
-        // Set a past publish date
-        $page->DesiredPublishDate = '2010-01-01 00:00:00';
-        $page->write();
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
 
-        // Workflow is in effect. No jobs have been created yet as it's not approved.
-        $this->assertEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
-
-        // Advance the workflow so we can see what happens
-        $instance = new WorkflowInstance();
-        $instance->beginWorkflow($definition, $page);
-        $instance->execute();
-
-        // execute the "publish" workflow action
-        $action = new PublishItemWorkflowAction();
-        $action->execute($instance);
-
-        // re-fetch the Page again.
-        $page = SiteTree::get()->byId($page->ID);
-
-        // We now have a PublishOnDate field set
-        $this->assertEquals('2010-01-01 00:00:00', $page->PublishOnDate);
-        $this->assertEmpty($page->DesiredPublishDate);
-
-        // Publish job has been setup
-        $this->assertNotEmpty($page->PublishJobID);
-        $this->assertEmpty($page->UnPublishJobID);
-
-        // Check that this publish job is set for immediate run
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $this->assertEmpty($publish);
+        $this->assertFalse($unpublish);
     }
+
+    /**
+     * Test for embargo and expiry in the past
+     *
+     * Creates an unpublish job which is queued for immediately
+     */
+    public function testPastEmbargoExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'pastEmbargoExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
+
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+
+        $this->assertFalse($unpublish);
+    }
+
+    /**
+     * Test for embargo in the past and expiry in the future
+     *
+     * Creates a publish job which is queued for immediately and an unpublish job which is queued for later
+     */
+    public function testPastEmbargoFutureExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'pastEmbargoFutureExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertNotEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
+
+        $publish = strtotime($page->PublishJob()->StartAfter);
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+
+        $this->assertFalse($publish);
+        $this->assertNotFalse($unpublish);
+    }
+
+    /**
+     * Test for embargo and expiry in the future
+     *
+     * Creates a publish and unpublish job which are queued for immediately
+     */
+    public function testFutureEmbargoExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertNotEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
+
+        $publish = strtotime($page->PublishJob()->StartAfter);
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+
+        $this->assertNotFalse($publish);
+        $this->assertNotFalse($unpublish);
+    }
+
+    /**
+     * Test for embargo after expiry in the past
+     *
+     * No jobs should be created, invalid option
+     */
+    public function testPastEmbargoAfterExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'pastEmbargoAfterExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
+
+    /**
+     * Test for embargo after expiry in the future
+     *
+     * No jobs should be created, invalid option
+     */
+    public function testFutureEmbargoAfterExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'futureEmbargoAfterExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
+
+    /**
+     * Test for embargo and expiry in the past, both have the same value
+     *
+     * No jobs should be created, invalid option
+     */
+    public function testPastSameEmbargoExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'pastSameEmbargoExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
+
+    /**
+     * Test for embargo and expiry in the future, both have the same value
+     *
+     * No jobs should be created, invalid option
+     */
+    public function testFutureSameEmbargoExpiry()
+    {
+        $page = $this->objFromFixture('SiteTree', 'futureSameEmbargoExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
+
+    /**
+     * When an item is queued for publishing or unpublishing and new dates are entered
+     *
+     * The existing queued jobs should be cleared
+     */
+	public function testDesiredRemovesJobs()
+    {
+        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+
+        $page = $this->finishWorkflow($page);
+
+		$this->assertNotEquals(0, $page->PublishJobID);
+		$this->assertNotEquals(0, $page->UnPublishJobID);
+
+		$page->DesiredPublishDate = '2020-02-01 00:00:00';
+		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
+
+		$page->write();
+
+		$this->assertEquals(0, $page->PublishJobID);
+		$this->assertEquals(0, $page->UnPublishJobID);
+	}
 
     /**
      * Tests that checking for publishing scheduled state is working
@@ -622,16 +605,14 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         return $definition;
     }
 
+    /**
+     * Make sure that publish and unpublish dates are not carried over to the duplicates.
+     */
     public function testDuplicateRemoveEmbargoExpiry() {
-        $page = SiteTree::create();
-
-        $page->Title = 'My page';
-        $page->PublishOnDate = '2020-01-01 00:00:00';
-        $page->UnPublishOnDate = '2020-01-01 01:00:00';
+        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
 
         // fake publish jobs
-        $page->write();
-        $this->startWorkflow($page);
+        $page = $this->finishWorkflow($page);
 
         $dupe = $page->duplicate();
         $this->assertNotNull($page->PublishOnDate, 'Not blank publish on date');

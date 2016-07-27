@@ -297,12 +297,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function onBeforeWrite() {
 		parent::onBeforeWrite();
 
-		// if we've been duplicated, the old job IDs will be hanging around, so explicitly clear
-		if (!$this->owner->ID) {
-			$this->owner->PublishJobID = 0;
-			$this->owner->UnPublishJobID = 0;
-		}
-
 		// only operate on staging content for this extension; otherwise, you
 		// need to publish the page to be able to set a 'future' publish...
 		// while the same could be said for the unpublish, the 'publish' state
@@ -343,10 +337,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
 		// We should have a publish job if:
-		if($publishTime && ( // We have a date
-			$unPublishTime < $publishTime // it occurs before an unpublish date (or there is no unpublish)
-			|| $unPublishTime > $now // or the unpublish date hasn't passed
-		)) {
+		// if no unpublish or publish time, then the Workflow Publish Action will publish without a job
+		if((!$unPublishTime && $publishTime) // the unpublish date is not set
+            || (
+                $unPublishTime > $now // unpublish date has not passed
+                && $publishTime < $unPublishTime // publish date not set or happens before unpublish date
+            )
+		) {
 			// Trigger time immediately if passed
 			$this->ensurePublishJob($publishTime < $now ? null : $publishTime);
 		} else {
@@ -354,10 +351,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		}
 
 		// We should have an unpublish job if:
-		if($unPublishTime && ( // we have a date
-			$publishTime < $unPublishTime // it occurs after a publish date (or there is no publish)
-			|| $publishTime > $now // or the publish date hasn't passed
-		)) {
+		if($unPublishTime // we have an unpublish date
+            &&
+            $publishTime < $unPublishTime // publish date is before to unpublish date
+        ) {
 			// Trigger time immediately if passed
 			$this->ensureUnPublishJob($unPublishTime < $now ? null : $unPublishTime);
 		} else {
@@ -484,6 +481,43 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		$required->setCaller($this);
 		return $required;
 	}
+
+    /**
+     * This is called in the AWRequiredFields class, this validates whether an Embargo and Expiry are not equal and that
+     * Embargo is before Expiry, returning the appropriate message when it fails.
+     *
+     * @param $data
+     * @return array
+     */
+    public function extendedRequiredFieldsEmbargoExpiry($data)
+    {
+        $response = array(
+            'fieldName'	 => 'DesiredUnPublishDate[date]',
+            'fieldField' => null,
+            'fieldMsg'	 => null,
+            'fieldValid' => true
+        );
+
+        if (isset($data['DesiredPublishDate'], $data['DesiredUnPublishDate'])) {
+            $publish = $data['DesiredPublishDate'];
+            $unpublish = $data['DesiredUnPublishDate'];
+
+            // the times are the same
+            if (strtotime($publish) == strtotime($unpublish)) {
+                $response = array_merge($response, array(
+                    'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDSAMEEMBARGOEXPIRY', 'The publish date and unpublish date cannot be the same.'),
+                    'fieldValid' => false
+                ));
+            } elseif (strtotime($publish) > strtotime($unpublish)) {
+                $response = array_merge($response, array(
+                    'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDEXPIRY', 'The unpublish date cannot be before the publish date.'),
+                    'fieldValid' => false
+                ));
+            }
+        }
+
+        return $response;
+    }
 
 	/*
 	 * Format a date according to member/user preferences
