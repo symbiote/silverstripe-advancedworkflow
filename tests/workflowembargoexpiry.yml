@@ -4,7 +4,7 @@ WorkflowDefinition:
   approvePublication:
     Title: 'Approve Publish'
 
-SimpleApprovalWorkflowAction:
+WorkflowEmbargoExpiryTest_DummyWorkflowAction:
   requestPublication:
     Title: 'Approve'
     WorkflowDefID: =>WorkflowDefinition.requestPublication
