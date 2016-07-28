@@ -83,6 +83,11 @@ jQuery.entwine('ss.workflow', function ($) {
                 futureDateTime = self.getISODateTime(),
                 previewUrl = $('.preview').attr('href');
 
+            if (!self.checkIsFutureDatetime()) {
+                self.statusMessage('Please enter future date and time', 'bad');
+                return;
+            }
+
             if (futureDateTime) {
                 if (!previewUrl) {
                     self.statusMessage('Unable to determine to the URL to view', 'bad');
@@ -92,6 +97,27 @@ jQuery.entwine('ss.workflow', function ($) {
             } else {
                 self.statusMessage('Please enter a proper date and time', 'bad');
             }
+        },
+        /*
+         * Checks if the preview date is in the future
+         */
+        checkIsFutureDatetime: function () {
+            var datetime,
+                now = new Date(),
+
+                holder = this.closest('.futurestatepreview'),
+                date = holder.find(':input.date').datepicker('getDate'),
+                time = holder.find(':input.time').datepicker('getDate');
+
+            datetime = new Date(
+                date.getFullYear(),
+                date.getMonth(),
+                date.getDate(),
+                time.getHours(),
+                time.getMinutes()
+            );
+
+            return datetime > now;
         }
     });
 
