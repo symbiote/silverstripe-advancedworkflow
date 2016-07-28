@@ -499,16 +499,16 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         );
 
         if (isset($data['DesiredPublishDate'], $data['DesiredUnPublishDate'])) {
-            $publish = $data['DesiredPublishDate'];
-            $unpublish = $data['DesiredUnPublishDate'];
+            $publish = strtotime($data['DesiredPublishDate']);
+            $unpublish = strtotime($data['DesiredUnPublishDate']);
 
             // the times are the same
-            if (strtotime($publish) == strtotime($unpublish)) {
+            if ($publish && $unpublish && $publish == $unpublish) {
                 $response = array_merge($response, array(
                     'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDSAMEEMBARGOEXPIRY', 'The publish date and unpublish date cannot be the same.'),
                     'fieldValid' => false
                 ));
-            } elseif (strtotime($publish) > strtotime($unpublish)) {
+            } elseif ($publish && $unpublish && $publish > $unpublish) {
                 $response = array_merge($response, array(
                     'fieldMsg'	 => _t('WorkflowEmbargoExpiryExtension.INVALIDEXPIRY', 'The unpublish date cannot be before the publish date.'),
                     'fieldValid' => false
