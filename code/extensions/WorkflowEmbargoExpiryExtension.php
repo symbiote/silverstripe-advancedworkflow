@@ -622,7 +622,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
             }
             $time = static::$future_time;
 
-            $this->owner->extend('getWorkflowFutureTime', $time, $ctrl);
+            $this->owner->extend('getWorkflowFutureTime', $time, $curr);
 
             static::$future_time = $time;
         }
@@ -638,8 +638,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * @param  string $futureTime Date that can be parsed by strtotime
      * @return string|null        Either the URL with future time added or null if time cannot be parsed
      */
-    public function getFutureTimeLink($futureTime)
+    public function getFutureTimeLink($futureTime = null)
     {
+        if (!$futureTime) {
+            $futureTime = $this->getFutureTime();
+        }
+        if (!$futureTime) {
+            return null;
+        }
         $parsed = strtotime($futureTime);
         if ($parsed && $this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
             return Controller::join_links(
