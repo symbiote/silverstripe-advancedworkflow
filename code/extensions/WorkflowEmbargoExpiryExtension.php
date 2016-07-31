@@ -1052,4 +1052,21 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         return $view;
     }
+
+    /**
+     * This is called during the "Revert to this Version" button in framework, and is a standard function in Versioned.
+     *
+     * We would want to clear the publish and unpublish dates so that there aren't any unintentional jobs queued
+     * (e.g. a really old version was reverted)
+     */
+    public function onAfterRollback()
+    {
+        $this->owner->DesiredPublishDate = null;
+        $this->owner->DesiredUnPublishDate = null;
+        $this->owner->PublishOnDate = null;
+        $this->owner->UnPublishOnDate = null;
+
+        // write, but without creating a version, so it keeps the current behaviour of not creating a version
+        $this->owner->writeWithoutVersion();
+    }
 }
