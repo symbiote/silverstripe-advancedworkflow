@@ -278,36 +278,6 @@ jQuery.entwine("ss.workflow", function($) {
 			return false;
 		}
 	});
-
-    /**
-     * Add link to populate the datetime now into the fields
-     */
-    $('.embargoexpiry-datetime .set-now').entwine({
-        onclick: function () {
-            var self = this;
-            self.setDatetimeNow();
-
-            return false;
-        },
-        setDatetimeNow: function () {
-            var holder = this.closest('.embargoexpiry-datetime'),
-                inputDate = holder.find(':input.date'),
-                inputTime = holder.find(':input.time'),
-                now = new Date();
-
-            inputDate.datepicker('setDate', now);
-
-            if (!inputDate.datepicker('getDate')) {
-                // Date couldn't be set because datepicker was not initiated, initiate datepicker and set the date again
-                var dateFormat = inputDate.data('jquerydateformat');
-
-                inputDate.datepicker({ 'dateFormat': dateFormat });
-                inputDate.datepicker('setDate', now);
-            }
-
-            inputTime.timepicker('setTime', now);
-        }
-    });
 });
 
 jQuery.entwine("ss", function($) {
