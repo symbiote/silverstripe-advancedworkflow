@@ -480,7 +480,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      */
 	public function canEdit($member) {
 		if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
-			!$this->AllowEmbargoedEditing) { // item flagged as not editable
+			!$this->owner->AllowEmbargoedEditing) { // item flagged as not editable
 			$now = strtotime(DBDatetime::now()->getValue());
 			$publishTime = strtotime($this->owner->PublishOnDate);
 
