@@ -906,7 +906,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return string
      */
-    private function getEmbargoExpiryApprover()
+    public function getEmbargoExpiryApprover()
     {
         $approver = null;
         $instance = null;
