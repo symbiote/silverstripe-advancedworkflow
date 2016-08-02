@@ -889,9 +889,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         // $date is not in the future
         elseif ($valid === false) {
             if ($type === 'embargo') {
-                $result = _t('WorkflowMessage.EMBARGO_DATE_INVALID', 'Immediately');
+                $result = _t('WorkflowMessage.EMBARGO_DATE_IN_PAST', 'Immediately');
             } elseif ($type === 'expiry') {
-                $result = _t('WorkflowMessage.EXPIRY_DATE_INVALID', 'Never');
+                $result = _t('WorkflowMessage.EXPIRY_DATE_IN_PAST', 'Immediately');
             }
         }
         // the datetime fields were blank and saved
@@ -944,7 +944,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @return string
      */
-    private function getEmbargoExpiryApprover()
+    public function getEmbargoExpiryApprover()
     {
         $approver = null;
         $instance = null;
@@ -983,6 +983,46 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
     }
 
     /**
+     * Render the embargo and/or expiry date
+     *
+     * @param array $message
+     * @param string $embargo DesiredPublishDate|PublishOnDate
+     * @param string $expiry DesiredUnPublishDate|UnPublishOnDate
+     * @param boolean $link optional whether or not to link the date
+     */
+    private function renderEmbargoExpiryDates(&$message, $embargo, $expiry, $link = false)
+    {
+        if (
+            ($embargo && $expiry) &&
+            (strtotime($expiry) <= strtotime($embargo))
+        ) {
+            $message['Error'] = _t('WorkflowMessage.ERROR_EMBARGO_BEFORE_EXPIRY', 'Expiry must be set after the embargo date. Please enter valid dates.');
+        } else {
+            $expiryValidity = $this->checkValidEmbargoExpiryDate($expiry);
+
+            if ($link) {
+                $expiryDate = $this->renderEmbargoExpiryDateLink($expiry, 'expiry');
+            } else {
+                $expiryDate = $this->getEmbargoExpiryDate($expiry, 'expiry');
+            }
+            $message['DateUnPublish'] = $expiryDate;
+
+            /*
+             * Don't render embargo date if page is set to expiry immediately,
+             * i.e. when the expiry value is in the past
+             */
+            if ($embargo && $expiryValidity !== false) {
+                if ($link) {
+                    $embargoDate = $this->renderEmbargoExpiryDateLink($embargo, 'embargo');
+                } else {
+                    $embargoDate = $this->getEmbargoExpiryDate($embargo, 'embargo');
+                }
+                $message['DatePublish'] = $embargoDate;
+            }
+        }
+    }
+
+    /**
      * Generate values for each workflow status message box, which includes:
      *
      * - Style          The message's CSS class warning|info
@@ -1008,23 +1048,20 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PENDING', 'Embargo/expiry saved in draft');
                 $message['DatePrefix'] = $prefixRequested;
-                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredPublishDate, 'embargo');
-                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate, 'expiry');
+                $this->renderEmbargoExpiryDates($message, $this->owner->DesiredPublishDate, $this->owner->DesiredUnPublishDate);
                 break;
             case 'Paused':
                 $message['Style'] = 'warning';
                 $message['Title'] = _t('WorkflowMessage.TITLE_PAUSED', 'Awaiting approval');
                 $message['DatePrefix'] = $prefixRequested;
-                $message['DatePublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredPublishDate, 'embargo');
-                $message['DateUnPublish'] = $this->getEmbargoExpiryDate($this->owner->DesiredUnPublishDate, 'expiry');
+                $this->renderEmbargoExpiryDates($message, $this->owner->DesiredPublishDate, $this->owner->DesiredUnPublishDate);
                 break;
             case 'Complete':
                 $message['Style'] = 'notice';
                 $message['Title'] = _t('WorkflowMessage.TITLE_COMPLETE', 'Approved changes');
                 $message['Approver'] = $this->getEmbargoExpiryApprover();
                 $message['DatePrefix'] = $prefixScheduled;
-                $message['DatePublish'] = $this->renderEmbargoExpiryDateLink($this->owner->PublishOnDate, 'embargo');
-                $message['DateUnPublish'] = $this->renderEmbargoExpiryDateLink($this->owner->UnPublishOnDate, 'expiry');
+                $this->renderEmbargoExpiryDates($message, $this->owner->PublishOnDate, $this->owner->UnPublishOnDate, true);
         }
 
         return $message;
