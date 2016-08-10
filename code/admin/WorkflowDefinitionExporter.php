@@ -6,22 +6,22 @@ use SilverStripe\Security\Permission;
 
 /**
  * Allows workflow definitions to be exported from one SilverStripe install, ready for import into another.
- * 
+ *
  * YAML is used for export as it's native to SilverStripe's config system and we're using {@link WorkflowTemplate}
  * for some of the import-specific heavy lifting, which is already heavily predicated on YAML.
- * 
+ *
  * @todo
  *	- If workflow-def is created badly, the "update template definition" logic, sometimes doesn't work
- * 
+ *
  * @author  russell@silverstripe.com
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
 class WorkflowDefinitionExporter {
-	
+
 	/**
 	 * The base filename of the file to the exported
-	 * 
+	 *
 	 * @var string
 	 */
 	public static $export_filename_prefix = 'workflow-definition-export';
@@ -31,74 +31,74 @@ class WorkflowDefinitionExporter {
 	 */
 	protected $member;
 	/**
-	 * 
+	 *
 	 * @var \WorkflowDefinition
 	 */
 	protected $workflowDefinition;
-	
+
 	/**
-	 * 
+	 *
 	 * @param number $definitionID
 	 * @return void
 	 */
 	public function __construct($definitionID) {
 		$this->setMember(Member::currentUser());
-		$this->workflowDefinition = DataObject::get_by_id('WorkflowDefinition', $definitionID);		
+		$this->workflowDefinition = DataObject::get_by_id('WorkflowDefinition', $definitionID);
 	}
-	
+
 	/**
-	 * 
+	 *
 	 * @param \Member $member
 	 */
 	public function setMember($member) {
 		$this->member = $member;
 	}
-	
+
 	/**
 	 * @return \WorkflowDefinition
 	 */
 	public function getDefinition() {
 		return $this->workflowDefinition;
 	}
-	
+
 	/**
-	 * Runs the export 
-	 * 
+	 * Runs the export
+	 *
 	 * @return string $template
 	 */
 	public function export() {
 		// Disable any access to use of WorkflowExport if user has no SecurityAdmin access
 		if(!Permission::check('CMS_ACCESS_SecurityAdmin')) {
 			throw Exception(_t('ErrorPage.403'), 403);
-		}		
+		}
 		$def = $this->getDefinition();
 		$templateData = new ArrayData(array(
 			'ExportMetaData' => $this->ExportMetaData(),
 			'ExportActions' => $def->Actions(),
 			'ExportUsers' => $def->Users(),
-			'ExportGroups' => $def->Groups() 
+			'ExportGroups' => $def->Groups()
 		));
 		return $this->format($templateData);
 	}
-	
+
 	/**
 	 * Format the exported data as YAML.
-	 * 
+	 *
 	 * @param \ArrayData $templateData
 	 * @return void
 	 */
 	public function format($templateData) {
-		$viewer = SSViewer::execute_template('WorkflowDefinitionExport', $templateData);
+		$viewer = SSViewer::execute_template(['type' => 'Includes', 'WorkflowDefinitionExport'], $templateData);
 		// Temporary until we find the source of the replacement in SSViewer
 		$processed = str_replace('&amp;', '&', $viewer);
 		// Clean-up newline "gaps" that SSViewer leaves behind from the placement of template control structures
 		return preg_replace("#^\R+|^[\t\s]*\R+#m", '', $processed);
 	}
-	
+
 	/**
 	 * Returns the size of the current export in bytes.
 	 * Used for pushing data to the browser to prompt for download
-	 * 
+	 *
 	 * @param string $str
 	 * @return number $bytes
 	 */
@@ -108,7 +108,7 @@ class WorkflowDefinitionExporter {
 
 	/**
 	 * Generate template vars for metadata
-	 * 
+	 *
 	 * @return ArrayData
 	 */
 	public function ExportMetaData() {
@@ -123,10 +123,10 @@ class WorkflowDefinitionExporter {
 			'ExportSort' => $def->Sort
 		));
 	}
-	
+
 	/*
 	 * Try different ways of obtaining the current SilverStripe version for YAML output.
-	 * 
+	 *
 	 * @return string
 	 */
 	private function ssVersion() {
@@ -138,16 +138,16 @@ class WorkflowDefinitionExporter {
 		}
 		return $versionLeftMain;
 	}
-	
+
 	private function processTitle($title) {
 		// If an import is exported and re-imported, the new export date is appended to Title, making for a very long title
-		return preg_replace("#\s[\d]+\/[\d]+\/[\d]+\s[\d]+-[\d]+-[\d]+(\s[\d]+)?#", '', $title);	
+		return preg_replace("#\s[\d]+\/[\d]+\/[\d]+\s[\d]+-[\d]+-[\d]+(\s[\d]+)?#", '', $title);
 	}
-	
+
 	/**
 	 * Prompt the client for file download.
 	 * We're "overriding" SS_HTTPRequest::send_file() for more robust cross-browser support
-	 * 
+	 *
 	 * @param array $filedata
 	 * @return \SS_HTTPResponse $response
 	 */
@@ -162,7 +162,7 @@ class WorkflowDefinitionExporter {
 			$response->addHeader("Content-Type","application/download");
 			$response->addHeader("Content-Type",$filedata['mime']);
 			$response->addHeader("Content-Description","File Transfer");
-			$response->addHeader("Content-Length",$filedata['size']);	
+			$response->addHeader("Content-Length",$filedata['size']);
 		}
 		else {
 			// Everyone else
@@ -172,5 +172,5 @@ class WorkflowDefinitionExporter {
 		}
 		return $response;
 	}
-	
+
 }

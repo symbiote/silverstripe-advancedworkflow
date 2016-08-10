@@ -401,7 +401,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	public function getIntroMessage($key) {
 		$msg = $this->getIntroMessageParts($key);
 		$curr = Controller::curr();
-		$msg = $curr->customise($msg)->renderWith('embargoIntro');
+		$msg = $curr->customise($msg)->renderWith('Includes/embargoIntro');
 		return $msg;
 	}
 

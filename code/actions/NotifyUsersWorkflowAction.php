@@ -81,7 +81,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 		$variables["\$CommentHistory"] = $this->customise(array(
 			'PastActions'=>$pastActions,
 			'Now'=>DBDatetime::now()
-		))->renderWith('CommentHistory');
+		))->renderWith('Includes/CommentHistory');
 
 		$from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
 		$subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
