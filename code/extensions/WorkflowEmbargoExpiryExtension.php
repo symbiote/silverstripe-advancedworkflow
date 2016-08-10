@@ -763,7 +763,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      */
     public function checkIsEmbargoExpiryPending() {
         return Versioned::get_stage() === Versioned::DRAFT &&
-               ($this->checkValidEmbargoExpiryDate($this->owner->DesiredPublishDate) || $this->checkValidEmbargoExpiryDate($this->owner->DesiredUnPublishDate));
+               ($this->owner->DesiredPublishDate || $this->owner->DesiredUnPublishDate);
     }
 
     /**
@@ -800,7 +800,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
         } elseif ($this->checkIsEmbargoExpiryPending()) {
             array_push($statuses, 'Pending');
         }
-
+        
         return $statuses;
     }
 
@@ -1048,7 +1048,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 'WorkflowMessages' => $messages
             )
         )->renderWith('Includes/WorkflowStatusMessage');
-
+        
         return $view;
     }
 }

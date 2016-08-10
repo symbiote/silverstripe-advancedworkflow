@@ -506,10 +506,10 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array does not contain Pending, when no desired embargo & expiry dates are entered');
 
         $page->DesiredPublishDate = '2014-01-01 00:00:00';
-        $page->DesiredUnPublishDate = '2013-01-19 00:00:00';
+        $page->DesiredUnPublishDate = '2014-01-02 00:00:00';
         $page->write();
         $statuses = $page->getEmbargoExpiryStatuses();
-        $this->assertNotContains('Pending', $statuses, 'check the page\'s statuses array does not contain Pending, when invalid desired embargo & expiry dates are entered');
+        $this->assertContains('Pending', $statuses, 'check the page\'s statuses array does contain Pending, when past desired embargo & expiry dates are entered');
     }
 
     /**
