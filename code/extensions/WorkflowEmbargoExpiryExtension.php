@@ -28,7 +28,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      *
      * @var null|string The future time
      */
-    private static $future_time = null;
+    public static $future_time = null;
 
 	private static $db = array(
 		'DesiredPublishDate'	=> 'DBDatetime',
@@ -573,12 +573,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
                 }
             }
             $time = static::$future_time;
-
-            $this->owner->extend('getWorkflowFutureTime', $time, $curr);
-
-            static::$future_time = $time;
         }
-
         return static::$future_time;
     }
 
