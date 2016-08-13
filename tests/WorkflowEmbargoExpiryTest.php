@@ -4,6 +4,8 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
+use SilverStripe\CMS\Model\SiteTree;
+
 
 /**
  * @author marcus@silverstripe.com.au
@@ -36,7 +38,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      * @var array
      */
     protected $requiredExtensions = array(
-        'SiteTree' => array(
+        'SilverStripe\\CMS\\Model\\SiteTree' => array(
             'WorkflowEmbargoExpiryExtension',
             'SilverStripe\\ORM\\Versioning\\Versioned',
         )
@@ -46,7 +48,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      * @var array
      */
     protected $illegalExtensions = array(
-        'SiteTree' => array(
+        'SilverStripe\\CMS\\Model\\SiteTree' => array(
             "Translatable",
         )
     );
@@ -120,7 +122,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testEmptyEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'emptyEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'emptyEmbargoExpiry');
         $page->Content = 'Content to go live';
 
         $live = $this->getLive($page);
@@ -145,7 +147,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargo()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargo');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastEmbargo');
 
         $page = $this->finishWorkflow($page);
 
@@ -164,7 +166,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -183,7 +185,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -202,7 +204,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoFutureExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoFutureExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastEmbargoFutureExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -223,7 +225,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -244,7 +246,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoAfterExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -259,7 +261,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoAfterExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'futureEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -274,7 +276,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastSameEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'pastSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -289,7 +291,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureSameEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'futureSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -302,23 +304,23 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      *
      * The existing queued jobs should be cleared
      */
-	public function testDesiredRemovesJobs()
+    public function testDesiredRemovesJobs()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
-		$this->assertNotEquals(0, $page->PublishJobID);
-		$this->assertNotEquals(0, $page->UnPublishJobID);
+        $this->assertNotEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
 
-		$page->DesiredPublishDate = '2020-02-01 00:00:00';
-		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
+        $page->DesiredPublishDate = '2020-02-01 00:00:00';
+        $page->DesiredUnPublishDate = '2020-02-01 02:00:00';
 
-		$page->write();
+        $page->write();
 
-		$this->assertEquals(0, $page->PublishJobID);
-		$this->assertEquals(0, $page->UnPublishJobID);
-	}
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
 
     /**
      * Tests that checking for publishing scheduled state is working
@@ -456,7 +458,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      * Make sure that publish and unpublish dates are not carried over to the duplicates.
      */
     public function testDuplicateRemoveEmbargoExpiry() {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'futureEmbargoExpiry');
 
         // fake publish jobs
         $page = $this->finishWorkflow($page);

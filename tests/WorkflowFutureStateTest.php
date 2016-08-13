@@ -4,6 +4,8 @@
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\CMS\Model\SiteTree;
+
 
 
 
@@ -15,7 +17,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     protected static $fixture_file = 'workflowfuturestate.yml';
 
     protected $requiredExtensions = array(
-        'SiteTree' => array(
+        'SilverStripe\\CMS\\Model\\SiteTree' => array(
             'WorkflowEmbargoExpiryExtension',
             'WorkflowApplicable',
             'SilverStripe\\ORM\\Versioning\\Versioned'
@@ -23,7 +25,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     );
 
     protected $illegalExtensions = array(
-        'SiteTree' => array(
+        'SilverStripe\\CMS\\Model\\SiteTree' => array(
             'Translatable',
             'SiteTreeSubsites'
         )
@@ -98,7 +100,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftOnly()
     {
-        $draft = $this->objFromFixture('SiteTree', 'basic');
+        $draft = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic');
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -125,7 +127,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftInWorkflow()
     {
-        $draft = $this->startWorkflow($this->objFromFixture('SiteTree', 'inWorkflow'));
+        $draft = $this->startWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'inWorkflow'));
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -151,7 +153,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftInQueue()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoOnly'));
 
         // Currently in the publish queue
         $this->assertTrue($draft->PublishJobID > 0);
@@ -191,7 +193,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testMultipleDrafts()
     {
-        $draft = $this->objFromFixture('SiteTree', 'multiDraft');
+        $draft = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'multiDraft');
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -204,7 +206,7 @@ class WorkflowFutureStateTest extends FunctionalTest
         $draft->Title = 'Another new title';
         $draft = $this->finishWorkflow($draft);
 
-        $versions = Versioned::get_all_versions('SiteTree', $draft->ID);
+        $versions = Versioned::get_all_versions('SilverStripe\\CMS\\Model\\SiteTree', $draft->ID);
         $this->assertEquals($versions->Count(), 3);
 
         // Get date in the future should be the latest version for this page
@@ -223,7 +225,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftEmbargo()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoOnly'));
 
         // Check that there is no live version
         $this->assertTrue($draft->isOnDraft());
@@ -267,7 +269,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftExpiry()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'expiryOnly'));
 
         // At the end of the workflow this page is published immediately
         $this->assertTrue($draft->isPublished());
@@ -309,7 +311,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDraftEmbargoExpiry()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoAndExpiry'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoAndExpiry'));
 
         // Check that there is no live version after workflow
         $this->assertTrue($draft->isOnDraft());
@@ -358,7 +360,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     public function testPublishedDraftEmbargo()
     {
 
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
 
@@ -401,7 +403,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     public function testPublishedDraftExpiry()
     {
         // Publish draft
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'expiryOnly'));
         $this->assertTrue($draft->isPublished());
 
         // New draft version and expiry with date 2 days earlier
@@ -441,7 +443,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testPublishedDraftEmbargoExpiry()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'distantExpiry'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'distantExpiry'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
 
@@ -497,7 +499,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testExpiryCleared()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'expiryOnly'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
         $this->assertEquals('2016-06-17 00:00:01', $draft->UnPublishOnDate);
@@ -553,7 +555,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testEmbargoCleared()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoOnly'));
         $this->assertFalse($draft->isPublished()); // In the queue waiting
         $this->assertEquals('2016-06-15 00:00:01', $draft->PublishOnDate);
 
@@ -608,7 +610,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testEmbargoAndExpiryCleared()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'embargoAndExpiry'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoAndExpiry'));
         $this->assertFalse($draft->isPublished()); // In the queue waiting
         $this->assertEquals('2016-06-18 00:00:01', $draft->PublishOnDate);
         $this->assertEquals('2016-06-19 00:00:01', $draft->UnPublishOnDate);
@@ -665,7 +667,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testFutureStateLink()
     {
-        $draft = $this->objFromFixture('SiteTree', 'wideEmbargoAndExpiry');
+        $draft = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'wideEmbargoAndExpiry');
         $preview = $draft->PreviewLink();
 
         $link = $draft->getFutureTimeLink($draft->DesiredPublishDate);
@@ -698,7 +700,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testArchivedPagesIgnored()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'expiryOnly'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'expiryOnly'));
 
         // At the end of the workflow this page is published immediately
         $this->assertTrue($draft->isPublished());
@@ -734,7 +736,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testDeletedFromDraftPagesIgnored()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic'));
         $title = $draft->Title;
         $this->assertTrue($draft->isPublished());
 
@@ -795,7 +797,7 @@ class WorkflowFutureStateTest extends FunctionalTest
      */
     public function testUnpublishedPagesIgnored()
     {
-        $draft = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $draft = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic'));
         $title = $draft->Title;
 
         $this->assertTrue($draft->isPublished());
@@ -838,10 +840,10 @@ class WorkflowFutureStateTest extends FunctionalTest
         $this->loginWithPermission('ADMIN');
 
         // Use a couple of root pages and reorder them, assume that "basic" is the first page in the fixture
-        $basic = $this->finishWorkflow($this->objFromFixture('SiteTree', 'basic'));
+        $basic = $this->finishWorkflow($this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic'));
         $this->assertEquals(1, $basic->Sort);
 
-        $embargo = $this->objFromFixture('SiteTree', 'embargoOnly');
+        $embargo = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'embargoOnly');
         $this->assertFalse($embargo->Sort == 1);
 
         // Move embargo page up
@@ -853,15 +855,15 @@ class WorkflowFutureStateTest extends FunctionalTest
             'ID' => $embargo->ID,
             'ParentID' => 0
         );
-        Config::inst()->update('LeftAndMain', 'tree_class', 'SiteTree');
+        Config::inst()->update('LeftAndMain', 'tree_class', 'SilverStripe\\CMS\\Model\\SiteTree');
         $response = $this->post('LeftAndMain/savetreenode', $data);
         $this->assertEquals(200, $response->getStatusCode());
 
         // New sort order is correctly reflecting changes
-        $obj = DataObject::get_by_id('SiteTree', $embargo->ID);
+        $obj = DataObject::get_by_id('SilverStripe\\CMS\\Model\\SiteTree', $embargo->ID);
         $this->assertEquals(1, $obj->Sort);
 
-        $basic = DataObject::get_by_id('SiteTree', $basic->ID);
+        $basic = DataObject::get_by_id('SilverStripe\\CMS\\Model\\SiteTree', $basic->ID);
         $this->assertEquals(2, $basic->Sort);
 
         // Embargo the page
@@ -891,7 +893,7 @@ class WorkflowFutureStateTest extends FunctionalTest
     public function testFutureTimeResolution()
     {
         $tz = date_default_timezone_get();
-        $draft = $this->objFromFixture('SiteTree', 'basic');
+        $draft = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'basic');
         $controller = new Controller();
 
         $request = new SS_HTTPRequest('GET', '/', array('ft' => '20160703T1150Z'));

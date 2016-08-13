@@ -2,6 +2,8 @@
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\CMS\Model\SiteTree;
+
 /**
  * Tests for the workflow engine.
  *
@@ -80,7 +82,7 @@ class WorkflowEngineTest extends SapphireTest
     public function testInstanceGetTargetPublished()
     {
         $def = $this->createDefinition();
-        $target = $this->objFromFixture('SiteTree', 'published-object');
+        $target = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'published-object');
         $target->doPublish();
 
         $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
@@ -98,7 +100,7 @@ class WorkflowEngineTest extends SapphireTest
     public function testInstanceGetTargetDraft()
     {
         $def = $this->createDefinition();
-        $target = $this->objFromFixture('SiteTree', 'draft-object');
+        $target = $this->objFromFixture('SilverStripe\\CMS\\Model\\SiteTree', 'draft-object');
 
         $instance = $this->objFromFixture('WorkflowInstance', 'target-is-draft');
         $instance->beginWorkflow($def);
@@ -120,14 +122,14 @@ class WorkflowEngineTest extends SapphireTest
         $page->Title = 'stuff';
         $page->write();
 
-        $instance->TargetClass = 'SiteTree';
+        $instance->TargetClass = 'SilverStripe\\CMS\\Model\\SiteTree';
         $instance->TargetID = $page->ID;
 
         $this->assertFalse($page->isPublished());
 
         $action->execute($instance);
 
-        $page = DataObject::get_by_id('SiteTree', $page->ID);
+        $page = DataObject::get_by_id('SilverStripe\\CMS\\Model\\SiteTree', $page->ID);
         $this->assertTrue($page->isPublished());
 
     }
@@ -254,7 +256,7 @@ class WorkflowEngineTest extends SapphireTest
         $instance->execute();
 
         // Check the content is assigned
-        $testPage = DataObject::get_by_id('SiteTree', $page->ID);
+        $testPage = DataObject::get_by_id('SilverStripe\\CMS\\Model\\SiteTree', $page->ID);
         $this->assertEquals($instance->TargetID, $testPage->ID);
 
         // 3). Delete the workflow

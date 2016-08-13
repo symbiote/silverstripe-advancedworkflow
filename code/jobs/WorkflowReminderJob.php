@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\CMS\Model\SiteTree;
+
 if (class_exists('AbstractQueuedJob')) {
 /**
  * @author <marcus@silverstripe.com.au>

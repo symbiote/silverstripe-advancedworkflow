@@ -14,7 +14,7 @@ PublishItemWorkflowAction:
     Title: 'Publish'
     WorkflowDefID: =>WorkflowDefinition.approvePublication
 
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   inWorkflow:
     Title: 'In workflow'
   emptyEmbargoExpiry:

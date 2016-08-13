@@ -14,7 +14,7 @@ PublishItemWorkflowAction:
     Title: 'Publish'
     WorkflowDefID: =>WorkflowDefinition.approvePublication
 
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   basic:
     Title: 'Basic page'
   inWorkflow:
