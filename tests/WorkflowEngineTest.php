@@ -1,8 +1,8 @@
 <?php
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
-use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * Tests for the workflow engine.

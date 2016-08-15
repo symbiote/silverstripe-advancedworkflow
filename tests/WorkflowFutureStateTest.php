@@ -1,13 +1,9 @@
 <?php
 
-
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Versioning\Versioned;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\CMS\Model\SiteTree;
-
-
-
 
 /**
  * Testing future state in various scenarios.

@@ -1,11 +1,10 @@
 <?php
 
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
-use SilverStripe\CMS\Model\SiteTree;
-
 
 /**
  * @author marcus@silverstripe.com.au
