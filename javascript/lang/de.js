@@ -7,9 +7,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('de', {
     "Workflow.DeleteQuestion": "Sind Sie sicher, dass sie dies endgültig löschen wollen?",
-    "Workflow.EMBARGOMESSAGETIME": "Saved drafts of this page will auto publish today at <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATE": "Saved drafts of this page will auto publish on <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Saved drafts of this page will auto publish on <a>%s at %s</a>",
+    "Workflow.EMBARGOMESSAGETIME": "Saved drafts of this page will auto publish today at <a>%s</a>",
     "Workflow.ProcessError": "Arbeitsablauf konnte nicht verarbeitet werden"
 });
 }

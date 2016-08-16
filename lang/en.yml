@@ -129,6 +129,7 @@ en:
     WORKFLOWLOG: 'Workflow Log'
   WorkflowDefinition:
     ADDAFTERSAVING: 'You can add workflow steps after you save for the first time.'
+    BLOCK_INITIATOR: 'Block initiator'
     CHOOSE_TEMPLATE: 'Choose template (optional)'
     CHOOSE_TEMPLATE_RIGHT: 'If set, this workflow definition will be automatically updated if the template is changed'
     DESCRIPTION: Description

@@ -7,9 +7,9 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
 } else {
   ss.i18n.addDictionary('ru', {
     "Workflow.DeleteQuestion": "Действительно удалить? Эта операция необратима.",
-    "Workflow.EMBARGOMESSAGETIME": "Сохраненные черновики на этой странице будут автоматически опубликованы сегодня в <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATE": "Сохраненные черновики будут автоматически опубликованы <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Сохраненные черновики этой страницы будут автоматически опубликованы <a>%s в %s</a>",
+    "Workflow.EMBARGOMESSAGETIME": "Сохраненные черновики на этой странице будут автоматически опубликованы сегодня в <a>%s</a>",
     "Workflow.ProcessError": "Не удалось обработать поток задач"
 });
 }

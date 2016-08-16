@@ -83,11 +83,22 @@ eo:
     PLURALNAME: 'Publikigi elementajn laborfluajn agojn'
     PUBLICATIONDELAY: 'Publikiga prokrasto'
     SINGULARNAME: 'Publikigi elementan laborfluan agon'
+  SetPropertyWorkflowAction:
+    PLURALNAME: 'Agordi laborfluajn agojn'
+    PROPERTY: Atributo
+    PROPERTYTITLE: 'Agordota atributo; se ĝi ekzistas kiel agordmetodo, ĝi vokiĝos kun la valoron'
+    SINGULARNAME: 'Agordi laborfluan agon'
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple aprobi laborfluajn agojn'
     SINGULARNAME: 'Simple aprobi laborfluan agon'
   SiteTree:
     WorkflowOptions: 'Laborfluaj agordoj'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: 'tagoj'
+    DELAYUNPUBDAYSBEFORE: 'Prokrasti malpublikigon je'
+    PLURALNAME: 'Malpublikigi elementajn laborfluajn agojn'
+    SINGULARNAME: 'Malpublikigi elementan laborfluan agon'
+    UNPUBLICATIONDELAY: 'Prokrasti malpublikigon'
   Workflow:
     WorkflowActionsTabTitle: 'Laborfluaj agoj'
   WorkflowAction:
