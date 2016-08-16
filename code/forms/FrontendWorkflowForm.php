@@ -117,7 +117,7 @@ class FrontendWorkflowForm extends Form{
 						}
 					}
 				}
-				return Director::redirectBack();
+				return $this->controller->redirectBack();
 			}
 		}
 	
