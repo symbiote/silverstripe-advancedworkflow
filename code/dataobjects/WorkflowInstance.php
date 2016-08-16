@@ -391,6 +391,15 @@ class WorkflowInstance extends DataObject {
 		if($extended !== null) return $extended;
 
 		$hasAccess = $this->userHasAccess($member);
+
+		// If the user has written to the target record, let them view the WorkflowInstance.
+		if ($member && $this->getTarget() && !$hasAccess) {
+			if($this->getVersionedConnection($this->getTarget()->ID, $member->ID)) {
+				return true;
+			}
+			return false;
+		}
+
 		/*
 		 * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
 		 * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects Gridfield, even though;
@@ -452,13 +461,6 @@ class WorkflowInstance extends DataObject {
 		// This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to users assigned-to that WorkflowInstance.
 		// However; lowly authors (users entering items into a workflow) are not assigned - but we still wish them to see their submitted content.
 		$inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
-		// This method is used in more than just the ModelAdmin. Check for the current controller to determine where canView() expectations differ
-		if($this->getTarget() && Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
-			if($this->getVersionedConnection($this->getTarget()->ID, $member->ID)) {
-				return true;
-			}
-			return false;
-		}
 		return $inWorkflowGroupOrUserTables;
 	}
 
@@ -630,9 +632,9 @@ class WorkflowInstance extends DataObject {
 		$action->doFrontEndAction($data, $form, $request);
 	}
 
-	/*
+	/**
 	 * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
-	 * @see {@link $this->userHasAccess()}
+	 * @see {@link $this->canView()}
 	 *
 	 * @param number $recordID
 	 * @param number $userID
