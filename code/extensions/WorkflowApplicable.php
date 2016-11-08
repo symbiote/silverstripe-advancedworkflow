@@ -155,7 +155,9 @@ class WorkflowApplicable extends DataExtension {
 						$actions->push($menu);
 					}
 
-					$menu->push($workflowOptions);
+					if(!$actions->fieldByName('ActionMenus.WorkflowOptions')) {
+						$menu->push($workflowOptions);
+					}
 
 					$transitions = $active->CurrentAction()->getValidTransitions();
 
