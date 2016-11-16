@@ -17,8 +17,8 @@ ar:
     INVALIDCLASSTOORDER: 'تم تحديد تصنيف غير صالح للترتيب.'
     INVALIDIDLIST: 'تم إضافة قائمة من التعريفات غير صالحة.'
     INVALIDPARENTID: 'تم تحديد هوية رئيسية غير صالحة.'
-    LastEdited: تم تغييره
-    MENUTITLE: سير العمل
+    LastEdited: 'تم تغييره'
+    MENUTITLE: 'سير العمل'
     SORTORDERSAVED: 'قد تم حفظ ترتيب الفرز.'
     Title: عنوان
     WorkflowStatus: 'النشاط الحالي'
@@ -32,11 +32,11 @@ ar:
     ContentSettings: 'إعدادات المحتوى'
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'تعيين مستخدمين'
-    GROUPS: مجموعات
+    GROUPS: 'مجموعات'
     INITIATOR: 'قم بتعيين قائم بالمبادرة'
     PLURALNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
     SINGULARNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
-    USERS: مستخدمين
+    USERS: 'مستخدمين'
   CancelWorkflowAction:
     PLURALNAME: 'إلغاء فعاليات سير العمل'
     SINGULARNAME: 'إلغاء فعاليات سير العمل'
@@ -45,15 +45,15 @@ ar:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'ليس لديك الحق فى تنفيذ هذا الإجراء'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'تاريخ التعليقات حتى هذا الإشعار'
-    CONTEXTNOTE: "أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {$Context.Title}. إضافى إلى ذلك,  متغير {$Context.AbsoluteEditLink} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة)."
+    CONTEXTNOTE: 'أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {$Context.Title}. إضافى إلى ذلك,  متغير {$Context.AbsoluteEditLink} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة).'
     EMAILFROM: 'البريد الالكترونى من'
     EMAILSUBJECT: 'عنوان البريد الالكترونى'
     EMAILTEMPLATE: 'نموذج البريد الالكترونى'
     FIELDNAME: 'اسم المجال'
     FORMATTINGHELP: 'تنسيق المساعدة'
-    FORMATTINGNOTE: "رسائل البريد الالكترونى بالإشعارات يمكن أن تحتوى على تنسيق إتش تى إم إل. المتغيرات الخاصة القادمة سيتم استبدالها بقيمها المعنية فى عناوين رسائل البريد الالكترونى, شكل الرسالة و النموذج/ الجسم."
-    INITIATORNOTE: "هذه المجالات سوف يتم ملأها من العضو الذى سيقوم بمبادرة طلبات مهام سير العمل. على سبيل المثال, {$Initiator.Email}."
-    MEMBERNOTE: "هذه المجالات سوف يتم ملأها من العضو الذى سيقوم بمبادرة إجراءات الإشعار. على سبيل المثال, {$Member.FirstName}."
+    FORMATTINGNOTE: 'رسائل البريد الالكترونى بالإشعارات يمكن أن تحتوى على تنسيق إتش تى إم إل. المتغيرات الخاصة القادمة سيتم استبدالها بقيمها المعنية فى عناوين رسائل البريد الالكترونى, شكل الرسالة و النموذج/ الجسم.'
+    INITIATORNOTE: 'هذه المجالات سوف يتم ملأها من العضو الذى سيقوم بمبادرة طلبات مهام سير العمل. على سبيل المثال, {$Initiator.Email}.'
+    MEMBERNOTE: 'هذه المجالات سوف يتم ملأها من العضو الذى سيقوم بمبادرة إجراءات الإشعار. على سبيل المثال, {$Member.FirstName}.'
     NOTIFICATIONEMAIL: 'بريد الكترونى بالإشعارات'
     NOTIFICATIONNOTE: 'جميع المستخدمين المرتبطين بمهام سير العمل سوف يتم إرسال بريد الكترونى لهم عند بدء الإجراء.'
     PLURALNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
@@ -72,11 +72,11 @@ ar:
   WorkflowAction:
     ALLOW_COMMENTING: 'إتاحة التعليق؟'
     ALLOW_EDITING: 'إتاحة التعديل خلال هذه الخطوة؟'
-    Author: مؤلف
+    Author: 'مؤلف'
     CLASS_LABEL: 'تصنيف الإجراءات'
     COMMENT: تعليق
     CommentLabel: تعليق
-    ExecutedLabel: تم تنفيذه
+    ExecutedLabel: 'تم تنفيذه'
     FRONTENDCOMMENT: تعليق
     FinishedLabel: انتهى
     PLURALNAME: 'فعاليات سير العمل'
@@ -102,7 +102,7 @@ ar:
     LATEST_VERSION: 'الإصدار الأخير هو s%'
     PLURALNAME: 'تعريفات مهام سير العمل'
     REMINDEREMAIL: 'بريد الكترونى للتذكير'
-    SENDREMINDERDAYSAFTER: 'أيا'
+    SENDREMINDERDAYSAFTER: أيا
     SENDREMINDERDAYSBEFORE: 'قم بإرسال بريد إلكترونى للتذكير بعد'
     SINGULARNAME: 'تعريف مهام سير العمل'
     TEMPLATE_INFO: 'معلومات عن النموذج'
@@ -111,12 +111,12 @@ ar:
     TITLE: عنوان
     UPDATE_FROM_TEMLPATE: 'قم بالتحديث لآخر إصدار للنموذج (s%)'
     USERS: 'محصورة للمستخدمين'
-    WORKFLOW: سير العمل
+    WORKFLOW: 'سير العمل'
     WORKFLOWACTIVEIINSTANCES: 'أمثلة مهام سير العمل النشطة'
     WORKFLOWCOMPLETEDIINSTANCES: 'حالات مهام سير العمل المكتملة'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: نشط
-    CompletedWorkflowStateTitle: أكتمل
+    CompletedWorkflowStateTitle: 'أكتمل'
     PUBLISH_ON: 'موعد النشر المحدد'
     REQUESTED_PUBLISH_DATE: 'موعد النشر المطلوب'
     REQUESTED_PUBLISH_DATE_H3: 'انتهاء الصلاحية و الحظر'
@@ -130,7 +130,7 @@ ar:
     AddTransitionAction: 'أضف انتقال'
     CreateAction: 'قم بعمل نشاط'
     CreateLabel: اصنع
-    DeleteAction: امسح
+    DeleteAction: 'امسح'
     EditAction: تحرير
   WorkflowInstance:
     ActionLogTitle: سجل
@@ -149,10 +149,10 @@ ar:
     TableHeaderActions: أنشطة
     TableHeaderEditedBy: 'تم تحريره بواسطة'
     TableHeaderItem: عنصر
-    TableHeaderSubmitted: تم تسليمه
+    TableHeaderSubmitted: 'تم تسليمه'
   WorkflowReminderEmail:
     Action: 'اضغط هنا لتنشيط هذا العمل'
-    Content: "هذا تنبيه تلقائي لإبلاغك بأن هذا العمل ‘{العنوان}‘ الذي تم توكيله إليك لم يتم تنشيطه لمدة ‘{أيام}‘ أيام. و أخر تحديث تم للعمل بتاريخ ‘{التاريخ}‘ في ‘{الوقت}‘."
+    Content: 'هذا تنبيه تلقائي لإبلاغك بأن هذا العمل ‘{العنوان}‘ الذي تم توكيله إليك لم يتم تنشيطه لمدة ‘{أيام}‘ أيام. و أخر تحديث تم للعمل بتاريخ ‘{التاريخ}‘ في ‘{الوقت}‘.'
   WorkflowReminderTask:
     SAVE: حفظ
   WorkflowService:

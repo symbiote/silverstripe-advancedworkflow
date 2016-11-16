@@ -12,7 +12,7 @@ it:
   AdvancedWorkflowAdmin:
     GridFieldTitleAssignedAll: 'Tutti gli oggetti in sospeso'
     LastEdited: Cambiato
-    MENUTITLE: Flussi di lavoro
+    MENUTITLE: 'Flussi di lavoro'
     SORTORDERSAVED: 'L''ordinamento e'' stato salvato.'
     Title: Titolo
     WorkflowStatus: 'Azione corrente'
@@ -36,7 +36,7 @@ it:
   NotifyUsersWorkflowAction:
     FIELDNAME: 'Nome del campo'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'giorni'
+    DELAYPUBDAYSAFTER: giorni
     DELAYPUBDAYSBEFORE: 'Ritarda pubblicazione'
   Workflow:
     WorkflowActionsTabTitle: 'Azioni del flusso di lavoro'
@@ -64,7 +64,7 @@ it:
     TEMPLATE_VERSION: 'Versione Template'
     TITLE: Titolo
     USERS: 'Ristretto agli Utenti'
-    WORKFLOW: Flusso di lavoro
+    WORKFLOW: 'Flusso di lavoro'
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Formatto YAML non valido'
     INVALID_YML_FORMAT_NO_PARSE: 'Formatto YAML non valido. Impossibile fare il parse.'

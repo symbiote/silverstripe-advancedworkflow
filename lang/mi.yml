@@ -17,7 +17,7 @@ mi:
     INVALIDCLASSTOORDER: 'I tāurua he tauaha muhu ki te raupapa.'
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
-    MENUTITLE: Ngā reremahi
+    MENUTITLE: 'Ngā reremahi'
     SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
@@ -28,11 +28,11 @@ mi:
     ContentSettings: 'Ngā Tautuhinga Ihirangi'
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Tautapa Kaiwhakamahi'
-    GROUPS: Ngā Rōpū
+    GROUPS: 'Ngā Rōpū'
     INITIATOR: 'Tautapa Kaitīmata'
     PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
     SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
-    USERS: Ngā Kaiwhakamahi
+    USERS: 'Ngā Kaiwhakamahi'
   CancelWorkflowAction:
     PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
     SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
@@ -72,14 +72,14 @@ mi:
     CLASS_LABEL: 'Tauaha Hohenga'
     COMMENT: Tākupu
     CommentLabel: Tākupu
-    ExecutedLabel: Kua Kawea
+    ExecutedLabel: 'Kua Kawea'
     FRONTENDCOMMENT: Tākupu
-    FinishedLabel: Kua Oti
+    FinishedLabel: 'Kua Oti'
     PLURALNAME: 'Ngā Hohenga Reremahi'
     SINGULARNAME: 'Hohenga Reremahi'
     TITLE: Taitara
     TitleDescription: 'Ka whakamahia te Taitara hei tapanga pātene mō tēnei Rerenga Mahi'
-    Transitions: Ngā Whakawhiti
+    Transitions: 'Ngā Whakawhiti'
     TypeLabel: Momo
   WorkflowActionInstance:
     SINGULARNAME: 'Tauira Hohenga Reremahi'
@@ -111,7 +111,7 @@ mi:
     WORKFLOWCOMPLETEDIINSTANCES: 'Ngā Tauira Reremahi Oti'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Hohe
-    CompletedWorkflowStateTitle: Kua Oti
+    CompletedWorkflowStateTitle: 'Kua Oti'
     PUBLISH_ON: 'Rā whakaputa kua whakaritea'
     REQUESTED_PUBLISH_DATE: 'I tonoa te rā whakaputa'
     REQUESTED_PUBLISH_DATE_H3: 'Mōnehutanga me te Rāhui'

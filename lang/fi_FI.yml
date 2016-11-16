@@ -8,9 +8,9 @@ fi_FI:
     LastEdited: Muokattu
     Title: Otsikko
   AllowEditing:
-    NoString: 'Ei'
+    NoString: Ei
   NotifyUsersWorkflowAction:
-    EMAILTEMPLATE: 'Sähköpostipohja'
+    EMAILTEMPLATE: Sähköpostipohja
   WorkflowAction:
     Author: Tekijä
     FinishedLabel: Valmistunut
@@ -29,7 +29,7 @@ fi_FI:
     EditAction: Muokkaa
   WorkflowInstance:
     ActionLogTitle: Loki
-    TargetClassLabel: 'Kohdeluokka'
+    TargetClassLabel: Kohdeluokka
     TargetIDLabel: Kohde
     TitleLabel: Otsikko
   WorkflowList:
