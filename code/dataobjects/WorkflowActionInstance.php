@@ -166,6 +166,8 @@ class WorkflowActionInstance extends DataObject {
 		if($available) foreach($available as $transition) {
 			if($transition->isValid($this->Workflow())) $valid->push($transition);
 		}
+        
+        $this->extend('updateValidTransitions', $valid);
 
 		return $valid;
 	}
