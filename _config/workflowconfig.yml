@@ -13,6 +13,9 @@ CMSPageEditController:
 GridFieldDetailForm_ItemRequest:
   extensions:
     - AdvancedWorkflowExtension
+LeftAndMain:
+  extra_requirements_css:
+    - advancedworkflow/css/AdvancedWorkflowAdmin.css
 
 ---
 Name: workflow_jobs

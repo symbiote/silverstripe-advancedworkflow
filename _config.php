@@ -11,4 +11,3 @@ if(ADVANCED_WORKFLOW_DIR != 'advancedworkflow') {
 	);
 }
 
-LeftAndMain::require_css(ADVANCED_WORKFLOW_DIR . '/css/AdvancedWorkflowAdmin.css');
