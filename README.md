@@ -3,8 +3,10 @@
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/?branch=master)
 [![Build Status](https://travis-ci.org/silverstripe-australia/advancedworkflow.svg?branch=master)](https://travis-ci.org/silverstripe-australia/advancedworkflow)
 
-Note: The SilverStripe 2.4 version of the module is available from the ss24
-branch of the repository.
+Note: Versions of the module for older SilverStripe versions are available as follows:
+
+- 2.4: ss24 branch; composer version `dev-ss24`
+- 3.0: ss30 branch; composer version `dev-ss30`
 
 ## Overview
 
@@ -27,11 +29,11 @@ extending from `ModelAdmin`. `mysite/_config/config.yml`:
 
 	:::yml
 	MyObject:
-	    extensions:
-	        - WorkflowApplicable
+		extensions:
+			- WorkflowApplicable
 	MyObjectAdmin:
-	    extensions:
-	        - AdvancedWorkflowExtension
+		extensions:
+			- AdvancedWorkflowExtension
 
 ## Concept
 
@@ -194,8 +196,8 @@ add the `WorkflowEmbargoExpiryExtension`.
 
 	:::yml
 	SiteTree:
-	    extensions:
-	        - WorkflowEmbargoExpiryExtension
+		extensions:
+			- WorkflowEmbargoExpiryExtension
 
 Make sure the [QueuedJobs](https://github.com/nyeholt/silverstripe-queuedjobs) 
 module is installed and configured correctly.

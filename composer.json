@@ -16,6 +16,6 @@
 	],
 	"require":
 	{
-		"silverstripe/cms": ">=3.0.0"
+		"silverstripe/cms": ">=3.0,<3.1"
 	}
 }
