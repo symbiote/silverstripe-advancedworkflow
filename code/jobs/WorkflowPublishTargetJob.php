@@ -27,6 +27,8 @@ class WorkflowPublishTargetJob extends AbstractQueuedJob {
 	}
 
 	public function process() {
+        // Ensures we're retrieving the "draft" version of the object to be published 
+        \Versioned::reading_stage('Stage');
 		if ($target = $this->getObject()) {
 			if ($this->publishType == 'publish') {
 				$target->setIsPublishJobRunning(true);
