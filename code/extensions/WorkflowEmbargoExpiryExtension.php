@@ -248,8 +248,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
         $clone->PublishOnDate = null;
         $clone->UnPublishOnDate = null;
-        $clone->PublishJobID = 0;
-        $clone->UnPublishJobID = 0;
+        $clone->clearPublishJob();
+        $clone->clearUnPublishJob();
     }
 
 	/**
@@ -302,7 +302,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		if((!$unPublishTime && $publishTime) // the unpublish date is not set
             || (
                 $unPublishTime > $now // unpublish date has not passed
-                && $publishTime < $unPublishTime // publish date not set or happens before unpublish date
+                && ($publishTime && ($publishTime < $unPublishTime)) // publish date not set or happens before unpublish date
             )
 		) {
 			// Trigger time immediately if passed
