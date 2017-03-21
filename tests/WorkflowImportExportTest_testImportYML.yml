@@ -1,0 +1,100 @@
+---
+Name: exportedworkflow
+---
+Injector:
+  ExportedWorkflow:
+    class: WorkflowTemplate
+    constructor:
+      - 'Test Workflow Title'
+      - 'Test Workflow Description'
+      - 0.2
+      - 0
+      - 1
+    properties:
+      structure:
+        'Apply for approval':
+          type: AssignUsersToWorkflowAction
+          transitions:
+            - Send notification: 'Notify approver'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            AssignInitiator: 0
+        'Notify approver':
+          type: NotifyUsersWorkflowAction
+          transitions:
+            - Wait for approval: 'Process workflow'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            EmailSubject: Declined
+            EmailFrom: no-reply@admin.com.au
+            EmailTemplate: |
+              <h3>
+              Hi,
+              </h3>
+              <p>A new item has been submitted</p>
+        'Process workflow':
+          type: SimpleApprovalWorkflowAction
+          transitions:
+            - Approve: 'Publish'
+            - Reject: 'Assign rejected'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+        'Publish':
+          type: PublishItemWorkflowAction
+          transitions:
+            - Send notification: 'Assign approved'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            PublishDelay: 0
+        'Assign approved':
+          type: AssignUsersToWorkflowAction
+          transitions:
+            - Send notification: 'Notify approved'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            AssignInitiator: 1
+        'Assign rejected':
+          type: AssignUsersToWorkflowAction
+          transitions:
+            - Send notification: 'Notify rejected'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            AssignInitiator: 1
+        'Notify approved':
+          type: NotifyUsersWorkflowAction
+          transitions:
+            - Publish item: 'Complete'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            EmailSubject: Approved
+            EmailFrom: no-reply@admin.com.au
+            EmailTemplate: |
+              <h3>
+              Hi $Initiator.FirstName,
+              </h3>
+        'Notify rejected':
+          type: NotifyUsersWorkflowAction
+          transitions:
+            - End workflow: 'Complete'
+          properties:
+            AllowEditing: By Assignees
+            AllowCommenting: 1
+            EmailSubject: Declined
+            EmailFrom: no-reply@admin.com.au
+            EmailTemplate: |
+              <h3>
+              Hi $Initiator.FirstName,
+              </h3>
+        'Complete':
+          type: CancelWorkflowAction
+  WorkflowService:
+    properties:
+      templates:
+        - %$ExportedWorkflow
