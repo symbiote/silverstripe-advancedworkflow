@@ -75,5 +75,43 @@ class WorkflowDefinitionImporter {
 			$msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE', 'Invalid YAML format. Unable to parse.');
 			throw new ValidationException($msg);
 		}
-	}		
+	}
+
+	/**
+	 * Import WorkflowDefinition record from exported YML definition
+	 * 
+	 * @param filepath $source YAML as a filename
+	 * @return WorkflowDefinition
+	 */
+	public function importWorkflowDefinitionFromYAML($filepath) {
+		$ymlData = $this->parseYAMLImport($filepath);
+
+		$struct = $ymlData['Injector']['ExportedWorkflow'];
+
+		$name = $struct['constructor'][0];
+		$filename = $name ? $name : WorkflowDefinitionExporter::$export_filename_prefix.'0.yml';
+
+		// 
+		$import = ImportedWorkflowTemplate::create();
+		$import->Name = $name;
+		$import->Filename = $filename;
+		$import->Content = serialize($ymlData);
+		$import->write();
+		
+		$template = Injector::inst()->createWithArgs('WorkflowTemplate', $struct['constructor']);
+		$template->setStructure($struct['properties']['structure']);
+
+		$def = WorkflowDefinition::create();
+		$def->Template = $template->getName();
+		$def->Title = $name;
+		// NOTE: onBeforeWrite() calls workflowService->defineFromTemplate($def->Template)
+		$def->TemplateVersion = null;
+		$def->write();
+		
+		// Update the import
+		$import->DefinitionID = $def->ID;
+		$import->write();
+
+		return $def;
+	}
 }

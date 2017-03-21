@@ -97,6 +97,9 @@ class WorkflowDefinition extends DataObject {
 			$this->TemplateVersion = null;
 		}
 		if($this->numChildren() == 0 && $this->Template && !$this->TemplateVersion) {
+			if (!$this->workflowService) {
+				$this->workflowService = singleton('WorkflowService');
+			}
 			$this->workflowService->defineFromTemplate($this, $this->Template);
 		}
 	}

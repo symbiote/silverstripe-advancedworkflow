@@ -40,6 +40,18 @@ class WorkflowImportExportTest extends SapphireTest {
 	}	
 
 	/**
+	 * Ensure importing with WorkflowDefinitionImporter works as expected
+	 */
+	public function testImportYML() {
+		// WorkflowImportExportTest_testImportYML
+		$importer = Injector::inst()->get('WorkflowDefinitionImporter');
+		$workflowDef = $importer->importWorkflowDefinitionFromYAML(dirname(__FILE__).'/WorkflowImportExportTest_testImportYML.yml');
+
+		$this->assertTrue($workflowDef && $workflowDef->exists());
+		$this->assertEquals(9, $workflowDef->Actions()->count());
+	}
+
+	/**
 	 * Create a WorkflowDefinition with some actions. Ensure an expected length of formatted template.
 	 */
 	public function testFormatWithActions() {
