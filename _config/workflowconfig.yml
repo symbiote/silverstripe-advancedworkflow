@@ -4,10 +4,10 @@ After:
   - 'framework/*'
   - 'cms/*'
 ---
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   extensions:
     - WorkflowApplicable
-CMSPageEditController:
+SilverStripe\CMS\Controllers\CMSPageEditController:
   extensions:
     - AdvancedWorkflowExtension
 GridFieldDetailForm_ItemRequest:

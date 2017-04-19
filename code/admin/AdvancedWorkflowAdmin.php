@@ -184,7 +184,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin {
 		$fields = array(
 			'Title' => array(
 				'link' => function($value, $item) {
-					$pageAdminLink = singleton('CMSPageEditController')->Link('show');
+					$pageAdminLink = singleton('SilverStripe\\CMS\\Controllers\\CMSPageEditController')->Link('show');
 					return sprintf('<a href="%s/%s">%s</a>',$pageAdminLink,$item->Link,$value);
 				}
 			),

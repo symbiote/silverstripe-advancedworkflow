@@ -1,0 +1,43 @@
+WorkflowDefinition:
+  requestPublication:
+    Title: 'Request Publish'
+  approvePublication:
+    Title: 'Approve Publish'
+
+WorkflowFutureStateTest_DummyWorkflowAction:
+  requestPublication:
+    Title: 'Approve'
+    WorkflowDefID: =>WorkflowDefinition.requestPublication
+
+PublishItemWorkflowAction:
+  approvePublication:
+    Title: 'Publish'
+    WorkflowDefID: =>WorkflowDefinition.approvePublication
+
+SilverStripe\CMS\Model\SiteTree:
+  basic:
+    Title: 'Basic page'
+  inWorkflow:
+    Title: 'In Workflow'
+  multiDraft:
+    Title: 'Multi'
+  embargoOnly:
+    Title: 'Embargo Only'
+    DesiredPublishDate: '2016-06-15 00:00:01'
+  expiryOnly:
+    Title: 'Expiry Only'
+    DesiredUnPublishDate: '2016-06-17 00:00:01'
+  embargoAndExpiry:
+    Title: 'Embargo and Expiry'
+    DesiredPublishDate: '2016-06-18 00:00:01'
+    DesiredUnPublishDate: '2016-06-19 00:00:01'
+  distantExpiry:
+    Title: 'Wide Embargo and Expiry'
+    DesiredUnPublishDate: '2016-06-29 00:00:01'
+  wideEmbargoAndExpiry:
+    Title: 'Wide Embargo and Expiry'
+    DesiredPublishDate: '2016-06-20 00:00:01'
+    DesiredUnPublishDate: '2016-06-29 00:00:01'
+  expiryDateCleared:
+    Title: 'Expiry date which is then cleared'
+    DesiredUnPublishDate: '2016-06-17 00:00:01'

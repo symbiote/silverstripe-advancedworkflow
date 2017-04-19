@@ -1,14 +1,15 @@
 <?php
 
-use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\DB;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\DataQuery;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {
@@ -23,12 +24,20 @@ if (!class_exists('QueuedJobDescriptor')) {
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {
 
+    /**
+     * For storing future time from request when request object is replaced
+     * within a single request e.g: ErrorPage::response_for()
+     *
+     * @var null|string The future time
+     */
+    public static $future_time = null;
+
 	private static $db = array(
 		'DesiredPublishDate'	=> 'DBDatetime',
 		'DesiredUnPublishDate'	=> 'DBDatetime',
 		'PublishOnDate'			=> 'DBDatetime',
 		'UnPublishOnDate'		=> 'DBDatetime',
-		'AllowEmbargoedEditing' => 'Boolean',
+        'AllowEmbargoedEditing' => 'Boolean',
 	);
 
 	private static $has_one = array(
@@ -76,7 +85,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 */
 	public function updateCMSFields(FieldList $fields) {
 
-	    // requirements
+	    // Requirements
 	    // ------------
 
 		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
@@ -95,8 +104,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		);
 		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
 
-        // Fields
-        // ------
+        // Fields: Publishing Schedule
+        // ---------------------------
 
 		// we never show these explicitly in admin
 		$fields->removeByName('PublishJobID');
@@ -122,13 +131,19 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 					'DesiredPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    )
                 ),
 				$ut = Datetimefield::create(
 					'DesiredUnPublishDate',
 					_t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
 				)->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    LiteralField::create(
+                        'DesiredUnPublishDateRightTitle',
+                        _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    )
                 ),
 				Datetimefield::create(
 					'PublishOnDate',
@@ -164,15 +179,31 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			));
 		}
 
+        // add future state preview fields to easily browse different future state dates
+        $fields->addFieldsToTab('Root.PublishingSchedule', array(
+            HeaderField::create(
+                'FuturePreviewHeader',
+                _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_HEADER', 'Preview Future State'),
+                3
+            ),
+            $ft = FutureStatePreviewField::create(
+                'FuturePreviewDate',
+                _t('WorkflowEmbargoExpiryExtension.FUTURE_PREVIEW_DATE', 'Set preview date')
+            ),
+        ));
+
 		$dt->getDateField()->setConfig('showcalendar', true);
-		$ut->getDateField()->setConfig('showcalendar', true);
-		$dt->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
-		$ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
+        $ut->getDateField()->setConfig('showcalendar', true);
+        $ft->getDateField()->setConfig('showcalendar', true);
+		$dt->getTimeField()->setConfig('timeformat', 'HH:mm');
+        $ut->getTimeField()->setConfig('timeformat', 'HH:mm');
+        $ft->getTimeField()->setConfig('timeformat', 'HH:mm');
 
 		// Enable a jQuery-UI timepicker widget
-		if(self::$showTimePicker) {
+		if (self::$showTimePicker) {
 			$dt->getTimeField()->addExtraClass('hasTimePicker');
-			$ut->getTimeField()->addExtraClass('hasTimePicker');
+            $ut->getTimeField()->addExtraClass('hasTimePicker');
+            $ft->getTimeField()->addExtraClass('hasTimePicker');
 		}
 	}
 
@@ -190,7 +221,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	/**
 	 * Clears any existing unpublish job
 	 */
-	public function clearUnPublishJob() {
+    public function clearUnPublishJob() {
 		// Cancel any in-progress unpublish job
 		$job = $this->owner->UnPublishJob();
 		if ($job && $job->exists()) {
@@ -322,6 +353,38 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			$this->clearUnPublishJob();
 		}
 	}
+
+    public function onAfterWrite()
+    {
+        parent::onAfterWrite();
+
+        /*
+         * Make sure this is for SiteTree first..
+         * Can make a copy of this for other classes (in a separate extension) that may depend on Sorting as well
+         */
+        if ($this->owner instanceof SiteTree) {
+            // Update the latest version for each record with the correct Sort value because LeftAndMain::savetreenode()
+            // only updates the SiteTree table. We rely on SiteTree_versions in augmentSQL() for futurestate.
+            DB::prepared_query("
+                UPDATE \"SiteTree_versions\"
+                SET \"Sort\" = (
+                    SELECT \"SiteTree\".\"Sort\"
+                    FROM \"SiteTree\"
+                    WHERE  \"SiteTree\".\"ID\" = \"SiteTree_versions\".\"RecordID\"
+                    AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
+                    AND \"SiteTree_versions\".\"ParentID\" = ?
+                )
+                WHERE EXISTS (
+                    SELECT *
+                    FROM \"SiteTree\"
+                    WHERE  \"SiteTree\".\"ID\" = \"SiteTree_versions\".\"RecordID\"
+                    AND \"SiteTree_versions\".\"Version\" = \"SiteTree\".\"Version\"
+                    AND \"SiteTree_versions\".\"ParentID\" = ?
+                )",
+                array($this->owner->ParentID, $this->owner->ParentID)
+            );
+        }
+    }
 
     /**
      * Add badges to the site tree view to show that a page has been scheduled for publishing or unpublishing
@@ -512,19 +575,255 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
      * @param $member
      * @return bool
      */
-	public function canEdit($member) {
-		if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
-			!$this->AllowEmbargoedEditing) { // item flagged as not editable
-			$now = strtotime(DBDatetime::now()->getValue());
-			$publishTime = strtotime($this->owner->PublishOnDate);
+    public function canEdit($member) {
+        if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
+            !$this->owner->AllowEmbargoedEditing) { // item flagged as not editable
+            $now = strtotime(DBDatetime::now()->getValue());
+            $publishTime = strtotime($this->owner->PublishOnDate);
 
-			if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
-				// when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
-				(!$publishTime && $this->owner->PublishJobID != 0)
-			) {
-				return false;
-			}
-		}
-	}
+            if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
+                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
+                (!$publishTime && $this->owner->PublishJobID != 0)
+            ) {
+                return false;
+            }
+        }
+    }
 
+    /**
+     * Get any future time set in GET param. Must use ISO-8601 format for time to be parsed correctly.
+     * e.g: 20160513T2359Z
+     *
+     * @param  $ctrl  Optional for supplying a controller, useful for unit testing
+     * @return string Time in format useful for SQL comparison.
+     */
+    public function getFutureTime($ctrl = null)
+    {
+        // Lazy load future time unless we are passing in a controller object explicitly
+        if (!static::$future_time || $ctrl) {
+
+            $curr = ($ctrl) ? $ctrl : (Controller::has_curr() ? Controller::curr() : false);
+
+            if ($curr) {
+                $ft = $curr->getRequest()->getVar('ft');
+                if ($ft) {
+                    // Force timezone to UTC so that it does not apply current timezone offset
+                    $dt = DateTime::createFromFormat('Ymd\THi\Z', $ft, new DateTimeZone('UTC'));
+                    static::$future_time = $dt->format('Y-m-d H:i');
+                }
+            }
+            $time = static::$future_time;
+        }
+        return static::$future_time;
+    }
+
+    /**
+     * Get link for a future date and time. Resulting format is ISO-8601 compliant. As the underlying
+     * SQL query for future state relies on versioning the link is only returned if Versioned extension
+     * is applied.
+     *
+     * @param  string $futureTime Date that can be parsed by strtotime
+     * @return string|null        Either the URL with future time added or null if time cannot be parsed
+     */
+    public function getFutureTimeLink($futureTime = null)
+    {
+        if (!$futureTime) {
+            $futureTime = $this->getFutureTime();
+        }
+        if (!$futureTime) {
+            return null;
+        }
+        $parsed = strtotime($futureTime);
+        if ($parsed && $this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
+            return Controller::join_links(
+                $this->owner->PreviewLink(),
+                '?stage=Stage',
+                '?ft=' . date('Ymd\THi\Z', $parsed)
+            );
+        }
+    }
+
+    /**
+     * Set future time flag on the query for further queries to use. Only set if Versioned
+     * extension is applied as the query relies on _versions tables.
+     */
+    public function augmentDataQueryCreation(SQLSelect &$query, DataQuery &$dataQuery)
+    {
+        // If time is set then flag it up for queries
+        $time = $this->getFutureTime();
+        if ($time && $this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
+            $dataQuery->setQueryParam('Future.time', $time);
+        }
+    }
+
+    /**
+     * Alter SQL queries for this object so that the version matching the time that is passed is returned.
+     * Relies on Versioned extension as it queries the _versions table and is only triggered when viewing the staging
+     * site e.g: ?stage=Stage. This has the side effect that Versioned::canViewVersioned() is used to restrict
+     * access.
+     */
+    public function augmentSQL(SQLSelect $query, DataQuery $dataQuery = null) {
+        $time = $dataQuery->getQueryParam('Future.time');
+
+        if (!$time || !$this->owner->has_extension('SilverStripe\\ORM\\Versioning\\Versioned')) {
+            return;
+        }
+
+        // Only trigger future state when viewing "Stage", this ensures the query works with Versioned::augmentSQL()
+        $stage = $dataQuery->getQueryParam('Versioned.stage');
+        if ($stage === Versioned::DRAFT) {
+            $baseClass = DataObject::getSchema()->baseDataClass($dataQuery->dataClass());
+            $baseTable = DataObject::getSchema()->baseDataTable($baseClass);
+
+            foreach ($query->getFrom() as $alias => $join) {
+                $aliasClass = DataObject::getSchema()->tableClass($alias);
+                if (!class_exists($aliasClass) || !is_a($aliasClass, $baseClass, true)) {
+                    continue;
+                }
+
+                if ($alias != $baseTable) {
+                    // Make sure join includes version as well
+                    $query->setJoinFilter(
+                        $alias,
+                        "\"{$alias}_versions\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\""
+                        . " AND \"{$alias}_versions\".\"Version\" = \"{$baseTable}_versions\".\"Version\""
+                    );
+                }
+                $query->renameTable($alias, $alias . '_versions');
+            }
+
+            // Add all <basetable>_versions columns
+            foreach (Config::inst()->get('SilverStripe\\ORM\\Versioning\\Versioned', 'db_for_versions_table') as $name => $type) {
+                $query->selectField(sprintf('"%s_versions"."%s"', $baseTable, $name), $name);
+            }
+
+            // Alias the record ID as the row ID, and ensure ID filters are aliased correctly
+            $query->selectField("\"{$baseTable}_versions\".\"RecordID\"", "ID");
+            $query->replaceText("\"{$baseTable}_versions\".\"ID\"", "\"{$baseTable}_versions\".\"RecordID\"");
+
+            // However, if doing count, undo rewrite of "ID" column
+            $query->replaceText(
+                "count(DISTINCT \"{$baseTable}_versions\".\"RecordID\")",
+                "count(DISTINCT \"{$baseTable}_versions\".\"ID\")"
+            );
+
+            /*
+             * Querying the _versions table to find the most recent draft or published record that would be published at
+             * the time requested. When embargo is NULL it is assumed that the record is published immediately. When
+             * expiry is NULL it is assumed that the record is never unpublished.
+             */
+            $query->addWhere([
+                "\"{$baseTable}_versions\".\"Version\" IN
+                (SELECT LatestVersion FROM
+                    (SELECT
+                        \"{$baseTable}_versions\".\"RecordID\",
+                        MAX(\"{$baseTable}_versions\".\"Version\") AS LatestVersion
+                        FROM \"{$baseTable}_versions\"
+
+                        /* The Draft copy, it is the source of truth for the most part when referencing embargo and expiry dates */
+                        LEFT JOIN \"{$baseTable}\" AS Base ON \"Base\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+
+                        /* The Live copy, only used as source of truth if the Draft copy cannot be */
+                        LEFT JOIN \"{$baseTable}_Live\" AS Live ON \"Live\".\"ID\" = \"{$baseTable}_versions\".\"RecordID\"
+
+                        WHERE
+                            /* Get the latest Draft version */
+                            (
+                                \"{$baseTable}_versions\".\"WasPublished\" = 0
+                                AND
+                                /* Within the embargo and expiry range */
+                                (\"Base\".\"PublishOnDate\" <= ? OR \"Base\".\"PublishOnDate\" IS NULL)
+                                AND
+                                (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                AND
+                                /* Approved, which is marked by a PublishJobID */
+                                (\"Base\".\"PublishJobID\" != 0)
+                                AND
+                                /* Draft exists */
+                                \"Base\".\"ID\" IS NOT NULL
+                            )
+                            OR
+                            /* Get the latest Published version */
+                            (
+                                \"{$baseTable}_versions\".\"WasPublished\" = 1
+                                AND
+                                (
+                                    /* Draft exists, check Draft's unpublish date */
+                                    (
+                                        \"Base\".\"ID\" IS NOT NULL
+                                        AND
+                                        (\"Base\".\"UnPublishOnDate\" > ? OR \"Base\".\"UnPublishOnDate\" IS NULL)
+                                    )
+                                    OR
+                                    /* Draft doesn't exist, check Live's unpublish date */
+                                    (
+                                        \"Base\".\"ID\" IS NULL
+                                        AND
+                                        (\"Live\".\"UnPublishOnDate\" > ? OR \"Live\".\"UnPublishOnDate\" IS NULL)
+                                    )
+                                )
+                                AND
+                                /* Live exists */
+                                \"Live\".\"ID\" IS NOT NULL
+                            )
+                        GROUP BY \"{$baseTable}_versions\".\"RecordID\"
+                    ) AS \"{$baseTable}_versions_latest\"
+                    WHERE \"{$baseTable}_versions_latest\".\"RecordID\" = \"{$baseTable}_versions\".\"RecordID\"
+                )"
+                => [$time, $time, $time, $time]
+            ]);
+
+            // Hack to address the issue of replacing {$baseTable} with {$baseTable}_versions everywhere in the query,
+            // there are places where we do want to use {$baseTable}
+            $query->replaceText(
+                "\"{$baseTable}_versions\" AS Base",
+                "\"{$baseTable}\" AS Base"
+            );
+        }
+    }
+
+    /**
+     * Get the name of the Member who's approved this page.
+     * Only use for workflow status Complete
+     *
+     * @return string
+     */
+    public function getEmbargoExpiryApprover()
+    {
+        $approver = null;
+        $instance = null;
+
+        if ($this->getIsWorkflowInEffect()) {
+            $instance = $this->workflowService->getWorkflowFor($this->owner, true);
+        }
+
+        if ($instance && $instance->exists()) {
+            $approverID = WorkflowActionInstance::get()
+                ->filter(array(
+                    'Finished' => 1,
+                    'WorkflowID' => $instance->ID))
+                ->last()
+                ->MemberID;
+            $approver = is_int($approverID) ? Member::get()->byID($approverID)->getName() : null;
+        }
+
+        return $approver;
+    }
+
+    /**
+     * This is called during the "Revert to this Version" button in framework, and is a standard function in Versioned.
+     *
+     * We would want to clear the publish and unpublish dates so that there aren't any unintentional jobs queued
+     * (e.g. a really old version was reverted)
+     */
+    public function onAfterRollback()
+    {
+        $this->owner->DesiredPublishDate = null;
+        $this->owner->DesiredUnPublishDate = null;
+        $this->owner->PublishOnDate = null;
+        $this->owner->UnPublishOnDate = null;
+
+        // write, but without creating a version, so it keeps the current behaviour of not creating a version
+        $this->owner->writeWithoutVersion();
+    }
 }

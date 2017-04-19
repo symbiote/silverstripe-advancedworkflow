@@ -43,3 +43,24 @@
         text-decoration: none;
     }
 }
+
+/**
+ * Embargo & expiry badge styling
+ *
+ * 3 different statuses - embargo, expiry, embargo & expiry (both assigned)
+ * Note: CSS nesting convention based on SilverStripe admin styling
+ */
+
+.cms-tree.jstree {
+    span.badge.status-embargo,
+    span.badge.status-expiry,
+    span.badge.status-embargo_expiry {
+        background-color: #ebfbff;
+        color: #1F9433;
+
+        #cms-content-tools-CMSMain & {
+            -webkit-box-shadow: 0px 0px 6px 2px #ebfbff;
+            box-shadow: 0px 0px 6px 2px #ebfbff;
+        }
+    }
+}

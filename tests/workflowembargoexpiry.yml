@@ -4,7 +4,7 @@ WorkflowDefinition:
   approvePublication:
     Title: 'Approve Publish'
 
-SimpleApprovalWorkflowAction:
+WorkflowEmbargoExpiryTest_DummyWorkflowAction:
   requestPublication:
     Title: 'Approve'
     WorkflowDefID: =>WorkflowDefinition.requestPublication
@@ -14,7 +14,9 @@ PublishItemWorkflowAction:
     Title: 'Publish'
     WorkflowDefID: =>WorkflowDefinition.approvePublication
 
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
+  inWorkflow:
+    Title: 'In workflow'
   emptyEmbargoExpiry:
     Title: 'Empty embargo and expiry'
   pastEmbargo:

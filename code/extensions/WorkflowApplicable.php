@@ -1,8 +1,9 @@
 <?php
 
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Permission;
+use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -138,9 +139,11 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
 		$c = Controller::curr();
-		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+
+		if ($c && $c->hasExtension('AdvancedWorkflowExtension') && !$this->isArchived()) {
+            $active = $this->workflowService->getWorkflowFor($this->owner);
+
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
@@ -164,7 +167,7 @@ class WorkflowApplicable extends DataExtension {
 					foreach ($transitions as $transition) {
 						if ($transition->canExecute($active)) {
 							$action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
-								->setAttribute('data-transitionid', $transition->ID);
+								->setAttribute('data-transitionid', $transition->ID)->setUseButtonTag(true);
 							$workflowOptions->push($action);
 						}
 					}
@@ -176,25 +179,28 @@ class WorkflowApplicable extends DataExtension {
 			} else {
 				// Instantiate the workflow definition initial actions.
 				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
+
 				if($definitions) {
-					$menu = $actions->fieldByName('ActionMenus');
-					if(is_null($menu)) {
+                    $menu = $actions->fieldByName('ActionMenus');
+                    if (is_null($menu)) {
+                        // Instantiate a new action menu for any data objects.
+                        $menu = $this->createActionMenu();
+                        $actions->push($menu);
+                    }
+                    $tab = $menu->fieldByName('AdditionalWorkflows');
+                    if (is_null($tab)) {
+                        $tab = Tab::create(
+                            'AdditionalWorkflows'
+                        );
+                    }
 
-						// Instantiate a new action menu for any data objects.
-
-						$menu = $this->createActionMenu();
-						$actions->push($menu);
-					}
-					$tab = Tab::create(
-						'AdditionalWorkflows'
-					);
 					$addedFirst = false;
 					foreach($definitions as $definition) {
 						if($definition->getInitialAction() && $this->owner->canEdit()) {
 							$action = FormAction::create(
 								"startworkflow-{$definition->ID}",
 								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
-							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
+							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID)->setUseButtonTag(true);
 
 							// The first element is the main workflow definition, and will be displayed as a major action.
 							if(!$addedFirst) {
@@ -207,7 +213,25 @@ class WorkflowApplicable extends DataExtension {
 							}
 						}
 					}
-					// Only display menu if actions pushed to it
+
+                    // button to cancel the existing embargo dates
+                    if ($this->owner->hasExtension('WorkflowEmbargoExpiryExtension') &&
+                        ($this->owner->PublishOnDate || $this->owner->UnPublishOnDate) && // any embargo or expiry present
+                        Permission::check('CANCEL_EMBARGO_EXPIRY_WORKFLOW') // the user is given the permission to cancel
+                    ) {
+                        $options = $menu->fieldByName('MoreOptions');
+                        if (is_null($tab)) {
+                            $tab = Tab::create(
+                                'MoreOptions'
+                            );
+                        }
+                        $options->push($cancel = FormAction::create(
+                            "cancelembargoexpiry",
+                            _t('WorkflowApplicable', 'Cancel Embargo & Expiry')
+                        ));
+                    }
+
+                    // Only display menu if actions pushed to it
 					if ($tab->Fields()->exists()) {
 						$menu->insertBefore($tab, 'MoreOptions');
 					}
@@ -287,7 +311,6 @@ class WorkflowApplicable extends DataExtension {
 
 		return $this->currentInstance;
 	}
-
 
 	/**
 	 * Gets the history of a workflow instance
@@ -370,4 +393,29 @@ class WorkflowApplicable extends DataExtension {
 		}
 		return false;
 	}
+
+    /**
+     * Counts as "archived" if the current record is a different version from both live and draft.
+     *
+     * @return boolean
+     */
+    private function isArchived()
+    {
+        if (!$this->owner->hasExtension('SilverStripe\ORM\Versioning\Versioned')) {
+            return false;
+        }
+
+        if (!isset($this->owner->_cached_isArchived)) {
+            $baseClass = $this->owner->baseClass();
+            $currentDraft = Versioned::get_by_stage($baseClass, Versioned::DRAFT)->byID($this->owner->ID);
+            $currentLive = Versioned::get_by_stage($baseClass, Versioned::LIVE)->byID($this->owner->ID);
+
+            $this->owner->_cached_isArchived = (
+                (!$currentDraft || ($currentDraft && $this->owner->Version != $currentDraft->Version))
+                && (!$currentLive || ($currentLive && $this->owner->Version != $currentLive->Version))
+            );
+        }
+
+        return $this->owner->_cached_isArchived;
+    }
 }
