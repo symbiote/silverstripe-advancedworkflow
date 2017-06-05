@@ -106,6 +106,8 @@ class WorkflowInstance extends DataObject {
 
 		$fields->push($grid);
 
+		$this->extend('updateCMSFields', $fields);
+
 		return $fields;
 	}
 
