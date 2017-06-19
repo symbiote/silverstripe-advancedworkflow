@@ -16,6 +16,11 @@ class PublishItemWorkflowAction extends WorkflowAction {
 	public static $icon = 'advancedworkflow/images/publish.png';
 
 	public function execute(WorkflowInstance $workflow) {
+
+		// Hoist
+		$doPublish = true;
+
+		// Target
 		if (!$target = $workflow->getTarget()) {
 			return true;
 		}
@@ -25,27 +30,41 @@ class PublishItemWorkflowAction extends WorkflowAction {
 			$days  = $this->PublishDelay;
 			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
 			singleton('QueuedJobService')->queueJob($job, $after);
+			$doPublish = false;
 		} else if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
-			// setting future date stuff if needbe
+			// Schedule Publishing/Unpublishing dates
 
-			// set this value regardless
+			// Always hand-off unpublish date
 			$target->UnPublishOnDate = $target->DesiredUnPublishDate;
 			$target->DesiredUnPublishDate = '';
+
+			// Publish dates
 			if ($target->DesiredPublishDate) {
+
+				// Hand-off desired publish date
 				$target->PublishOnDate = $target->DesiredPublishDate;
 				$target->DesiredPublishDate = '';
 				$target->write();
-			} else {
-				if ($target->hasMethod('doPublish')) {
-					$target->doPublish();
+			}
+
+			// Always check publish date
+			if ($target->PublishOnDate) {
+
+				// Check publish date
+				$now = strtotime(SS_Datetime::now()->getValue());
+				if (strtotime($target->PublishOnDate) > $now) {
+					$doPublish = false;
 				}
 			}
-		} else {
+		}
+
+		// Check whether to publish
+		if ($doPublish) {
 			if ($target->hasMethod('doPublish')) {
 				$target->doPublish();
 			} else if ($target->hasMethod('publish')) {
-                $target->publish('Stage', 'Live');
-            }
+				$target->publish('Stage', 'Live');
+			}
 		}
 
 		return true;
