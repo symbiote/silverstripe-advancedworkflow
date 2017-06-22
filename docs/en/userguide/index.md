@@ -5,7 +5,7 @@ summary: Setting up and using a publishing workflow with the Advanced Workflow m
 
 ## Before we begin
 
-Make sure that your SilverStripe CMS installation has the [Advanced Workflow](https://addons.silverstripe.org/add-ons/silverstripe/advancedworkflow/) module installed.
+Make sure that your SilverStripe CMS installation has the [Advanced Workflow](https://addons.silverstripe.org/add-ons/symbiote/silverstripe-advancedworkflow/) module installed.
 
 ## Advanced Workflow features
  - [What is a workflow?](about-workflows.md)

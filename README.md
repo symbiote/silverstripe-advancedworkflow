@@ -20,7 +20,7 @@ with multiple possible transitions between the actions.
 ## Installation
 
 ```
-composer require silverstripe/advancedworkflow
+composer require symbiote/silverstripe-advancedworkflow
 ```
 
 The workflow extension is automatically applied to the `SiteTree` class (if available). 
