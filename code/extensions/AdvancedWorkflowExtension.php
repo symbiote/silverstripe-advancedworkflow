@@ -7,7 +7,7 @@ use SilverStripe\Security\Permission;
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
  * type of functionality wherever you need UI interaction with workflow. 
  *
- * @author  marcus@silverstripe.com.au
+ * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */

@@ -56,7 +56,7 @@ use SilverStripe\ORM\DataObject;
  * 
  * 1. Update the 'version' number 
  * 
- * @author marcus@silverstripe.com.au
+ * @author marcus@symbiote.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
 class WorkflowTemplate {

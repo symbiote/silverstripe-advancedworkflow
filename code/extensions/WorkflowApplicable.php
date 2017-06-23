@@ -9,7 +9,7 @@ use SilverStripe\Security\Member;
  * workflow definition applied to them. At some point, the workflow definition is then
  * triggered.
  *
- * @author  marcus@silverstripe.com.au
+ * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */

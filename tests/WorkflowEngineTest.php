@@ -5,7 +5,7 @@ use SilverStripe\ORM\Versioning\Versioned;
 /**
  * Tests for the workflow engine.
  *
- * @author     marcus@silverstripe.com.au
+ * @author     marcus@symbiote.com.au
  * @license    BSD License (http://silverstripe.org/bsd-license/)
  * @package    advancedworkflow
  * @subpackage tests
@@ -216,7 +216,7 @@ class WorkflowEngineTest extends SapphireTest {
 	}
 
 	/**
-	 * For a context around this test, see: https://github.com/silverstripe-australia/advancedworkflow/issues/141
+	 * For a context around this test, see: https://github.com/symbiote/advancedworkflow/issues/141
 	 *
 	 *	1). Create a workflow definition
 	 *	2). Step the content into that workflow

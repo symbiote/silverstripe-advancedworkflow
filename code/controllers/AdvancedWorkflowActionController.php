@@ -7,7 +7,7 @@ use SilverStripe\Security\Security;
 /**
  * Handles actions triggered from external sources, eg emails or web frontend
  *
- * @author marcus@silverstripe.com.au
+ * @author marcus@symbiote.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
 class AdvancedWorkflowActionController extends Controller {

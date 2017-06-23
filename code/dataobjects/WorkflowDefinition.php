@@ -17,7 +17,7 @@ use SilverStripe\Security\Permission;
  * Basically, a manual step requires the interaction of someone to pick which action to take, an automatic
  * step will automatically determine what to do once it has finished.
  *
- * @author  marcus@silverstripe.com.au
+ * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */

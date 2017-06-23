@@ -5,7 +5,7 @@
  * work without custom code to handle the triggering of workflow, and in general is not
  * ready for production use just yet. 
  *
- * @author  marcus@silverstripe.com.au
+ * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */

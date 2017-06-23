@@ -10,7 +10,7 @@ use SilverStripe\Security\PermissionProvider;
 /**
  * A central point for interacting with workflows
  *
- * @author  marcus@silverstripe.com.au
+ * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */

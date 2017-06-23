@@ -34,7 +34,7 @@
 
 * Limit the users list to the users with access to the workflows dashboard
 * Update using Member::mapInCMSGroups()
-* Fix issue introduced in [#219](https://github.com/silverstripe-australia/advancedworkflow/pull/219)
+* Fix issue introduced in [#219](https://github.com/symbiote/advancedworkflow/pull/219)
 
 2015-08-20 v3.2.1
 -----------------
@@ -99,7 +99,7 @@
 * Bugfixes for errors shown in CMS UI when creating/editing workflow definitions
 * Bugfix for users not receiving correctly formatted "To" headers for NotifyUsersWorkflowAction
 * Minor inline doc corrections leftover from v2.4 --> v3.0 upgrade
-* For a detailed list of changes, please visit: https://github.com/silverstripe-australia/advancedworkflow/issues
+* For a detailed list of changes, please visit: https://github.com/symbiote/advancedworkflow/issues
 
 2012-07-25 v2.0.0
 -----------------

@@ -18,7 +18,7 @@ if (!class_exists('QueuedJobDescriptor')) {
 /**
  * Adds embargo period and expiry dates to content items
  *
- * @author marcus@silverstripe.com.au
+ * @author marcus@symbiote.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension {

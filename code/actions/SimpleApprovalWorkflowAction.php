@@ -6,7 +6,7 @@
  * A more complicated workflow might use a majority, quorum or other type of
  * approval functionality
  *
- * @author     marcus@silverstripe.com.au
+ * @author     marcus@symbiote.com.au
  * @license    BSD License (http://silverstripe.org/bsd-license/)
  * @package    advancedworkflow
  * @subpackage actions
