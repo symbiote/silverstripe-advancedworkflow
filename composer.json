@@ -23,5 +23,8 @@
 		"branch-alias": {
 			"dev-master": "5.0.x-dev"
 		}
+	},
+	"replace": {
+		"silverstripe/advancedworkflow": "self.version"
 	}
 }
