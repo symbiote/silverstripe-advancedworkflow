@@ -20,6 +20,7 @@
         "silverstripe/framework": "^4"
 	},
 	"extra": {
+		"installer-name": "advancedworkflow",
 		"branch-alias": {
 			"dev-master": "5.0.x-dev"
 		}
