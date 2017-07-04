@@ -1,8 +1,9 @@
 <?php
 
 use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Permission;
+use SilverStripe\ORM\Versioning\Versioned;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -138,9 +139,11 @@ class WorkflowApplicable extends DataExtension {
 	}
 
 	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
 		$c = Controller::curr();
-		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+        $navigator = SilverStripeNavigatorItem_CMSLink::create($this->owner);
+		if ($c && $c->hasExtension('AdvancedWorkflowExtension') && !$navigator->isArchived()) {
+            $active = $this->workflowService->getWorkflowFor($this->owner);
+
 			if ($active) {
 				if ($this->canEditWorkflow()) {
 					$workflowOptions = new Tab(
@@ -370,4 +373,5 @@ class WorkflowApplicable extends DataExtension {
 		}
 		return false;
 	}
+
 }
