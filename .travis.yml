@@ -7,12 +7,12 @@ php:
 
 env:
   matrix:
-    - DB=MYSQL CORE_RELEASE=master
+    - DB=MYSQL CORE_RELEASE=4
 
 matrix:
   include:
     - php: 5.6
-      env: DB=MYSQL CORE_RELEASE=master
+      env: DB=MYSQL CORE_RELEASE=4
 
 before_script:
   - composer self-update || true
