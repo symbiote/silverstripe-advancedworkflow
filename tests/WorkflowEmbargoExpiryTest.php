@@ -476,7 +476,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $this->assertEquals($dupe->UnPublishJobID, 0, 'Unpublish job ID unset');
     }
 
-    protected function logOut()
+    public function logOut()
     {
         if($member = Member::currentUser()) $member->logOut();
     }
