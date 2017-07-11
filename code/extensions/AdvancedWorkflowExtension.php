@@ -2,6 +2,7 @@
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
+use SilverStripe\Core\Extension;
 
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
@@ -11,7 +12,7 @@ use SilverStripe\Security\Permission;
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class AdvancedWorkflowExtension extends LeftAndMainExtension {
+class AdvancedWorkflowExtension extends Extension {
 	
 	private static $allowed_actions = array(
 		'updateworkflow',
