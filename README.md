@@ -1,6 +1,5 @@
 # Advanced Workflow Module
 
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/symbiote/advancedworkflow/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/symbiote/advancedworkflow/?branch=master)
 [![Build Status](https://travis-ci.org/symbiote/silverstripe-advancedworkflow.svg?branch=master)](https://travis-ci.org/symbiote/silverstripe-advancedworkflow)
 
 ## Overview
