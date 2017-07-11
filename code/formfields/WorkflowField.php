@@ -2,6 +2,7 @@
 
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\SecurityToken;
+use SilverStripe\Forms\FormField;
 
 /**
  * A form field that allows workflow actions and transitions to be edited,

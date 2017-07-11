@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\Forms\Form;
+
 class FrontendWorkflowForm extends Form{
 
 	function httpSubmission($request) {

@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Dev\BuildTask;
+
 /**
  * A task that sends a reminder email to users assigned to a workflow that has
  * not been actioned for n days.

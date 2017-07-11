@@ -1,6 +1,10 @@
 <?php
 
 use SilverStripe\Security\Permission;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_ActionProvider;
+use SilverStripe\Forms\GridField\GridField;
+
 /**
  * This class is a {@link GridField} component that adds an export action for
  * WorkflowDefinition objects shown in GridFields.

@@ -2,6 +2,7 @@
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\SecurityToken;
+use SilverStripe\Control\Controller;
 
 /**
  * Handles individual record data editing or deleting.

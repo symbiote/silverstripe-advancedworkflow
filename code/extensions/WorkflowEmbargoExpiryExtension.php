@@ -8,7 +8,7 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-
+use SilverStripe\Forms\FieldList;
 
 // Queued jobs descriptor is required for this extension
 if (!class_exists('QueuedJobDescriptor')) {

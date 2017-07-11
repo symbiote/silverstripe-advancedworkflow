@@ -2,6 +2,8 @@
 
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+
 /**
  *
  * @package advancedworkflow

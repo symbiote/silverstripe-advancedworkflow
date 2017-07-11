@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Forms\FieldList;
+
 /**
  * WorkflowApplicable extension specifically for File objects, which don't have the same CMS
  * UI structure so need to be handled a little differently. Additionally, it doesn't really 

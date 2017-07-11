@@ -3,6 +3,7 @@
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
+use SilverStripe\Forms\FieldList;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a

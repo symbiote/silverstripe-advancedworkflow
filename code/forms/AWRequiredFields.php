@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Forms\RequiredFields;
+
 /**
  * Extends RequiredFields so we can prevent DO writes in AW's controller(s) without needing to catch Exceptions from DO->validate() all over the place.
  * Note specifically $this->getExtendedValidationRoutines() - anti-pattern anyone?

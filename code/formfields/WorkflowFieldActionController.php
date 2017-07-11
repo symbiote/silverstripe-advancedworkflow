@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Control\RequestHandler;
+
 /**
  * Handles requests for creating or editing actions.
  *
