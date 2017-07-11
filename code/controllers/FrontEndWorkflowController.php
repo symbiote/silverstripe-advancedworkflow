@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Control\Controller;
+
 /**
  * Provides a front end Form view of the defined Workflow Actions and Transitions 
  *

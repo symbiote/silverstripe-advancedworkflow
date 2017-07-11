@@ -3,6 +3,7 @@
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
+use SilverStripe\Control\Controller;
 
 /**
  * Handles actions triggered from external sources, eg emails or web frontend
