@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Dev\SapphireTest;
+
 /**
  * Tests for permissions on all Workflow Objects.
  * These will obviousely need to be modified should additional workflow permissions come online.

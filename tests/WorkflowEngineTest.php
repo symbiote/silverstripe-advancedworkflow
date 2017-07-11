@@ -2,6 +2,8 @@
 
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Dev\SapphireTest;
+
 /**
  * Tests for the workflow engine.
  *

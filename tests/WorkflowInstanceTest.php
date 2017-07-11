@@ -1,4 +1,7 @@
 <?php
+
+use SilverStripe\Dev\SapphireTest;
+
 /**
  * Tests for the workflow engine.
  *

@@ -1,6 +1,8 @@
 <?php
 
 use SilverStripe\Security\Member;
+use SilverStripe\Dev\SapphireTest;
+
 /**
  * Tests for workflow import/export logic.
  *

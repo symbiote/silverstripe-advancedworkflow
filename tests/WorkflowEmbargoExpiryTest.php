@@ -4,6 +4,7 @@ use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\ORM\Versioning\Versioned;
+use SilverStripe\Dev\SapphireTest;
 
 /**
  * @author marcus@symbiote.com.au
