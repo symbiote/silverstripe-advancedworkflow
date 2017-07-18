@@ -142,8 +142,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 
 		$dt->getDateField()->setConfig('showcalendar', true);
 		$ut->getDateField()->setConfig('showcalendar', true);
-		$dt->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
-		$ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
+
+		if ($dt->getTimeField()->getConfig('timeformat') === null) {
+			$dt->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
+			$ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
+		}
 
 		// Enable a jQuery-UI timepicker widget
 		if(self::$showTimePicker) {
