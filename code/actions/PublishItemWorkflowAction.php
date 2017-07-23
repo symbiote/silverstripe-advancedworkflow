@@ -26,7 +26,11 @@ class PublishItemWorkflowAction extends WorkflowAction {
 		}
 
 		if (class_exists('AbstractQueuedJob') && $this->PublishDelay) {
-			$job   = new WorkflowPublishTargetJob($target);
+			$version = null;
+			if ($target->hasField('Version')) {
+				$version = $target->getField('Version');
+			}
+			$job   = new WorkflowPublishTargetJob($target, 'publish', $version);
 			$days  = $this->PublishDelay;
 			$after = date('Y-m-d H:i:s', strtotime("+$days days"));
 			singleton('QueuedJobService')->queueJob($job, $after);

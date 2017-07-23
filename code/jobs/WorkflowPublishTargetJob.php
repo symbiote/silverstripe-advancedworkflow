@@ -6,11 +6,12 @@
  */
 class WorkflowPublishTargetJob extends AbstractQueuedJob {
 
-	public function __construct($obj = null, $type = null) {
+	public function __construct($obj = null, $type = null, $version = null) {
 		if ($obj) {
 			$this->setObject($obj);
 			$this->publishType = $type ? strtolower($type) : 'publish';
 			$this->totalSteps = 1;
+			$this->version = $version;
 		}
 	}
 
@@ -31,10 +32,19 @@ class WorkflowPublishTargetJob extends AbstractQueuedJob {
         \Versioned::reading_stage('Stage');
 		if ($target = $this->getObject()) {
 			if ($this->publishType == 'publish') {
+				$publishMethod = 'doPublish';
+
+				// Check to see if we need to publish a specific version of the DataObject
+				if ($target->hasMethod('doVersionPublish') && $this->version !== null) {
+					$publishMethod = 'doVersionPublish';
+					// Get the specific version that we wish to publish
+					$target = Versioned::get_version($target->ClassName, $target->ID, $this->version);
+				}
+
 				$target->setIsPublishJobRunning(true);
 				$target->PublishOnDate = '';
 				$target->writeWithoutVersion();
-				$target->doPublish();
+				$target->$publishMethod();
 			} else if ($this->publishType == 'unpublish') {
 				$target->setIsPublishJobRunning(true);
 				$target->UnPublishOnDate = '';

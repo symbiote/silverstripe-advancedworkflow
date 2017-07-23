@@ -14,3 +14,4 @@ Make sure that your SilverStripe CMS installation has the [Advanced Workflow](ht
  - [Workflow users and permissions](workflow-permissions.md)
  - [Advanced workflow setup](workflow-advanced-setup.md)
  - [Exporting and importing workflows](workflow-export-import.md)
+ - [Advanced embargo and expiry setup](embargo-advanced-setup.md)
