@@ -194,8 +194,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 			$this->clearPublishJob();
 		}
 
+		$version = null;
+		if ($this->owner->hasField('Version')) {
+			$version = $this->owner->getField('Version');
+		}
+
 		// Create a new job with the specified schedule
-		$job = new WorkflowPublishTargetJob($this->owner, 'publish');
+		$job = new WorkflowPublishTargetJob($this->owner, 'publish', $version);
 		$this->owner->PublishJobID = Injector::inst()->get('QueuedJobService')
 				->queueJob($job, $when ? date('Y-m-d H:i:s', $when) : null);
 	}
