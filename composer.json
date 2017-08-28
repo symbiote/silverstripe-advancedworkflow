@@ -1,5 +1,5 @@
 {
-    "name": "silverstripe/advancedworkflow",
+    "name": "symbiote/silverstripe-advancedworkflow",
     "description": "Adds configurable workflow support to the CMS, with a GUI for creating custom workflow definitions.",
     "type": "silverstripe-module",
     "keywords": [
@@ -23,6 +23,9 @@
         "silverstripe/framework": "^3"
     },
 	"extra": {
-		"installer-name": "advancedworkflow"
+		"installer-name": "advancedworkflow",
+        "branch-alias": {
+			"4.x-dev": "4.0.x-dev"
+		}
 	}
 }
