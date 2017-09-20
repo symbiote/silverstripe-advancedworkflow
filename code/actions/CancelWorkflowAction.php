@@ -7,6 +7,7 @@
  * @package    advancedworkflow
  * @subpackage actions
  */
-class CancelWorkflowAction extends WorkflowAction {
-	private static $icon = 'advancedworkflow/images/cancel.png';
+class CancelWorkflowAction extends WorkflowAction
+{
+    private static $icon = 'advancedworkflow/images/cancel.png';
 }

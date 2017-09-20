@@ -9,40 +9,44 @@ use SilverStripe\Forms\RequiredFields;
  * @author Russell Michell russell@silverstripe.com
  * @package advancedworkflow
  */
-class AWRequiredFields extends RequiredFields {
+class AWRequiredFields extends RequiredFields
+{
 
-	protected $data = array();
-	protected static $caller;
+    protected $data = array();
+    protected static $caller;
 
-	public function php($data) {
-		$valid = parent::php($data);
-		$this->setData($data);
+    public function php($data)
+    {
+        $valid = parent::php($data);
+        $this->setData($data);
 
-		// Fetch any extended validation routines on the caller
-		$extended = $this->getExtendedValidationRoutines();
+        // Fetch any extended validation routines on the caller
+        $extended = $this->getExtendedValidationRoutines();
 
-		// Only deal-to extended routines once the parent is done
-		if($valid && $extended['fieldValid'] !== true) {
-			$fieldName = $extended['fieldName'];
-			$formField = $extended['fieldField'];
-			$errorMessage = sprintf($extended['fieldMsg'],
-				strip_tags('"'.(($formField && $formField->Title()) ? $formField->Title() : $fieldName).'"'));
+        // Only deal-to extended routines once the parent is done
+        if ($valid && $extended['fieldValid'] !== true) {
+            $fieldName = $extended['fieldName'];
+            $formField = $extended['fieldField'];
+            $errorMessage = sprintf(
+                $extended['fieldMsg'],
+                strip_tags('"'.(($formField && $formField->Title()) ? $formField->Title() : $fieldName).'"')
+            );
 
-			if($formField && $msg = $formField->getCustomValidationMessage()) {
-				$errorMessage = $msg;
-			}
-			
-			$this->validationError(
-				$fieldName,
-				$errorMessage,
-				"required"
-			);
-			$valid = false;
-		}
-		return $valid;
-	}
+            if ($formField && $msg = $formField->getCustomValidationMessage()) {
+                $errorMessage = $msg;
+            }
+            
+            $this->validationError(
+                $fieldName,
+                $errorMessage,
+                "required"
+            );
+            $valid = false;
+        }
+        return $valid;
+    }
 
-	/*
+    /*
 	 * Allows for the addition of an arbitrary no. additional, dedicated and "extended" validation methods on classes that call AWRequiredFields.
 	 * To add specific validation methods to a caller:
 	 *
@@ -53,49 +57,54 @@ class AWRequiredFields extends RequiredFields {
 	 *
 	 * @return array $return
 	 */
-	public function getExtendedValidationRoutines() {
-		// Setup a return array 
-		$return = array(
-			'fieldValid'=>true,
-			'fieldName'	=>null,
-			'fieldField'=>null,
-			'fieldMsg'	=>null
-		);
-		$caller = $this->getCaller();
-		$methods = get_class_methods($caller);
-		if(!$methods) {
-			return $return;
-		}
-		foreach($methods as $method) {
-			if(!preg_match("#extendedRequiredFields#",$method)) {
-				continue;
-			}
-			// One of the DO's validation methods has failed
-			$extended = $caller->$method($this->getData());
-			if($extended['fieldValid'] !== true) {
-				$return['fieldValid']	= $extended['fieldValid'];
-				$return['fieldName']	= $extended['fieldName'];
-				$return['fieldField']	= $extended['fieldField'];
-				$return['fieldMsg']		= $extended['fieldMsg'];
-				break;
-			}
-		}
-		return $return;
-	}
+    public function getExtendedValidationRoutines()
+    {
+        // Setup a return array
+        $return = array(
+            'fieldValid'=>true,
+            'fieldName'     =>null,
+            'fieldField'=>null,
+            'fieldMsg'  =>null
+        );
+        $caller = $this->getCaller();
+        $methods = get_class_methods($caller);
+        if (!$methods) {
+            return $return;
+        }
+        foreach ($methods as $method) {
+            if (!preg_match("#extendedRequiredFields#", $method)) {
+                continue;
+            }
+            // One of the DO's validation methods has failed
+            $extended = $caller->$method($this->getData());
+            if ($extended['fieldValid'] !== true) {
+                $return['fieldValid']   = $extended['fieldValid'];
+                $return['fieldName']    = $extended['fieldName'];
+                $return['fieldField']   = $extended['fieldField'];
+                $return['fieldMsg']         = $extended['fieldMsg'];
+                break;
+            }
+        }
+        return $return;
+    }
 
-	protected function setData($data) {
-		$this->data = $data;
-	}
+    protected function setData($data)
+    {
+        $this->data = $data;
+    }
 
-	protected function getData() {
-		return $this->data;
-	}
+    protected function getData()
+    {
+        return $this->data;
+    }
 
-	public function setCaller($caller) {
-		self::$caller = $caller;
-	}
+    public function setCaller($caller)
+    {
+        self::$caller = $caller;
+    }
 
-	public function getCaller() {
-		return self::$caller;
-	}
+    public function getCaller()
+    {
+        return self::$caller;
+    }
 }

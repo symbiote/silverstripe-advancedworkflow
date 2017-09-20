@@ -5,9 +5,8 @@
  */
 define('ADVANCED_WORKFLOW_DIR', basename(dirname(__FILE__)));
 
-if(ADVANCED_WORKFLOW_DIR != 'advancedworkflow') {
-	throw new Exception(
-		"The advanced workflow module must be in a directory named 'advancedworkflow', not " . ADVANCED_WORKFLOW_DIR
-	);
+if (ADVANCED_WORKFLOW_DIR != 'advancedworkflow') {
+    throw new Exception(
+        "The advanced workflow module must be in a directory named 'advancedworkflow', not " . ADVANCED_WORKFLOW_DIR
+    );
 }
-

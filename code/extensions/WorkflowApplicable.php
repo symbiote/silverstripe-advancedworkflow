@@ -14,323 +14,341 @@ use SilverStripe\Forms\FieldList;
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class WorkflowApplicable extends DataExtension {
+class WorkflowApplicable extends DataExtension
+{
 
-	private static $has_one = array(
-		'WorkflowDefinition' => 'WorkflowDefinition',
-	);
+    private static $has_one = array(
+        'WorkflowDefinition' => 'WorkflowDefinition',
+    );
 
-	private static $many_many = array(
-		'AdditionalWorkflowDefinitions' => 'WorkflowDefinition'
-	);
+    private static $many_many = array(
+        'AdditionalWorkflowDefinitions' => 'WorkflowDefinition'
+    );
 
-	private static $dependencies = array(
-		'workflowService'		=> '%$WorkflowService',
-	);
+    private static $dependencies = array(
+        'workflowService'       => '%$WorkflowService',
+    );
 
-	/**
-	 *
-	 * Used to flag to this extension if there's a WorkflowPublishTargetJob running.
-	 * @var boolean
-	 */
-	public $isPublishJobRunning = false;
+    /**
+     *
+     * Used to flag to this extension if there's a WorkflowPublishTargetJob running.
+     * @var boolean
+     */
+    public $isPublishJobRunning = false;
 
-	/**
-	 *
-	 * @param boolean $truth
-	 */
-	public function setIsPublishJobRunning($truth) {
-		$this->isPublishJobRunning = $truth;
-	}
+    /**
+     *
+     * @param boolean $truth
+     */
+    public function setIsPublishJobRunning($truth)
+    {
+        $this->isPublishJobRunning = $truth;
+    }
 
-	/**
-	 *
-	 * @return boolean
-	 */
-	public function getIsPublishJobRunning() {
-		return $this->isPublishJobRunning;
-	}
+    /**
+     *
+     * @return boolean
+     */
+    public function getIsPublishJobRunning()
+    {
+        return $this->isPublishJobRunning;
+    }
 
-	/**
-	 *
-	 * @see {@link $this->isPublishJobRunning}
-	 * @return boolean
-	 */
-	public function isPublishJobRunning() {
-		$propIsSet = $this->getIsPublishJobRunning() ? true : false;
-		return class_exists('AbstractQueuedJob') && $propIsSet;
-	}
+    /**
+     *
+     * @see {@link $this->isPublishJobRunning}
+     * @return boolean
+     */
+    public function isPublishJobRunning()
+    {
+        $propIsSet = $this->getIsPublishJobRunning() ? true : false;
+        return class_exists('AbstractQueuedJob') && $propIsSet;
+    }
 
-	/**
-	 * @var WorkflowService
-	 */
-	public $workflowService;
+    /**
+     * @var WorkflowService
+     */
+    public $workflowService;
 
-	/**
-	 *
-	 * A cache var for the current workflow instance
-	 *
-	 * @var WorkflowInstance
-	 */
-	protected $currentInstance;
+    /**
+     *
+     * A cache var for the current workflow instance
+     *
+     * @var WorkflowInstance
+     */
+    protected $currentInstance;
 
-	public function updateSettingsFields(FieldList $fields) {
-		$this->updateFields($fields);
-	}
+    public function updateSettingsFields(FieldList $fields)
+    {
+        $this->updateFields($fields);
+    }
 
-	public function updateCMSFields(FieldList $fields) {
-		if(!$this->owner->hasMethod('getSettingsFields')) $this->updateFields($fields);
+    public function updateCMSFields(FieldList $fields)
+    {
+        if (!$this->owner->hasMethod('getSettingsFields')) {
+            $this->updateFields($fields);
+        }
 
-		// Instantiate a hidden form field to pass the triggered workflow definition through, allowing a dynamic form action.
+        // Instantiate a hidden form field to pass the triggered workflow definition through, allowing a dynamic form action.
 
-		$fields->push(HiddenField::create(
-			'TriggeredWorkflowID'
-		));
-	}
+        $fields->push(HiddenField::create(
+            'TriggeredWorkflowID'
+        ));
+    }
 
-	public function updateFields(FieldList $fields) {
-		if (!$this->owner->ID) {
-			return $fields;
-		}
+    public function updateFields(FieldList $fields)
+    {
+        if (!$this->owner->ID) {
+            return $fields;
+        }
 
-		$tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
+        $tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
-		if(Permission::check('APPLY_WORKFLOW')) {
-			$definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
-			$definitions = $this->workflowService->getDefinitions()->map()->toArray();
-			$definition->setSource($definitions);
-			$definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
-			$tab->push($definition);
+        if (Permission::check('APPLY_WORKFLOW')) {
+            $definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
+            $definitions = $this->workflowService->getDefinitions()->map()->toArray();
+            $definition->setSource($definitions);
+            $definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
+            $tab->push($definition);
 
-			// Allow an optional selection of additional workflow definitions.
+            // Allow an optional selection of additional workflow definitions.
 
-			if($this->owner->WorkflowDefinitionID) {
-				$fields->removeByName('AdditionalWorkflowDefinitions');
-				unset($definitions[$this->owner->WorkflowDefinitionID]);
-				$tab->push($additional = ListboxField::create(
-					'AdditionalWorkflowDefinitions',
-					_t('WorkflowApplicable.ADDITIONAL_WORKFLOW_DEFINITIONS', 'Additional Workflows')
-				));
-				$additional->setSource($definitions);
-			}
-		}
+            if ($this->owner->WorkflowDefinitionID) {
+                $fields->removeByName('AdditionalWorkflowDefinitions');
+                unset($definitions[$this->owner->WorkflowDefinitionID]);
+                $tab->push($additional = ListboxField::create(
+                    'AdditionalWorkflowDefinitions',
+                    _t('WorkflowApplicable.ADDITIONAL_WORKFLOW_DEFINITIONS', 'Additional Workflows')
+                ));
+                $additional->setSource($definitions);
+            }
+        }
 
-		// Display the effective workflow definition.
+        // Display the effective workflow definition.
 
-		if($effective = $this->getWorkflowInstance()) {
-			$title = $effective->Definition()->Title;
-			$tab->push(ReadonlyField::create(
-				'EffectiveWorkflow',
-				_t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
-				$title
-			));
-		}
+        if ($effective = $this->getWorkflowInstance()) {
+            $title = $effective->Definition()->Title;
+            $tab->push(ReadonlyField::create(
+                'EffectiveWorkflow',
+                _t('WorkflowApplicable.EFFECTIVE_WORKFLOW', 'Effective Workflow'),
+                $title
+            ));
+        }
 
-		if($this->owner->ID) {
-			$config = new GridFieldConfig_Base();
-			$config->addComponent(new GridFieldEditButton());
-			$config->addComponent(new GridFieldDetailForm());
+        if ($this->owner->ID) {
+            $config = new GridFieldConfig_Base();
+            $config->addComponent(new GridFieldEditButton());
+            $config->addComponent(new GridFieldDetailForm());
 
-			$insts = $this->owner->WorkflowInstances();
-			$log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
+            $insts = $this->owner->WorkflowInstances();
+            $log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
 
-			$tab->push($log);
-		}
-	}
+            $tab->push($log);
+        }
+    }
 
-	public function updateCMSActions(FieldList $actions) {
-		$active = $this->workflowService->getWorkflowFor($this->owner);
-		$c = Controller::curr();
-		if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
-			if ($active) {
-				if ($this->canEditWorkflow()) {
-					$workflowOptions = new Tab(
-						'WorkflowOptions',
-						_t('SiteTree.WorkflowOptions', 'Workflow options', 'Expands a view for workflow specific buttons')
-					);
+    public function updateCMSActions(FieldList $actions)
+    {
+        $active = $this->workflowService->getWorkflowFor($this->owner);
+        $c = Controller::curr();
+        if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+            if ($active) {
+                if ($this->canEditWorkflow()) {
+                    $workflowOptions = new Tab(
+                        'WorkflowOptions',
+                        _t('SiteTree.WorkflowOptions', 'Workflow options', 'Expands a view for workflow specific buttons')
+                    );
 
-					$menu = $actions->fieldByName('ActionMenus');
-					if (!$menu) {
-						// create the menu for adding to any arbitrary non-sitetree object
-						$menu = $this->createActionMenu();
-						$actions->push($menu);
-					}
+                    $menu = $actions->fieldByName('ActionMenus');
+                    if (!$menu) {
+                        // create the menu for adding to any arbitrary non-sitetree object
+                        $menu = $this->createActionMenu();
+                        $actions->push($menu);
+                    }
 
-					if(!$actions->fieldByName('ActionMenus.WorkflowOptions')) {
-						$menu->push($workflowOptions);
-					}
+                    if (!$actions->fieldByName('ActionMenus.WorkflowOptions')) {
+                        $menu->push($workflowOptions);
+                    }
 
-					$transitions = $active->CurrentAction()->getValidTransitions();
+                    $transitions = $active->CurrentAction()->getValidTransitions();
 
-					foreach ($transitions as $transition) {
-						if ($transition->canExecute($active)) {
-							$action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
-								->setAttribute('data-transitionid', $transition->ID);
-							$workflowOptions->push($action);
-						}
-					}
+                    foreach ($transitions as $transition) {
+                        if ($transition->canExecute($active)) {
+                            $action = FormAction::create('updateworkflow-' . $transition->ID, $transition->Title)
+                                ->setAttribute('data-transitionid', $transition->ID);
+                            $workflowOptions->push($action);
+                        }
+                    }
 
-					// $action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
-					// 	->setAttribute('data-icon', 'navigation');
-					// $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
-				}
-			} else {
-				// Instantiate the workflow definition initial actions.
-				$definitions = $this->workflowService->getDefinitionsFor($this->owner);
-				if($definitions) {
-					$menu = $actions->fieldByName('ActionMenus');
-					if(is_null($menu)) {
+                    // $action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+                    // 	->setAttribute('data-icon', 'navigation');
+                    // $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+                }
+            } else {
+                // Instantiate the workflow definition initial actions.
+                $definitions = $this->workflowService->getDefinitionsFor($this->owner);
+                if ($definitions) {
+                    $menu = $actions->fieldByName('ActionMenus');
+                    if (is_null($menu)) {
+                        // Instantiate a new action menu for any data objects.
 
-						// Instantiate a new action menu for any data objects.
+                        $menu = $this->createActionMenu();
+                        $actions->push($menu);
+                    }
+                    $tab = Tab::create(
+                        'AdditionalWorkflows'
+                    );
+                    $addedFirst = false;
+                    foreach ($definitions as $definition) {
+                        if ($definition->getInitialAction() && $this->owner->canEdit()) {
+                            $action = FormAction::create(
+                                "startworkflow-{$definition->ID}",
+                                $definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
+                            )->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
 
-						$menu = $this->createActionMenu();
-						$actions->push($menu);
-					}
-					$tab = Tab::create(
-						'AdditionalWorkflows'
-					);
-					$addedFirst = false;
-					foreach($definitions as $definition) {
-						if($definition->getInitialAction() && $this->owner->canEdit()) {
-							$action = FormAction::create(
-								"startworkflow-{$definition->ID}",
-								$definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
-							)->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
+                            // The first element is the main workflow definition, and will be displayed as a major action.
+                            if (!$addedFirst) {
+                                $addedFirst = true;
+                                $action->setAttribute('data-icon', 'navigation');
+                                $majorActions = $actions->fieldByName('MajorActions');
+                                $majorActions ? $majorActions->push($action) : $actions->push($action);
+                            } else {
+                                $tab->push($action);
+                            }
+                        }
+                    }
+                    // Only display menu if actions pushed to it
+                    if ($tab->Fields()->exists()) {
+                        $menu->insertBefore($tab, 'MoreOptions');
+                    }
+                }
+            }
+        }
+    }
 
-							// The first element is the main workflow definition, and will be displayed as a major action.
-							if(!$addedFirst) {
-								$addedFirst = true;
-								$action->setAttribute('data-icon', 'navigation');
-								$majorActions = $actions->fieldByName('MajorActions');
-								$majorActions ? $majorActions->push($action) : $actions->push($action);
-							} else {
-								$tab->push($action);
-							}
-						}
-					}
-					// Only display menu if actions pushed to it
-					if ($tab->Fields()->exists()) {
-						$menu->insertBefore($tab, 'MoreOptions');
-					}
-				}
-			}
-		}
-	}
+    protected function createActionMenu()
+    {
+        $rootTabSet = new TabSet('ActionMenus');
+        $rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
+        return $rootTabSet;
+    }
 
-	protected function createActionMenu() {
-		$rootTabSet = new TabSet('ActionMenus');
-		$rootTabSet->addExtraClass('ss-ui-action-tabset action-menus');
-		return $rootTabSet;
-	}
+    /**
+     * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
+     * Returns an absolute link to the CMS UI for a Page object
+     *
+     * @return string | null
+     */
+    public function AbsoluteEditLink()
+    {
+        $CMSEditLink = null;
 
-	/**
-	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
-	 * Returns an absolute link to the CMS UI for a Page object
-	 *
-	 * @return string | null
-	 */
-	public function AbsoluteEditLink() {
-		$CMSEditLink = null;
+        if ($this->owner instanceof CMSPreviewable) {
+            $CMSEditLink = $this->owner->CMSEditLink();
+        } elseif ($this->owner->hasMethod('WorkflowLink')) {
+            $CMSEditLink = $this->owner->WorkflowLink();
+        }
 
-		if($this->owner instanceof CMSPreviewable) {
-			$CMSEditLink = $this->owner->CMSEditLink();
-		} else if ($this->owner->hasMethod('WorkflowLink')) {
-			$CMSEditLink = $this->owner->WorkflowLink();
-		}
+        if ($CMSEditLink === null) {
+            return null;
+        }
 
-		if ($CMSEditLink === null) {
-			return null;
-		}
+        return Controller::join_links(Director::absoluteBaseURL(), $CMSEditLink);
+    }
 
-		return Controller::join_links(Director::absoluteBaseURL(), $CMSEditLink);
-	}
+    /**
+     * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
+     * Allows users to select a link in an email for direct access to the transition-selection dropdown in the CMS UI.
+     *
+     * @return string
+     */
+    public function LinkToPendingItems()
+    {
+        $urlBase = Director::absoluteBaseURL();
+        $urlFrag = 'admin/workflows/WorkflowDefinition/EditForm/field';
+        $urlInst = $this->getWorkflowInstance();
+        return Controller::join_links($urlBase, $urlFrag, 'PendingObjects', 'item', $urlInst->ID, 'edit');
+    }
 
-	/**
-	 * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
-	 * Allows users to select a link in an email for direct access to the transition-selection dropdown in the CMS UI.
-	 *
-	 * @return string
-	 */
-	public function LinkToPendingItems() {
-		$urlBase = Director::absoluteBaseURL();
-		$urlFrag = 'admin/workflows/WorkflowDefinition/EditForm/field';
-		$urlInst = $this->getWorkflowInstance();
-		return Controller::join_links($urlBase, $urlFrag, 'PendingObjects', 'item', $urlInst->ID, 'edit');
-	}
+    /**
+     * After a workflow item is written, we notify the
+     * workflow so that it can take action if needbe
+     */
+    public function onAfterWrite()
+    {
+        $instance = $this->getWorkflowInstance();
+        if ($instance && $instance->CurrentActionID) {
+            $action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
+        }
+    }
 
-	/**
-	 * After a workflow item is written, we notify the
-	 * workflow so that it can take action if needbe
-	 */
-	public function onAfterWrite() {
-		$instance = $this->getWorkflowInstance();
-		if ($instance && $instance->CurrentActionID) {
-			$action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
-		}
-	}
+    public function WorkflowInstances()
+    {
+        return WorkflowInstance::get()->filter(array(
+            'TargetClass' => $this->ownerBaseClass,
+            'TargetID'    => $this->owner->ID
+        ));
+    }
 
-	public function WorkflowInstances() {
-		return WorkflowInstance::get()->filter(array(
-			'TargetClass' => $this->ownerBaseClass,
-			'TargetID'    => $this->owner->ID
-		));
-	}
+    /**
+     * Gets the current instance of workflow
+     *
+     * @return WorkflowInstance
+     */
+    public function getWorkflowInstance()
+    {
+        if (!$this->currentInstance) {
+            $this->currentInstance = $this->workflowService->getWorkflowFor($this->owner);
+        }
 
-	/**
-	 * Gets the current instance of workflow
-	 *
-	 * @return WorkflowInstance
-	 */
-	public function getWorkflowInstance() {
-		if (!$this->currentInstance) {
-			$this->currentInstance = $this->workflowService->getWorkflowFor($this->owner);
-		}
-
-		return $this->currentInstance;
-	}
+        return $this->currentInstance;
+    }
 
 
-	/**
-	 * Gets the history of a workflow instance
-	 *
-	 * @return DataObjectSet
-	 */
-	public function getWorkflowHistory($limit = null) {
-		return $this->workflowService->getWorkflowHistoryFor($this->owner, $limit);
-	}
+    /**
+     * Gets the history of a workflow instance
+     *
+     * @return DataObjectSet
+     */
+    public function getWorkflowHistory($limit = null)
+    {
+        return $this->workflowService->getWorkflowHistoryFor($this->owner, $limit);
+    }
 
-	/**
-	 * Check all recent WorkflowActionIntances and return the most recent one with a Comment
-	 *
-	 * @return WorkflowActionInstance
-	 */
-	public function RecentWorkflowComment($limit = 10){
-		if($actions = $this->getWorkflowHistory($limit)){
-			foreach ($actions as $action) {
-				if ($action->Comment != '') {
-					return $action;
-				}
-			}
-		}
-	}
+    /**
+     * Check all recent WorkflowActionIntances and return the most recent one with a Comment
+     *
+     * @return WorkflowActionInstance
+     */
+    public function RecentWorkflowComment($limit = 10)
+    {
+        if ($actions = $this->getWorkflowHistory($limit)) {
+            foreach ($actions as $action) {
+                if ($action->Comment != '') {
+                    return $action;
+                }
+            }
+        }
+    }
 
-	/**
-	 * Content can never be directly publishable if there's a workflow applied.
-	 *
-	 * If there's an active instance, then it 'might' be publishable
-	 */
-	public function canPublish() {
-		// Override any default behaviour, to allow queuedjobs to complete
-		if($this->isPublishJobRunning()) {
-			return true;
-		}
+    /**
+     * Content can never be directly publishable if there's a workflow applied.
+     *
+     * If there's an active instance, then it 'might' be publishable
+     */
+    public function canPublish()
+    {
+        // Override any default behaviour, to allow queuedjobs to complete
+        if ($this->isPublishJobRunning()) {
+            return true;
+        }
 
-		if ($active = $this->getWorkflowInstance()) {
-			$publish = $active->canPublishTarget($this->owner);
+        if ($active = $this->getWorkflowInstance()) {
+            $publish = $active->canPublishTarget($this->owner);
             if (!is_null($publish)) {
                 return $publish;
             }
-		}
+        }
 
         // use definition to determine if publishing directly is allowed
         $definition = $this->workflowService->getDefinitionFor($this->owner);
@@ -345,30 +363,32 @@ class WorkflowApplicable extends DataExtension {
 
             return $canPublish;
         }
-	}
+    }
 
-	/**
-	 * Can only edit content that's NOT in another person's content changeset
-	 */
-	public function canEdit($member) {
-		// Override any default behaviour, to allow queuedjobs to complete
-		if($this->isPublishJobRunning()) {
-			return true;
-		}
+    /**
+     * Can only edit content that's NOT in another person's content changeset
+     */
+    public function canEdit($member)
+    {
+        // Override any default behaviour, to allow queuedjobs to complete
+        if ($this->isPublishJobRunning()) {
+            return true;
+        }
 
-		if ($active = $this->getWorkflowInstance()) {
-			return $active->canEditTarget($this->owner);
-		}
-	}
+        if ($active = $this->getWorkflowInstance()) {
+            return $active->canEditTarget($this->owner);
+        }
+    }
 
-	/**
-	 * Can a user edit the current workflow attached to this item?
-	 */
-	public function canEditWorkflow() {
-		$active = $this->getWorkflowInstance();
-		if ($active) {
-			return $active->canEdit();
-		}
-		return false;
-	}
+    /**
+     * Can a user edit the current workflow attached to this item?
+     */
+    public function canEditWorkflow()
+    {
+        $active = $this->getWorkflowInstance();
+        if ($active) {
+            return $active->canEdit();
+        }
+        return false;
+    }
 }
