@@ -7,69 +7,74 @@ use SilverStripe\Control\RequestHandler;
  *
  * @package silverstripe-advancedworkflow
  */
-class WorkflowFieldActionController extends RequestHandler {
+class WorkflowFieldActionController extends RequestHandler
+{
 
-	private static $url_handlers = array(
-		'new/$Class' => 'handleAdd',
-		'item/$ID'   => 'handleItem'
-	);
+    private static $url_handlers = array(
+        'new/$Class' => 'handleAdd',
+        'item/$ID'   => 'handleItem'
+    );
 
-	private static $allowed_actions = array(
-		'handleAdd',
-		'handleItem'
-	);
+    private static $allowed_actions = array(
+        'handleAdd',
+        'handleItem'
+    );
 
-	protected $parent;
-	protected $name;
+    protected $parent;
+    protected $name;
 
-	public function __construct($parent, $name) {
-		$this->parent = $parent;
-		$this->name   = $name;
+    public function __construct($parent, $name)
+    {
+        $this->parent = $parent;
+        $this->name   = $name;
 
-		parent::__construct();
-	}
+        parent::__construct();
+    }
 
-	public function handleAdd() {
-		$class = $this->request->param('Class');
+    public function handleAdd()
+    {
+        $class = $this->request->param('Class');
 
-		if(!class_exists($class) || !is_subclass_of($class, 'WorkflowAction')) {
-			$this->httpError(400);
-		}
+        if (!class_exists($class) || !is_subclass_of($class, 'WorkflowAction')) {
+            $this->httpError(400);
+        }
 
-		$reflector = new ReflectionClass($class);
+        $reflector = new ReflectionClass($class);
 
-		if($reflector->isAbstract() || !singleton($class)->canCreate()) {
-			$this->httpError(400);
-		}
+        if ($reflector->isAbstract() || !singleton($class)->canCreate()) {
+            $this->httpError(400);
+        }
 
-		$record = new $class();
-		$record->WorkflowDefID = $this->parent->Definition()->ID;
+        $record = new $class();
+        $record->WorkflowDefID = $this->parent->Definition()->ID;
 
-		return new WorkflowFieldItemController($this, "new/$class", $record);
-	}
+        return new WorkflowFieldItemController($this, "new/$class", $record);
+    }
 
-	public function handleItem() {
-		$id     = $this->request->param('ID');
-		$defn   = $this->parent->Definition();
-		$action = $defn->Actions()->byID($id);
+    public function handleItem()
+    {
+        $id     = $this->request->param('ID');
+        $defn   = $this->parent->Definition();
+        $action = $defn->Actions()->byID($id);
 
-		if(!$action) {
-			$this->httpError(404);
-		}
+        if (!$action) {
+            $this->httpError(404);
+        }
 
-		if(!$action->canEdit()) {
-			$this->httpError(403);
-		}
+        if (!$action->canEdit()) {
+            $this->httpError(403);
+        }
 
-		return new WorkflowFieldItemController($this, "item/$id", $action);
-	}
+        return new WorkflowFieldItemController($this, "item/$id", $action);
+    }
 
-	public function RootField() {
-		return $this->parent;
-	}
+    public function RootField()
+    {
+        return $this->parent;
+    }
 
-	public function Link($action = null) {
-		return Controller::join_links($this->parent->Link(), $this->name, $action);
-	}
-
+    public function Link($action = null)
+    {
+        return Controller::join_links($this->parent->Link(), $this->name, $action);
+    }
 }

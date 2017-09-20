@@ -12,89 +12,94 @@ use SilverStripe\Security\Member;
  * @package    advancedworkflow
  * @subpackage actions
  */
-class AssignUsersToWorkflowAction extends WorkflowAction {
+class AssignUsersToWorkflowAction extends WorkflowAction
+{
 
-	private static $db = array(
-		'AssignInitiator'		=> 'Boolean',
-	);
+    private static $db = array(
+        'AssignInitiator'       => 'Boolean',
+    );
 
-	private static $many_many = array(
-		'Users'  => 'SilverStripe\\Security\\Member',
-		'Groups' => 'SilverStripe\\Security\\Group'
-	);
+    private static $many_many = array(
+        'Users'  => 'SilverStripe\\Security\\Member',
+        'Groups' => 'SilverStripe\\Security\\Group'
+    );
 
-	private static $icon = 'advancedworkflow/images/assign.png';
+    private static $icon = 'advancedworkflow/images/assign.png';
 
-	public function execute(WorkflowInstance $workflow) {
-		$workflow->Users()->removeAll();
-		//Due to http://open.silverstripe.org/ticket/8258, there are errors occuring if Group has been extended
-		//We use a direct delete query here before ticket 8258 fixed
-		//$workflow->Groups()->removeAll();
-		$workflowID = $workflow->ID;
-		$query = <<<SQL
+    public function execute(WorkflowInstance $workflow)
+    {
+        $workflow->Users()->removeAll();
+        //Due to http://open.silverstripe.org/ticket/8258, there are errors occuring if Group has been extended
+        //We use a direct delete query here before ticket 8258 fixed
+        //$workflow->Groups()->removeAll();
+        $workflowID = $workflow->ID;
+        $query = <<<SQL
 		DELETE FROM "WorkflowInstance_Groups" WHERE ("WorkflowInstance_Groups"."WorkflowInstanceID" = '$workflowID');
 SQL;
-		DB::query($query);
-		$workflow->Users()->addMany($this->Users());
-		$workflow->Groups()->addMany($this->Groups());
-		if ($this->AssignInitiator) {
-			$workflow->Users()->add($workflow->Initiator());
-		}
-		return true;
-	}
+        DB::query($query);
+        $workflow->Users()->addMany($this->Users());
+        $workflow->Groups()->addMany($this->Groups());
+        if ($this->AssignInitiator) {
+            $workflow->Users()->add($workflow->Initiator());
+        }
+        return true;
+    }
 
-	public function getCMSFields() {
-		$fields = parent::getCMSFields();
+    public function getCMSFields()
+    {
+        $fields = parent::getCMSFields();
 
-		$cmsUsers = Member::mapInCMSGroups();
+        $cmsUsers = Member::mapInCMSGroups();
 
-		$fields->addFieldsToTab('Root.Main', array(
-			new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
-			new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
-			$users = CheckboxSetField::create('Users', $this->fieldLabel('Users'), $cmsUsers),
-			new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'SilverStripe\\Security\\Group')
-		));
+        $fields->addFieldsToTab('Root.Main', array(
+            new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
+            new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
+            $users = CheckboxSetField::create('Users', $this->fieldLabel('Users'), $cmsUsers),
+            new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'SilverStripe\\Security\\Group')
+        ));
 
-		// limit to the users which actually can access the CMS
-		$users->setSource(Member::mapInCMSGroups());
+        // limit to the users which actually can access the CMS
+        $users->setSource(Member::mapInCMSGroups());
 
-		return $fields;
-	}
+        return $fields;
+    }
 
-	public function fieldLabels($relations = true) {
-		return array_merge(parent::fieldLabels($relations), array(
-			'AssignUsers'		=> _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
-			'Users'				=> _t('AssignUsersToWorkflowAction.USERS', 'Users'),
-			'Groups'			=> _t('AssignUsersToWorkflowAction.GROUPS', 'Groups'),
-			'AssignInitiator'	=> _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
-		));
-	}
+    public function fieldLabels($relations = true)
+    {
+        return array_merge(parent::fieldLabels($relations), array(
+            'AssignUsers'       => _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
+            'Users'                 => _t('AssignUsersToWorkflowAction.USERS', 'Users'),
+            'Groups'            => _t('AssignUsersToWorkflowAction.GROUPS', 'Groups'),
+            'AssignInitiator'   => _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
+        ));
+    }
 
-	/**
-	 * Returns a set of all Members that are assigned to this WorkflowAction subclass, either directly or via a group.
-	 *
-	 * @return ArrayList
-	 */
-	public function getAssignedMembers() {
-		$members = $this->Users();
-		$groups  = $this->Groups();
+    /**
+     * Returns a set of all Members that are assigned to this WorkflowAction subclass, either directly or via a group.
+     *
+     * @return ArrayList
+     */
+    public function getAssignedMembers()
+    {
+        $members = $this->Users();
+        $groups  = $this->Groups();
 
-		// Can't merge instances of DataList so convert to something where we can
-		$_members = ArrayList::create();
-		$members->each(function($item) use(&$_members) {
-			$_members->push($item);
-		});
+        // Can't merge instances of DataList so convert to something where we can
+        $_members = ArrayList::create();
+        $members->each(function ($item) use (&$_members) {
+            $_members->push($item);
+        });
 
-		$_groups = ArrayList::create();
-		$groups->each(function($item) use(&$_groups) {
-			$_groups->push($item);
-		});
+        $_groups = ArrayList::create();
+        $groups->each(function ($item) use (&$_groups) {
+            $_groups->push($item);
+        });
 
-		foreach($_groups as $group) {
-			$_members->merge($group->Members());
-		}
+        foreach ($_groups as $group) {
+            $_members->merge($group->Members());
+        }
 
-		$_members->removeDuplicates();
-		return $_members;
-	}
+        $_members->removeDuplicates();
+        return $_members;
+    }
 }
