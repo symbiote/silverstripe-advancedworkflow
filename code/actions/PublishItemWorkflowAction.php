@@ -1,6 +1,23 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Actions;
+
 use SilverStripe\ORM\DataObject;
+
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\FieldGroup;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 
 /**
  * Publishes an item
@@ -36,14 +53,14 @@ class PublishItemWorkflowAction extends WorkflowAction
             $after = date('Y-m-d H:i:s', strtotime("+$days days"));
 
             // disable editing, and embargo the delay if using WorkflowEmbargoExpiryExtension
-            if ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+            if ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
                 $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
                 $target->PublishOnDate = $after;
                 $target->write();
             } else {
                 singleton('QueuedJobService')->queueJob($job, $after);
             }
-        } elseif ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+        } elseif ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
             $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
             // setting future date stuff if needbe
 

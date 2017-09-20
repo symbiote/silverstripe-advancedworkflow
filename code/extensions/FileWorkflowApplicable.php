@@ -1,6 +1,10 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Extensions;
+
 use SilverStripe\Forms\FieldList;
+
+use SilverStripe\Forms\Form;
 
 /**
  * WorkflowApplicable extension specifically for File objects, which don't have the same CMS

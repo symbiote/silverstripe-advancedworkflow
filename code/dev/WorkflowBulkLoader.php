@@ -1,7 +1,23 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Dev;
+
 use SilverStripe\ORM\ValidationException;
 use SilverStripe\Dev\BulkLoader;
+
+
+
+
+
+
+use SilverStripe\Dev\BulkLoader_Result;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
+use SilverStripe\Control\Controller;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionExporter;
+use SilverStripe\Core\Injector\Injector;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
 
 /**
  * Utility class to facilitate a simple YML-import via the standard CMS ImportForm() logic.
@@ -29,7 +45,7 @@ class WorkflowBulkLoader extends BulkLoader
         $results = new BulkLoader_Result();
         
         try {
-            $yml = singleton('WorkflowDefinitionImporter')->parseYAMLImport($filepath);
+            $yml = singleton(WorkflowDefinitionImporter::class)->parseYAMLImport($filepath);
             $this->processRecord($yml, $this->columnMap, $results, $preview);
             return $results;
         } catch (ValidationException $e) {
@@ -51,7 +67,7 @@ class WorkflowBulkLoader extends BulkLoader
         $filename = (isset($posted['_CsvFile']['name']) ? $posted['_CsvFile']['name'] : $default);
         
         // @todo is this the best way to extract records (nested array keys)??
-        $struct = $record['Injector']['ExportedWorkflow'];
+        $struct = $record[Injector::class]['ExportedWorkflow'];
         $name = $struct['constructor'][0];
         $import = $this->createImport($name, $filename, $record);
         
@@ -59,7 +75,7 @@ class WorkflowBulkLoader extends BulkLoader
         $template->setStructure($struct['properties']['structure']);
 
         $def = WorkflowDefinition::create();
-        $def->workflowService = singleton('WorkflowService');
+        $def->workflowService = singleton(WorkflowService::class);
         $def->Template = $template->getName();
         $obj = $def->workflowService->defineFromTemplate($def, $def->Template);
         

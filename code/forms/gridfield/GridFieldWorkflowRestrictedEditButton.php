@@ -3,6 +3,9 @@
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Control\Controller;
+use SilverStripe\View\ArrayData;
 
 /**
  *

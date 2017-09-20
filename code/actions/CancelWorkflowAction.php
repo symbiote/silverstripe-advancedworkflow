@@ -1,4 +1,9 @@
 <?php
+
+namespace Symbiote\AdvancedWorkflow\Actions;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+
 /**
  * Description
  *

@@ -1,9 +1,59 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Control\Controller;
+use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\ReadonlyField;
+use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldAddNewButton;
+use SilverStripe\Forms\GridField\GridFieldDeleteAction;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldViewButton;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\FormAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 
 /**
  * An overall definition of a workflow
@@ -37,8 +87,8 @@ class WorkflowDefinition extends DataObject
     private static $default_sort = 'Sort';
 
     private static $has_many = array(
-        'Actions'   => 'WorkflowAction',
-        'Instances' => 'WorkflowInstance'
+        'Actions'   => WorkflowAction::class,
+        'Instances' => WorkflowInstance::class
     );
 
     /**
@@ -146,7 +196,7 @@ class WorkflowDefinition extends DataObject
         $this->Users()->removeAll();
         $this->Groups()->removeAll();
         $this->Actions()->each(function ($action) {
-            if ($orphan = DataObject::get_by_id('WorkflowAction', $action->ID)) {
+            if ($orphan = DataObject::get_by_id(WorkflowAction::class, $action->ID)) {
                 $orphan->delete();
             }
         });
@@ -160,7 +210,7 @@ class WorkflowDefinition extends DataObject
      */
     private function deleteRelatedImport()
     {
-        if ($import = DataObject::get('ImportedWorkflowTemplate')->filter('DefinitionID', $this->ID)->first()) {
+        if ($import = DataObject::get(ImportedWorkflowTemplate::class)->filter('DefinitionID', $this->ID)->first()) {
             $import->delete();
         }
     }
@@ -279,11 +329,11 @@ class WorkflowDefinition extends DataObject
                 new GridFieldConfig_RecordEditor()
             );
 
-            $active->getConfig()->removeComponentsByType('GridFieldAddNewButton');
-            $active->getConfig()->removeComponentsByType('GridFieldDeleteAction');
+            $active->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
+            $active->getConfig()->removeComponentsByType(GridFieldDeleteAction::class);
 
             if (!Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
-                $active->getConfig()->removeComponentsByType('GridFieldEditButton');
+                $active->getConfig()->removeComponentsByType(GridFieldEditButton::class);
                 $active->getConfig()->addComponent(new GridFieldViewButton());
                 $active->getConfig()->addComponent(new GridFieldDetailForm());
             }
@@ -353,7 +403,7 @@ class WorkflowDefinition extends DataObject
     {
         // Where is the title coming from that we wish to test?
         $incomingTitle = $this->incomingTitle();
-        $defs = DataObject::get('WorkflowDefinition')->map()->toArray();
+        $defs = DataObject::get(WorkflowDefinition::class)->map()->toArray();
         $tmp = array();
 
         foreach ($defs as $def) {
@@ -386,7 +436,7 @@ class WorkflowDefinition extends DataObject
     {
         $req = Controller::curr()->getRequest();
         if (isset($req['_CsvFile']['name']) && !empty($req['_CsvFile']['name'])) {
-            $import = DataObject::get('ImportedWorkflowTemplate')->filter('Filename', $req['_CsvFile']['name'])->first();
+            $import = DataObject::get(ImportedWorkflowTemplate::class)->filter('Filename', $req['_CsvFile']['name'])->first();
             $incomingTitle = $import->Name;
         } elseif (isset($req['Template']) && !empty($req['Template'])) {
             $incomingTitle = $req['Template'];

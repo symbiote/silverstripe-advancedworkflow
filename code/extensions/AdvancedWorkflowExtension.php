@@ -1,8 +1,20 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Extensions;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use SilverStripe\Core\Extension;
+
+
+
+
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use SilverStripe\Forms\Form;
+use SilverStripe\View\Requirements;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\Control\Controller;
 
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
@@ -32,7 +44,7 @@ class AdvancedWorkflowExtension extends Extension
         // Save a draft, if the user forgets to do so
         $this->saveAsDraftWithAction($form, $item);
 
-        $svc = singleton('WorkflowService');
+        $svc = singleton(WorkflowService::class);
         $svc->startWorkflow($item, $workflowID);
         
         return $this->returnResponse($form);
@@ -47,7 +59,7 @@ class AdvancedWorkflowExtension extends Extension
     public function updateEditForm(Form $form)
     {
         Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/advanced-workflow-cms.js');
-        $svc    = singleton('WorkflowService');
+        $svc    = singleton(WorkflowService::class);
         $p      = $form->getRecord();
         $active = $svc->getWorkflowFor($p);
 
@@ -81,7 +93,7 @@ class AdvancedWorkflowExtension extends Extension
     public function updateItemEditForm($form)
     {
         $record = $form->getRecord();
-        if ($record && $record->hasExtension('WorkflowApplicable')) {
+        if ($record && $record->hasExtension(WorkflowApplicable::class)) {
             $actions = $form->Actions();
             $record->extend('updateCMSActions', $actions);
             $this->updateEditForm($form);
@@ -100,7 +112,7 @@ class AdvancedWorkflowExtension extends Extension
      */
     public function updateworkflow($data, Form $form, $request)
     {
-        $svc = singleton('WorkflowService');
+        $svc = singleton(WorkflowService::class);
         $p = $form->getRecord();
         $workflow = $svc->getWorkflowFor($p);
         $action = $workflow->CurrentAction();

@@ -1,6 +1,9 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\DataObject;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 
 /**
  * This DataObject replaces the SilverStripe cache as the repository for
@@ -28,6 +31,6 @@ class ImportedWorkflowTemplate extends DataObject
      * @var array
      */
     private static $has_one = array(
-        'Definition' => 'WorkflowDefinition'
+        'Definition' => WorkflowDefinition::class
     );
 }

@@ -1,6 +1,12 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\FormFields;
+
 use SilverStripe\Control\RequestHandler;
+use ReflectionClass;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use SilverStripe\Control\Controller;
 
 /**
  * Handles requests for creating or editing actions.
@@ -35,7 +41,7 @@ class WorkflowFieldActionController extends RequestHandler
     {
         $class = $this->request->param('Class');
 
-        if (!class_exists($class) || !is_subclass_of($class, 'WorkflowAction')) {
+        if (!class_exists($class) || !is_subclass_of($class, WorkflowAction::class)) {
             $this->httpError(400);
         }
 

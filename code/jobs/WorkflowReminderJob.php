@@ -1,5 +1,17 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Jobs;
+
+use AbstractQueuedJob;
+
+
+
+use Exception;
+use SS_Log;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\CMS\Model\SiteTree;
+
 if (class_exists('AbstractQueuedJob')) {
 /**
  * @author <marcus@symbiote.com.au>
@@ -67,7 +79,7 @@ if (class_exists('AbstractQueuedJob')) {
                 }
 
                 $email->setSubject("Workflow Reminder: $instance->Title");
-                $email->setBcc(implode(', ', $members->column('Email')));
+                $email->setBcc(implode(', ', $members->column(Email::class)));
                 $email->setTemplate('WorkflowReminderEmail');
                 $email->populateTemplate(array(
                 'Instance' => $instance,

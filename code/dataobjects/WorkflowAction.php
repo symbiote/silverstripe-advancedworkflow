@@ -1,7 +1,25 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+
+
+use ReadOnlyField;
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\RequiredFields;
 
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
@@ -33,7 +51,7 @@ class WorkflowAction extends DataObject
     private static $default_sort = 'Sort';
 
     private static $has_one = array(
-        'WorkflowDef' => 'WorkflowDefinition',
+        'WorkflowDef' => WorkflowDefinition::class,
         'Member'      => 'SilverStripe\\Security\\Member'
     );
 
@@ -47,7 +65,7 @@ class WorkflowAction extends DataObject
      *
      * @var string
      */
-    private static $instance_class = 'WorkflowActionInstance';
+    private static $instance_class = WorkflowActionInstance::class;
 
     private static $icon = 'advancedworkflow/images/action.png';
 
@@ -178,7 +196,7 @@ class WorkflowAction extends DataObject
     {
         parent::onAfterDelete();
         $wfActionInstances = WorkflowActionInstance::get()
-                ->leftJoin("WorkflowInstance", '"WorkflowInstance"."ID" = "WorkflowActionInstance"."WorkflowID"')
+                ->leftJoin(WorkflowInstance::class, '"WorkflowInstance"."ID" = "WorkflowActionInstance"."WorkflowID"')
                 ->where(sprintf('"BaseActionID" = %d AND ("WorkflowStatus" IN (\'Active\',\'Paused\'))', $this->ID));
         foreach ($wfActionInstances as $wfActionInstance) {
             $wfInstances = WorkflowInstance::get()->filter('CurrentActionID', $wfActionInstance->ID);

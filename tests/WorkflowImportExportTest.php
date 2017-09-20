@@ -1,7 +1,23 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Tests;
+
 use SilverStripe\Security\Member;
 use SilverStripe\Dev\SapphireTest;
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use SilverStripe\Core\Injector\Injector;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionExporter;
+use SilverStripe\View\ArrayData;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
+use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
 
 /**
  * Tests for workflow import/export logic.
@@ -51,7 +67,7 @@ class WorkflowImportExportTest extends SapphireTest
     public function testFormatWithActions()
     {
         $definition = $this->createDefinition();
-        $exporter = Injector::inst()->createWithArgs('WorkflowDefinitionExporter', array($definition->ID));
+        $exporter = Injector::inst()->createWithArgs(WorkflowDefinitionExporter::class, array($definition->ID));
         $member = new Member();
         $member->FirstName = 'joe';
         $member->Surname = 'bloggs';
@@ -75,7 +91,7 @@ class WorkflowImportExportTest extends SapphireTest
     public function testFormatWithoutActions()
     {
         $definition = $this->createDefinition();
-        $exporter = Injector::inst()->createWithArgs('WorkflowDefinitionExporter', array($definition->ID));
+        $exporter = Injector::inst()->createWithArgs(WorkflowDefinitionExporter::class, array($definition->ID));
         $member = new Member();
         $member->FirstName = 'joe';
         $member->Surname = 'bloggs';
@@ -223,9 +239,9 @@ EOD;
     {
         $name = 'My Workflow 21/02/2014 09-01-29';
         // Pretend a ImportedWorkflowTemplate object has been created by WorkflowBulkLoader
-        $this->objFromFixture('ImportedWorkflowTemplate', 'Import01');
+        $this->objFromFixture(ImportedWorkflowTemplate::class, 'Import01');
         
-        $importer = singleton('WorkflowDefinitionImporter');
+        $importer = singleton(WorkflowDefinitionImporter::class);
         $import = $importer->getImportedWorkflows($name);
 
         $this->assertNotEmpty($import);
@@ -241,10 +257,10 @@ EOD;
     public function testGetImportedWorkflowsMany()
     {
         // Pretend some ImportedWorkflowTemplate objects have been created by WorkflowBulkLoader
-        $this->objFromFixture('ImportedWorkflowTemplate', 'Import02');
-        $this->objFromFixture('ImportedWorkflowTemplate', 'Import03');
+        $this->objFromFixture(ImportedWorkflowTemplate::class, 'Import02');
+        $this->objFromFixture(ImportedWorkflowTemplate::class, 'Import03');
         
-        $importer = singleton('WorkflowDefinitionImporter');
+        $importer = singleton(WorkflowDefinitionImporter::class);
         $imports = $importer->getImportedWorkflows();
 
         $this->assertNotEmpty($imports);

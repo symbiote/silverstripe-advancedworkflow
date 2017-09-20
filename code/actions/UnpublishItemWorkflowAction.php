@@ -1,6 +1,21 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Actions;
+
 use SilverStripe\ORM\DataObject;
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\FieldGroup;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 
 /**
  * Unpublishes an item
@@ -30,7 +45,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction
             $days  = $this->UnpublishDelay;
             $after = date('Y-m-d H:i:s', strtotime("+$days days"));
             singleton('QueuedJobService')->queueJob($job, $after);
-        } elseif ($target->hasExtension('WorkflowEmbargoExpiryExtension')) {
+        } elseif ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
             // setting future date stuff if needbe
 
             // set these values regardless

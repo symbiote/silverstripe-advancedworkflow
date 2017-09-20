@@ -1,12 +1,53 @@
 <?php
 
-use SilverStripe\ORM\Versioning\Versioned;
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Versioning\DataDifferencer;
+
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
+
+
+
+
+
+
+
+
+
+
+
+use Exception;
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\GridField\GridField;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Versioned\Versioned;
+use SilverStripe\Versioned\DataDifferencer;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
+use Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable;
+use SilverStripe\Core\ClassInfo;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use SilverStripe\Control\Controller;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\Form;
+use SilverStripe\Control\HTTPRequest;
+use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
 
 /**
  * A WorkflowInstance is created whenever a user 'starts' a workflow.
@@ -34,13 +75,13 @@ class WorkflowInstance extends DataObject
     );
 
     private static $has_one = array(
-        'Definition'    => 'WorkflowDefinition',
-        'CurrentAction' => 'WorkflowActionInstance',
+        'Definition'    => WorkflowDefinition::class,
+        'CurrentAction' => WorkflowActionInstance::class,
         'Initiator'         => 'SilverStripe\\Security\\Member',
     );
 
     private static $has_many = array(
-        'Actions'       => 'WorkflowActionInstance',
+        'Actions'       => WorkflowActionInstance::class,
     );
 
     /**
@@ -196,7 +237,7 @@ class WorkflowInstance extends DataObject
         }
         $action->write();
 
-        $svc = singleton('WorkflowService');
+        $svc = singleton(WorkflowService::class);
         if (isset($data['TransitionID']) && $data['TransitionID']) {
             $svc->executeTransition($this->getTarget(), $data['TransitionID']);
         } else {
@@ -221,7 +262,7 @@ class WorkflowInstance extends DataObject
     public function getTarget($getLive = false)
     {
         if ($this->TargetID && $this->TargetClass) {
-            $versionable = Injector::inst()->get($this->TargetClass)->has_extension('SilverStripe\\ORM\\Versioning\\Versioned');
+            $versionable = Injector::inst()->get($this->TargetClass)->has_extension(Versioned::class);
 
             if (!$versionable && $getLive) {
                 return;
@@ -279,7 +320,7 @@ class WorkflowInstance extends DataObject
             $this->write();
         }
 
-        if ($for && ($for->hasExtension('WorkflowApplicable') || $for->hasExtension('FileWorkflowApplicable'))) {
+        if ($for && ($for->hasExtension(WorkflowApplicable::class) || $for->hasExtension(FileWorkflowApplicable::class))) {
             $this->TargetClass = ClassInfo::baseDataClass($for);
             $this->TargetID = $for->ID;
         }
@@ -407,7 +448,7 @@ class WorkflowInstance extends DataObject
 
         $action->actionComplete($transition);
 
-        $definition = DataObject::get_by_id('WorkflowAction', $transition->NextActionID);
+        $definition = DataObject::get_by_id(WorkflowAction::class, $transition->NextActionID);
         $action = $definition->getInstanceForWorkflow();
         $action->WorkflowID   = $this->ID;
         $action->write();
@@ -698,7 +739,7 @@ class WorkflowInstance extends DataObject
         $action->setFrontendFormRequirements();
     }
 
-    public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request)
+    public function doFrontEndAction(array $data, Form $form, HTTPRequest $request)
     {
         $action = $this->CurrentAction();
         $action->doFrontEndAction($data, $form, $request);
@@ -734,7 +775,7 @@ class WorkflowInstance extends DataObject
     {
         $join = '"WorkflowAction"."ID" = "WorkflowActionInstance"."BaseActionID"';
         $action = WorkflowAction::get()
-                    ->leftJoin('WorkflowActionInstance', $join)
+                    ->leftJoin(WorkflowActionInstance::class, $join)
                     ->where('"WorkflowActionInstance"."ID" = '.$this->CurrentActionID)
                     ->first();
         if (!$action) {
@@ -761,7 +802,7 @@ class WorkflowInstance extends DataObject
         // WorkflowActionInstances in reverse creation-order so we get the most recent one's first
         $history = $this->Actions()->filter(array(
             'Finished' =>1,
-            'BaseAction.ClassName' => 'AssignUsersToWorkflowAction'
+            'BaseAction.ClassName' => AssignUsersToWorkflowAction::class
         ))->Sort('Created', 'DESC');
 
         $i=0;

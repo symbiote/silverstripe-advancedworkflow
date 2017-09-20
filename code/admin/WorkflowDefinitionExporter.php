@@ -1,8 +1,21 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Admin;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\SSViewer;
+use SilverStripe\Control\Director;
+use SilverStripe\Dev\SapphireInfo;
+use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Control\HTTPResponse;
 
 /**
  * Allows workflow definitions to be exported from one SilverStripe install, ready for import into another.
@@ -45,7 +58,7 @@ class WorkflowDefinitionExporter
     public function __construct($definitionID)
     {
         $this->setMember(Member::currentUser());
-        $this->workflowDefinition = DataObject::get_by_id('WorkflowDefinition', $definitionID);
+        $this->workflowDefinition = DataObject::get_by_id(WorkflowDefinition::class, $definitionID);
     }
 
     /**
@@ -140,8 +153,8 @@ class WorkflowDefinitionExporter
     private function ssVersion()
     {
         // Remove colons so they don't screw with YAML parsing
-        $versionSapphire = str_replace(':', '', singleton('SapphireInfo')->Version());
-        $versionLeftMain = str_replace(':', '', singleton('LeftAndMain')->CMSVersion());
+        $versionSapphire = str_replace(':', '', singleton(SapphireInfo::class)->Version());
+        $versionLeftMain = str_replace(':', '', singleton(LeftAndMain::class)->CMSVersion());
         if ($versionSapphire != _t('LeftAndMain.VersionUnknown')) {
             return $versionSapphire;
         }
@@ -163,7 +176,7 @@ class WorkflowDefinitionExporter
      */
     public function sendFile($filedata)
     {
-        $response = new SS_HTTPResponse($filedata['body']);
+        $response = new HTTPResponse($filedata['body']);
         if (preg_match("#MSIE\s(6|7|8)?\.0#", $_SERVER['HTTP_USER_AGENT'])) {
             // IE headers
             $response->addHeader("Cache-Control", "public");

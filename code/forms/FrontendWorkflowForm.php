@@ -1,6 +1,15 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Forms;
+
 use SilverStripe\Forms\Form;
+
+use FormResponse;
+
+
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Convert;
+use SilverStripe\Control\HTTPResponse;
 
 class FrontendWorkflowForm extends Form
 {
@@ -97,12 +106,12 @@ class FrontendWorkflowForm extends Form
                     $acceptType = $request->getHeader('Accept');
                     if (strpos($acceptType, 'application/json') !== false) {
                         // Send validation errors back as JSON with a flag at the start
-                        $response = new SS_HTTPResponse(Convert::array2json($this->validator->getErrors()));
+                        $response = new HTTPResponse(Convert::array2json($this->validator->getErrors()));
                         $response->addHeader('Content-Type', 'application/json');
                     } else {
                         $this->setupFormErrors();
                         // Send the newly rendered form tag as HTML
-                        $response = new SS_HTTPResponse($this->forTemplate());
+                        $response = new HTTPResponse($this->forTemplate());
                         $response->addHeader('Content-Type', 'text/html');
                     }
                 

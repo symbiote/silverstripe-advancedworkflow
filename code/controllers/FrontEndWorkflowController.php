@@ -1,7 +1,18 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Controllers;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Control\Controller;
+
+
+
+use Exception;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\AdvancedWorkflow\Forms\FrontendWorkflowForm;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use SilverStripe\Forms\Form;
+use SilverStripe\Control\HTTPRequest;
 
 /**
  * Provides a front end Form view of the defined Workflow Actions and Transitions
@@ -92,7 +103,7 @@ abstract class FrontEndWorkflowController extends Controller
     public function Form()
     {
         
-        $svc            = singleton('WorkflowService');
+        $svc            = singleton(WorkflowService::class);
         $active         = $svc->getWorkflowFor($this->getContextObject());
 
         if (!$active) {
@@ -134,7 +145,7 @@ abstract class FrontEndWorkflowController extends Controller
     {
         $trans = null;
         if ($this->transitionID) {
-            $trans = DataObject::get_by_id('WorkflowTransition', $this->transitionID);
+            $trans = DataObject::get_by_id(WorkflowTransition::class, $this->transitionID);
         }
         return $trans;
     }
@@ -147,7 +158,7 @@ abstract class FrontEndWorkflowController extends Controller
      * @param SS_HTTPRequest $request
      * @throws Exception
      */
-    public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request)
+    public function doFrontEndAction(array $data, Form $form, HTTPRequest $request)
     {
         if (!$obj = $this->getContextObject()) {
             throw new Exception(
@@ -170,7 +181,7 @@ abstract class FrontEndWorkflowController extends Controller
         //Only Save data when Transition is 'Active'
         if ($this->getCurrentTransition()->Type == 'Active') {
             //Hand off to WorkflowAction to perform Save
-            $svc            = singleton('WorkflowService');
+            $svc            = singleton(WorkflowService::class);
             $active         = $svc->getWorkflowFor($obj);
             
             $active->doFrontEndAction($data, $form, $request);

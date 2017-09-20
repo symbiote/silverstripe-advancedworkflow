@@ -1,8 +1,16 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\FormFields;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Control\Controller;
+
+
+
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FieldList;
 
 /**
  * Handles individual record data editing or deleting.
@@ -52,7 +60,7 @@ class WorkflowFieldItemController extends Controller
              ->setAttribute('data-icon', 'accept')
              ->setUseButtonTag(true);
 
-        $form = new Form($this, 'Form', $fields, new FieldList($save), $validator);
+        $form = new Form($this, Form::class, $fields, new FieldList($save), $validator);
         if ($record && $record instanceof DataObject && $record->exists()) {
             $form->loadDataFrom($record);
         }

@@ -1,8 +1,26 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Tests;
+
 use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Versioning\Versioned;
+
 use SilverStripe\Dev\SapphireTest;
+
+
+
+
+
+
+use WorkflowTemplate;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\CMS\Model\SiteTree;
+use Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction;
+use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
+use Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction;
+use SilverStripe\Versioned\Versioned;
 
 /**
  * Tests for the workflow engine.
@@ -82,10 +100,10 @@ class WorkflowEngineTest extends SapphireTest
     public function testInstanceGetTargetPublished()
     {
         $def = $this->createDefinition();
-        $target = $this->objFromFixture('SiteTree', 'published-object');
+        $target = $this->objFromFixture(SiteTree::class, 'published-object');
         $target->doPublish();
 
-        $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
         $instance->beginWorkflow($def);
         $instance->execute();
 
@@ -100,9 +118,9 @@ class WorkflowEngineTest extends SapphireTest
     public function testInstanceGetTargetDraft()
     {
         $def = $this->createDefinition();
-        $target = $this->objFromFixture('SiteTree', 'draft-object');
+        $target = $this->objFromFixture(SiteTree::class, 'draft-object');
 
-        $instance = $this->objFromFixture('WorkflowInstance', 'target-is-draft');
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-draft');
         $instance->beginWorkflow($def);
         $instance->execute();
 
@@ -122,14 +140,14 @@ class WorkflowEngineTest extends SapphireTest
         $page->Title = 'stuff';
         $page->write();
 
-        $instance->TargetClass = 'SiteTree';
+        $instance->TargetClass = SiteTree::class;
         $instance->TargetID = $page->ID;
 
         $this->assertFalse($page->isPublished());
 
         $action->execute($instance);
 
-        $page = DataObject::get_by_id('SiteTree', $page->ID);
+        $page = DataObject::get_by_id(SiteTree::class, $page->ID);
         $this->assertTrue($page->isPublished());
     }
 
@@ -175,13 +193,13 @@ class WorkflowEngineTest extends SapphireTest
     {
         $structure = array(
             'First step'    => array(
-                'type'      => 'AssignUsersToWorkflowAction',
+                'type'      => AssignUsersToWorkflowAction::class,
                 'transitions'   => array(
                     'second'    => 'Second step'
                 )
             ),
             'Second step'   => array(
-                'type'      => 'NotifyUsersWorkflowAction',
+                'type'      => NotifyUsersWorkflowAction::class,
                 'transitions'   => array(
                     'Approve'   => 'Third step'
                 )
@@ -255,7 +273,7 @@ class WorkflowEngineTest extends SapphireTest
         $instance->execute();
 
         // Check the content is assigned
-        $testPage = DataObject::get_by_id('SiteTree', $page->ID);
+        $testPage = DataObject::get_by_id(SiteTree::class, $page->ID);
         $this->assertEquals($instance->TargetID, $testPage->ID);
 
         // 3). Delete the workflow
@@ -271,7 +289,7 @@ class WorkflowEngineTest extends SapphireTest
 		 * so we can use it to check that all related actions are gone
 		 */
         $defID = $testPage->WorkflowDefinitionID;
-        $this->assertEquals(0, DataObject::get('WorkflowAction')->filter('WorkflowDefID', $defID)->count());
+        $this->assertEquals(0, DataObject::get(WorkflowAction::class)->filter('WorkflowDefID', $defID)->count());
 
         /*
 		 * 4). ii). Check that the content: Can be re-assigned a new Workflow Definition
@@ -286,7 +304,7 @@ class WorkflowEngineTest extends SapphireTest
         $this->assertEquals($newDef->ID, $testPage->WorkflowDefinitionID);
         $this->assertEquals(
             $newDef->Actions()->count(),
-            DataObject::get('WorkflowAction')->filter('WorkflowDefID', $newDef->ID)->count()
+            DataObject::get(WorkflowAction::class)->filter('WorkflowDefID', $newDef->ID)->count()
         );
 
         // 5). Check that the object under workflow, maintains its status
@@ -317,7 +335,7 @@ class WorkflowEngineTest extends SapphireTest
      */
     public function testInstanceDiff()
     {
-        $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
         $target = $instance->getTarget();
         $target->doPublish();
 

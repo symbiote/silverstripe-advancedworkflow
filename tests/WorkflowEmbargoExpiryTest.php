@@ -1,10 +1,23 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Tests;
+
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
-use SilverStripe\ORM\Versioning\Versioned;
+
 use SilverStripe\Dev\SapphireTest;
+
+
+
+
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use SilverStripe\Versioned\Versioned;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use SilverStripe\CMS\Model\SiteTree;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 
 /**
  * @author marcus@symbiote.com.au
@@ -39,8 +52,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     protected $requiredExtensions = array(
         'SiteTree' => array(
-            'WorkflowEmbargoExpiryExtension',
-            'SilverStripe\\ORM\\Versioning\\Versioned',
+            WorkflowEmbargoExpiryExtension::class,
+            Versioned::class,
         )
     );
 
@@ -70,11 +83,11 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     private function startWorkflow($obj)
     {
-        $workflow = $this->objFromFixture('WorkflowDefinition', 'requestPublication');
+        $workflow = $this->objFromFixture(WorkflowDefinition::class, 'requestPublication');
         $obj->WorkflowDefinitionID = $workflow->ID;
         $obj->write();
 
-        $svc = singleton('WorkflowService');
+        $svc = singleton(WorkflowService::class);
         $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
         return $obj;
     }
@@ -87,11 +100,11 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     private function finishWorkflow($obj)
     {
-        $workflow = $this->objFromFixture('WorkflowDefinition', 'approvePublication');
+        $workflow = $this->objFromFixture(WorkflowDefinition::class, 'approvePublication');
         $obj->WorkflowDefinitionID = $workflow->ID;
         $obj->write();
 
-        $svc = singleton('WorkflowService');
+        $svc = singleton(WorkflowService::class);
         $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
 
         $obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
@@ -121,7 +134,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testEmptyEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'emptyEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'emptyEmbargoExpiry');
         $page->Content = 'Content to go live';
 
         $live = $this->getLive($page);
@@ -146,7 +159,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargo()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargo');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargo');
 
         $page = $this->finishWorkflow($page);
 
@@ -165,7 +178,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -184,7 +197,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -203,7 +216,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoFutureExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoFutureExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoFutureExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -224,7 +237,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -245,7 +258,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoAfterExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -260,7 +273,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoAfterExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -275,7 +288,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testPastSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastSameEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -290,7 +303,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testFutureSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureSameEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -305,7 +318,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testDesiredRemovesJobs()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -461,7 +474,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testDuplicateRemoveEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         // fake publish jobs
         $page = $this->finishWorkflow($page);

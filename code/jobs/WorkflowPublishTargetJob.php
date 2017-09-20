@@ -1,5 +1,9 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Jobs;
+
+use AbstractQueuedJob;
+
 // Prevent failure if queuedjobs module isn't installed.
 if (!class_exists('AbstractQueuedJob')) {
     return;

@@ -1,11 +1,40 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Admin;
+
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+
+
+
+
+
+use GridFieldWorkflowRestrictedEditButton;
+use GridFieldExportAction;
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Dev\WorkflowBulkLoader;
+use SilverStripe\View\Requirements;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridField;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionItemRequestClass;
+use SilverStripe\Forms\GridField\GridFieldExportButton;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
 
 /**
  * @package advancedworkflow
@@ -34,10 +63,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         '' => 'index'
     );
 
-    private static $managed_models  = 'WorkflowDefinition';
+    private static $managed_models  = WorkflowDefinition::class;
 
     private static $model_importers = array(
-        'WorkflowDefinition' => 'WorkflowBulkLoader'
+        'WorkflowDefinition' => WorkflowBulkLoader::class
     );
 
     private static $dependencies = array(
@@ -100,8 +129,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $config = new GridFieldConfig_Base();
         $config->addComponent(new GridFieldEditButton());
         $config->addComponent(new GridFieldDetailForm());
-        $config->getComponentByType('GridFieldPaginator')->setItemsPerPage(5);
-        $columns = $config->getComponentByType('GridFieldDataColumns');
+        $config->getComponentByType(GridFieldPaginator::class)->setItemsPerPage(5);
+        $columns = $config->getComponentByType(GridFieldDataColumns::class);
         $columns->setFieldFormatting($this->setFieldFormatting($config));
 
         if ($pending->count()) {
@@ -120,11 +149,11 @@ class AdvancedWorkflowAdmin extends ModelAdmin
                 $config
             );
 
-            $dataColumns = $formFieldTop->getConfig()->getComponentByType('GridFieldDataColumns');
+            $dataColumns = $formFieldTop->getConfig()->getComponentByType(GridFieldDataColumns::class);
             $dataColumns->setDisplayFields($displayFields);
 
             $formFieldTop->setForm($form);
-            $form->Fields()->insertBefore($formFieldTop, 'WorkflowDefinition');
+            $form->Fields()->insertBefore($formFieldTop, WorkflowDefinition::class);
         }
 
         // Show items submitted into a workflow by current user
@@ -146,27 +175,27 @@ class AdvancedWorkflowAdmin extends ModelAdmin
                 $config
             );
 
-            $dataColumns = $formFieldBottom->getConfig()->getComponentByType('GridFieldDataColumns');
+            $dataColumns = $formFieldBottom->getConfig()->getComponentByType(GridFieldDataColumns::class);
             $dataColumns->setDisplayFields($displayFields);
 
             $formFieldBottom->setForm($form);
-            $formFieldBottom->getConfig()->removeComponentsByType('GridFieldEditButton');
+            $formFieldBottom->getConfig()->removeComponentsByType(GridFieldEditButton::class);
             $formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
-            $form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
+            $form->Fields()->insertBefore($formFieldBottom, WorkflowDefinition::class);
         }
         
-        $grid = $form->Fields()->dataFieldByName('WorkflowDefinition');
+        $grid = $form->Fields()->dataFieldByName(WorkflowDefinition::class);
         if ($grid) {
-            $grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemEditFormCallback(function ($form) {
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemEditFormCallback(function ($form) {
                 $record = $form->getRecord();
                 if ($record) {
                     $record->updateAdminActions($form->Actions());
                 }
             });
             
-            $grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemRequestClass('WorkflowDefinitionItemRequestClass');
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
             $grid->getConfig()->addComponent(new GridFieldExportAction());
-            $grid->getConfig()->removeComponentsByType('GridFieldExportButton');
+            $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
         }
         
         return $form;
@@ -193,7 +222,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $fields = array(
             'Title' => array(
                 'link' => function ($value, $item) {
-                    $pageAdminLink = singleton('CMSPageEditController')->Link('show');
+                    $pageAdminLink = singleton(CMSPageEditController::class)->Link('show');
                     return sprintf('<a href="%s/%s">%s</a>', $pageAdminLink, $item->Link, $value);
                 }
             ),
@@ -244,7 +273,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
                 continue;
             }
             // @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe define $this->workflowParent()
-            $effectiveWorkflow = DataObject::get_by_id('WorkflowDefinition', $instance->DefinitionID);
+            $effectiveWorkflow = DataObject::get_by_id(WorkflowDefinition::class, $instance->DefinitionID);
             $target = $instance->getTarget();
             if (!is_object($effectiveWorkflow) || !$target) {
                 continue;
@@ -285,7 +314,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
      * @param \SS_HTTPRequest $request
      * @return \SS_HTTPResponse
      */
-    public function export(SS_HTTPRequest $request)
+    public function export(HTTPRequest $request)
     {
         $url = explode('/', $request->getURL());
         $definitionID = end($url);

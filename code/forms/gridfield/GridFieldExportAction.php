@@ -4,6 +4,12 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
 use SilverStripe\Forms\GridField\GridField_ActionProvider;
 use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_FormAction;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Config\Config;
+use Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin;
+use SilverStripe\Control\Controller;
+use SilverStripe\View\ArrayData;
 
 /**
  * This class is a {@link GridField} component that adds an export action for
@@ -104,7 +110,7 @@ class GridFieldExportAction implements GridField_ColumnProvider, GridField_Actio
             ->setDescription(_t('GridAction.EXPORT_DESCRIPTION', 'Export'));
 
         $segment1 = Director::baseURL();
-        $segment2 = Config::inst()->get('AdvancedWorkflowAdmin', 'url_segment');
+        $segment2 = Config::inst()->get(AdvancedWorkflowAdmin::class, 'url_segment');
         $segment3 = $record->getClassName();
         $fields = new ArrayData(array(
             'Link' => Controller::join_links($segment1, 'admin', $segment2, $segment3, 'export', $record->ID)

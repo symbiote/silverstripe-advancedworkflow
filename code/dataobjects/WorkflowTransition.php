@@ -1,10 +1,27 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\DB;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
+
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\TreeMultiselectField;
+use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
 
 /**
  * A workflow transition.
@@ -34,8 +51,8 @@ class WorkflowTransition extends DataObject
     private static $default_sort = 'Sort';
 
     private static $has_one = array(
-        'Action' => 'WorkflowAction',
-        'NextAction' => 'WorkflowAction',
+        'Action' => WorkflowAction::class,
+        'NextAction' => WorkflowAction::class,
     );
 
     private static $many_many = array(
@@ -99,13 +116,13 @@ class WorkflowTransition extends DataObject
         $attachTo = $this->ActionID ? $this->ActionID : $reqParent;
 
         if ($attachTo) {
-            $action = DataObject::get_by_id('WorkflowAction', $attachTo);
+            $action = DataObject::get_by_id(WorkflowAction::class, $attachTo);
             if ($action && $action->ID) {
                 $filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
             }
         }
 
-        $actions = DataObject::get('WorkflowAction', $filter);
+        $actions = DataObject::get(WorkflowAction::class, $filter);
         $options = array();
         if ($actions) {
             $options = $actions->map();

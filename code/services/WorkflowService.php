@@ -1,11 +1,26 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Services;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
+
+
+use Exception;
+
+
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
+use Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Core\ClassInfo;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 
 /**
  * A central point for interacting with workflows
@@ -57,7 +72,7 @@ class WorkflowService implements PermissionProvider
      */
     public function getNamedTemplate($name)
     {
-        if ($importedTemplate = singleton('WorkflowDefinitionImporter')->getImportedWorkflows($name)) {
+        if ($importedTemplate = singleton(WorkflowDefinitionImporter::class)->getImportedWorkflows($name)) {
             return $importedTemplate;
         }
 
@@ -80,9 +95,9 @@ class WorkflowService implements PermissionProvider
      */
     public function getDefinitionFor(DataObject $dataObject)
     {
-        if ($dataObject->hasExtension('WorkflowApplicable') || $dataObject->hasExtension('FileWorkflowApplicable')) {
+        if ($dataObject->hasExtension(WorkflowApplicable::class) || $dataObject->hasExtension(FileWorkflowApplicable::class)) {
             if ($dataObject->WorkflowDefinitionID) {
-                return DataObject::get_by_id('WorkflowDefinition', $dataObject->WorkflowDefinitionID);
+                return DataObject::get_by_id(WorkflowDefinition::class, $dataObject->WorkflowDefinitionID);
             }
             if ($dataObject->hasMethod('useInheritedWorkflow') && !$dataObject->useInheritedWorkflow()) {
                 return null;
@@ -114,12 +129,12 @@ class WorkflowService implements PermissionProvider
         // Make sure the correct extensions have been applied to the data object.
 
         $workflow = null;
-        if ($object->hasExtension('WorkflowApplicable') || $object->hasExtension('FileWorkflowApplicable')) {
+        if ($object->hasExtension(WorkflowApplicable::class) || $object->hasExtension(FileWorkflowApplicable::class)) {
             // Validate the workflow ID against the data object.
 
             if (($object->WorkflowDefinitionID == $workflowID) || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))) {
                 if (is_null($workflow)) {
-                    $workflow = DataObject::get_by_id('WorkflowDefinition', $workflowID);
+                    $workflow = DataObject::get_by_id(WorkflowDefinition::class, $workflowID);
                 }
             }
         }
@@ -168,11 +183,11 @@ class WorkflowService implements PermissionProvider
 
         if ($item instanceof WorkflowAction) {
             $id = $item->WorkflowID;
-            return DataObject::get_by_id('WorkflowInstance', $id);
-        } elseif (is_object($item) && ($item->hasExtension('WorkflowApplicable') || $item->hasExtension('FileWorkflowApplicable'))) {
+            return DataObject::get_by_id(WorkflowInstance::class, $id);
+        } elseif (is_object($item) && ($item->hasExtension(WorkflowApplicable::class) || $item->hasExtension(FileWorkflowApplicable::class))) {
             $filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
             $complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
-            return DataObject::get_one('WorkflowInstance', $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
+            return DataObject::get_one(WorkflowInstance::class, $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
         }
     }
 
@@ -196,7 +211,7 @@ class WorkflowService implements PermissionProvider
      */
     public function getDefinitions()
     {
-        return DataList::create('WorkflowDefinition');
+        return DataList::create(WorkflowDefinition::class);
     }
 
     /**
@@ -213,7 +228,7 @@ class WorkflowService implements PermissionProvider
     public function executeTransition(DataObject $target, $transitionId)
     {
         $workflow   = $this->getWorkflowFor($target);
-        $transition = DataObject::get_by_id('WorkflowTransition', $transitionId);
+        $transition = DataObject::get_by_id(WorkflowTransition::class, $transitionId);
 
         if (!$transition) {
             throw new Exception(_t('WorkflowService.INVALID_TRANSITION_ID', "Invalid transition ID $transitionId"));
@@ -281,12 +296,12 @@ class WorkflowService implements PermissionProvider
         $filter = array('');
 
         if (is_array($groupIds)) {
-            $groupInstances = DataList::create('WorkflowInstance')
+            $groupInstances = DataList::create(WorkflowInstance::class)
                 ->filter(array('Group.ID:ExactMatchMulti' => $groupIds))
                 ->where('"WorkflowStatus" != \'Complete\'');
         }
 
-        $userInstances = DataList::create('WorkflowInstance')
+        $userInstances = DataList::create(WorkflowInstance::class)
             ->filter(array('Users.ID:ExactMatch' => $user->ID))
             ->where('"WorkflowStatus" != \'Complete\'');
 
@@ -316,7 +331,7 @@ class WorkflowService implements PermissionProvider
     public function userPendingItems(Member $user)
     {
         // Don't restrict anything for ADMIN users
-        $userInstances = DataList::create('WorkflowInstance')
+        $userInstances = DataList::create(WorkflowInstance::class)
             ->where('"WorkflowStatus" != \'Complete\'')
             ->sort('LastEdited DESC');
 
@@ -343,7 +358,7 @@ class WorkflowService implements PermissionProvider
      */
     public function userSubmittedItems(Member $user)
     {
-        $userInstances = DataList::create('WorkflowInstance')
+        $userInstances = DataList::create(WorkflowInstance::class)
             ->where('"WorkflowStatus" != \'Complete\'')
             ->sort('LastEdited DESC');
 

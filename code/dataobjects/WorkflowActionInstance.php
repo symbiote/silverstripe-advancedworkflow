@@ -1,8 +1,20 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\DataObjects;
+
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\Form;
+use SilverStripe\Control\HTTPRequest;
 
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
@@ -24,8 +36,8 @@ class WorkflowActionInstance extends DataObject
     );
 
     private static $has_one = array(
-        'Workflow'   => 'WorkflowInstance',
-        'BaseAction' => 'WorkflowAction',
+        'Workflow'   => WorkflowInstance::class,
+        'BaseAction' => WorkflowAction::class,
         'Member'     => 'SilverStripe\\Security\\Member'
     );
 
@@ -131,7 +143,7 @@ class WorkflowActionInstance extends DataObject
         }
     }
 
-    public function doFrontEndAction(array $data, Form $form, SS_HTTPRequest $request)
+    public function doFrontEndAction(array $data, Form $form, HTTPRequest $request)
     {
         //Save Front End Workflow notes, then hand over to Workflow Action
         if (isset($data["WorkflowActionInstanceComment"])) {

@@ -1,6 +1,15 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Tasks;
+
 use SilverStripe\Dev\BuildTask;
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\CMS\Model\SiteTree;
 
 /**
  * A task that sends a reminder email to users assigned to a workflow that has
@@ -19,7 +28,7 @@ class WorkflowReminderTask extends BuildTask
         $sent = 0;
         if (WorkflowInstance::get()->count()) { // Don't attempt the filter if no instances -- prevents a crash
             $active = WorkflowInstance::get()
-                    ->innerJoin('WorkflowDefinition', '"DefinitionID" = "WorkflowDefinition"."ID"')
+                    ->innerJoin(WorkflowDefinition::class, '"DefinitionID" = "WorkflowDefinition"."ID"')
                     ->filter(array('WorkflowStatus' => array('Active', 'Paused'), 'RemindDays:GreaterThan' => '0'));
             $active->filter(array('RemindDays:GreaterThan' => '0'));
             if ($active) {
@@ -41,7 +50,7 @@ class WorkflowReminderTask extends BuildTask
                     }
 
                     $email->setSubject("Workflow Reminder: $instance->Title");
-                    $email->setBcc(implode(', ', $members->column('Email')));
+                    $email->setBcc(implode(', ', $members->column(Email::class)));
                     $email->setTemplate('WorkflowReminderEmail');
                     $email->populateTemplate(array(
                     'Instance' => $instance,

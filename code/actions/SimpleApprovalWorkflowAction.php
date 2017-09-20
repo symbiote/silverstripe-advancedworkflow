@@ -1,4 +1,10 @@
 <?php
+
+namespace Symbiote\AdvancedWorkflow\Actions;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+
 /**
  * A simple approval step that waits for any assigned user to trigger one of the relevant
  * transitions

@@ -1,6 +1,9 @@
 <?php
 
 use SilverStripe\ORM\DataObject;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use SilverStripe\Core\Convert;
 
 /**
  * A class that wraps around an array description of a workflow

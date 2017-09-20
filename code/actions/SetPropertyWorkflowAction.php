@@ -1,5 +1,11 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Actions;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\Forms\TextField;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+
 /**
  *
  *

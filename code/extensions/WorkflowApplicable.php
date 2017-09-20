@@ -1,9 +1,43 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Extensions;
+
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Member;
 use SilverStripe\Forms\FieldList;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use SilverStripe\Forms\HiddenField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\ListboxField;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Control\Controller;
+use Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension;
+use SilverStripe\Forms\Tab;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\Control\Director;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -18,11 +52,11 @@ class WorkflowApplicable extends DataExtension
 {
 
     private static $has_one = array(
-        'WorkflowDefinition' => 'WorkflowDefinition',
+        'WorkflowDefinition' => WorkflowDefinition::class,
     );
 
     private static $many_many = array(
-        'AdditionalWorkflowDefinitions' => 'WorkflowDefinition'
+        'AdditionalWorkflowDefinitions' => WorkflowDefinition::class
     );
 
     private static $dependencies = array(
@@ -151,7 +185,7 @@ class WorkflowApplicable extends DataExtension
     {
         $active = $this->workflowService->getWorkflowFor($this->owner);
         $c = Controller::curr();
-        if ($c && $c->hasExtension('AdvancedWorkflowExtension')) {
+        if ($c && $c->hasExtension(AdvancedWorkflowExtension::class)) {
             if ($active) {
                 if ($this->canEditWorkflow()) {
                     $workflowOptions = new Tab(

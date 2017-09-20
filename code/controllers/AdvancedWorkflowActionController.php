@@ -1,9 +1,18 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Controllers;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use SilverStripe\Control\Controller;
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Convert;
 
 /**
  * Handles actions triggered from external sources, eg emails or web frontend
@@ -29,9 +38,9 @@ class AdvancedWorkflowActionController extends Controller
         $id = $this->request->requestVar('id');
         $transition = $this->request->requestVar('transition');
 
-        $instance = DataObject::get_by_id('WorkflowInstance', (int) $id);
+        $instance = DataObject::get_by_id(WorkflowInstance::class, (int) $id);
         if ($instance && $instance->canEdit()) {
-            $transition = DataObject::get_by_id('WorkflowTransition', (int) $transition);
+            $transition = DataObject::get_by_id(WorkflowTransition::class, (int) $transition);
             if ($transition) {
                 if ($this->request->requestVar('comments')) {
                     $action = $instance->CurrentAction();
@@ -39,7 +48,7 @@ class AdvancedWorkflowActionController extends Controller
                     $action->write();
                 }
 
-                singleton('WorkflowService')->executeTransition($instance->getTarget(), $transition->ID);
+                singleton(WorkflowService::class)->executeTransition($instance->getTarget(), $transition->ID);
                 $result = array(
                     'success'   => true,
                     'link'      => $instance->getTarget()->AbsoluteLink()

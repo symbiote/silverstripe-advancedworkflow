@@ -1,8 +1,25 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\FormFields;
+
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\SecurityToken;
 use SilverStripe\Forms\FormField;
+
+
+
+
+use ReflectionClass;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use SilverStripe\Control\HTTPResponse;
+use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
+use SilverStripe\View\Requirements;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\View\ArrayData;
 
 /**
  * A form field that allows workflow actions and transitions to be edited,
@@ -48,9 +65,9 @@ class WorkflowField extends FormField
         $class = $request->postVar('class');
         $ids   = $request->postVar('id');
 
-        if ($class == 'WorkflowAction') {
+        if ($class == WorkflowAction::class) {
             $objects = $this->Definition()->Actions();
-        } elseif ($class == 'WorkflowTransition') {
+        } elseif ($class == WorkflowTransition::class) {
             $parent = $request->postVar('parent');
             $action = $this->Definition()->Actions()->byID($parent);
 
@@ -67,9 +84,9 @@ class WorkflowField extends FormField
             $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDIDLIST', 'An invalid list of IDs was provided.'));
         }
 
-        singleton('WorkflowService')->reorder($objects, $ids);
+        singleton(WorkflowService::class)->reorder($objects, $ids);
 
-        return new SS_HTTPResponse(
+        return new HTTPResponse(
             null,
             200,
             _t('AdvancedWorkflowAdmin.SORTORDERSAVED', 'The sort order has been saved.')
@@ -78,7 +95,7 @@ class WorkflowField extends FormField
 
     public function getTemplate()
     {
-        return 'WorkflowField';
+        return WorkflowField::class;
     }
 
     public function FieldHolder($properties = array())
@@ -115,7 +132,7 @@ class WorkflowField extends FormField
     public function CreateableActions()
     {
         $list    = new ArrayList();
-        $classes = ClassInfo::subclassesFor('WorkflowAction');
+        $classes = ClassInfo::subclassesFor(WorkflowAction::class);
 
         array_shift($classes);
         sort($classes);

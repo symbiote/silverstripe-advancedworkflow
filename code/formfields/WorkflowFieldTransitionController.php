@@ -1,6 +1,14 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\FormFields;
+
 use SilverStripe\Control\RequestHandler;
+
+
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use SilverStripe\Control\Controller;
 
 /**
  * Handles requests for creating or editing transitions.
@@ -40,7 +48,7 @@ class WorkflowFieldTransitionController extends RequestHandler
             $this->httpError(404);
         }
 
-        if (!singleton('WorkflowTransition')->canCreate()) {
+        if (!singleton(WorkflowTransition::class)->canCreate()) {
             $this->httpError(403);
         }
 

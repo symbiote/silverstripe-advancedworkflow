@@ -1,5 +1,7 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Forms;
+
 use SilverStripe\Forms\RequiredFields;
 
 /**

@@ -1,7 +1,14 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Admin;
+
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
+
+use sfYamlParser;
+use Exception;
+use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
+use SilverStripe\Core\Injector\Injector;
 
 /**
  * Workflow definition import-specific logic. @see {@link WorkflowDefinitionExporter}.
@@ -22,14 +29,14 @@ class WorkflowDefinitionImporter
      */
     public function getImportedWorkflows($name = null)
     {
-        $imports = DataObject::get('ImportedWorkflowTemplate');
+        $imports = DataObject::get(ImportedWorkflowTemplate::class);
         $importedDefs = array();
         foreach ($imports as $import) {
             if (!$import->Content) {
                 continue;
             }
             $structure = unserialize($import->Content);
-            $struct = $structure['Injector']['ExportedWorkflow'];
+            $struct = $structure[Injector::class]['ExportedWorkflow'];
             $template = Injector::inst()->createWithArgs('WorkflowTemplate', $struct['constructor']);
             $template->setStructure($struct['properties']['structure']);
             if ($name) {
