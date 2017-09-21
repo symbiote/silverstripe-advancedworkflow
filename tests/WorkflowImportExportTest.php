@@ -105,31 +105,30 @@ class WorkflowImportExportTest extends SapphireTest
 
     /**
      * Tests a badly formatted YAML import for parsing (no headers)
-     * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
      */
     public function testParseBadYAMLNoHeaderImport()
     {
         $importer = new WorkflowDefinitionImporter();
         $this->setExpectedException('Exception', 'Invalid YAML format.');
         $source = <<<'EOD'
-Injector:
+SilverStripe\Core\Injector\Injector\Injector:
   ExportedWorkflow:
-    class: WorkflowTemplate
+    class: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
     constructor:
       - 'My Workflow 4 20/02/2014 03-12-55'
-      - 'Exported from localhost on 20/02/2014 03:12:55 by joe bloggs using SilverStripe versions Framework 3.1.2, CMS 3.1.2'
+      - 'Exported from localhost on 20/02/2014 03:12:55 by joe bloggs using SilverStripe versions Framework 4.0.0-beta3'
       - 0.2
       - 0
       - 3
     properties:
       structure:
         'Step One':
-          type: WorkflowAction
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
           transitions:
             - Step One T1: 'Step Two'
         'Step Two':
-          type: WorkflowAction
-  WorkflowService:
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
+  Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
         - %$ExportedWorkflow
@@ -140,7 +139,6 @@ EOD;
 
     /**
      * Tests a badly formatted YAML import for parsing (missing YML colon)
-     * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
      */
     public function testParseBadYAMLMalformedImport()
     {
@@ -150,24 +148,25 @@ EOD;
 ---
 Name: exportedworkflow
 ---
-Injector:
+# Missing colon on line below
+SilverStripe\Core\Injector\Injector
   ExportedWorkflow:
-    class: WorkflowTemplate
+    class: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
     constructor:
       - 'My Workflow 4 20/02/2014 03-12-55'
-      - 'Exported from localhost on 20/02/2014 03-12-55 by joe bloggs using SilverStripe versions Framework 3.1.2, CMS 3.1.2'
+      - 'Exported from localhost on 20/02/2014 03-12-55 by joe bloggs using SilverStripe versions Framework 4.0.0-beta3'
       - 0.2
       - 0
       - 3
     properties:
       structure:
         'Step One'
-          type: WorkflowAction
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
           transitions:
             - Step One T1: 'Step Two'
         'Step Two':
-          type: WorkflowAction
-  WorkflowService:
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
+  Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
         - %$ExportedWorkflow
@@ -178,7 +177,6 @@ EOD;
 
     /**
      * Tests a well-formatted YAML import for parsing
-     * Note: The available test-cases we can expect to get out of sfYamlParser is limited..
      */
     public function testParseGoodYAMLImport()
     {
@@ -187,24 +185,24 @@ EOD;
 ---
 Name: exportedworkflow
 ---
-Injector:
+SilverStripe\Core\Injector\Injector:
   ExportedWorkflow:
-    class: WorkflowTemplate
+    class: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
     constructor:
       - 'My Workflow 4 20/02/2014 03-12-55'
-      - 'Exported from localhost on 20/02/2014 03-12-55 by joe bloggs using SilverStripe versions Framework 3.1.2, CMS 3.1.2'
+      - 'Exported from localhost on 20/02/2014 03-12-55 by joe bloggs using SilverStripe versions Framework 4.0.0-beta3'
       - 0.2
       - 0
       - 3
     properties:
       structure:
         'Step One':
-          type: WorkflowAction
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
           transitions:
             - Step One T1: 'Step Two'
         'Step Two':
-          type: WorkflowAction
-  WorkflowService:
+          type: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
+  Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
         - %$ExportedWorkflow

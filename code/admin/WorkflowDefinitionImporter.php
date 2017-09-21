@@ -3,12 +3,12 @@
 namespace Symbiote\AdvancedWorkflow\Admin;
 
 use Exception;
-use sfYamlParser;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
 use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
 use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
+use Symfony\Component\Yaml\Yaml;
 
 /**
  * Workflow definition import-specific logic. @see {@link WorkflowDefinitionExporter}.
@@ -62,10 +62,6 @@ class WorkflowDefinitionImporter
             $source = file_get_contents($source);
         }
 
-        // @todo update, use composer
-        require_once('thirdparty/zend_translate_railsyaml/library/Translate/Adapter/thirdparty/sfYaml/lib/sfYamlParser.php');
-        $parser = new sfYamlParser();
-
         // Make sure the linefeeds are all converted to \n, PCRE '$' will not match anything else.
         $convertLF = str_replace(array("\r\n", "\r"), "\n", $source);
         /*
@@ -83,7 +79,7 @@ class WorkflowDefinitionImporter
         }
 
         try {
-            $parsed = $parser->parse($parts[1]);
+            $parsed = Yaml::parse($parts[1]);
             return $parsed;
         } catch (Exception $e) {
             $msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE', 'Invalid YAML format. Unable to parse.');

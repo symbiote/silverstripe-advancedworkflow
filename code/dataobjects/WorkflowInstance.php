@@ -52,7 +52,7 @@ class WorkflowInstance extends DataObject
     private static $db = array(
         'Title'             => 'Varchar(128)',
         'WorkflowStatus'    => "Enum('Active,Paused,Complete,Cancelled','Active')",
-        'TargetClass'       => 'Varchar(64)',
+        'TargetClass'       => 'Varchar(255)',
         'TargetID'          => 'Int',
     );
 
@@ -758,9 +758,10 @@ class WorkflowInstance extends DataObject
     {
         $join = '"WorkflowAction"."ID" = "WorkflowActionInstance"."BaseActionID"';
         $action = WorkflowAction::get()
-                    ->leftJoin(WorkflowActionInstance::class, $join)
-                    ->where('"WorkflowActionInstance"."ID" = '.$this->CurrentActionID)
-                    ->first();
+            /** @skipUpgrade */
+            ->leftJoin('WorkflowActionInstance', $join)
+            ->where('"WorkflowActionInstance"."ID" = '.$this->CurrentActionID)
+            ->first();
         if (!$action) {
             return 'N/A';
         }

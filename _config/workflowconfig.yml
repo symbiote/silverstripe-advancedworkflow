@@ -1,8 +1,5 @@
 ---
 Name: workflowconfig
-After:
-  - 'framework/*'
-  - 'cms/*'
 ---
 SilverStripe\CMS\Model\SiteTree:
   extensions:
@@ -16,12 +13,3 @@ SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - advancedworkflow/css/AdvancedWorkflowAdmin.css
----
-Name: workflow_jobs
-Only:
-  moduleexists: queuedjobs
----
-SilverStripe\Core\Injector\Injector:
-  Symbiote\AdvancedWorkflow\Jobs\WorkflowReminderJob:
-    properties:
-      queuedJobService: %$Symbiote\QueuedJobs\Services\QueuedJobService

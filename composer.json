@@ -17,7 +17,9 @@
     "require": {
         "silverstripe/cms": "^4",
         "silverstripe/framework": "^4",
-        "silverstripe/versioned": "^1"
+        "silverstripe/admin": "^1",
+        "silverstripe/versioned": "^1",
+        "symfony/yaml": "~3.2"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
@@ -32,7 +34,7 @@
     "autoload": {
         "psr-4": {
             "Symbiote\\AdvandedWorkflow\\": "code/",
-            "Symbiote\\AdvandedWorkflow\\Tests\\": "tests/",
+            "Symbiote\\AdvandedWorkflow\\Tests\\": "tests/"
         }
     },
     "replace": {

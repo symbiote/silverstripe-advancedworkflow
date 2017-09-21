@@ -20,6 +20,7 @@ use SilverStripe\View\Requirements;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
 use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
 use Symbiote\QueuedJobs\Services\QueuedJobService;
 
@@ -539,7 +540,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     public function canEdit($member)
     {
         if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
-            !$this->AllowEmbargoedEditing) { // item flagged as not editable
+            !$this->owner->AllowEmbargoedEditing) { // item flagged as not editable
             $now = strtotime(DBDatetime::now()->getTimestamp());
             $publishTime = strtotime($this->owner->PublishOnDate);
 

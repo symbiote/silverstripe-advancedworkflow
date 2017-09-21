@@ -254,7 +254,7 @@ class WorkflowEngineTest extends SapphireTest
         $page->write();
 
         // Check $page is in draft, pre-deletion
-        $status = ($page->getIsAddedToStage() && !$page->getExistsOnLive());
+        $status = ($page->isOnDraftOnly() && !$page->isPublished());
         $this->assertTrue($status);
 
         // 2). Step the content into that workflow
@@ -270,7 +270,7 @@ class WorkflowEngineTest extends SapphireTest
         $def->delete();
 
         // Check $testPage is _still_ in draft, post-deletion
-        $status = ($testPage->getIsAddedToStage() && !$testPage->getExistsOnLive());
+        $status = ($testPage->isOnDraftOnly() && !$testPage->isPublished());
         $this->assertTrue($status);
 
         /*
@@ -306,7 +306,7 @@ class WorkflowEngineTest extends SapphireTest
         $testPage->publishRecursive();
 
         // Check $testPage is published, pre-deletion (getStatusFlags() returns empty array)
-        $this->assertTrue($testPage->getExistsOnLive());
+        $this->assertTrue($testPage->isPublished());
 
         $instance = new WorkflowInstance();
         $instance->beginWorkflow($newDef2, $testPage);
@@ -317,7 +317,7 @@ class WorkflowEngineTest extends SapphireTest
         $newDef2->delete();
 
         // Check $testPage is _still_ published, post-deletion (getStatusFlags() returns empty array)
-        $this->assertTrue($testPage->getExistsOnLive());
+        $this->assertTrue($testPage->isPublished());
     }
 
     /**

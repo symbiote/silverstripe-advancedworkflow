@@ -66,13 +66,13 @@ class PublishItemWorkflowAction extends WorkflowAction
                 $target->DesiredPublishDate = '';
                 $target->write();
             } else {
-                if ($target->hasMethod('doPublish')) {
-                    $target->doPublish();
+                if ($target->hasMethod('publishSingle')) {
+                    $target->publishSingle();
                 }
             }
         } else {
-            if ($target->hasMethod('doPublish')) {
-                $target->doPublish();
+            if ($target->hasMethod('publishSingle')) {
+                $target->publishSingle();
             }
         }
 

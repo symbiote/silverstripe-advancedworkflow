@@ -105,7 +105,7 @@ class WorkflowReminderJob extends AbstractQueuedJob
             try {
                 $instance->write();
             } catch (Exception $ex) {
-                Injector::inst()->get(LoggerInterface::class)->warning($ex->getMessage())
+                Injector::inst()->get(LoggerInterface::class)->warning($ex->getMessage());
             }
         }
 

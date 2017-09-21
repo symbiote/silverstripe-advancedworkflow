@@ -3,6 +3,7 @@
 namespace Symbiote\AdvancedWorkflow\Tests;
 
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
@@ -15,6 +16,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
  * @author marcus@symbiote.com.au
@@ -30,11 +32,13 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
 
         DBDatetime::set_mock_now('2014-01-05 12:00:00');
 
-
         // Prevent failure if queuedjobs module isn't installed.
-        if (!class_exists(AbstractQueuedJob::class, false)) {
+        if (!class_exists(AbstractQueuedJob::class)) {
             $this->markTestSkipped("This test requires queuedjobs");
         }
+
+        // This doesn't play nicely with PHPUnit
+        Config::modify()->set(QueuedJobService::class, 'use_shutdown_function', false);
     }
 
     protected function tearDown()
@@ -50,25 +54,17 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         SiteTree::class => array(
             WorkflowEmbargoExpiryExtension::class,
             Versioned::class,
-        )
+        ),
     );
 
     /**
      * @var array
      */
-    protected $illegal_extensions = array(
+    protected static $illegal_extensions = array(
         SiteTree::class => array(
             Translatable::class,
-        )
+        ),
     );
-
-    public function __construct()
-    {
-        if (!class_exists(AbstractQueuedJob::class)) {
-            $this->skipTest = true;
-        }
-        parent::__construct();
-    }
 
     /**
      * Start a workflow for a page,
@@ -103,7 +99,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $svc = singleton(WorkflowService::class);
         $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
 
-        $obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
+        $obj = DataObject::get($obj->ClassName)->byID($obj->ID);
         return $obj;
     }
 
@@ -117,7 +113,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     {
         $oldMode = Versioned::get_reading_mode();
         Versioned::set_reading_mode(Versioned::LIVE);
-        $live = DataObject::get_by_id($obj->ClassName, $obj->ID);
+        $live = DataObject::get($obj->ClassName)->byID($obj->ID);
         Versioned::set_reading_mode($oldMode);
 
         return $live;
@@ -163,7 +159,6 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertEquals(0, $page->UnPublishJobID);
 
         $publish = strtotime($page->PublishJob()->StartAfter);
-
         $this->assertFalse($publish);
     }
 

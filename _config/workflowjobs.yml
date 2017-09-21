@@ -1,0 +1,9 @@
+---
+Name: workflow_jobs
+Only:
+  moduleexists: queuedjobs
+---
+SilverStripe\Core\Injector\Injector:
+  Symbiote\AdvancedWorkflow\Jobs\WorkflowReminderJob:
+    properties:
+      queuedJobService: %$Symbiote\QueuedJobs\Services\QueuedJobService
