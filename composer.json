@@ -31,6 +31,9 @@
             "dev-master": "5.0.x-dev"
         }
     },
+    "suggest": {
+        "symbiote/silverstripe-queuedjobs": "Allow automated workflow transitions with queued system jobs"
+    },
     "autoload": {
         "psr-4": {
             "Symbiote\\AdvandedWorkflow\\": "code/",
