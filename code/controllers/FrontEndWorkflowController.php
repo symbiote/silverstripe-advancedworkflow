@@ -2,17 +2,14 @@
 
 namespace Symbiote\AdvancedWorkflow\Controllers;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Control\Controller;
-
-
-
 use Exception;
-use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use Symbiote\AdvancedWorkflow\Forms\FrontendWorkflowForm;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
-use SilverStripe\Forms\Form;
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\Form;
+use SilverStripe\ORM\DataObject;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Forms\FrontendWorkflowForm;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * Provides a front end Form view of the defined Workflow Actions and Transitions
@@ -23,7 +20,6 @@ use SilverStripe\Control\HTTPRequest;
  */
 abstract class FrontEndWorkflowController extends Controller
 {
-
     protected $transitionID;
     protected $contextObj;
 
@@ -33,12 +29,12 @@ abstract class FrontEndWorkflowController extends Controller
      */
     public $Title;
 
-    
+
     /**
      * @return string ClassName of object that Workflow is applied to
      */
-    abstract function getContextType();
-    
+    abstract public function getContextType();
+
     /**
      * @return object Context Object
      */
@@ -55,7 +51,7 @@ abstract class FrontEndWorkflowController extends Controller
         }
         return $this->contextObj;
     }
-    
+
     /**
      * @return int ID of Context Object
      */
@@ -71,15 +67,15 @@ abstract class FrontEndWorkflowController extends Controller
         }
         return $id;
     }
-        
+
     /**
      * Specifies the Workflow Definition to be used,
      * ie. retrieve from SiteConfig - or wherever it's defined
      *
      * @return WorkflowDefinition
      */
-    abstract function getWorkflowDefinition();
-        
+    abstract public function getWorkflowDefinition();
+
     /**
      * Handle the Form Action
      * - FrontEndWorkflowForm contains the logic for this
@@ -91,7 +87,7 @@ abstract class FrontEndWorkflowController extends Controller
     {
         return parent::handleAction($request, $action);
     }
-    
+
     /**
      * Create the Form containing:
      * - fields from the Context Object
@@ -102,7 +98,6 @@ abstract class FrontEndWorkflowController extends Controller
      */
     public function Form()
     {
-        
         $svc            = singleton(WorkflowService::class);
         $active         = $svc->getWorkflowFor($this->getContextObject());
 
@@ -110,34 +105,34 @@ abstract class FrontEndWorkflowController extends Controller
             return;
             //throw new Exception('Workflow not found, or not specified for Context Object');
         }
-        
-        $wfFields       = $active->getFrontEndWorkflowFields();
-        $wfActions      = $active->getFrontEndWorkflowActions();
-        $wfValidator    = $active->getFrontEndRequiredFields();
-        
+
+        $wfFields     = $active->getFrontEndWorkflowFields();
+        $wfActions    = $active->getFrontEndWorkflowActions();
+        $wfValidator  = $active->getFrontEndRequiredFields();
+
         //Get DataObject for Form (falls back to ContextObject if not defined in WorkflowAction)
-        $wfDataObject   = $active->getFrontEndDataObject();
-                        
+        $wfDataObject = $active->getFrontEndDataObject();
+
         // set any requirements spcific to this contextobject
         $active->setFrontendFormRequirements();
-                
+
         // hooks for decorators
         $this->extend('updateFrontEndWorkflowFields', $wfFields);
         $this->extend('updateFrontEndWorkflowActions', $wfActions);
         $this->extend('updateFrontEndRequiredFields', $wfValidator);
         $this->extend('updateFrontendFormRequirements');
-       
+
         $form = new FrontendWorkflowForm($this, 'Form/' . $this->getContextID(), $wfFields, $wfActions, $wfValidator);
-        
+
         $form->addExtraClass("fwf");
-        
+
         if ($wfDataObject) {
             $form->loadDataFrom($wfDataObject);
         }
-    
+
         return $form;
     }
-    
+
     /**
      * @return WorkflowTransition
      */
@@ -149,7 +144,7 @@ abstract class FrontEndWorkflowController extends Controller
         }
         return $trans;
     }
-    
+
     /**
      * Save the Form Data to the defined Context Object
      *
@@ -177,23 +172,23 @@ abstract class FrontEndWorkflowController extends Controller
                 )
             );
         }
-        
+
         //Only Save data when Transition is 'Active'
         if ($this->getCurrentTransition()->Type == 'Active') {
             //Hand off to WorkflowAction to perform Save
-            $svc            = singleton(WorkflowService::class);
-            $active         = $svc->getWorkflowFor($obj);
-            
+            $svc    = singleton(WorkflowService::class);
+            $active = $svc->getWorkflowFor($obj);
+
             $active->doFrontEndAction($data, $form, $request);
         }
-        
+
         //run execute on WorkflowInstance instance
         $action = $this->contextObj->getWorkflowInstance()->currentAction();
         $action->BaseAction()->execute($this->contextObj->getWorkflowInstance());
-        
+
         //get valid transitions
         $transitions = $action->getValidTransitions();
-        
+
         //tell instance to execute transition if it's in the permitted list
         if ($transitions->find('ID', $this->transitionID)) {
             $this->contextObj->getWorkflowInstance()->performTransition($this->getCurrentTransition());

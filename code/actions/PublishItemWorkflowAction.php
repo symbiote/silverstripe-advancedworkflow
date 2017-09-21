@@ -2,22 +2,15 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\ORM\DataObject;
-
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
-use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
 use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LabelField;
 use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\FieldGroup;
+use SilverStripe\ORM\DataObject;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
 
 /**
  * Publishes an item
@@ -29,7 +22,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class PublishItemWorkflowAction extends WorkflowAction
 {
-
     private static $db = array(
         'PublishDelay'          => 'Int',
         'AllowEmbargoedEditing' => 'Boolean',
@@ -40,6 +32,8 @@ class PublishItemWorkflowAction extends WorkflowAction
     );
 
     private static $icon = 'advancedworkflow/images/publish.png';
+
+    private static $table_name = 'PublishItemWorkflowAction';
 
     public function execute(WorkflowInstance $workflow)
     {

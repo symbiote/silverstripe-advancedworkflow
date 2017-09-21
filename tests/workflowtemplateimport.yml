@@ -1,7 +1,7 @@
 #
 # Models the ImportedWorkflowTemplate objects
 #
-ImportedWorkflowTemplate:
+Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
   Import01:
     Name: Test Def Import 01
     Filename: workflow-definition-export-1.yml

@@ -3,13 +3,11 @@
 namespace Symbiote\AdvancedWorkflow\Tasks;
 
 use SilverStripe\Dev\BuildTask;
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use SilverStripe\Control\Email\Email;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  * A task that sends a reminder email to users assigned to a workflow that has
@@ -19,24 +17,26 @@ use SilverStripe\CMS\Model\SiteTree;
  */
 class WorkflowReminderTask extends BuildTask
 {
-
     protected $title       = 'Workflow Reminder Task';
     protected $description = 'Sends out workflow reminder emails to stale workflow instances';
+
+    private static $segment = 'WorkflowReminderTask';
 
     public function run($request)
     {
         $sent = 0;
         if (WorkflowInstance::get()->count()) { // Don't attempt the filter if no instances -- prevents a crash
             $active = WorkflowInstance::get()
-                    ->innerJoin(WorkflowDefinition::class, '"DefinitionID" = "WorkflowDefinition"."ID"')
-                    ->filter(array('WorkflowStatus' => array('Active', 'Paused'), 'RemindDays:GreaterThan' => '0'));
-            $active->filter(array('RemindDays:GreaterThan' => '0'));
+                ->innerJoin(WorkflowDefinition::class, '"DefinitionID" = "WorkflowDefinition"."ID"')
+                ->filter(array('WorkflowStatus' => array('Active', 'Paused'), 'RemindDays:GreaterThan' => '0'))
+                ->filter(array('RemindDays:GreaterThan' => '0'));
+
             if ($active) {
                 foreach ($active as $instance) {
                     $edited = strtotime($instance->LastEdited);
                     $days   = $instance->Definition()->RemindDays;
 
-                    if ($edited + $days * 3600 * 24 > time()) {
+                    if ($edited + $days * 3600 * 24 > DBDatetime::now()->getTimestamp()) {
                         continue;
                     }
 
@@ -51,18 +51,18 @@ class WorkflowReminderTask extends BuildTask
 
                     $email->setSubject("Workflow Reminder: $instance->Title");
                     $email->setBcc(implode(', ', $members->column(Email::class)));
-                    $email->setTemplate('WorkflowReminderEmail');
+                    $email->setHTMLTemplate('WorkflowReminderEmail');
                     $email->populateTemplate(array(
                     'Instance' => $instance,
                     'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : '',
                     'Diff'     => $instance->getTargetDiff()
                     ));
 
-                                    $email->send();
-                                    $sent++;
+                    $email->send();
+                    $sent++;
 
-                                    $instance->LastEdited = time();
-                                    $instance->write();
+                    $instance->LastEdited = DBDatetime::now()->getTimestamp();
+                    $instance->write();
                 }
             }
         }

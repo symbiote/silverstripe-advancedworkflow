@@ -2,9 +2,9 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use SilverStripe\Forms\TextField;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  *
@@ -14,10 +14,12 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 class SetPropertyWorkflowAction extends WorkflowAction
 {
     private static $db = array(
-        'Property'  => 'Varchar',
-        'Value'         => 'Text',
+        'Property' => 'Varchar',
+        'Value'    => 'Text',
     );
-    
+
+    private static $table_name = 'SetPropertyWorkflowAction';
+
     public function execute(WorkflowInstance $workflow)
     {
         if (!$target = $workflow->getTarget()) {

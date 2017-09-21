@@ -2,10 +2,10 @@
 
 namespace Symbiote\AdvancedWorkflow\Jobs;
 
-use AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 // Prevent failure if queuedjobs module isn't installed.
-if (!class_exists('AbstractQueuedJob')) {
+if (!class_exists(AbstractQueuedJob::class)) {
     return;
 }
 
@@ -16,7 +16,6 @@ if (!class_exists('AbstractQueuedJob')) {
  */
 class WorkflowPublishTargetJob extends AbstractQueuedJob
 {
-
     public function __construct($obj = null, $type = null)
     {
         if ($obj) {
@@ -46,7 +45,7 @@ class WorkflowPublishTargetJob extends AbstractQueuedJob
                 $target->setIsPublishJobRunning(true);
                 $target->PublishOnDate = '';
                 $target->writeWithoutVersion();
-                $target->doPublish();
+                $target->publishRecursive();
             } elseif ($this->publishType == 'unpublish') {
                 $target->setIsPublishJobRunning(true);
                 $target->UnPublishOnDate = '';

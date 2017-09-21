@@ -2,24 +2,16 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
+use SilverStripe\Forms\CheckboxField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
-
-
-use ReadOnlyField;
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\RequiredFields;
+use SilverStripe\Security\Member;
 
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
@@ -33,9 +25,8 @@ use SilverStripe\Forms\RequiredFields;
  */
 class WorkflowAction extends DataObject
 {
-
     private static $db = array(
-        'Title'                 => 'Varchar(255)',
+        'Title'             => 'Varchar(255)',
         'Comment'           => 'Text',
         'Type'              => "Enum('Dynamic,Manual','Manual')",  // is this used?
         'Executed'          => 'Boolean',
@@ -52,11 +43,11 @@ class WorkflowAction extends DataObject
 
     private static $has_one = array(
         'WorkflowDef' => WorkflowDefinition::class,
-        'Member'      => 'SilverStripe\\Security\\Member'
+        'Member'      => Member::class
     );
 
     private static $has_many = array(
-        'Transitions' => 'WorkflowTransition.Action'
+        'Transitions' => WorkflowTransition::class . '.Action'
     );
 
     /**
@@ -68,6 +59,8 @@ class WorkflowAction extends DataObject
     private static $instance_class = WorkflowActionInstance::class;
 
     private static $icon = 'advancedworkflow/images/action.png';
+
+    private static $table_name = 'WorkflowAction';
 
     /**
      * Can documents in the current workflow state be edited?
@@ -159,7 +152,7 @@ class WorkflowAction extends DataObject
      */
     public function getInstanceForWorkflow()
     {
-        $instanceClass = $this->stat('instance_class');
+        $instanceClass = $this->config()->get('instance_class');
         $instance = new $instanceClass();
         $instance->BaseActionID = $this->ID;
         return $instance;
@@ -228,7 +221,7 @@ class WorkflowAction extends DataObject
 
     public function numChildren()
     {
-        return count($this->Transitions());
+        return $this->Transitions()->count();
     }
 
     public function getCMSFields()
@@ -292,9 +285,8 @@ class WorkflowAction extends DataObject
     {
     }
 
-
     public function Icon()
     {
-        return $this->stat('icon');
+        return $this->config()->get('icon');
     }
 }

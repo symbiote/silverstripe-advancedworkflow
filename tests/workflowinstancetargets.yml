@@ -1,7 +1,7 @@
 #
 # Models DataObject's / SiteTree objects for testing WorkflowInstance::getTarget()
 #
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   published-object:
     ID: 44
     Title: 'Page is Published'
@@ -11,10 +11,10 @@ SiteTree:
     Title: 'Page is Draft'
     Content: 'Draft'
 
-WorkflowInstance:
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
   target-is-published:
-    TargetClass: 'SiteTree'
+    TargetClass: 'SilverStripe\CMS\Model\SiteTree'
     TargetID: 44
   target-is-draft:
-    TargetClass: 'SiteTree'
+    TargetClass: 'SilverStripe\CMS\Model\SiteTree'
     TargetID: 45

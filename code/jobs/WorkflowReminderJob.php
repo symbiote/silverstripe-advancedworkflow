@@ -2,117 +2,117 @@
 
 namespace Symbiote\AdvancedWorkflow\Jobs;
 
-use AbstractQueuedJob;
-
-
-
 use Exception;
-use SS_Log;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use SilverStripe\Control\Email\Email;
+use Psr\Log\LoggerInterface;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Control\Email\Email;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
-if (class_exists('AbstractQueuedJob')) {
+if (!class_exists(AbstractQueuedJob::class)) {
+    return;
+}
+
 /**
  * @author <marcus@symbiote.com.au>
  * @license BSD License http://www.silverstripe.org/bsd-license
  */
-    class WorkflowReminderJob extends AbstractQueuedJob
-    {
-        const DEFAULT_REPEAT = 600;
-    
-        /**
+class WorkflowReminderJob extends AbstractQueuedJob
+{
+    const DEFAULT_REPEAT = 600;
+
+    /**
      *
      * @var QueuedJobService
      */
-        public $queuedJobService;
-    
-        public function __construct($repeatInterval = 0)
-        {
-            if (!$this->repeatInterval) {
-                $this->repeatInterval = $repeatInterval ? $repeatInterval : self::DEFAULT_REPEAT;
-                $this->totalSteps = 2;
-                $this->currentStep = 1;
-            }
+    public $queuedJobService;
+
+    public function __construct($repeatInterval = 0)
+    {
+        if (!$this->repeatInterval) {
+            $this->repeatInterval = $repeatInterval ? $repeatInterval : self::DEFAULT_REPEAT;
+            $this->totalSteps = 2;
+            $this->currentStep = 1;
         }
-    
-        public function getTitle()
-        {
-            return _t('AdvancedWorkflow.WORKFLOW_REMINDER_JOB', 'Workflow Reminder Job');
-        }
-    
-        /**
+    }
+
+    public function getTitle()
+    {
+        return _t('AdvancedWorkflow.WORKFLOW_REMINDER_JOB', 'Workflow Reminder Job');
+    }
+
+    /**
      * We only want one instance of this job ever
      *
      * @return string
      */
-        public function getSignature()
-        {
-            return md5($this->getTitle());
-        }
-    
-        public function process()
-        {
-            $sent   = 0;
-            $filter = array(
-            'WorkflowStatus'                        => array('Active', 'Paused'),
-            'Definition.RemindDays:GreaterThan'         => 0
-            );
-        
-            $active = WorkflowInstance::get()->filter($filter);
-        
-            foreach ($active as $instance) {
-                $edited = strtotime($instance->LastEdited);
-                $days   = $instance->Definition()->RemindDays;
+    public function getSignature()
+    {
+        return md5($this->getTitle());
+    }
 
-                if ($edited + ($days * 3600 * 24) > time()) {
-                    continue;
-                }
+    public function process()
+    {
+        $sent   = 0;
+        $filter = array(
+        'WorkflowStatus'                    => array('Active', 'Paused'),
+        'Definition.RemindDays:GreaterThan' => 0
+        );
 
-                $email   = new Email();
-                $bcc     = '';
-                $members = $instance->getAssignedMembers();
-                $target  = $instance->getTarget();
+        $active = WorkflowInstance::get()->filter($filter);
 
-                if (!$members || !count($members)) {
-                    continue;
-                }
+        foreach ($active as $instance) {
+            $edited = strtotime($instance->LastEdited);
+            $days   = $instance->Definition()->RemindDays;
 
-                $email->setSubject("Workflow Reminder: $instance->Title");
-                $email->setBcc(implode(', ', $members->column(Email::class)));
-                $email->setTemplate('WorkflowReminderEmail');
-                $email->populateTemplate(array(
-                'Instance' => $instance,
-                'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
-                ));
-
-                $email->send();
-                $sent++;
-
-                // add a comment to the workflow if possible
-                $action = $instance->CurrentAction();
-            
-                $currentComment = $action->Comment;
-                $action->Comment = sprintf(_t('AdvancedWorkflow.JOB_REMINDER_COMMENT', '%s: Reminder email sent\n\n'), date('Y-m-d H:i:s')) . $currentComment;
-                try {
-                        $action->write();
-                } catch (Exception $ex) {
-                        SS_Log::log($ex, SS_Log::WARN);
-                }
-
-                $instance->LastEdited = time();
-                try {
-                        $instance->write();
-                } catch (Exception $ex) {
-                        SS_Log::log($ex, SS_Log::WARN);
-                }
+            if ($edited + ($days * 3600 * 24) > time()) {
+                continue;
             }
 
-            $this->currentStep = 2;
-            $this->isComplete = true;
-        
-            $nextDate = date('Y-m-d H:i:s', time() + $this->repeatInterval);
-            $this->queuedJobService->queueJob(new WorkflowReminderJob($this->repeatInterval), $nextDate);
+            $email   = new Email();
+            $bcc     = '';
+            $members = $instance->getAssignedMembers();
+            $target  = $instance->getTarget();
+
+            if (!$members || !count($members)) {
+                continue;
+            }
+
+            $email->setSubject("Workflow Reminder: $instance->Title");
+            $email->setBcc(implode(', ', $members->column(Email::class)));
+            $email->setHTMLTemplate('WorkflowReminderEmail');
+            $email->setData(array(
+                'Instance' => $instance,
+                'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
+            ));
+
+            $email->send();
+            $sent++;
+
+            // add a comment to the workflow if possible
+            $action = $instance->CurrentAction();
+
+            $currentComment = $action->Comment;
+            $action->Comment = sprintf(_t('AdvancedWorkflow.JOB_REMINDER_COMMENT', '%s: Reminder email sent\n\n'), date('Y-m-d H:i:s')) . $currentComment;
+            try {
+                $action->write();
+            } catch (Exception $ex) {
+                Injector::inst()->get(LoggerInterface::class)->warning($ex->getMessage());
+            }
+
+            $instance->LastEdited = time();
+            try {
+                $instance->write();
+            } catch (Exception $ex) {
+                Injector::inst()->get(LoggerInterface::class)->warning($ex->getMessage())
+            }
         }
+
+        $this->currentStep = 2;
+        $this->isComplete = true;
+
+        $nextDate = date('Y-m-d H:i:s', time() + $this->repeatInterval);
+        $this->queuedJobService->queueJob(new WorkflowReminderJob($this->repeatInterval), $nextDate);
     }
 }

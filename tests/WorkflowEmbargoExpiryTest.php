@@ -2,22 +2,19 @@
 
 namespace Symbiote\AdvancedWorkflow\Tests;
 
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Member;
-
-use SilverStripe\Dev\SapphireTest;
-
-
-
-
-use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
-use SilverStripe\Versioned\Versioned;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\Translatable\Model\Translatable;
+use SilverStripe\Security\Member;
+use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
  * @author marcus@symbiote.com.au
@@ -25,7 +22,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
  */
 class WorkflowEmbargoExpiryTest extends SapphireTest
 {
-
     protected static $fixture_file = 'WorkflowEmbargoExpiry.yml';
 
     protected function setUp()
@@ -36,12 +32,12 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
 
 
         // Prevent failure if queuedjobs module isn't installed.
-        if (!class_exists('AbstractQueuedJob', false)) {
+        if (!class_exists(AbstractQueuedJob::class, false)) {
             $this->markTestSkipped("This test requires queuedjobs");
         }
     }
 
-    public function tearDown()
+    protected function tearDown()
     {
         DBDatetime::clear_mock_now();
         parent::tearDown();
@@ -50,8 +46,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * @var array
      */
-    protected $requiredExtensions = array(
-        'SiteTree' => array(
+    protected static $required_extensions = array(
+        SiteTree::class => array(
             WorkflowEmbargoExpiryExtension::class,
             Versioned::class,
         )
@@ -60,15 +56,15 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     /**
      * @var array
      */
-    protected $illegalExtensions = array(
-        'SiteTree' => array(
-            "Translatable",
+    protected $illegal_extensions = array(
+        SiteTree::class => array(
+            Translatable::class,
         )
     );
 
     public function __construct()
     {
-        if (!class_exists('AbstractQueuedJob')) {
+        if (!class_exists(AbstractQueuedJob::class)) {
             $this->skipTest = true;
         }
         parent::__construct();
@@ -488,12 +484,5 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNull($dupe->UnPublishOnDate, 'Blank unpublish on date');
         $this->assertEquals($dupe->PublishJobID, 0, 'Publish job ID unset');
         $this->assertEquals($dupe->UnPublishJobID, 0, 'Unpublish job ID unset');
-    }
-
-    public function logOut()
-    {
-        if ($member = Member::currentUser()) {
-            $member->logOut();
-        }
     }
 }

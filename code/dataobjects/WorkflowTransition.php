@@ -2,25 +2,19 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
-use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataObject;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
+use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\CheckboxSetField;
-use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
 
 /**
@@ -41,7 +35,6 @@ use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
  */
 class WorkflowTransition extends DataObject
 {
-
     private static $db = array(
         'Title'     => 'Varchar(128)',
         'Sort'      => 'Int',
@@ -56,21 +49,23 @@ class WorkflowTransition extends DataObject
     );
 
     private static $many_many = array(
-        'Users'  => 'SilverStripe\\Security\\Member',
-        'Groups' => 'SilverStripe\\Security\\Group'
+        'Users'  => Member::class,
+        'Groups' => Group::class,
     );
 
     private static $icon = 'advancedworkflow/images/transition.png';
+
+    private static $table_name = 'WorkflowTransition';
 
     /**
      *
      * @var array $extendedMethodReturn A basic extended validation routine method return format
      */
     public static $extendedMethodReturn = array(
-        'fieldName'     =>null,
-        'fieldField'=>null,
-        'fieldMsg'  =>null,
-        'fieldValid'=>true
+        'fieldName'  => null,
+        'fieldField' => null,
+        'fieldMsg'   => null,
+        'fieldValid' => true,
     );
 
     /**
@@ -95,12 +90,6 @@ class WorkflowTransition extends DataObject
         }
 
         parent::onBeforeWrite();
-    }
-
-    public function validate()
-    {
-        $result = parent::validate();
-        return $result;
     }
 
     /* CMS FUNCTIONS */
@@ -128,7 +117,7 @@ class WorkflowTransition extends DataObject
             $options = $actions->map();
         }
 
-        $defaultAction = $action?$action->ID:"";
+        $defaultAction = $action ? $action->ID : "";
 
         $typeOptions = array(
             'Active' => _t('WorkflowTransition.Active', 'Active'),
@@ -159,7 +148,7 @@ class WorkflowTransition extends DataObject
             _t('WorkflowTransition.TabTitle', 'Restrict to users')
         );
         $fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
-        $fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), 'SilverStripe\\Security\\Group'));
+        $fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), Group::class));
 
         $this->extend('updateCMSFields', $fields);
 
@@ -208,7 +197,7 @@ class WorkflowTransition extends DataObject
 
         // If not admin, check if the member is in the list of assigned members
         if (!Permission::check('ADMIN') && $members->exists()) {
-            if (!$members->find('ID', Member::currentUserID())) {
+            if (!$members->find('ID', Security::getCurrentUser()->ID)) {
                 $return = false;
             }
         }

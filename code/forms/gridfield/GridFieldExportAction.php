@@ -1,15 +1,17 @@
 <?php
 
-use SilverStripe\Security\Permission;
-use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use SilverStripe\Forms\GridField\GridField_ActionProvider;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Forms\GridField\GridField_FormAction;
+namespace Symbiote\AdvancedWorkflow\Forms\GridField;
+
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
-use Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin;
-use SilverStripe\Control\Controller;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridField_ActionProvider;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridField_FormAction;
+use SilverStripe\Security\Permission;
 use SilverStripe\View\ArrayData;
+use Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin;
 
 /**
  * This class is a {@link GridField} component that adds an export action for
@@ -20,7 +22,6 @@ use SilverStripe\View\ArrayData;
  */
 class GridFieldExportAction implements GridField_ColumnProvider, GridField_ActionProvider
 {
-
     /**
      * Add a column 'Delete'
      *

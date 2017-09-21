@@ -2,34 +2,29 @@
 
 namespace Symbiote\AdvancedWorkflow\Extensions;
 
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\ORM\DataQuery;
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Permission;
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\FieldList;
-
-
-
-use Datetimefield;
-
-
-
-
-use Zend_Date;
-use SilverStripe\View\Requirements;
+use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
-use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
-use SilverStripe\Core\Injector\Injector;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataQuery;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+use SilverStripe\View\Requirements;
 use SilverStripe\Versioned\Versioned;
-use SilverStripe\Control\Controller;
 use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
+use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\QueuedJobs\DataObjects\QueuedJobDescriptor;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 // Queued jobs descriptor is required for this extension
-if (!class_exists('QueuedJobDescriptor')) {
+if (!class_exists(QueuedJobDescriptor::class)) {
     return;
 }
 
@@ -41,22 +36,21 @@ if (!class_exists('QueuedJobDescriptor')) {
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension
 {
-
     private static $db = array(
         'DesiredPublishDate'    => 'DBDatetime',
         'DesiredUnPublishDate'  => 'DBDatetime',
-        'PublishOnDate'             => 'DBDatetime',
+        'PublishOnDate'         => 'DBDatetime',
         'UnPublishOnDate'       => 'DBDatetime',
         'AllowEmbargoedEditing' => 'Boolean',
     );
 
     private static $has_one = array(
-        'PublishJob'            => 'QueuedJobDescriptor',
-        'UnPublishJob'          => 'QueuedJobDescriptor',
+        'PublishJob'            => QueuedJobDescriptor::class,
+        'UnPublishJob'          => QueuedJobDescriptor::class,
     );
 
     private static $dependencies = array(
-        'workflowService'       => '%$WorkflowService',
+        'workflowService'       => '%$' . WorkflowService::class,
     );
 
     private static $defaults = array(
@@ -84,10 +78,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
      * @var array
      */
     public static $extendedMethodReturn = array(
-        'fieldName'     =>null,
-        'fieldField'=>null,
-        'fieldMsg'  =>null,
-        'fieldValid'=>true
+        'fieldName'  => null,
+        'fieldField' => null,
+        'fieldMsg'   => null,
+        'fieldValid' => true,
     );
 
     /**
@@ -95,25 +89,26 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
      */
     public function updateCMSFields(FieldList $fields)
     {
-
         // requirements
         // ------------
 
-        Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
+        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('javascript/lang'));
 
         // Add timepicker functionality
         // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
         Requirements::css(
-            ADVANCED_WORKFLOW_DIR . '/thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
+            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css')
         );
-        Requirements::css(ADVANCED_WORKFLOW_DIR . '/css/WorkflowCMS.css');
+        Requirements::css($module->getRelativeResourcePath('css/WorkflowCMS.css'));
         Requirements::javascript(
-            ADVANCED_WORKFLOW_DIR . '/thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js'
+            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js')
         );
         Requirements::javascript(
-            ADVANCED_WORKFLOW_DIR . '/thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js'
+            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js')
         );
-        Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
+        Requirements::javascript($module->getRelativeResourcePath('javascript/WorkflowField.js'));
 
         // Fields
         // ------
@@ -137,23 +132,23 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
                     3
                 ),
                 LiteralField::create('PublishDateIntro', $this->getIntroMessage('PublishDateIntro')),
-                $dt = Datetimefield::create(
+                $dt = DatetimeField::create(
                     'DesiredPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
                 )->setRightTitle(
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
                 ),
-                $ut = Datetimefield::create(
+                $ut = DatetimeField::create(
                     'DesiredUnPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
                 )->setRightTitle(
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
                 ),
-                Datetimefield::create(
+                DatetimeField::create(
                     'PublishOnDate',
                     _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date')
                 )->setDisabled(true),
-                Datetimefield::create(
+                DatetimeField::create(
                     'UnPublishOnDate',
                     _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date')
                 )->setDisabled(true)
@@ -171,26 +166,22 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
                     3
                 ),
                 LiteralField::create('PublishDateIntro', $this->getIntroMessage('PublishDateIntro')),
-                $dt = Datetimefield::create(
+                $dt = DatetimeField::create(
                     'PublishOnDate',
                     _t('WorkflowEmbargoExpiryExtension.PUBLISH_ON', 'Scheduled publish date')
                 ),
-                $ut = Datetimefield::create(
+                $ut = DatetimeField::create(
                     'UnPublishOnDate',
                     _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date')
                 ),
             ));
         }
 
-        $dt->getDateField()->setConfig('showcalendar', true);
-        $ut->getDateField()->setConfig('showcalendar', true);
-        $dt->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
-        $ut->getTimeField()->setConfig('timeformat', 'HH:mm:ss');
-
         // Enable a jQuery-UI timepicker widget
+        // @todo re-validate this with new DatetimeField API
         if (self::$showTimePicker) {
-            $dt->getTimeField()->addExtraClass('hasTimePicker');
-            $ut->getTimeField()->addExtraClass('hasTimePicker');
+            $dt->addExtraClass('hasTimePicker');
+            $ut->addExtraClass('hasTimePicker');
         }
     }
 
@@ -238,7 +229,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 
         // Create a new job with the specified schedule
         $job = new WorkflowPublishTargetJob($this->owner, 'publish');
-        $this->owner->PublishJobID = Injector::inst()->get('QueuedJobService')
+        $this->owner->PublishJobID = Injector::inst()->get(QueuedJobService::class)
                 ->queueJob($job, $when ? date('Y-m-d H:i:s', $when) : null);
     }
 
@@ -261,7 +252,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 
         // Create a new job with the specified schedule
         $job = new WorkflowPublishTargetJob($this->owner, 'unpublish');
-        $this->owner->UnPublishJobID = Injector::inst()->get('QueuedJobService')
+        $this->owner->UnPublishJobID = Injector::inst()->get(QueuedJobService::class)
             ->queueJob($job, $when ? date('Y-m-d H:i:s', $when) : null);
     }
 
@@ -319,7 +310,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         }
 
         // Check requested dates of publish / unpublish, and whether the page should have already been unpublished
-        $now = strtotime(DBDatetime::now()->getValue());
+        $now = strtotime(DBDatetime::now()->getTimestamp());
         $publishTime = strtotime($this->owner->PublishOnDate);
         $unPublishTime = strtotime($this->owner->UnPublishOnDate);
 
@@ -478,7 +469,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         return $response;
     }
 
-    /*
+    /**
 	 * Format a date according to member/user preferences
 	 *
 	 * @param string $date
@@ -486,9 +477,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 	 */
     public function getUserDate($date)
     {
-        $date = new Zend_Date($date);
-        $member = Member::currentUser();
-        return $date->toString($member->getDateFormat().' '.$member->getTimeFormat());
+        $date = DBDatetime::create()->setValue($date);
+        $member = Security::getCurrentUser();
+        return $date->FormatFromSettings($member);
     }
 
     /*
@@ -498,7 +489,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     {
         // if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date
         $effective = $this->workflowService->getDefinitionFor($this->owner);
-        $this->isWorkflowInEffect = $effective?true:false;
+        $this->isWorkflowInEffect = $effective ? true : false;
     }
 
     public function getIsWorkflowInEffect()
@@ -516,7 +507,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if (!$this->owner->PublishOnDate) {
             return false;
         }
-        $now = strtotime(DBDatetime::now()->getValue());
+        $now = strtotime(DBDatetime::now()->getTimestamp());
         $publish = strtotime($this->owner->PublishOnDate);
 
         return $now < $publish;
@@ -532,7 +523,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if (!$this->owner->UnPublishOnDate) {
             return false;
         }
-        $now = strtotime(DBDatetime::now()->getValue());
+        $now = strtotime(DBDatetime::now()->getTimestamp());
         $unpublish = strtotime($this->owner->UnPublishOnDate);
 
         return $now < $unpublish;
@@ -542,14 +533,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
      * Add edit check for when publishing has been scheduled and if any workflow definitions want the item to be
      * disabled.
      *
-     * @param $member
-     * @return bool
+     * @param Member $member
+     * @return bool|null
      */
     public function canEdit($member)
     {
         if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
             !$this->AllowEmbargoedEditing) { // item flagged as not editable
-            $now = strtotime(DBDatetime::now()->getValue());
+            $now = strtotime(DBDatetime::now()->getTimestamp());
             $publishTime = strtotime($this->owner->PublishOnDate);
 
             if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future

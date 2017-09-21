@@ -3,7 +3,6 @@
 namespace Symbiote\AdvancedWorkflow\Extensions;
 
 use SilverStripe\Forms\FieldList;
-
 use SilverStripe\Forms\Form;
 
 /**
@@ -18,7 +17,6 @@ use SilverStripe\Forms\Form;
  */
 class FileWorkflowApplicable extends WorkflowApplicable
 {
-    
     public function updateSummaryFields(&$fields)
     {
         $fields['ID'] = 'ID';
@@ -38,7 +36,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
         if ($active) {
             $current = $active->CurrentAction();
             $wfFields = $active->getWorkflowFields();
-            
+
             // loading data in a somewhat hack way
             $form = new Form($this, 'DummyForm', $wfFields, new FieldList());
             $form->loadDataFrom($current);
@@ -54,7 +52,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
     public function onAfterWrite()
     {
         parent::onAfterWrite();
-        
+
         $workflow = $this->workflowService->getWorkflowFor($this->owner);
         $rawData = $this->owner->toMap();
         if ($workflow && $this->owner->TransitionID) {
@@ -68,13 +66,13 @@ class FileWorkflowApplicable extends WorkflowApplicable
             unset($allowedFields['TransitionID']);
 
             $allowed = array_keys($allowedFields);
-            
+
             foreach ($allowed as $field) {
                 if (isset($rawData[$field])) {
                     $action->$field = $rawData[$field];
                 }
             }
-            
+
             $action->write();
 
             if (isset($rawData['TransitionID']) && $rawData['TransitionID']) {

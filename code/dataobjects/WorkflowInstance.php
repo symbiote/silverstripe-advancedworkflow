@@ -2,52 +2,35 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
-use SilverStripe\ORM\DataObject;
-
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\ORM\Queries\SQLSelect;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
-
-
-
-
-
-
-
-
-
-
-
 use Exception;
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\HeaderField;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\HiddenField;
-use SilverStripe\Forms\HeaderField;
-use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\TreeMultiselectField;
-use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\GridField\GridField;
-use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use SilverStripe\Core\Injector\Injector;
-use SilverStripe\Versioned\Versioned;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\Queries\SQLSelect;
+use SilverStripe\Security\Group;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 use SilverStripe\Versioned\DataDifferencer;
+use SilverStripe\Versioned\Versioned;
+use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
 use Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable;
-use SilverStripe\Core\ClassInfo;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use SilverStripe\Control\Controller;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\Form;
-use SilverStripe\Control\HTTPRequest;
-use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * A WorkflowInstance is created whenever a user 'starts' a workflow.
@@ -66,9 +49,8 @@ use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
  */
 class WorkflowInstance extends DataObject
 {
-
     private static $db = array(
-        'Title'                 => 'Varchar(128)',
+        'Title'             => 'Varchar(128)',
         'WorkflowStatus'    => "Enum('Active,Paused,Complete,Cancelled','Active')",
         'TargetClass'       => 'Varchar(64)',
         'TargetID'          => 'Int',
@@ -77,11 +59,11 @@ class WorkflowInstance extends DataObject
     private static $has_one = array(
         'Definition'    => WorkflowDefinition::class,
         'CurrentAction' => WorkflowActionInstance::class,
-        'Initiator'         => 'SilverStripe\\Security\\Member',
+        'Initiator'     => Member::class,
     );
 
     private static $has_many = array(
-        'Actions'       => WorkflowActionInstance::class,
+        'Actions' => WorkflowActionInstance::class,
     );
 
     /**
@@ -90,8 +72,8 @@ class WorkflowInstance extends DataObject
      * @var array
      */
     private static $many_many = array(
-        'Users'             => 'SilverStripe\\Security\\Member',
-        'Groups'        => 'SilverStripe\\Security\\Group'
+        'Users'  => Member::class,
+        'Groups' => Group::class,
     );
 
     private static $summary_fields = array(
@@ -125,12 +107,14 @@ class WorkflowInstance extends DataObject
         'UnPublishJobID'
     );
 
+    private static $table_name = 'WorkflowInstance';
+
     /**
      * Get the CMS view of the instance. This is used to display the log of
      * this workflow, and options to reassign if the workflow hasn't been
      * finished yet
      *
-     * @return \FieldList
+     * @return FieldList
      */
     public function getCMSFields()
     {
@@ -145,7 +129,7 @@ class WorkflowInstance extends DataObject
                     new HiddenField('DirectUpdate', '', 1),
                     new HeaderField('InstanceReassignHeader', _t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')),
                     new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers),
-                    new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'SilverStripe\\Security\\Group')
+                    new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class)
                 ));
             }
         }
@@ -164,8 +148,8 @@ class WorkflowInstance extends DataObject
         }
 
         $items = WorkflowActionInstance::get()->filter(array(
-            'Finished'      => 1,
-            'WorkflowID'    => $this->ID
+            'Finished'   => 1,
+            'WorkflowID' => $this->ID
         ));
 
         $grid = new GridField(
@@ -256,8 +240,8 @@ class WorkflowInstance extends DataObject
      * Sets Versioned::set_reading_mode() to allow fetching of Draft _and_ Published
      * content.
      *
-     * @param Boolean $getLive
-     * @return (null | DataObject)
+     * @param boolean $getLive
+     * @return null|DataObject
      */
     public function getTarget($getLive = false)
     {
@@ -278,9 +262,9 @@ class WorkflowInstance extends DataObject
 
     /**
      *
-     * @param Boolean $getLive
+     * @param boolean $getLive
      * @see {@link {$this->getTarget()}
-     * @return (null | DataObject)
+     * @return null|DataObject
      */
     public function Target($getLive = false)
     {
@@ -298,7 +282,7 @@ class WorkflowInstance extends DataObject
         $draftTarget = $this->Target();
 
         $diff = DataDifferencer::create($liveTarget, $draftTarget);
-        $diff->ignoreFields($this->stat('diff_ignore_fields'));
+        $diff->ignoreFields($this->config()->get('diff_ignore_fields'));
 
         $fields = $diff->ChangedFields();
 
@@ -327,17 +311,17 @@ class WorkflowInstance extends DataObject
 
         // lets create the first WorkflowActionInstance.
         $action = $definition->getInitialAction()->getInstanceForWorkflow();
-        $action->WorkflowID   = $this->ID;
+        $action->WorkflowID = $this->ID;
         $action->write();
 
-        $title = $for && $for->hasField('Title') ?
-                sprintf(_t('WorkflowInstance.TITLE_FOR_DO', '%s - %s'), $definition->Title, $for->Title) :
-                sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
+        $title = $for && $for->hasField('Title')
+            ? sprintf(_t('WorkflowInstance.TITLE_FOR_DO', '%s - %s'), $definition->Title, $for->Title)
+            : sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
 
         $this->Title           = $title;
         $this->DefinitionID    = $definition->ID;
         $this->CurrentActionID = $action->ID;
-        $this->InitiatorID     = Member::currentUserID();
+        $this->InitiatorID     = Security::getCurrentUser()->ID;
         $this->write();
 
         $this->Users()->addMany($definition->Users());
@@ -384,7 +368,7 @@ class WorkflowInstance extends DataObject
             // next transition should be run (if only one).
             // input.
             if ($result) {
-                $action->MemberID = Member::currentUserID();
+                $action->MemberID = Security::getCurrentUser()->ID;
                 $action->Finished = true;
                 $action->write();
                 $transition = $this->checkTransitions($action);
@@ -471,8 +455,8 @@ class WorkflowInstance extends DataObject
      */
     public function getAssignedMembers()
     {
-        $list    = new ArrayList();
-        $groups  = $this->Groups();
+        $list   = new ArrayList();
+        $groups = $this->Groups();
 
         $list->merge($this->Users());
 
@@ -486,7 +470,7 @@ class WorkflowInstance extends DataObject
 
     /**
      *
-     * @param \Member $member
+     * @param Member $member
      * @return boolean
      */
     public function canView($member = null)
@@ -512,7 +496,7 @@ class WorkflowInstance extends DataObject
 
     /**
      *
-     * @param \Member $member
+     * @param Member $member
      * @return boolean
      */
     public function canEdit($member = null)
@@ -527,7 +511,7 @@ class WorkflowInstance extends DataObject
 
     /**
      *
-     * @param \Member $member
+     * @param Member $member
      * @return boolean
      */
     public function canDelete($member = null)
@@ -547,15 +531,15 @@ class WorkflowInstance extends DataObject
      * Checks whether the given user is in the list of users assigned to this
      * workflow
      *
-     * @param $memberID
+     * @param Member $member
      */
     protected function userHasAccess($member)
     {
         if (!$member) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
 
         if (Permission::checkMember($member, "ADMIN")) {
@@ -623,9 +607,8 @@ class WorkflowInstance extends DataObject
         $transitions = $action->getValidTransitions();
 
         // Filter by execute permission
-        $self = $this;
-        return $transitions->filterByCallback(function ($transition) use ($self) {
-            return $transition->canExecute($self);
+        return $transitions->filterByCallback(function ($transition) {
+            return $transition->canExecute($this);
         });
     }
 
@@ -745,7 +728,7 @@ class WorkflowInstance extends DataObject
         $action->doFrontEndAction($data, $form, $request);
     }
 
-    /*
+    /**
 	 * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
 	 * @see {@link $this->userHasAccess()}
 	 *
@@ -759,7 +742,7 @@ class WorkflowInstance extends DataObject
         // Turn this into an array and run through implode()
         $filter = "RecordID = {$recordID} AND AuthorID = {$userID} AND WasPublished = {$wasPublished}";
         $query = new SQLSelect();
-        $query->setFrom('"SiteTree_versions"')->setSelect('COUNT("ID")')->setWhere($filter);
+        $query->setFrom('"SiteTree_Versions"')->setSelect('COUNT("ID")')->setWhere($filter);
         $query->firstRow();
         $hasAuthored = $query->execute();
         if ($hasAuthored) {
@@ -768,9 +751,9 @@ class WorkflowInstance extends DataObject
         return false;
     }
 
-    /*
-	 * Simple method to retrieve the current action, on the current WorkflowInstance
-	 */
+    /**
+     * Simple method to retrieve the current action, on the current WorkflowInstance
+     */
     public function getCurrentAction()
     {
         $join = '"WorkflowAction"."ID" = "WorkflowActionInstance"."BaseActionID"';
@@ -788,15 +771,15 @@ class WorkflowInstance extends DataObject
      * Tells us if $member has had permissions over some part of the current WorkflowInstance.
      *
      * @param $member
-     * @return \WorkflowAction | boolean
+     * @return WorkflowAction|boolean
      */
     public function getMostRecentActionForUser($member = null)
     {
         if (!$member) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
 
         // WorkflowActionInstances in reverse creation-order so we get the most recent one's first
@@ -805,14 +788,14 @@ class WorkflowInstance extends DataObject
             'BaseAction.ClassName' => AssignUsersToWorkflowAction::class
         ))->Sort('Created', 'DESC');
 
-        $i=0;
+        $i = 0;
         foreach ($history as $inst) {
             /*
 			 * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction in $history.
 			 * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
 			 */
             $assignedMembers = $inst->BaseAction()->getAssignedMembers();
-            if ($i<=1 && $assignedMembers->count()>0 && $assignedMembers->find('ID', $member->ID)) {
+            if ($i <= 1 && $assignedMembers->count() > 0 && $assignedMembers->find('ID', $member->ID)) {
                 return $inst;
             }
             ++$i;

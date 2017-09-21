@@ -2,25 +2,18 @@
 
 namespace Symbiote\AdvancedWorkflow\Tests;
 
-use SilverStripe\ORM\DataObject;
-
-use SilverStripe\Dev\SapphireTest;
-
-
-
-
-
-
-use WorkflowTemplate;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use SilverStripe\CMS\Model\SiteTree;
-use Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction;
+use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
 use Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction;
-use SilverStripe\Versioned\Versioned;
+use Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
 
 /**
  * Tests for the workflow engine.
@@ -32,12 +25,10 @@ use SilverStripe\Versioned\Versioned;
  */
 class WorkflowEngineTest extends SapphireTest
 {
-
-    public static $fixture_file = 'advancedworkflow/tests/workflowinstancetargets.yml';
+    protected static $fixture_file = 'workflowinstancetargets.yml';
 
     public function testCreateWorkflowInstance()
     {
-
         $definition = new WorkflowDefinition();
         $definition->Title = "Create Workflow Instance";
         $definition->write();
@@ -101,7 +92,7 @@ class WorkflowEngineTest extends SapphireTest
     {
         $def = $this->createDefinition();
         $target = $this->objFromFixture(SiteTree::class, 'published-object');
-        $target->doPublish();
+        $target->publishRecursive();
 
         $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
         $instance->beginWorkflow($def);
@@ -187,7 +178,6 @@ class WorkflowEngineTest extends SapphireTest
 
         return $definition;
     }
-
 
     public function testCreateFromTemplate()
     {
@@ -313,7 +303,7 @@ class WorkflowEngineTest extends SapphireTest
         // Login so SiteTree::canPublish() returns true
         $testPage->WorkflowDefinitionID = $newDef2->ID;     // Normally done via CMS
         $this->logInWithPermission();
-        $testPage->doPublish();
+        $testPage->publishRecursive();
 
         // Check $testPage is published, pre-deletion (getStatusFlags() returns empty array)
         $this->assertTrue($testPage->getExistsOnLive());
@@ -337,7 +327,7 @@ class WorkflowEngineTest extends SapphireTest
     {
         $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
         $target = $instance->getTarget();
-        $target->doPublish();
+        $target->publishRecursive();
 
         $target->Title = 'New title for target';
         $target->write();

@@ -25,7 +25,7 @@ SilverStripe\Security\Group:
     Title: CanExecuteTransition05
     Members: =>SilverStripe\Security\Member.Transition05Member
 
-WorkflowTransition:
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
   Transition01:
     Title: notify
   Transition02:
@@ -41,132 +41,155 @@ WorkflowTransition:
     Title: 'Transition with User'
     Users: =>SilverStripe\Security\Member.Transition06Member
 
-AssignUsersToWorkflowAction:
+Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
   BaseAction01:
     Title: Assign
-    Transitions: =>WorkflowTransition.Transition01
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition01
     Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction011:
     Title: 'Another Assignment'
-    Transitions: =>WorkflowTransition.Transition01
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition01
   BaseAction012:
     Title: 'Assigned Again'
-    Transitions: =>WorkflowTransition.Transition01
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition01
     Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction013:
     Title: 'Assigned Me'
-    Transitions: =>WorkflowTransition.Transition01
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition01
     Groups: =>SilverStripe\Security\Group.BaseAction01Group
   BaseAction014:
     Title: 'Not Re-Assigned Me'
-    Transitions: =>WorkflowTransition.Transition01
-NotifyUsersWorkflowAction:
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition01
+Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
   BaseAction02:
     Title: 'Notify users'
-    Transitions: =>WorkflowTransition.Transition02
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition02
   BaseAction021:
     Title: 'Notify users'
-    Transitions: =>WorkflowTransition.Transition02
-SimpleApprovalWorkflowAction:
+    Transitions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition02
+Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
   BaseAction03:
     Title: Approval
-    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04
+    Transitions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition03
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition04
   BaseAction031:
     Title: Approval
-    Transitions: =>WorkflowTransition.Transition03,=>WorkflowTransition.Transition04
+    Transitions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition03
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition04
   BaseAction032:
     Title: Approval
-    Transitions: =>WorkflowTransition.Transition05,=>WorkflowTransition.Transition06
+    Transitions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition05
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition.Transition06
 
-WorkflowActionInstance:
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
   ActionInstance01:
     Created: '2014-02-17 16:15:00'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction01
   ActionInstance02:
     Created: '2014-02-17 16:15:01'
     Finished: 1
-    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction.BaseAction02
   ActionInstance03:
     Created: '2014-02-17 16:15:02'
     Finished: 1
-    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction.BaseAction03
   ActionInstance04:
     Created: '2014-02-17 16:14:59'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction011
   ActionInstance05:
     Created: '2014-02-17 16:15:00'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction01
   ActionInstance06:
     Created: '2014-02-17 16:15:01'
     Finished: 1
-    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction.BaseAction02
   ActionInstance07:
     Created: '2014-02-17 16:15:02'
     Finished: 1
-    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction03
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction.BaseAction03
   ActionInstance08:
     Created: '2014-02-17 16:15:03'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction011
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction011
   ActionInstance09:
     Created: '2014-02-17 16:15:00'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction01
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction01
   ActionInstance10:
     Created: '2014-02-17 16:15:01'
     Finished: 1
-    BaseAction: =>NotifyUsersWorkflowAction.BaseAction02
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction.BaseAction02
   ActionInstance11:
     Created: '2014-02-17 16:15:02'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction012
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction012
   ActionInstance12:
     Created: '2014-02-17 16:15:00'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction013
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction013
   ActionInstance13:
     Created: '2014-02-17 16:15:01'
     Finished: 1
-    BaseAction: =>NotifyUsersWorkflowAction.BaseAction021
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction.BaseAction021
   ActionInstance14:
     Created: '2014-02-17 16:15:02'
     Finished: 1
-    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction031
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction.BaseAction031
   ActionInstance15:
     Created: '2014-02-17 16:15:03'
     Finished: 1
-    BaseAction: =>AssignUsersToWorkflowAction.BaseAction014
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction.BaseAction014
   ActionInstance16:
     Created: '2014-02-17 16:15:00'
     Finished: 1
-    BaseAction: =>SimpleApprovalWorkflowAction.BaseAction032
+    BaseAction: =>Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction.BaseAction032
 
-WorkflowInstance:
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
   WorkflowInstance01:
     Title: 'Test WorkflowInstance 01'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance01,=>WorkflowActionInstance.ActionInstance02,=>WorkflowActionInstance.ActionInstance03
+    Actions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance01
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance02
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance03
   WorkflowInstance02:
     Title: 'Test WorkflowInstance 02'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance04,=>WorkflowActionInstance.ActionInstance02,=>WorkflowActionInstance.ActionInstance03
+    Actions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance04
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance02
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance03
   WorkflowInstance03:
     Title: 'Test WorkflowInstance 03'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance05,=>WorkflowActionInstance.ActionInstance06,=>WorkflowActionInstance.ActionInstance07,=>WorkflowActionInstance.ActionInstance08
+    Actions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance05
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance06
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance07
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance08
   WorkflowInstance04:
     Title: 'Test WorkflowInstance 04'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance09,=>WorkflowActionInstance.ActionInstance10,=>WorkflowActionInstance.ActionInstance11
+    Actions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance09
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance10
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance11
   WorkflowInstance05:
     Title: 'Test WorkflowInstance 05'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance12,=>WorkflowActionInstance.ActionInstance13,=>WorkflowActionInstance.ActionInstance14,=>WorkflowActionInstance.ActionInstance15
+    Actions:
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance12
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance13
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance14
+      - =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance15
   WorkflowInstance06:
     Title: 'Test WorkflowInstance 06'
     WorkflowStatus: Paused
-    Actions: =>WorkflowActionInstance.ActionInstance16
-    CurrentAction: =>WorkflowActionInstance.ActionInstance16
+    Actions: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance16
+    CurrentAction: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance.ActionInstance16

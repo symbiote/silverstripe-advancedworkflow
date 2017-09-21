@@ -2,8 +2,8 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  * A simple approval step that waits for any assigned user to trigger one of the relevant
@@ -19,8 +19,9 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class SimpleApprovalWorkflowAction extends WorkflowAction
 {
-
     private static $icon = 'advancedworkflow/images/approval.png';
+
+    private static $table_name = 'SimpleApprovalWorkflowAction';
 
     public function execute(WorkflowInstance $workflow)
     {

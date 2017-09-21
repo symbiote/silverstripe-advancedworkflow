@@ -2,20 +2,18 @@
 
 namespace Symbiote\AdvancedWorkflow\Admin;
 
+use SilverStripe\Admin\LeftAndMain;
+use SilverStripe\Control\Director;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Dev\SapphireInfo;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\SSViewer;
-use SilverStripe\Control\Director;
-use SilverStripe\Dev\SapphireInfo;
-use SilverStripe\Admin\LeftAndMain;
-use SilverStripe\Control\HTTPResponse;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 
 /**
  * Allows workflow definitions to be exported from one SilverStripe install, ready for import into another.
@@ -32,21 +30,23 @@ use SilverStripe\Control\HTTPResponse;
  */
 class WorkflowDefinitionExporter
 {
+    use Configurable;
 
     /**
      * The base filename of the file to the exported
      *
+     * @config
      * @var string
      */
-    public static $export_filename_prefix = 'workflow-definition-export';
+    private static $export_filename_prefix = 'workflow-definition-export';
     /**
      *
-     * @var \Member
+     * @var Member
      */
     protected $member;
     /**
      *
-     * @var \WorkflowDefinition
+     * @var WorkflowDefinition
      */
     protected $workflowDefinition;
 
@@ -57,13 +57,13 @@ class WorkflowDefinitionExporter
      */
     public function __construct($definitionID)
     {
-        $this->setMember(Member::currentUser());
+        $this->setMember(Security::getCurrentUser());
         $this->workflowDefinition = DataObject::get_by_id(WorkflowDefinition::class, $definitionID);
     }
 
     /**
      *
-     * @param \Member $member
+     * @param Member $member
      */
     public function setMember($member)
     {
@@ -71,7 +71,7 @@ class WorkflowDefinitionExporter
     }
 
     /**
-     * @return \WorkflowDefinition
+     * @return WorkflowDefinition
      */
     public function getDefinition()
     {
@@ -102,7 +102,7 @@ class WorkflowDefinitionExporter
     /**
      * Format the exported data as YAML.
      *
-     * @param \ArrayData $templateData
+     * @param ArrayData $templateData
      * @return void
      */
     public function format($templateData)
@@ -145,11 +145,11 @@ class WorkflowDefinitionExporter
         ));
     }
 
-    /*
-	 * Try different ways of obtaining the current SilverStripe version for YAML output.
-	 *
-	 * @return string
-	 */
+    /**
+     * Try different ways of obtaining the current SilverStripe version for YAML output.
+     *
+     * @return string
+     */
     private function ssVersion()
     {
         // Remove colons so they don't screw with YAML parsing
@@ -172,7 +172,7 @@ class WorkflowDefinitionExporter
      * We're "overriding" SS_HTTPRequest::send_file() for more robust cross-browser support
      *
      * @param array $filedata
-     * @return \SS_HTTPResponse $response
+     * @return HTTPResponse $response
      */
     public function sendFile($filedata)
     {

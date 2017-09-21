@@ -2,48 +2,12 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
-use SilverStripe\ORM\DB;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Permission;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use SilverStripe\Control\Controller;
-use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
-use SilverStripe\Forms\TabSet;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\TextField;
-use SilverStripe\Forms\TextareaField;
 use SilverStripe\Forms\CheckboxSetField;
-use SilverStripe\Forms\TreeMultiselectField;
-use SilverStripe\Forms\LabelField;
-use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\FieldGroup;
-use SilverStripe\Forms\ReadonlyField;
-use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
 use SilverStripe\Forms\DropdownField;
-use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\FieldGroup;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\GridField\GridFieldConfig_RecordEditor;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldAddNewButton;
@@ -52,8 +16,22 @@ use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldViewButton;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
 use SilverStripe\Forms\GridField\GridFieldConfig_Base;
-use SilverStripe\Forms\FormAction;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use SilverStripe\Forms\LabelField;
+use SilverStripe\Forms\LiteralField;
+use SilverStripe\Forms\NumericField;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TabSet;
+use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\TextField;
+use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\DB;
+use SilverStripe\Security\Group;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * An overall definition of a workflow
@@ -73,7 +51,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
  */
 class WorkflowDefinition extends DataObject
 {
-
     private static $db = array(
         'Title'                 => 'Varchar(128)',
         'Description'       => 'Text',
@@ -100,8 +77,8 @@ class WorkflowDefinition extends DataObject
      * @var array
      */
     private static $many_many = array(
-        'Users' => 'SilverStripe\\Security\\Member',
-        'Groups' => 'SilverStripe\\Security\\Group'
+        'Users' => Member::class,
+        'Groups' => Group::class,
     );
 
     private static $icon = 'advancedworkflow/images/definition.png';
@@ -111,8 +88,10 @@ class WorkflowDefinition extends DataObject
     public static $workflow_defs = array();
 
     private static $dependencies = array(
-        'workflowService'       => '%$WorkflowService',
+        'workflowService' => '%$' . WorkflowService::class,
     );
+
+    private static $table_name = 'WorkflowDefinition';
 
     /**
      * @var WorkflowService
@@ -220,7 +199,7 @@ class WorkflowDefinition extends DataObject
      */
     public function numChildren()
     {
-        return count($this->Actions());
+        return $this->Actions()->count();
     }
 
     public function fieldLabels($includerelations = true)
@@ -249,7 +228,7 @@ class WorkflowDefinition extends DataObject
         ));
         if ($this->ID) {
             $fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
-            $fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), 'SilverStripe\\Security\\Group'));
+            $fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class));
         }
 
         if (class_exists('AbstractQueuedJob')) {
@@ -403,7 +382,7 @@ class WorkflowDefinition extends DataObject
     {
         // Where is the title coming from that we wish to test?
         $incomingTitle = $this->incomingTitle();
-        $defs = DataObject::get(WorkflowDefinition::class)->map()->toArray();
+        $defs = WorkflowDefinition::get()->map()->toArray();
         $tmp = array();
 
         foreach ($defs as $def) {
@@ -436,7 +415,7 @@ class WorkflowDefinition extends DataObject
     {
         $req = Controller::curr()->getRequest();
         if (isset($req['_CsvFile']['name']) && !empty($req['_CsvFile']['name'])) {
-            $import = DataObject::get(ImportedWorkflowTemplate::class)->filter('Filename', $req['_CsvFile']['name'])->first();
+            $import = ImportedWorkflowTemplate::get()->filter('Filename', $req['_CsvFile']['name'])->first();
             $incomingTitle = $import->Name;
         } elseif (isset($req['Template']) && !empty($req['Template'])) {
             $incomingTitle = $req['Template'];
@@ -477,10 +456,10 @@ class WorkflowDefinition extends DataObject
     public function canCreate($member = null, $context = array())
     {
         if (is_null($member)) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
         return Permission::checkMember($member, 'CREATE_WORKFLOW');
     }
@@ -514,10 +493,10 @@ class WorkflowDefinition extends DataObject
     public function canDelete($member = null)
     {
         if (!$member) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
 
         if (Permission::checkMember($member, 'ADMIN')) {
@@ -541,10 +520,10 @@ class WorkflowDefinition extends DataObject
     protected function userHasAccess($member)
     {
         if (!$member) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
 
         if (Permission::checkMember($member, "VIEW_ACTIVE_WORKFLOWS")) {

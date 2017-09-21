@@ -34,3 +34,6 @@ mappings:
   WorkflowService: Symbiote\AdvancedWorkflow\Services\WorkflowService
   ExistingWorkflowException: Symbiote\AdvancedWorkflow\Services\ExistingWorkflowException
   WorkflowReminderTask: Symbiote\AdvancedWorkflow\Tasks\WorkflowReminderTask
+  WorkflowTemplate: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
+  GridFieldExportAction: Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction
+  GridFieldWorkflowRestrictedEditButton: Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldWorkflowRestrictedEditButton

@@ -2,20 +2,15 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\ORM\DataObject;
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
-use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LabelField;
 use SilverStripe\Forms\NumericField;
-use SilverStripe\Forms\FieldGroup;
+use SilverStripe\ORM\DataObject;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\QueuedJob\Services\AbstractQueuedJob;
 
 /**
  * Unpublishes an item
@@ -27,12 +22,13 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class UnpublishItemWorkflowAction extends WorkflowAction
 {
-
     private static $db = array(
         'UnpublishDelay' => 'Int'
     );
 
     private static $icon = 'advancedworkflow/images/unpublish.png';
+
+    private static $table_name = 'UnpublishItemWorkflowAction';
 
     public function execute(WorkflowInstance $workflow)
     {
@@ -40,7 +36,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction
             return true;
         }
 
-        if (class_exists('AbstractQueuedJob') && $this->UnpublishDelay) {
+        if (class_exists(AbstractQueuedJob::class) && $this->UnpublishDelay) {
             $job   = new WorkflowPublishTargetJob($target, "unpublish");
             $days  = $this->UnpublishDelay;
             $after = date('Y-m-d H:i:s', strtotime("+$days days"));
@@ -69,7 +65,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction
     {
         $fields = parent::getCMSFields();
 
-        if (class_exists('AbstractQueuedJob')) {
+        if (class_exists(AbstractQueuedJob::class)) {
             $before = _t('UnpublishItemWorkflowAction.DELAYUNPUBDAYSBEFORE', 'Delay unpublishing by ');
             $after  = _t('UnpublishItemWorkflowAction.DELAYUNPUBDAYSAFTER', ' days');
 

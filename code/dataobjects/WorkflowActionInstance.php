@@ -2,19 +2,13 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\ReadonlyField;
+use SilverStripe\Forms\TextareaField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use SilverStripe\Forms\ReadonlyField;
-use SilverStripe\Forms\TextareaField;
-use SilverStripe\Forms\Form;
-use SilverStripe\Control\HTTPRequest;
 
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
@@ -29,7 +23,6 @@ use SilverStripe\Control\HTTPRequest;
  */
 class WorkflowActionInstance extends DataObject
 {
-
     private static $db = array(
         'Comment'  => 'Text',
         'Finished' => 'Boolean'
@@ -38,7 +31,7 @@ class WorkflowActionInstance extends DataObject
     private static $has_one = array(
         'Workflow'   => WorkflowInstance::class,
         'BaseAction' => WorkflowAction::class,
-        'Member'     => 'SilverStripe\\Security\\Member'
+        'Member'     => Member::class,
     );
 
     private static $summary_fields = array(
@@ -47,6 +40,8 @@ class WorkflowActionInstance extends DataObject
         'Created',
         'Member.Name',
     );
+
+    private static $table_name = 'WorkflowActionInstance';
 
     public function fieldLabels($includerelations = true)
     {
@@ -193,7 +188,7 @@ class WorkflowActionInstance extends DataObject
                 }
             }
         }
-        
+
         $this->extend('updateValidTransitions', $valid);
 
         return $valid;

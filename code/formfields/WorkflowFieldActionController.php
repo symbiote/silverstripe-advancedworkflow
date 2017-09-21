@@ -2,11 +2,10 @@
 
 namespace Symbiote\AdvancedWorkflow\FormFields;
 
-use SilverStripe\Control\RequestHandler;
 use ReflectionClass;
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\RequestHandler;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 
 /**
  * Handles requests for creating or editing actions.
@@ -15,7 +14,6 @@ use SilverStripe\Control\Controller;
  */
 class WorkflowFieldActionController extends RequestHandler
 {
-
     private static $url_handlers = array(
         'new/$Class' => 'handleAdd',
         'item/$ID'   => 'handleItem'

@@ -1,11 +1,13 @@
 <?php
 
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
-use SilverStripe\Forms\GridField\GridField_ColumnProvider;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+namespace Symbiote\AdvancedWorkflow\Forms\GridField;
+
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  *
@@ -13,7 +15,6 @@ use SilverStripe\View\ArrayData;
  */
 class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider
 {
-
     /**
      * Add a column
      *
@@ -44,7 +45,7 @@ class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider
         $defaultAtts = array('class' => 'col-buttons');
         if ($record instanceof WorkflowInstance) {
             $isAdmin = Permission::check('ADMIN');
-            $isAssigned = $record->getAssignedMembers()->find('ID', Member::currentUserID());
+            $isAssigned = $record->getAssignedMembers()->find('ID', Security::getCurrentUser()->ID);
             if (!$isAdmin && !$isAssigned) {
                 $atts['class'] = $defaultAtts['class'].' disabled';
                 return $atts;

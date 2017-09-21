@@ -2,31 +2,21 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Member;
-
-
-
-
-
-
-
-
-
-
-
+use SilverStripe\Control\Email\Email;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
-use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TextareaField;
+use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\ToggleCompositeField;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use SilverStripe\ORM\CMSPreviewable;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\SSViewer;
-use SilverStripe\Control\Email\Email;
-use SilverStripe\ORM\CMSPreviewable;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
@@ -37,19 +27,21 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class NotifyUsersWorkflowAction extends WorkflowAction
 {
-
     /**
+     * @config
      * @var bool Should templates be constrained to just known-safe variables.
      */
     private static $whitelist_template_variables = false;
 
     private static $db = array(
-        'EmailSubject'          => 'Varchar(100)',
-        'EmailFrom'                 => 'Varchar(50)',
-        'EmailTemplate'             => 'Text'
+        'EmailSubject'  => 'Varchar(100)',
+        'EmailFrom'     => 'Varchar(50)',
+        'EmailTemplate' => 'Text'
     );
 
     private static $icon = 'advancedworkflow/images/notify.png';
+
+    private static $table_name = 'NotifyUsersWorkflowAction';
 
     public function getCMSFields()
     {
@@ -97,7 +89,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             return true;
         }
 
-        $member = Member::currentUser();
+        $member = Security::getCurrentUser();
         $initiator = $workflow->Initiator();
 
         $contextFields   = $this->getContextFields($workflow->getTarget());
@@ -196,7 +188,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
     public function getMemberFields(Member $member = null)
     {
         if (!$member) {
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
         }
         $result = array();
 

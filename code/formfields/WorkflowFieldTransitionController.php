@@ -2,13 +2,10 @@
 
 namespace Symbiote\AdvancedWorkflow\FormFields;
 
+use SilverStripe\Control\Controller;
 use SilverStripe\Control\RequestHandler;
-
-
-
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
-use SilverStripe\Control\Controller;
 
 /**
  * Handles requests for creating or editing transitions.
@@ -17,7 +14,6 @@ use SilverStripe\Control\Controller;
  */
 class WorkflowFieldTransitionController extends RequestHandler
 {
-
     private static $url_handlers = array(
         'new/$ParentID!' => 'handleAdd',
         'item/$ID!'      => 'handleItem'

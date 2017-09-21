@@ -2,24 +2,20 @@
 
 namespace Symbiote\AdvancedWorkflow\FormFields;
 
+use ReflectionClass;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\SecurityToken;
-use SilverStripe\Forms\FormField;
-
-
-
-
-use ReflectionClass;
-
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
-use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use SilverStripe\Control\HTTPResponse;
 use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
-use SilverStripe\View\Requirements;
-use SilverStripe\Core\ClassInfo;
-use SilverStripe\View\ArrayData;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * A form field that allows workflow actions and transitions to be edited,
@@ -29,7 +25,6 @@ use SilverStripe\View\ArrayData;
  */
 class WorkflowField extends FormField
 {
-
     private static $allowed_actions = array(
         'action',
         'transition',
@@ -95,15 +90,18 @@ class WorkflowField extends FormField
 
     public function getTemplate()
     {
-        return WorkflowField::class;
+        return __CLASS__;
     }
 
     public function FieldHolder($properties = array())
     {
-        Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
-        Requirements::javascript(THIRDPARTY_DIR . '/jquery-entwine/dist/jquery.entwine-dist.js');
-        Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
-        Requirements::css(ADVANCED_WORKFLOW_DIR . '/css/WorkflowField.css');
+        $workflow = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+        $admin = ModuleLoader::getModule('silverstripe/admin');
+
+        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery/jquery.js'));
+        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery-entwine/dist/jquery.entwine-dist.js'));
+        Requirements::javascript($workflow->getRelativeResourcePath('javascript/WorkflowField.js'));
+        Requirements::css($workflow->getRelativeResourcePath('css/WorkflowField.css'));
 
         return $this->Field($properties);
     }

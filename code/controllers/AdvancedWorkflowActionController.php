@@ -2,17 +2,14 @@
 
 namespace Symbiote\AdvancedWorkflow\Controllers;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Member;
-use SilverStripe\Security\Security;
 use SilverStripe\Control\Controller;
-
-
+use SilverStripe\Control\Director;
+use SilverStripe\Core\Convert;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use SilverStripe\Control\Director;
-use SilverStripe\Core\Convert;
 
 /**
  * Handles actions triggered from external sources, eg emails or web frontend
@@ -22,10 +19,9 @@ use SilverStripe\Core\Convert;
  */
 class AdvancedWorkflowActionController extends Controller
 {
-    
     public function transition($request)
     {
-        if (!Member::currentUserID()) {
+        if (!Security::getCurrentUser()) {
             return Security::permissionFailure(
                 $this,
                 _t(
@@ -50,24 +46,23 @@ class AdvancedWorkflowActionController extends Controller
 
                 singleton(WorkflowService::class)->executeTransition($instance->getTarget(), $transition->ID);
                 $result = array(
-                    'success'   => true,
-                    'link'      => $instance->getTarget()->AbsoluteLink()
+                    'success' => true,
+                    'link'    => $instance->getTarget()->AbsoluteLink()
                 );
                 if (Director::is_ajax()) {
                     return Convert::raw2json($result);
-                } else {
-                    return $this->redirect($instance->getTarget()->Link());
                 }
+                return $this->redirect($instance->getTarget()->Link());
             }
         }
 
         if (Director::is_ajax()) {
             $result = array(
-                'success'       => false,
+                'success' => false,
             );
             return Convert::raw2json($result);
-        } else {
-            $this->redirect($instance->getTarget()->Link());
         }
+
+        return $this->redirect($instance->getTarget()->Link());
     }
 }

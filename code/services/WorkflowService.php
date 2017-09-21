@@ -2,24 +2,20 @@
 
 namespace Symbiote\AdvancedWorkflow\Services;
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\DataList;
+use Exception;
+use SilverStripe\Core\ClassInfo;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\PermissionProvider;
-
-
-use Exception;
-
-
 use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
-use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
 use Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use SilverStripe\Core\ClassInfo;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 
 /**
@@ -32,7 +28,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 
 class WorkflowService implements PermissionProvider
 {
-    
     /**
      * An array of templates that we can create from
      *
@@ -40,15 +35,10 @@ class WorkflowService implements PermissionProvider
      */
     protected $templates;
 
-    public function __construct()
-    {
-    }
-
-
     /**
      * Set the list of templates that can be created
      *
-     * @param type $templates
+     * @param array $templates
      */
     public function setTemplates($templates)
     {
@@ -57,7 +47,7 @@ class WorkflowService implements PermissionProvider
 
     /**
      * Return the list of available templates
-     * @return type
+     * @return array
      */
     public function getTemplates()
     {
@@ -68,7 +58,7 @@ class WorkflowService implements PermissionProvider
      * Get a template by name
      *
      * @param string $name
-     * @return WorkflowTemplate
+     * @return WorkflowTemplate|null
      */
     public function getNamedTemplate($name)
     {
@@ -118,14 +108,12 @@ class WorkflowService implements PermissionProvider
     /**
      *  Retrieves a workflow definition by ID for a data object.
      *
-     *  @param data object
+     *  @param DataObject object
      *  @param integer
-     *  @return workflow definition
+     *  @return WorkflowDefinition|null
      */
-
     public function getDefinitionByID($object, $workflowID)
     {
-
         // Make sure the correct extensions have been applied to the data object.
 
         $workflow = null;
@@ -144,7 +132,7 @@ class WorkflowService implements PermissionProvider
     /**
      *  Retrieves and collates the workflow definitions for a data object, where the first element will be the main workflow definition.
      *
-     *  @param data object
+     *  @param DataObject object
      *  @return array
      */
 
@@ -174,8 +162,8 @@ class WorkflowService implements PermissionProvider
      * an integer, in which case the workflow with that ID will be returned
      *
      * @param mixed $item
-     *
-     * @return WorkflowInstance
+     * @param bool $includeComplete
+     * @return WorkflowInstance|null
      */
     public function getWorkflowFor($item, $includeComplete = false)
     {
@@ -194,7 +182,7 @@ class WorkflowService implements PermissionProvider
     /**
      * Get all the workflow action instances for an item
      *
-     * @return DataObjectSet
+     * @return DataList|null
      */
     public function getWorkflowHistoryFor($item, $limit = null)
     {
@@ -224,6 +212,7 @@ class WorkflowService implements PermissionProvider
      *
      * @param DataObject $target
      * @param int $transitionId
+     * @throws Exception
      */
     public function executeTransition(DataObject $target, $transitionId)
     {
@@ -250,6 +239,7 @@ class WorkflowService implements PermissionProvider
      * a definition specified.
      *
      * @param DataObject $object
+     * @param int $workflowID
      */
     public function startWorkflow(DataObject $object, $workflowID = null)
     {
@@ -280,11 +270,8 @@ class WorkflowService implements PermissionProvider
     /**
      * Get all the workflows that this user is responsible for
      *
-     * @param Member $user
-     *              The user to get workflows for
-     *
-     * @return ArrayList
-     *              The list of workflow instances this user owns
+     * @param Member $user The user to get workflows for
+     * @return ArrayList The list of workflow instances this user owns
      */
     public function usersWorkflows(Member $user)
     {
@@ -326,7 +313,7 @@ class WorkflowService implements PermissionProvider
      * Get items that the passed-in user has awaiting for them to action
      *
      * @param Member $member
-     * @return DataList $userInstances
+     * @return DataList
      */
     public function userPendingItems(Member $user)
     {
@@ -354,7 +341,7 @@ class WorkflowService implements PermissionProvider
      * Get items that the passed-in user has submitted for workflow review
      *
      * @param Member $member
-     * @return DataList $userInstances
+     * @return DataList
      */
     public function userSubmittedItems(Member $user)
     {
@@ -375,6 +362,7 @@ class WorkflowService implements PermissionProvider
      *
      * @param WorkflowDefinition $definition
      * @param string $templateName
+     * @return WorkflowDefinition|null
      */
     public function defineFromTemplate(WorkflowDefinition $definition, $templateName)
     {
@@ -407,10 +395,8 @@ class WorkflowService implements PermissionProvider
     /**
      * Reorders actions within a definition
      *
-     * @param WorkflowDefinition|WorkflowAction $objects
-     *              The objects to be reordered
-     * @param array $newOrder
-     *              An array of IDs of the actions in the order they should be.
+     * @param WorkflowDefinition|WorkflowAction $objects The objects to be reordered
+     * @param array $newOrder An array of IDs of the actions in the order they should be.
      */
     public function reorder($objects, $newOrder)
     {
@@ -475,7 +461,3 @@ class WorkflowService implements PermissionProvider
         );
     }
 }
-
-class ExistingWorkflowException extends Exception
-{
-};

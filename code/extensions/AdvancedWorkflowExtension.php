@@ -2,19 +2,16 @@
 
 namespace Symbiote\AdvancedWorkflow\Extensions;
 
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Extension;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
-use SilverStripe\Core\Extension;
-
-
-
-
-use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use SilverStripe\Forms\Form;
 use SilverStripe\View\Requirements;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
-use SilverStripe\Control\Controller;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
@@ -26,7 +23,6 @@ use SilverStripe\Control\Controller;
  */
 class AdvancedWorkflowExtension extends Extension
 {
-    
     private static $allowed_actions = array(
         'updateworkflow',
         'startworkflow'
@@ -40,13 +36,13 @@ class AdvancedWorkflowExtension extends Extension
         if (!$item || !$item->canEdit()) {
             return;
         }
-        
+
         // Save a draft, if the user forgets to do so
         $this->saveAsDraftWithAction($form, $item);
 
         $svc = singleton(WorkflowService::class);
         $svc->startWorkflow($item, $workflowID);
-        
+
         return $this->returnResponse($form);
     }
 
@@ -58,7 +54,8 @@ class AdvancedWorkflowExtension extends Extension
      */
     public function updateEditForm(Form $form)
     {
-        Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/advanced-workflow-cms.js');
+        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+        Requirements::javascript($module->getRelativeResourcePath('javascript/advanced-workflow-cms.js'));
         $svc    = singleton(WorkflowService::class);
         $p      = $form->getRecord();
         $active = $svc->getWorkflowFor($p);
@@ -89,7 +86,7 @@ class AdvancedWorkflowExtension extends Extension
             $this->owner->extend('updateWorkflowEditForm', $form);
         }
     }
-    
+
     public function updateItemEditForm($form)
     {
         $record = $form->getRecord();
@@ -107,8 +104,8 @@ class AdvancedWorkflowExtension extends Extension
      *
      * @param array $data
      * @param Form $form
-     * @param SS_HTTPRequest $request
-     * @return String
+     * @param HTTPRequest $request
+     * @return string
      */
     public function updateworkflow($data, Form $form, $request)
     {
@@ -140,7 +137,7 @@ class AdvancedWorkflowExtension extends Extension
 
         return $this->returnResponse($form);
     }
-    
+
     protected function returnResponse($form)
     {
         if ($this->owner instanceof GridFieldDetailForm_ItemRequest) {
@@ -149,19 +146,19 @@ class AdvancedWorkflowExtension extends Extension
                 return $this->owner->edit($this->owner->getRequest());
             }
         }
-        
+
         $negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
         return $negotiator->respond($this->owner->getRequest());
     }
-    
+
     /**
      * Ocassionally users forget to apply their changes via the standard CMS "Save Draft" button,
      * and select the action button instead - losing their changes.
      * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run.
      * See: #72 and #77
      *
-     * @param \Form $form
-     * @param \DataObject $item
+     * @param Form $form
+     * @param DataObject $item
      * @return void
      */
     protected function saveAsDraftWithAction(Form $form, DataObject $item)

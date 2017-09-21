@@ -2,42 +2,29 @@
 
 namespace Symbiote\AdvancedWorkflow\Extensions;
 
-use SilverStripe\ORM\DataExtension;
-use SilverStripe\Security\Permission;
-use SilverStripe\Security\Member;
-use SilverStripe\Forms\FieldList;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use SilverStripe\Forms\HiddenField;
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\Director;
 use SilverStripe\Forms\DropdownField;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\HiddenField;
 use SilverStripe\Forms\ListboxField;
 use SilverStripe\Forms\ReadonlyField;
-use SilverStripe\Forms\GridField\GridFieldConfig_Base;
-use SilverStripe\Forms\GridField\GridFieldEditButton;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridField;
-use SilverStripe\Control\Controller;
-use Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension;
 use SilverStripe\Forms\Tab;
-use SilverStripe\Forms\FormAction;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\CMSPreviewable;
-use SilverStripe\Control\Director;
+use SilverStripe\ORM\DataExtension;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\QueuedJobs\Service\AbstractQueuedJob;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -50,7 +37,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
  */
 class WorkflowApplicable extends DataExtension
 {
-
     private static $has_one = array(
         'WorkflowDefinition' => WorkflowDefinition::class,
     );
@@ -60,7 +46,7 @@ class WorkflowApplicable extends DataExtension
     );
 
     private static $dependencies = array(
-        'workflowService'       => '%$WorkflowService',
+        'workflowService' => '%$' . WorkflowService::class,
     );
 
     /**
@@ -96,7 +82,7 @@ class WorkflowApplicable extends DataExtension
     public function isPublishJobRunning()
     {
         $propIsSet = $this->getIsPublishJobRunning() ? true : false;
-        return class_exists('AbstractQueuedJob') && $propIsSet;
+        return class_exists(AbstractQueuedJob::class) && $propIsSet;
     }
 
     /**
@@ -271,7 +257,7 @@ class WorkflowApplicable extends DataExtension
      * Included in CMS-generated email templates for a NotifyUsersWorkflowAction.
      * Returns an absolute link to the CMS UI for a Page object
      *
-     * @return string | null
+     * @return string|null
      */
     public function AbsoluteEditLink()
     {
@@ -352,7 +338,8 @@ class WorkflowApplicable extends DataExtension
     /**
      * Check all recent WorkflowActionIntances and return the most recent one with a Comment
      *
-     * @return WorkflowActionInstance
+     * @param int $limit
+     * @return WorkflowActionInstance|null
      */
     public function RecentWorkflowComment($limit = 10)
     {
@@ -388,10 +375,10 @@ class WorkflowApplicable extends DataExtension
         $definition = $this->workflowService->getDefinitionFor($this->owner);
 
         if ($definition) {
-            if (!Member::currentUserID()) {
+            if (!Security::getCurrentUser()) {
                 return false;
             }
-            $member = Member::currentUser();
+            $member = Security::getCurrentUser();
 
             $canPublish = $definition->canWorkflowPublish($member, $this->owner);
 

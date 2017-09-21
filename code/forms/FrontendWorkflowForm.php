@@ -3,33 +3,29 @@
 namespace Symbiote\AdvancedWorkflow\Forms;
 
 use SilverStripe\Forms\Form;
-
 use FormResponse;
-
-
 use SilverStripe\Control\Director;
-use SilverStripe\Core\Convert;
 use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\Convert;
 
 class FrontendWorkflowForm extends Form
 {
-
-    function httpSubmission($request)
+    public function httpSubmission($request)
     {
         $vars = $request->requestVars();
         if (isset($funcName)) {
-            Form::set_current_action($funcName);
+            Form::setFormAction($funcName);
         }
-    
+
         // Populate the form
         $this->loadDataFrom($vars, true);
-    
+
         // Protection against CSRF attacks
         $token = $this->getSecurityToken();
         if (!$token->checkRequest($request)) {
             $this->httpError(400, _t('AdvancedWorkflowFrontendForm.SECURITYTOKENCHECK', "Security token doesn't match, possible CSRF attack."));
         }
-    
+
         // Determine the action button clicked
         $funcName = null;
         foreach ($vars as $paramName => $paramVal) {
@@ -43,7 +39,7 @@ class FrontendWorkflowForm extends Form
                     $paramName = 'action_doFrontEndAction';
                     $paramVal = 'doFrontEndAction';
                 }
-            
+
                 // Break off querystring arguments included in the action
                 if (strpos($paramName, '?') !== false) {
                     list($paramName, $paramVars) = explode('?', $paramName, 2);
@@ -51,7 +47,7 @@ class FrontendWorkflowForm extends Form
                     parse_str($paramVars, $newRequestParams);
                     $vars = array_merge((array)$vars, (array)$newRequestParams);
                 }
-            
+
                 // Cleanup action_, _x and _y from image fields
                 $funcName = preg_replace(array('/^action_/','/_x$|_y$/'), '', $paramName);
                 break;
@@ -62,11 +58,11 @@ class FrontendWorkflowForm extends Form
         if (!isset($funcName) && $defaultAction = $this->defaultAction()) {
             $funcName = $defaultAction->actionName();
         }
-        
+
         if (isset($funcName)) {
             $this->setButtonClicked($funcName);
         }
-    
+
         // Permission checks (first on controller, then falling back to form)
         if (// Ensure that the action is actually a button or method on the form,
             // and not just a method on the controller.
@@ -89,48 +85,43 @@ class FrontendWorkflowForm extends Form
                 sprintf(_t('AdvancedWorkflowFrontendForm.ACTIONFORMCHECK', 'Action "%s" not allowed on form (Name: "%s")'), $funcName, $this->Name())
             );
         }
-    
+
         if ($wfTransition = $this->controller->getCurrentTransition()) {
             $wfTransType = $wfTransition->Type;
         } else {
             $wfTransType = null; //ie. when a custom Form Action is defined in WorkflowAction
         }
-        
+
         // Validate the form
         if (!$this->validate() && $wfTransType == 'Active') {
             if (Director::is_ajax()) {
-                // Special case for legacy Validator.js implementation (assumes eval'ed javascript collected through FormResponse)
-                if ($this->validator->getJavascriptValidationHandler() == 'prototype') {
-                    return FormResponse::respond();
+                $acceptType = $request->getHeader('Accept');
+                if (strpos($acceptType, 'application/json') !== false) {
+                    // Send validation errors back as JSON with a flag at the start
+                    $response = new HTTPResponse(Convert::array2json($this->validator->getErrors()));
+                    $response->addHeader('Content-Type', 'application/json');
                 } else {
-                    $acceptType = $request->getHeader('Accept');
-                    if (strpos($acceptType, 'application/json') !== false) {
-                        // Send validation errors back as JSON with a flag at the start
-                        $response = new HTTPResponse(Convert::array2json($this->validator->getErrors()));
-                        $response->addHeader('Content-Type', 'application/json');
-                    } else {
-                        $this->setupFormErrors();
-                        // Send the newly rendered form tag as HTML
-                        $response = new HTTPResponse($this->forTemplate());
-                        $response->addHeader('Content-Type', 'text/html');
-                    }
-                
-                    return $response;
+                    $this->setupFormErrors();
+                    // Send the newly rendered form tag as HTML
+                    $response = new HTTPResponse($this->forTemplate());
+                    $response->addHeader('Content-Type', 'text/html');
                 }
-            } else {
-                if ($this->getRedirectToFormOnValidationError()) {
-                    if ($pageURL = $request->getHeader('Referer')) {
-                        if (Director::is_site_url($pageURL)) {
-                            // Remove existing pragmas
-                            $pageURL = preg_replace('/(#.*)/', '', $pageURL);
-                            return Director::redirect($pageURL . '#' . $this->FormName());
-                        }
-                    }
-                }
-                return $this->controller->redirectBack();
+
+                return $response;
             }
+
+            if ($this->getRedirectToFormOnValidationError()) {
+                if ($pageURL = $request->getHeader('Referer')) {
+                    if (Director::is_site_url($pageURL)) {
+                        // Remove existing pragmas
+                        $pageURL = preg_replace('/(#.*)/', '', $pageURL);
+                        return Director::redirect($pageURL . '#' . $this->FormName());
+                    }
+                }
+            }
+            return $this->controller->redirectBack();
         }
-    
+
         // First, try a handler method on the controller (has been checked for allowed_actions above already)
         if ($this->controller->hasMethod($funcName)) {
             return $this->controller->$funcName($vars, $this, $request);
@@ -138,7 +129,7 @@ class FrontendWorkflowForm extends Form
         } elseif ($this->hasMethod($funcName)) {
             return $this->$funcName($vars, $this, $request);
         }
-    
+
         return $this->httpError(404);
     }
 }

@@ -1,9 +1,15 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Templates;
+
+use ArrayObject;
+use Exception;
+use SilverStripe\Core\Convert;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Group;
+use SilverStripe\Security\Member;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
-use SilverStripe\Core\Convert;
 
 /**
  * A class that wraps around an array description of a workflow
@@ -23,9 +29,9 @@ use SilverStripe\Core\Convert;
  *
  * This can be defined in config yml as follows
  *
- * Injector:
+ * SilverStripe\Core\Injector\Injector:
  *   SimpleReviewApprove:
- *     class: WorkflowTemplate
+ *     class: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
  *     constructor:
  *       - Review and Approve
  *       - Description of the workflow template
@@ -49,7 +55,7 @@ use SilverStripe\Core\Convert;
  *           type: PublishItemWorkflowAction
  *         Reject:
  *           type: CancelWorkflowAction
- *   WorkflowService:
+ *   Symbiote\AdvancedWorkflow\Services\WorkflowService:
  *     properties:
  *       templates:
  *         - %$SimpleReviewApprove
@@ -69,14 +75,14 @@ class WorkflowTemplate
     protected $version;
     protected $remindDays;
     protected $sort;
-    
+
     /**
      * An array representation of the structure of this workflow template
      *
      * @var array
      */
     protected $structure;
-    
+
     public function __construct($name, $description = '', $version = '0.0', $remindDays = 0, $sort = 0)
     {
         $this->name = $name;
@@ -85,32 +91,32 @@ class WorkflowTemplate
         $this->remindDays = $remindDays;
         $this->sort = $sort;
     }
-    
+
     public function getName()
     {
         return $this->name;
     }
-    
+
     public function getVersion()
     {
         return $this->version;
     }
-    
+
     public function getDescription()
     {
         return $this->description;
     }
-    
+
     public function getRemindDays()
     {
         return $this->remindDays;
     }
-    
+
     public function getSort()
     {
         return $this->sort;
     }
-    
+
     /**
      * Set the structure for this template
      *
@@ -120,7 +126,7 @@ class WorkflowTemplate
     {
         $this->structure = $structure;
     }
-    
+
     /**
      * Creates the relevant data objects for this structure, returning an array
      * of actions in the order they've been created
@@ -138,7 +144,7 @@ class WorkflowTemplate
             $isAction = isset($relationTemplate['type']);
             $isUsers = ($relationName == 'users');
             $isGroups = ($relationName == 'groups');
-            
+
             // Process actions on WorkflowDefinition from the template
             if ($isAction) {
                 $action = $this->createAction($relationName, $relationTemplate, $definition);
@@ -169,10 +175,10 @@ class WorkflowTemplate
             }
             $transition->write();
         }
-        
+
         return $actions;
     }
-    
+
     /**
      * Create a workflow action based on a template
      *
@@ -180,6 +186,7 @@ class WorkflowTemplate
      * @param array $template
      * @param WorkflowDefinition $definition
      * @return WorkflowAction
+     * @throws Exception
      */
     protected function createAction($name, $actionTemplate, WorkflowDefinition $definition = null)
     {
@@ -197,7 +204,7 @@ class WorkflowTemplate
                 $action->$prop = $val;
             }
         }
-        
+
         // Deal with User + Group many_many relations on an action
         $this->addManyManyToObject($action, $actionTemplate);
 
@@ -206,10 +213,10 @@ class WorkflowTemplate
         }
 
         $action->write();
-        
+
         return $action;
     }
-    
+
     /**
      * Create a WorkflowDefinition->Users relation based on template data. But only if the related groups from the
      * export, can be foud in the target environment's DB.
@@ -228,7 +235,7 @@ class WorkflowTemplate
         $source = array('users' => $users);
         $this->addManyManyToObject($definition, $source, $clear);
     }
-    
+
     /**
      * Create a WorkflowDefinition->Groups relation based on template data, But only if the related groups from the
      * export, can be foud in the target environment's DB.
@@ -247,7 +254,7 @@ class WorkflowTemplate
         $source = array('groups' => $groups);
         $this->addManyManyToObject($definition, $source, $clear);
     }
-    
+
     /**
      * Update the transitions for a given action
      *
@@ -279,7 +286,7 @@ class WorkflowTemplate
                 } else {
                     $transition = WorkflowTransition::create();
                 }
-                
+
                 // Add Member and Group relations to this Transition
                 $this->addManyManyToObject($transition, $transitionTemplate);
 
@@ -294,17 +301,16 @@ class WorkflowTemplate
 
         return $transitions;
     }
-    
+
     /**
      * Update a workflow definition
      *
-     * @param WorkflowDefinition $definition
-     *              The definition to update
+     * @param WorkflowDefinition $definition The definition to update
      */
     public function updateDefinition(WorkflowDefinition $definition)
     {
         $existingActions = array();
-        
+
         $existing = $definition->Actions()->column('Title');
         $structure = array_keys($this->structure);
 
@@ -317,7 +323,7 @@ class WorkflowTemplate
             }
             $existingActions[$action->Title] = $action;
         }
-        
+
         $actions = array();
         $transitions = new ArrayObject;
         $sort = 1;
@@ -326,7 +332,7 @@ class WorkflowTemplate
             $isAction = isset($relationTemplate['type']);
             $isUsers = ($relationName == 'users');
             $isGroups = ($relationName == 'groups');
-            
+
             if ($isAction) {
                 $action = null;
                 if (isset($existingActions[$relationName])) {
@@ -355,14 +361,14 @@ class WorkflowTemplate
                 $this->createGroups($relationTemplate, $definition, true);
             }
         }
-        
+
         foreach ($transitions as $transition) {
             if (isset($actions[$transition->Target])) {
                 $transition->NextActionID = $actions[$transition->Target]->ID;
             }
             $transition->write();
         }
-        
+
         // Set the version and do the write at the end so that we don't trigger an infinite loop!!
         $definition->Description = $this->getDescription();
         $definition->TemplateVersion = $this->getVersion();
@@ -370,7 +376,7 @@ class WorkflowTemplate
         $definition->Sort = $this->getSort();
         $definition->write();
     }
-    
+
     /**
      * Given an object, first check it has a ManyMany relation on it and add() Member and Group relations as required.
      *
@@ -385,21 +391,21 @@ class WorkflowTemplate
         if (!is_object($object) || !is_array($source)) {
             return;
         }
-        
+
         // Only some target class variants actually have Group/User relations
         $hasUsers = false;
         $hasGroups = false;
         if ($manyMany = $object->stat('many_many')) {
-            if (in_array('SilverStripe\\Security\\Member', $manyMany)) {
+            if (in_array(Member::class, $manyMany)) {
                 $hasUsers = true;
                 $userRelationName = array_keys($manyMany);
             }
-            if (in_array('SilverStripe\\Security\\Group', $manyMany)) {
+            if (in_array(Group::class, $manyMany)) {
                 $hasGroups = true;
                 $groupRelationName = array_keys($manyMany);
             }
         }
-        
+
         // Deal with User relations on target object
         if ($hasUsers) {
             if ($clear) {
@@ -409,13 +415,13 @@ class WorkflowTemplate
             if (isset($source['users']) && is_array($source['users'])) {
                 foreach ($source['users'] as $user) {
                     $email = Convert::raw2sql($user['email']);
-                    if ($_user = DataObject::get_one('SilverStripe\\Security\\Member', "Email = '".$email."'")) {
+                    if ($_user = DataObject::get_one(Member::class, "Email = '".$email."'")) {
                         $object->Users()->add($_user);
                     }
                 }
             }
         }
-        
+
         // Deal with Group relations on target object
         if ($hasGroups) {
             if ($clear) {
@@ -425,7 +431,7 @@ class WorkflowTemplate
             if (isset($source['groups']) && is_array($source['groups'])) {
                 foreach ($source['groups'] as $group) {
                     $title = Convert::raw2sql($group['title']);
-                    if ($_group = DataObject::get_one('SilverStripe\\Security\\Group', "Title = '".$title."'")) {
+                    if ($_group = DataObject::get_one(Group::class, "Title = '".$title."'")) {
                         $object->Groups()->add($_group);
                     }
                 }

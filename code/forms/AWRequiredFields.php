@@ -13,7 +13,6 @@ use SilverStripe\Forms\RequiredFields;
  */
 class AWRequiredFields extends RequiredFields
 {
-
     protected $data = array();
     protected static $caller;
 
@@ -37,7 +36,7 @@ class AWRequiredFields extends RequiredFields
             if ($formField && $msg = $formField->getCustomValidationMessage()) {
                 $errorMessage = $msg;
             }
-            
+
             $this->validationError(
                 $fieldName,
                 $errorMessage,
@@ -48,7 +47,7 @@ class AWRequiredFields extends RequiredFields
         return $valid;
     }
 
-    /*
+    /**
 	 * Allows for the addition of an arbitrary no. additional, dedicated and "extended" validation methods on classes that call AWRequiredFields.
 	 * To add specific validation methods to a caller:
 	 *
@@ -63,10 +62,10 @@ class AWRequiredFields extends RequiredFields
     {
         // Setup a return array
         $return = array(
-            'fieldValid'=>true,
-            'fieldName'     =>null,
-            'fieldField'=>null,
-            'fieldMsg'  =>null
+            'fieldValid' => true,
+            'fieldName'  => null,
+            'fieldField' => null,
+            'fieldMsg'   => null,
         );
         $caller = $this->getCaller();
         $methods = get_class_methods($caller);
@@ -83,7 +82,7 @@ class AWRequiredFields extends RequiredFields
                 $return['fieldValid']   = $extended['fieldValid'];
                 $return['fieldName']    = $extended['fieldName'];
                 $return['fieldField']   = $extended['fieldField'];
-                $return['fieldMsg']         = $extended['fieldMsg'];
+                $return['fieldMsg']     = $extended['fieldMsg'];
                 break;
             }
         }

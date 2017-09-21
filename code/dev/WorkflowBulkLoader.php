@@ -2,22 +2,17 @@
 
 namespace Symbiote\AdvancedWorkflow\Dev;
 
-use SilverStripe\ORM\ValidationException;
-use SilverStripe\Dev\BulkLoader;
-
-
-
-
-
-
-use SilverStripe\Dev\BulkLoader_Result;
-use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
 use SilverStripe\Control\Controller;
-use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionExporter;
 use SilverStripe\Core\Injector\Injector;
+use SilverStripe\Dev\BulkLoader;
+use SilverStripe\Dev\BulkLoader_Result;
+use SilverStripe\ORM\ValidationException;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionExporter;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
+use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
+use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
 
 /**
  * Utility class to facilitate a simple YML-import via the standard CMS ImportForm() logic.
@@ -27,7 +22,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
  */
 class WorkflowBulkLoader extends BulkLoader
 {
-    
     /**
      * @inheritDoc
      */
@@ -35,7 +29,7 @@ class WorkflowBulkLoader extends BulkLoader
     {
         return $this->processAll($filepath, true);
     }
-    
+
     /**
      * @param string $filepath
      * @param boolean $preview
@@ -43,7 +37,7 @@ class WorkflowBulkLoader extends BulkLoader
     protected function processAll($filepath, $preview = false)
     {
         $results = new BulkLoader_Result();
-        
+
         try {
             $yml = singleton(WorkflowDefinitionImporter::class)->parseYAMLImport($filepath);
             $this->processRecord($yml, $this->columnMap, $results, $preview);
@@ -52,7 +46,7 @@ class WorkflowBulkLoader extends BulkLoader
             return new BulkLoader_Result();
         }
     }
-    
+
     /**
      * @param array $record
      * @param array $columnMap
@@ -65,33 +59,33 @@ class WorkflowBulkLoader extends BulkLoader
         $posted = Controller::curr()->getRequest()->postVars();
         $default = WorkflowDefinitionExporter::$export_filename_prefix.'0.yml';
         $filename = (isset($posted['_CsvFile']['name']) ? $posted['_CsvFile']['name'] : $default);
-        
+
         // @todo is this the best way to extract records (nested array keys)??
         $struct = $record[Injector::class]['ExportedWorkflow'];
         $name = $struct['constructor'][0];
         $import = $this->createImport($name, $filename, $record);
-        
-        $template = Injector::inst()->createWithArgs('WorkflowTemplate', $struct['constructor']);
+
+        $template = Injector::inst()->createWithArgs(WorkflowTemplate::class, $struct['constructor']);
         $template->setStructure($struct['properties']['structure']);
 
         $def = WorkflowDefinition::create();
         $def->workflowService = singleton(WorkflowService::class);
         $def->Template = $template->getName();
         $obj = $def->workflowService->defineFromTemplate($def, $def->Template);
-        
+
         $results->addCreated($obj, '');
         $objID = $obj->ID;
-        
+
         // Update the import
         $import->DefinitionID = $objID;
         $import->write();
-        
+
         $obj->destroy();
         unset($obj);
-        
+
         return $objID;
     }
-    
+
     /**
      * Create the ImportedWorkflowTemplate record for the uploaded YML file.
      *
@@ -108,7 +102,7 @@ class WorkflowBulkLoader extends BulkLoader
         $import->Filename = $filename;
         $import->Content = serialize($record);
         $import->write();
-        
+
         return $import;
     }
 }

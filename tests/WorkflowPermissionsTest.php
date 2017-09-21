@@ -16,12 +16,11 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
  */
 class WorkflowPermissionsTest extends SapphireTest
 {
-
     /**
      * @var string
      */
-    public static $fixture_file = 'advancedworkflow/tests/workflowpermissions.yml';
-    
+    protected static $fixture_file = 'workflowpermissions.yml';
+
     /**
      * Tests whether members with differing permissions, should be able to create & edit WorkflowDefinitions
      */
@@ -31,12 +30,12 @@ class WorkflowPermissionsTest extends SapphireTest
         $this->logInWithPermission('CMS_ACCESS_AdvancedWorkflowAdmin');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'no-actions');
         $this->assertFalse($workflowdef->canCreate());
-        
+
         // Limited perms. No create.
         $this->logInWithPermission('VIEW_ACTIVE_WORKFLOWS');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'no-actions');
         $this->assertFalse($workflowdef->canCreate());
-        
+
         // Has perms. Can create.
         $this->logInWithPermission('CREATE_WORKFLOW');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'no-actions');
@@ -52,7 +51,7 @@ class WorkflowPermissionsTest extends SapphireTest
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'no-actions');
         $this->assertTrue($workflowdef->canDelete());
     }
-    
+
     /**
      * Tests whether members with differing permissions, should be able to create & edit WorkflowActions
      */
@@ -64,14 +63,14 @@ class WorkflowPermissionsTest extends SapphireTest
         $this->assertFalse($workflowdef->Actions()->first()->canCreate());
         $this->assertFalse($workflowdef->Actions()->first()->canEdit());
         $this->assertFalse($workflowdef->Actions()->first()->canDelete());
-        
+
         // Limited perms. No create or delete.
         $this->logInWithPermission('VIEW_ACTIVE_WORKFLOWS');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'with-actions');
         $this->assertFalse($workflowdef->Actions()->first()->canCreate());
         $this->assertFalse($workflowdef->Actions()->first()->canCreate());
         $this->assertFalse($workflowdef->Actions()->first()->canDelete());
-        
+
         // Has perms. Can create.
         $this->logInWithPermission('CREATE_WORKFLOW');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'with-actions');
@@ -81,7 +80,7 @@ class WorkflowPermissionsTest extends SapphireTest
         // Limited perms. No Delete
         $this->assertFalse($workflowdef->Actions()->first()->canDelete());
     }
-    
+
     /**
      * Tests whether members with differing permissions, should be able to create & edit WorkflowActions
      */
@@ -93,14 +92,14 @@ class WorkflowPermissionsTest extends SapphireTest
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canCreate());
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canEdit());
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canDelete());
-        
+
         // Limited perms. No create.
         $this->logInWithPermission('VIEW_ACTIVE_WORKFLOWS');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'with-actions-and-transitions');
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canCreate());
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canEdit());
         $this->assertFalse($workflowdef->Actions()->first()->Transitions()->first()->canDelete());
-        
+
         // Has perms. Can create.
         $this->logInWithPermission('CREATE_WORKFLOW');
         $workflowdef = $this->objFromFixture(WorkflowDefinition::class, 'with-actions-and-transitions');

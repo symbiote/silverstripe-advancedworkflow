@@ -2,13 +2,13 @@
 
 namespace Symbiote\AdvancedWorkflow\Admin;
 
+use Exception;
+use sfYamlParser;
+use SilverStripe\Core\Injector\Injector;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\ValidationException;
-
-use sfYamlParser;
-use Exception;
 use Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate;
-use SilverStripe\Core\Injector\Injector;
+use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
 
 /**
  * Workflow definition import-specific logic. @see {@link WorkflowDefinitionExporter}.
@@ -19,7 +19,6 @@ use SilverStripe\Core\Injector\Injector;
  */
 class WorkflowDefinitionImporter
 {
-    
     /**
      * Generates an array of WorkflowTemplate Objects of all uploaded workflows.
      *
@@ -37,7 +36,7 @@ class WorkflowDefinitionImporter
             }
             $structure = unserialize($import->Content);
             $struct = $structure[Injector::class]['ExportedWorkflow'];
-            $template = Injector::inst()->createWithArgs('WorkflowTemplate', $struct['constructor']);
+            $template = Injector::inst()->createWithArgs(WorkflowTemplate::class, $struct['constructor']);
             $template->setStructure($struct['properties']['structure']);
             if ($name) {
                 if ($struct['constructor'][0] == trim($name)) {
@@ -49,7 +48,7 @@ class WorkflowDefinitionImporter
         }
         return $importedDefs;
     }
-    
+
     /**
      * Handles finding and parsing YAML input as a string or from the contents of a file.
      *
@@ -63,9 +62,10 @@ class WorkflowDefinitionImporter
             $source = file_get_contents($source);
         }
 
+        // @todo update, use composer
         require_once('thirdparty/zend_translate_railsyaml/library/Translate/Adapter/thirdparty/sfYaml/lib/sfYamlParser.php');
         $parser = new sfYamlParser();
-        
+
         // Make sure the linefeeds are all converted to \n, PCRE '$' will not match anything else.
         $convertLF = str_replace(array("\r\n", "\r"), "\n", $source);
         /*
@@ -81,7 +81,7 @@ class WorkflowDefinitionImporter
             $msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_HEADER', 'Invalid YAML format.');
             throw new ValidationException($msg);
         }
-        
+
         try {
             $parsed = $parser->parse($parts[1]);
             return $parsed;

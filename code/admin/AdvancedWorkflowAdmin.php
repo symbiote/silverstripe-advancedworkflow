@@ -2,39 +2,30 @@
 
 namespace Symbiote\AdvancedWorkflow\Admin;
 
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
-
-
-
-
-
-use GridFieldWorkflowRestrictedEditButton;
-use GridFieldExportAction;
-
-
-
-
+use SilverStripe\View\Requirements;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionItemRequestClass;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\Dev\WorkflowBulkLoader;
-use SilverStripe\View\Requirements;
-use SilverStripe\Forms\GridField\GridFieldConfig_Base;
-use SilverStripe\Forms\GridField\GridFieldEditButton;
-use SilverStripe\Forms\GridField\GridFieldDetailForm;
-use SilverStripe\Forms\GridField\GridFieldPaginator;
-use SilverStripe\Forms\GridField\GridFieldDataColumns;
-use SilverStripe\Forms\GridField\GridField;
-use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionItemRequestClass;
-use SilverStripe\Forms\GridField\GridFieldExportButton;
-use SilverStripe\CMS\Controllers\CMSPageEditController;
-use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Forms\FormAction;
-use SilverStripe\Forms\FieldList;
-use SilverStripe\Forms\Form;
+use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction;
+use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldWorkflowRestrictedEditButton;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * @package advancedworkflow
@@ -42,12 +33,11 @@ use SilverStripe\Forms\Form;
  */
 class AdvancedWorkflowAdmin extends ModelAdmin
 {
-
     private static $menu_title    = 'Workflows';
     private static $menu_priority = -1;
     private static $url_segment   = 'workflows';
     private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
-    
+
     /**
      *
      * @var array Allowable actions on this controller.
@@ -56,21 +46,21 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         'export',
         'ImportForm'
     );
-    
+
     private static $url_handlers = array(
         '$ModelClass/export/$ID!' => 'export',
         '$ModelClass/$Action' => 'handleAction',
         '' => 'index'
     );
 
-    private static $managed_models  = WorkflowDefinition::class;
+    private static $managed_models = WorkflowDefinition::class;
 
     private static $model_importers = array(
         'WorkflowDefinition' => WorkflowBulkLoader::class
     );
 
     private static $dependencies = array(
-        'workflowService'       => '%$WorkflowService',
+        'workflowService' => '%$' . WorkflowService::class,
     );
 
     private static $fileEditActions = 'getCMSActions';
@@ -81,25 +71,28 @@ class AdvancedWorkflowAdmin extends ModelAdmin
      * @var array
      */
     private static $fieldOverrides = array();
-    
+
     /**
      * @var WorkflowService
      */
     public $workflowService;
-    
+
     /**
      * Initialise javascript translation files
      *
      * @return void
      */
-    public function init()
+    protected function init()
     {
         parent::init();
-        Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
-        Requirements::javascript('advancedworkflow/javascript/WorkflowField.js');
-        Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
-        Requirements::css('advancedworkflow/css/WorkflowField.css');
-        Requirements::css('advancedworkflow/css/WorkflowGridField.css');
+
+        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('/javascript/lang'));
+        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowField.js'));
+        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowGridField.js'));
+        Requirements::css($module->getRelativeResourcePath('/css/WorkflowField.css'));
+        Requirements::css($module->getRelativeResourcePath('/css/WorkflowGridField.css'));
     }
 
     /*
@@ -109,7 +102,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
-        
+
         // Show items submitted into a workflow for current user to action
         $fieldName = 'PendingObjects';
         $pending = $this->userObjects(Member::currentUser(), $fieldName);
@@ -118,10 +111,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             $displayFields = $this->config()->fieldOverrides;
         } else {
             $displayFields = array(
-                'Title'                 => _t('AdvancedWorkflowAdmin.Title', 'Title'),
-                'LastEdited'        => _t('AdvancedWorkflowAdmin.LastEdited', 'Changed'),
-                'WorkflowTitle'         => _t('AdvancedWorkflowAdmin.WorkflowTitle', 'Effective workflow'),
-                'WorkflowStatus'    => _t('AdvancedWorkflowAdmin.WorkflowStatus', 'Current action'),
+                'Title'          => _t('AdvancedWorkflowAdmin.Title', 'Title'),
+                'LastEdited'     => _t('AdvancedWorkflowAdmin.LastEdited', 'Changed'),
+                'WorkflowTitle'  => _t('AdvancedWorkflowAdmin.WorkflowTitle', 'Effective workflow'),
+                'WorkflowStatus' => _t('AdvancedWorkflowAdmin.WorkflowStatus', 'Current action'),
             );
         }
 
@@ -183,7 +176,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             $formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
             $form->Fields()->insertBefore($formFieldBottom, WorkflowDefinition::class);
         }
-        
+
         $grid = $form->Fields()->dataFieldByName(WorkflowDefinition::class);
         if ($grid) {
             $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemEditFormCallback(function ($form) {
@@ -192,12 +185,12 @@ class AdvancedWorkflowAdmin extends ModelAdmin
                     $record->updateAdminActions($form->Actions());
                 }
             });
-            
+
             $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
             $grid->getConfig()->addComponent(new GridFieldExportAction());
             $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
         }
-        
+
         return $form;
     }
 
@@ -307,12 +300,12 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             return $this->workflowService->userSubmittedItems($user);
         }
     }
-    
+
     /**
      * Spits out an exported version of the selected WorkflowDefinition for download.
      *
-     * @param \SS_HTTPRequest $request
-     * @return \SS_HTTPResponse
+     * @param HTTPRequest $request
+     * @return HTTPResponse
      */
     public function export(HTTPRequest $request)
     {
@@ -331,7 +324,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             return $exporter->sendFile($fileData);
         }
     }
-    
+
     /**
      * Required so we can simply change the visible label of the "Import" button and lose some redundant form-fields.
      *
@@ -343,7 +336,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         if (!$form) {
             return;
         }
-        
+
         $form->unsetAllActions();
         $newActionList = new FieldList(array(
             new FormAction('import', _t('AdvancedWorkflowAdmin.IMPORT', 'Import workflow'))
@@ -351,19 +344,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $form->Fields()->fieldByName('_CsvFile')->getValidator()->setAllowedExtensions(array('yml', 'yaml'));
         $form->Fields()->removeByName('EmptyBeforeImport');
         $form->setActions($newActionList);
-        
-        return $form;
-    }
-}
 
-class WorkflowDefinitionItemRequestClass extends GridFieldDetailForm_ItemRequest
-{
-    public function updatetemplateversion($data, Form $form, $request)
-    {
-        $record = $form->getRecord();
-        if ($record) {
-            $record->updateFromTemplate();
-        }
-        return $form->loadDataFrom($form->getRecord())->forAjaxTemplate();
+        return $form;
     }
 }

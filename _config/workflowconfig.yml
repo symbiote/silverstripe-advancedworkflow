@@ -4,25 +4,24 @@ After:
   - 'framework/*'
   - 'cms/*'
 ---
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   extensions:
-    - WorkflowApplicable
-CMSPageEditController:
+    - Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
+SilverStripe\CMS\Controllers\CMSPageEditController:
   extensions:
-    - AdvancedWorkflowExtension
-GridFieldDetailForm_ItemRequest:
+    - Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension
+SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
   extensions:
-    - AdvancedWorkflowExtension
-LeftAndMain:
+    - Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension
+SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - advancedworkflow/css/AdvancedWorkflowAdmin.css
-
 ---
 Name: workflow_jobs
 Only:
   moduleexists: queuedjobs
 ---
-Injector:
-  WorkflowReminderJob:
+SilverStripe\Core\Injector\Injector:
+  Symbiote\AdvancedWorkflow\Jobs\WorkflowReminderJob:
     properties:
-      queuedJobService: %$QueuedJobService
+      queuedJobService: %$Symbiote\QueuedJobs\Services\QueuedJobService

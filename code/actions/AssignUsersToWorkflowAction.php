@@ -2,21 +2,16 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\ORM\DB;
-use SilverStripe\ORM\ArrayList;
-use SilverStripe\Security\Member;
-
-
-
-
-
-
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\CheckboxSetField;
+use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\TreeMultiselectField;
+use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DB;
+use SilverStripe\Security\Group;
+use SilverStripe\Security\Member;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
  * A workflow action that allows additional users or groups to be assigned to
@@ -28,17 +23,18 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class AssignUsersToWorkflowAction extends WorkflowAction
 {
-
     private static $db = array(
         'AssignInitiator'       => 'Boolean',
     );
 
     private static $many_many = array(
-        'Users'  => 'SilverStripe\\Security\\Member',
-        'Groups' => 'SilverStripe\\Security\\Group'
+        'Users'  => Member::class,
+        'Groups' => Group::class,
     );
 
     private static $icon = 'advancedworkflow/images/assign.png';
+
+    private static $table_name = 'AssignUsersToWorkflowAction';
 
     public function execute(WorkflowInstance $workflow)
     {
@@ -69,7 +65,7 @@ SQL;
             new HeaderField('AssignUsers', $this->fieldLabel('AssignUsers')),
             new CheckboxField('AssignInitiator', $this->fieldLabel('AssignInitiator')),
             $users = CheckboxSetField::create('Users', $this->fieldLabel('Users'), $cmsUsers),
-            new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), 'SilverStripe\\Security\\Group')
+            new TreeMultiselectField('Groups', $this->fieldLabel('Groups'), Group::class)
         ));
 
         // limit to the users which actually can access the CMS
@@ -82,7 +78,7 @@ SQL;
     {
         return array_merge(parent::fieldLabels($relations), array(
             'AssignUsers'       => _t('AssignUsersToWorkflowAction.ASSIGNUSERS', 'Assign Users'),
-            'Users'                 => _t('AssignUsersToWorkflowAction.USERS', 'Users'),
+            'Users'             => _t('AssignUsersToWorkflowAction.USERS', 'Users'),
             'Groups'            => _t('AssignUsersToWorkflowAction.GROUPS', 'Groups'),
             'AssignInitiator'   => _t('AssignUsersToWorkflowAction.INITIATOR', 'Assign Initiator'),
         ));
@@ -100,12 +96,12 @@ SQL;
 
         // Can't merge instances of DataList so convert to something where we can
         $_members = ArrayList::create();
-        $members->each(function ($item) use (&$_members) {
+        $members->each(function ($item) use ($_members) {
             $_members->push($item);
         });
 
         $_groups = ArrayList::create();
-        $groups->each(function ($item) use (&$_groups) {
+        $groups->each(function ($item) use ($_groups) {
             $_groups->push($item);
         });
 
