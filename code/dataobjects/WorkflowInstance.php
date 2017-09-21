@@ -5,7 +5,6 @@ namespace Symbiote\AdvancedWorkflow\DataObjects;
 use Exception;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
-use SilverStripe\Core\ClassInfo;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Forms\CheckboxSetField;
 use SilverStripe\Forms\DropdownField;
@@ -305,7 +304,7 @@ class WorkflowInstance extends DataObject
         }
 
         if ($for && ($for->hasExtension(WorkflowApplicable::class) || $for->hasExtension(FileWorkflowApplicable::class))) {
-            $this->TargetClass = ClassInfo::baseDataClass($for);
+            $this->TargetClass = DataObject::getSchema()->baseDataClass($for);
             $this->TargetID = $for->ID;
         }
 

@@ -11,6 +11,8 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
 use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
  * Publishes an item
@@ -41,7 +43,7 @@ class PublishItemWorkflowAction extends WorkflowAction
             return true;
         }
 
-        if (class_exists('AbstractQueuedJob') && $this->PublishDelay) {
+        if (class_exists(AbstractQueuedJob::class) && $this->PublishDelay) {
             $job   = new WorkflowPublishTargetJob($target);
             $days  = $this->PublishDelay;
             $after = date('Y-m-d H:i:s', strtotime("+$days days"));
@@ -52,7 +54,7 @@ class PublishItemWorkflowAction extends WorkflowAction
                 $target->PublishOnDate = $after;
                 $target->write();
             } else {
-                singleton('QueuedJobService')->queueJob($job, $after);
+                singleton(QueuedJobService::class)->queueJob($job, $after);
             }
         } elseif ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
             $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
@@ -61,11 +63,16 @@ class PublishItemWorkflowAction extends WorkflowAction
             // set this value regardless
             $target->UnPublishOnDate = $target->DesiredUnPublishDate;
             $target->DesiredUnPublishDate = '';
+
+            // Publish dates
             if ($target->DesiredPublishDate) {
+                // Hand-off desired publish date
                 $target->PublishOnDate = $target->DesiredPublishDate;
                 $target->DesiredPublishDate = '';
                 $target->write();
             } else {
+                // Ensure previously modified DesiredUnPublishDate values are written
+                $target->write();
                 if ($target->hasMethod('publishSingle')) {
                     $target->publishSingle();
                 }
@@ -83,7 +90,7 @@ class PublishItemWorkflowAction extends WorkflowAction
     {
         $fields = parent::getCMSFields();
 
-        if (class_exists('AbstractQueuedJob')) {
+        if (class_exists(AbstractQueuedJob::class)) {
             $before = _t('PublishItemWorkflowAction.DELAYPUBDAYSBEFORE', 'Delay publication ');
             $after  = _t('PublishItemWorkflowAction.DELAYPUBDAYSAFTER', ' days');
             $allowEmbargoed =  _t(

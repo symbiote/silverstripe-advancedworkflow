@@ -64,7 +64,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     /**
      * @var WorkflowService
      */
-    public $workflowService;
+    protected $workflowService;
 
     /**
      * Is a workflow in effect?
@@ -222,7 +222,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if ($this->owner->PublishJobID) {
             $job = $this->owner->PublishJob();
             // Use timestamp for sake of comparison.
-            if ($job && $job->exists() && strtotime($job->StartAfter) == $when) {
+            if ($job && $job->exists() && DBDatetime::create()->setValue($job->StartAfter)->getTimestamp() == $when) {
                 return;
             }
             $this->clearPublishJob();
@@ -245,7 +245,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if ($this->owner->UnPublishJobID) {
             $job = $this->owner->UnPublishJob();
             // Use timestamp for sake of comparison.
-            if ($job && $job->exists() && strtotime($job->StartAfter) == $when) {
+            if ($job && $job->exists() && DBDatetime::create()->setValue($job->StartAfter)->getTimestamp() == $when) {
                 return;
             }
             $this->clearUnPublishJob();
@@ -311,9 +311,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         }
 
         // Check requested dates of publish / unpublish, and whether the page should have already been unpublished
-        $now = strtotime(DBDatetime::now()->getTimestamp());
-        $publishTime = strtotime($this->owner->PublishOnDate);
-        $unPublishTime = strtotime($this->owner->UnPublishOnDate);
+        $now = DBDatetime::now()->getTimestamp();
+        $publishTime = $this->owner->dbObject('PublishOnDate')->getTimestamp();
+        $unPublishTime = $this->owner->dbObject('UnPublishOnDate')->getTimestamp();
 
         // We should have a publish job if:
         // if no unpublish or publish time, then the Workflow Publish Action will publish without a job
@@ -450,8 +450,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         );
 
         if (isset($data['DesiredPublishDate'], $data['DesiredUnPublishDate'])) {
-            $publish = strtotime($data['DesiredPublishDate']);
-            $unpublish = strtotime($data['DesiredUnPublishDate']);
+            $publish = DBDatetime::create()->setValue($data['DesiredPublishDate'])->getTimestamp();
+            $unpublish = DBDatetime::create()->setValue($data['DesiredUnPublishDate'])->getTimestamp();
 
             // the times are the same
             if ($publish && $unpublish && $publish == $unpublish) {
@@ -489,7 +489,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     public function setIsWorkflowInEffect()
     {
         // if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date
-        $effective = $this->workflowService->getDefinitionFor($this->owner);
+        $effective = $this->getWorkflowService()->getDefinitionFor($this->owner);
         $this->isWorkflowInEffect = $effective ? true : false;
     }
 
@@ -508,8 +508,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if (!$this->owner->PublishOnDate) {
             return false;
         }
-        $now = strtotime(DBDatetime::now()->getTimestamp());
-        $publish = strtotime($this->owner->PublishOnDate);
+        $now = DBDatetime::now()->getTimestamp();
+        $publish = $this->owner->dbObject('PublishOnDate')->getTimestamp();
 
         return $now < $publish;
     }
@@ -524,8 +524,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if (!$this->owner->UnPublishOnDate) {
             return false;
         }
-        $now = strtotime(DBDatetime::now()->getTimestamp());
-        $unpublish = strtotime($this->owner->UnPublishOnDate);
+        $now = DBDatetime::now()->getTimestamp();
+        $unpublish = $this->owner->dbObject('UnPublishOnDate')->getTimestamp();
 
         return $now < $unpublish;
     }
@@ -541,15 +541,36 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     {
         if (!Permission::check('EDIT_EMBARGOED_WORKFLOW') && // not given global/override permission to edit
             !$this->owner->AllowEmbargoedEditing) { // item flagged as not editable
-            $now = strtotime(DBDatetime::now()->getTimestamp());
-            $publishTime = strtotime($this->owner->PublishOnDate);
+            $publishTime = $this->owner->dbObject('PublishOnDate');
 
-            if ($publishTime && $publishTime > $now || // when scheduled publish date is in the future
+            if ($publishTime && $publishTime->InFuture() || // when scheduled publish date is in the future
                 // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
                 (!$publishTime && $this->owner->PublishJobID != 0)
             ) {
                 return false;
             }
         }
+    }
+
+    /**
+     * Set the workflow service instance
+     *
+     * @param WorkflowService $workflowService
+     * @return $this
+     */
+    public function setWorkflowService(WorkflowService $workflowService)
+    {
+        $this->workflowService = $workflowService;
+        return $this;
+    }
+
+    /**
+     * Get the workflow service instance
+     *
+     * @return WorkflowService
+     */
+    public function getWorkflowService()
+    {
+        return $this->workflowService;
     }
 }

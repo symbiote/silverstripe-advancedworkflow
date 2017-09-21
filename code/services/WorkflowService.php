@@ -108,8 +108,8 @@ class WorkflowService implements PermissionProvider
     /**
      *  Retrieves a workflow definition by ID for a data object.
      *
-     *  @param DataObject object
-     *  @param integer
+     *  @param DataObject $object
+     *  @param integer $workflowID
      *  @return WorkflowDefinition|null
      */
     public function getDefinitionByID($object, $workflowID)

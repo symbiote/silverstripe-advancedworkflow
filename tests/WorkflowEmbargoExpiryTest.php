@@ -9,6 +9,7 @@ use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBDatetime;
 use SilverStripe\Translatable\Model\Translatable;
 use SilverStripe\Security\Member;
+use SilverStripe\Subsites\Extensions\SiteTreeSubsites;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
@@ -63,6 +64,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
     protected static $illegal_extensions = array(
         SiteTree::class => array(
             Translatable::class,
+            SiteTreeSubsites::class,
         ),
     );
 
@@ -409,6 +411,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
      */
     public function testCanEditConfig()
     {
+        $this->logOut();
 
         $page = SiteTree::create();
         $page->Title = 'My page';
@@ -419,6 +422,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
 
         $page->PublishOnDate = '2020-01-01 00:00:00';
+        $page->AllowEmbargoedEditing = false;
         $page->write();
         $this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
 

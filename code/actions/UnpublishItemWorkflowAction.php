@@ -11,6 +11,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
 use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
 use Symbiote\QueuedJob\Services\AbstractQueuedJob;
+use Symbiote\QueuedJob\Services\QueuedJobService;
 
 /**
  * Unpublishes an item
@@ -40,7 +41,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction
             $job   = new WorkflowPublishTargetJob($target, "unpublish");
             $days  = $this->UnpublishDelay;
             $after = date('Y-m-d H:i:s', strtotime("+$days days"));
-            singleton('QueuedJobService')->queueJob($job, $after);
+            singleton(QueuedJobService::class)->queueJob($job, $after);
         } elseif ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
             // setting future date stuff if needbe
 
