@@ -42,5 +42,7 @@
     },
     "replace": {
         "silverstripe/advancedworkflow": "self.version"
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
