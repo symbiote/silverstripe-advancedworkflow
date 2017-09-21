@@ -48,16 +48,16 @@ class AWRequiredFields extends RequiredFields
     }
 
     /**
-	 * Allows for the addition of an arbitrary no. additional, dedicated and "extended" validation methods on classes that call AWRequiredFields.
-	 * To add specific validation methods to a caller:
-	 *
-	 * 1). Write each checking method using this naming prototype: public function extendedRequiredFieldsXXX(). All methods so named will be called.
-	 * 2). Call AWRequiredFields->setCaller($this)
-	 *
-	 * Each extended method thus called, should return an array of a specific format. (See: static $extendedMethodReturn on the caller)
-	 *
-	 * @return array $return
-	 */
+     * Allows for the addition of an arbitrary no. additional, dedicated and "extended" validation methods on classes that call AWRequiredFields.
+     * To add specific validation methods to a caller:
+     *
+     * 1). Write each checking method using this naming prototype: public function extendedRequiredFieldsXXX(). All methods so named will be called.
+     * 2). Call AWRequiredFields->setCaller($this)
+     *
+     * Each extended method thus called, should return an array of a specific format. (See: static $extendedMethodReturn on the caller)
+     *
+     * @return array $return
+     */
     public function getExtendedValidationRoutines()
     {
         // Setup a return array

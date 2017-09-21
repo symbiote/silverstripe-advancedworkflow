@@ -471,11 +471,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /**
-	 * Format a date according to member/user preferences
-	 *
-	 * @param string $date
-	 * @return string $date
-	 */
+     * Format a date according to member/user preferences
+     *
+     * @param string $date
+     * @return string $date
+     */
     public function getUserDate($date)
     {
         $date = DBDatetime::create()->setValue($date);

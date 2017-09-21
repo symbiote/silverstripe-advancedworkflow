@@ -728,14 +728,14 @@ class WorkflowInstance extends DataObject
     }
 
     /**
-	 * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
-	 * @see {@link $this->userHasAccess()}
-	 *
-	 * @param number $recordID
-	 * @param number $userID
-	 * @param number $wasPublished
-	 * @return boolean
-	 */
+     * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
+     * @see {@link $this->userHasAccess()}
+     *
+     * @param number $recordID
+     * @param number $userID
+     * @param number $wasPublished
+     * @return boolean
+     */
     public function getVersionedConnection($recordID, $userID, $wasPublished = 0)
     {
         // Turn this into an array and run through implode()
