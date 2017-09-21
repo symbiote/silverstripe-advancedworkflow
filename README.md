@@ -1,7 +1,7 @@
 # Advanced Workflow Module
 
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/silverstripe-australia/advancedworkflow/?branch=master)
-[![Build Status](https://travis-ci.org/silverstripe-australia/silverstripe-advancedworkflow.svg?branch=master)](https://travis-ci.org/silverstripe-australia/silverstripe-advancedworkflow)
+[![Build Status](https://travis-ci.org/symbiote/silverstripe-advancedworkflow.svg?branch=master)](https://travis-ci.org/symbiote/silverstripe-advancedworkflow)
 
 ## Overview
 
