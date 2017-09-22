@@ -1,20 +1,20 @@
-WorkflowDefinition:
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
   requestPublication:
     Title: 'Request Publish'
   approvePublication:
     Title: 'Approve Publish'
 
-SimpleApprovalWorkflowAction:
+Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
   requestPublication:
     Title: 'Approve'
-    WorkflowDefID: =>WorkflowDefinition.requestPublication
+    WorkflowDefID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication
 
-PublishItemWorkflowAction:
+Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
   approvePublication:
     Title: 'Publish'
-    WorkflowDefID: =>WorkflowDefinition.approvePublication
+    WorkflowDefID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.approvePublication
 
-SiteTree:
+SilverStripe\CMS\Model\SiteTree:
   emptyEmbargoExpiry:
     Title: 'Empty embargo and expiry'
   pastEmbargo:

@@ -1,4 +1,9 @@
 <?php
+
+namespace Symbiote\AdvancedWorkflow\Actions;
+
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+
 /**
  * Description
  *
@@ -7,6 +12,9 @@
  * @package    advancedworkflow
  * @subpackage actions
  */
-class CancelWorkflowAction extends WorkflowAction {
-	private static $icon = 'advancedworkflow/images/cancel.png';
+class CancelWorkflowAction extends WorkflowAction
+{
+    private static $icon = 'advancedworkflow/images/cancel.png';
+
+    private static $table_name = 'CancelWorkflowAction';
 }

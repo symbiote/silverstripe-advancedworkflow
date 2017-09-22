@@ -1,101 +1,109 @@
 <?php
 
-use SilverStripe\ORM\FieldType\DBDatetime;
-use SilverStripe\ORM\DataObject;
-use SilverStripe\Security\Member;
-use SilverStripe\ORM\Versioning\Versioned;
+namespace Symbiote\AdvancedWorkflow\Tests;
+
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\Config\Config;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\Translatable\Model\Translatable;
+use SilverStripe\Security\Member;
+use SilverStripe\Subsites\Extensions\SiteTreeSubsites;
+use SilverStripe\Versioned\Versioned;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
  * @author marcus@symbiote.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
  */
-class WorkflowEmbargoExpiryTest extends SapphireTest {
+class WorkflowEmbargoExpiryTest extends SapphireTest
+{
+    protected static $fixture_file = 'WorkflowEmbargoExpiry.yml';
 
-    public static $fixture_file = 'advancedworkflow/tests/WorkflowEmbargoExpiry.yml';
-
-	public function setUp()
+    protected function setUp()
     {
-		parent::setUp();
+        parent::setUp();
 
         DBDatetime::set_mock_now('2014-01-05 12:00:00');
 
-
         // Prevent failure if queuedjobs module isn't installed.
-        if (!class_exists('AbstractQueuedJob', false)) {
+        if (!class_exists(AbstractQueuedJob::class)) {
             $this->markTestSkipped("This test requires queuedjobs");
         }
-	}
 
-	public function tearDown()
+        // This doesn't play nicely with PHPUnit
+        Config::modify()->set(QueuedJobService::class, 'use_shutdown_function', false);
+    }
+
+    protected function tearDown()
     {
         DBDatetime::clear_mock_now();
-		parent::tearDown();
-	}
+        parent::tearDown();
+    }
 
-	/**
-	 * @var array
-	 */
-	protected $requiredExtensions = array(
-		'SiteTree' => array(
-			'WorkflowEmbargoExpiryExtension',
-			'SilverStripe\\ORM\\Versioning\\Versioned',
-		)
-	);
+    /**
+     * @var array
+     */
+    protected static $required_extensions = array(
+        SiteTree::class => array(
+            WorkflowEmbargoExpiryExtension::class,
+            Versioned::class,
+        ),
+    );
 
-	/**
-	 * @var array
-	 */
-	protected $illegalExtensions = array(
-		'SiteTree' => array(
-			"Translatable",
-		)
-	);
+    /**
+     * @var array
+     */
+    protected static $illegal_extensions = array(
+        SiteTree::class => array(
+            Translatable::class,
+            SiteTreeSubsites::class,
+        ),
+    );
 
-	public function __construct()
-	{
-		if (!class_exists('AbstractQueuedJob')) {
-			$this->skipTest = true;
-		}
-		parent::__construct();
-	}
+    /**
+     * Start a workflow for a page,
+     * this will set it into a state where a workflow is currently being processes
+     *
+     * @param DataObject $obj
+     * @return DataObject
+     */
+    private function startWorkflow($obj)
+    {
+        $workflow = $this->objFromFixture(WorkflowDefinition::class, 'requestPublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
+        $obj->write();
 
-	/**
-	 * Start a workflow for a page,
-	 * this will set it into a state where a workflow is currently being processes
-	 *
-	 * @param DataObject $obj
-	 * @return DataObject
-	 */
-	private function startWorkflow($obj)
-	{
-		$workflow = $this->objFromFixture('WorkflowDefinition', 'requestPublication');
-		$obj->WorkflowDefinitionID = $workflow->ID;
-		$obj->write();
+        $svc = singleton(WorkflowService::class);
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
+        return $obj;
+    }
 
-		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
-		return $obj;
-	}
+    /**
+     * Start and finish a workflow which will publish the page immediately basically.
+     *
+     * @param DataObject $obj
+     * @return DataObject
+     */
+    private function finishWorkflow($obj)
+    {
+        $workflow = $this->objFromFixture(WorkflowDefinition::class, 'approvePublication');
+        $obj->WorkflowDefinitionID = $workflow->ID;
+        $obj->write();
 
-	/**
-	 * Start and finish a workflow which will publish the page immediately basically.
-	 *
-	 * @param DataObject $obj
-	 * @return DataObject
-	 */
-	private function finishWorkflow($obj)
-	{
-		$workflow = $this->objFromFixture('WorkflowDefinition', 'approvePublication');
-		$obj->WorkflowDefinitionID = $workflow->ID;
-		$obj->write();
+        $svc = singleton(WorkflowService::class);
+        $svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
 
-		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($obj, $obj->WorkflowDefinitionID);
-
-		$obj = DataObject::get_by_id($obj->ClassName, $obj->ID);
-		return $obj;
-	}
+        $obj = DataObject::get($obj->ClassName)->byID($obj->ID);
+        return $obj;
+    }
 
     /**
      * Retrieves the live version for an object
@@ -107,7 +115,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
     {
         $oldMode = Versioned::get_reading_mode();
         Versioned::set_reading_mode(Versioned::LIVE);
-        $live = DataObject::get_by_id($obj->ClassName, $obj->ID);
+        $live = DataObject::get($obj->ClassName)->byID($obj->ID);
         Versioned::set_reading_mode($oldMode);
 
         return $live;
@@ -120,7 +128,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testEmptyEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'emptyEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'emptyEmbargoExpiry');
         $page->Content = 'Content to go live';
 
         $live = $this->getLive($page);
@@ -145,7 +153,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastEmbargo()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargo');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargo');
 
         $page = $this->finishWorkflow($page);
 
@@ -153,7 +161,6 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $this->assertEquals(0, $page->UnPublishJobID);
 
         $publish = strtotime($page->PublishJob()->StartAfter);
-
         $this->assertFalse($publish);
     }
 
@@ -164,7 +171,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -183,7 +190,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -202,7 +209,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastEmbargoFutureExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoFutureExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoFutureExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -223,7 +230,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testFutureEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -244,7 +251,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastEmbargoAfterExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -259,7 +266,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testFutureEmbargoAfterExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoAfterExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoAfterExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -274,7 +281,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testPastSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'pastSameEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'pastSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -289,7 +296,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      */
     public function testFutureSameEmbargoExpiry()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureSameEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureSameEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
@@ -302,23 +309,23 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
      *
      * The existing queued jobs should be cleared
      */
-	public function testDesiredRemovesJobs()
+    public function testDesiredRemovesJobs()
     {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         $page = $this->finishWorkflow($page);
 
-		$this->assertNotEquals(0, $page->PublishJobID);
-		$this->assertNotEquals(0, $page->UnPublishJobID);
+        $this->assertNotEquals(0, $page->PublishJobID);
+        $this->assertNotEquals(0, $page->UnPublishJobID);
 
-		$page->DesiredPublishDate = '2020-02-01 00:00:00';
-		$page->DesiredUnPublishDate = '2020-02-01 02:00:00';
+        $page->DesiredPublishDate = '2020-02-01 00:00:00';
+        $page->DesiredUnPublishDate = '2020-02-01 02:00:00';
 
-		$page->write();
+        $page->write();
 
-		$this->assertEquals(0, $page->PublishJobID);
-		$this->assertEquals(0, $page->UnPublishJobID);
-	}
+        $this->assertEquals(0, $page->PublishJobID);
+        $this->assertEquals(0, $page->UnPublishJobID);
+    }
 
     /**
      * Tests that checking for publishing scheduled state is working
@@ -398,69 +405,71 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $this->assertNotContains('expiry', array_keys($flags));
     }
 
-	/**
-	 * Test workflow definition "Can disable edits during embargo"
-	 * Make sure page cannot be edited when an embargo is in place
-	 */
-	public function testCanEditConfig()
+    /**
+     * Test workflow definition "Can disable edits during embargo"
+     * Make sure page cannot be edited when an embargo is in place
+     */
+    public function testCanEditConfig()
     {
+        $this->logOut();
 
-		$page = SiteTree::create();
-		$page->Title = 'My page';
-		$page->PublishOnDate = '2010-01-01 00:00:00';
-		$page->write();
+        $page = SiteTree::create();
+        $page->Title = 'My page';
+        $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->write();
 
-		$memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
-		$this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
+        $memberID = $this->logInWithPermission('SITETREE_EDIT_ALL');
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and no permission');
 
-		$page->PublishOnDate = '2020-01-01 00:00:00';
-		$page->write();
-		$this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
+        $page->PublishOnDate = '2020-01-01 00:00:00';
+        $page->AllowEmbargoedEditing = false;
+        $page->write();
+        $this->assertFalse($page->canEdit(), 'Cannot edit page with embargo and no permission');
 
-		$this->logOut();
-		$memberID = $this->logInWithPermission('ADMIN');
-		$this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
+        $this->logOut();
+        $memberID = $this->logInWithPermission('ADMIN');
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo as Admin');
 
-		$this->logOut();
-		$memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
-		$this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
+        $this->logOut();
+        $memberID = $this->logInWithPermission(array('SITETREE_EDIT_ALL', 'EDIT_EMBARGOED_WORKFLOW'));
+        $this->assertTrue($page->canEdit(), 'Can edit page with embargo and permission');
 
-		$page->PublishOnDate = '2010-01-01 00:00:00';
-		$page->write();
-		$this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
+        $page->PublishOnDate = '2010-01-01 00:00:00';
+        $page->write();
+        $this->assertTrue($page->canEdit(), 'Can edit page without embargo and permission');
+    }
 
-	}
-
-	protected function createDefinition()
+    protected function createDefinition()
     {
-		$definition = new WorkflowDefinition();
-		$definition->Title = 'Dummy Workflow Definition';
-		$definition->write();
+        $definition = new WorkflowDefinition();
+        $definition->Title = 'Dummy Workflow Definition';
+        $definition->write();
 
-		$stepOne = new WorkflowAction();
-		$stepOne->Title = 'Step One';
-		$stepOne->WorkflowDefID = $definition->ID;
-		$stepOne->write();
+        $stepOne = new WorkflowAction();
+        $stepOne->Title = 'Step One';
+        $stepOne->WorkflowDefID = $definition->ID;
+        $stepOne->write();
 
-		$stepTwo = new WorkflowAction();
-		$stepTwo->Title = 'Step Two';
-		$stepTwo->WorkflowDefID = $definition->ID;
-		$stepTwo->write();
+        $stepTwo = new WorkflowAction();
+        $stepTwo->Title = 'Step Two';
+        $stepTwo->WorkflowDefID = $definition->ID;
+        $stepTwo->write();
 
-		$transitionOne = new WorkflowTransition();
-		$transitionOne->Title = 'Step One T1';
-		$transitionOne->ActionID = $stepOne->ID;
-		$transitionOne->NextActionID = $stepTwo->ID;
-		$transitionOne->write();
+        $transitionOne = new WorkflowTransition();
+        $transitionOne->Title = 'Step One T1';
+        $transitionOne->ActionID = $stepOne->ID;
+        $transitionOne->NextActionID = $stepTwo->ID;
+        $transitionOne->write();
 
-		return $definition;
-	}
+        return $definition;
+    }
 
     /**
      * Make sure that publish and unpublish dates are not carried over to the duplicates.
      */
-    public function testDuplicateRemoveEmbargoExpiry() {
-        $page = $this->objFromFixture('SiteTree', 'futureEmbargoExpiry');
+    public function testDuplicateRemoveEmbargoExpiry()
+    {
+        $page = $this->objFromFixture(SiteTree::class, 'futureEmbargoExpiry');
 
         // fake publish jobs
         $page = $this->finishWorkflow($page);
@@ -475,11 +484,4 @@ class WorkflowEmbargoExpiryTest extends SapphireTest {
         $this->assertEquals($dupe->PublishJobID, 0, 'Publish job ID unset');
         $this->assertEquals($dupe->UnPublishJobID, 0, 'Unpublish job ID unset');
     }
-
-    public function logOut()
-    {
-        if($member = Member::currentUser()) $member->logOut();
-    }
-
-
 }

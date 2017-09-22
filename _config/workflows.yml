@@ -1,49 +1,49 @@
 ---
 Name: defaultworkflows
 ---
-Injector:
+SilverStripe\Core\Injector\Injector:
   SimpleReviewApprove:
-    class: WorkflowTemplate
+    class: Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate
     constructor:
-      - Review and Approve
-      - Single step review and approve. Make sure to update the Apply for approval and Notify users steps!
+      - 'Review and Approve'
+      - 'Single step review and approve. Make sure to update the Apply for approval and Notify users steps!'
       - 0.2
     properties:
       structure:
-        Apply for approval:
-          type: AssignUsersToWorkflowAction
-          transitions: 
-            notify: Notify users
-        Notify users:
-          type: NotifyUsersWorkflowAction
+        'Apply for approval':
+          type: Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction
+          transitions:
+            notify: 'Notify users'
+        'Notify users':
+          type: Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction
           transitions:
             approval: Approval
         Approval:
-          type: SimpleApprovalWorkflowAction
+          type: Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction
           transitions:
             Approve: Publish
-            Reject: Reject changes
+            Reject: 'Reject changes'
         Publish:
-          type: PublishItemWorkflowAction
-          transitions: 
-            assign: Assign Initiator Publish
-        Assign Initiator Publish:
-          type: AssignUsersToWorkflowAction
-          transitions: 
-            notify: Notify Initiator Publish
-        Notify Initiator Publish:
-          type: NotifyUsersWorkflowAction
-        Reject changes:
-          type: CancelWorkflowAction
-          transitions: 
-            assign: Assign Initiator Cancel
-        Assign Initiator Cancel:
-          type: AssignUsersToWorkflowAction
-          transitions: 
-            notify: Notify Initiator Cancel
-        Notify Initiator Cancel:
-          type: NotifyUsersWorkflowAction
-  WorkflowService:
+          type: Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction
+          transitions:
+            assign: 'Assign Initiator Publish'
+        'Assign Initiator Publish':
+          type: Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction
+          transitions:
+            notify: 'Notify Initiator Publish'
+        'Notify Initiator Publish':
+          type: Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction
+        'Reject changes':
+          type: Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction
+          transitions:
+            assign: 'Assign Initiator Cancel'
+        'Assign Initiator Cancel':
+          type: Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction
+          transitions:
+            notify: 'Notify Initiator Cancel'
+        'Notify Initiator Cancel':
+          type: Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction
+  Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
-        - %$SimpleReviewApprove
+        - '%$SimpleReviewApprove'

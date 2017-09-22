@@ -1,6 +1,12 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Tests;
+
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\Security\Member;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 
 /**
  * Tests for the workflow engine.
@@ -10,112 +16,109 @@ use SilverStripe\Dev\SapphireTest;
  * @package    advancedworkflow
  * @subpackage tests
  */
-class WorkflowInstanceTest extends SapphireTest {
-	
-	/**
-	 *
-	 * @var string
-	 */
-	public static $fixture_file = 'advancedworkflow/tests/useractioninstancehistory.yml';
-	
-	/**
-	 * 
-	 * @var Member
-	 */
-	protected $currentMember;
-	
-	/**
-	 * 
-	 */
-	public function setUp() {
-		parent::setUp();
-		$this->currentMember = $this->objFromFixture('SilverStripe\\Security\\Member', 'ApproverMember01');
-	}
+class WorkflowInstanceTest extends SapphireTest
+{
+    /**
+     * @var string
+     */
+    protected static $fixture_file = 'useractioninstancehistory.yml';
 
-	/**
-	 * Tests WorkflowInstance#getMostRecentActionForUser()
-	 */
-	public function testGetMostRecentActionForUser() {
-	
-		// Single, AssignUsersToWorkflowAction in "History"
-		$history01 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance01');
-		$mostRecentActionForUser01 = $history01->getMostRecentActionForUser($this->currentMember);
-		$this->assertInstanceOf('WorkflowActionInstance', $mostRecentActionForUser01, 'Asserts the correct ClassName is retured #1');
-		$this->assertEquals('Assign', $mostRecentActionForUser01->BaseAction()->Title, 'Asserts the correct BaseAction is retured #1');
-		
-		// No AssignUsersToWorkflowAction found with Member's related Group in "History"
-		$history02 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance02');
-		$mostRecentActionForUser02 = $history02->getMostRecentActionForUser($this->currentMember);
-		$this->assertFalse($mostRecentActionForUser02, 'Asserts false is returned because no WorkflowActionInstance was found');
-		
-		// Multiple AssignUsersToWorkflowAction in "History", only one with Group relations
-		$history03 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance03');
-		$mostRecentActionForUser03 = $history03->getMostRecentActionForUser($this->currentMember);
-		$this->assertInstanceOf('WorkflowActionInstance', $mostRecentActionForUser03, 'Asserts the correct ClassName is retured #2');
-		$this->assertEquals('Assign', $mostRecentActionForUser03->BaseAction()->Title, 'Asserts the correct BaseAction is retured #2');
-		
-		// Multiple AssignUsersToWorkflowAction in "History", both with Group relations
-		$history04 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance04');
-		$mostRecentActionForUser04 = $history04->getMostRecentActionForUser($this->currentMember);
-		$this->assertInstanceOf('WorkflowActionInstance', $mostRecentActionForUser04, 'Asserts the correct ClassName is retured #3');
-		$this->assertEquals('Assigned Again', $mostRecentActionForUser04->BaseAction()->Title, 'Asserts the correct BaseAction is retured #3');
-		
-		// Multiple AssignUsersToWorkflowAction in "History", one with Group relations
-		$history05 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance05');
-		$mostRecentActionForUser05 = $history05->getMostRecentActionForUser($this->currentMember);
-		$this->assertInstanceOf('WorkflowActionInstance', $mostRecentActionForUser05, 'Asserts the correct ClassName is retured #4');
-		$this->assertEquals('Assigned Me', $mostRecentActionForUser05->BaseAction()->Title, 'Asserts the correct BaseAction is retured #4');
-	}
-	
-	/**
-	 * Tests WorkflowInstance#canView()
-	 */
-	public function testCanView() {
-		// Single, AssignUsersToWorkflowAction in "History"
-		$history01 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance01');
-		$this->assertTrue($history01->canView($this->currentMember));
-		
-		// No AssignUsersToWorkflowAction found with Member's related Group in "History"
-		$history02 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance02');
-		$this->assertFalse($history02->canView($this->currentMember));
-		
-		// Multiple AssignUsersToWorkflowAction in "History", only one with Group relations
-		$history03 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance03');
-		$this->assertTrue($history03->canView($this->currentMember));	
-		
-		// Multiple AssignUsersToWorkflowAction in "History", both with Group relations
-		$history04 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance04');
-		$this->assertTrue($history04->canView($this->currentMember));	
-		
-		// Multiple AssignUsersToWorkflowAction in "History"
-		$history05 = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance05');
-		$this->assertTrue($history05->canView($this->currentMember));	
-	}
+    /**
+     * @var Member
+     */
+    protected $currentMember;
 
-	public function testValidTransitions() {
-		$instance = $this->objFromFixture('WorkflowInstance', 'WorkflowInstance06');
-		$transition1 = $this->objFromFixture('WorkflowTransition', 'Transition05');
-		$transition2 = $this->objFromFixture('WorkflowTransition', 'Transition06');
-		$member1 = $this->objFromFixture('SilverStripe\\Security\\Member', 'Transition05Member');
-		$member2 = $this->objFromFixture('SilverStripe\\Security\\Member', 'Transition06Member');
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->currentMember = $this->objFromFixture(Member::class, 'ApproverMember01');
+    }
 
-		// Given logged in as admin, check that there are two actions
-		$this->logInWithPermission('ADMIN');
-		$transitions = $instance->validTransitions()->column('ID');
-		$this->assertContains($transition1->ID, $transitions);
-		$this->assertContains($transition2->ID, $transitions);
+    /**
+     * Tests WorkflowInstance#getMostRecentActionForUser()
+     */
+    public function testGetMostRecentActionForUser()
+    {
+        // Single, AssignUsersToWorkflowAction in "History"
+        $history01 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance01');
+        $mostRecentActionForUser01 = $history01->getMostRecentActionForUser($this->currentMember);
+        $this->assertInstanceOf(WorkflowActionInstance::class, $mostRecentActionForUser01, 'Asserts the correct ClassName is retured #1');
+        $this->assertEquals('Assign', $mostRecentActionForUser01->BaseAction()->Title, 'Asserts the correct BaseAction is retured #1');
 
-		// Logged in as a member with permission on one transition, check that only this one is present
-		$member1->logIn();
-		$transitions = $instance->validTransitions()->column('ID');
-		$this->assertContains($transition1->ID, $transitions);
-		$this->assertNotContains($transition2->ID, $transitions);
+        // No AssignUsersToWorkflowAction found with Member's related Group in "History"
+        $history02 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance02');
+        $mostRecentActionForUser02 = $history02->getMostRecentActionForUser($this->currentMember);
+        $this->assertFalse($mostRecentActionForUser02, 'Asserts false is returned because no WorkflowActionInstance was found');
 
-		// Logged in as a member with permissions via group
-		$member2->logIn();
-		$transitions = $instance->validTransitions()->column('ID');
-		$this->assertNotContains($transition1->ID, $transitions);
-		$this->assertContains($transition2->ID, $transitions);
-	}
+        // Multiple AssignUsersToWorkflowAction in "History", only one with Group relations
+        $history03 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance03');
+        $mostRecentActionForUser03 = $history03->getMostRecentActionForUser($this->currentMember);
+        $this->assertInstanceOf(WorkflowActionInstance::class, $mostRecentActionForUser03, 'Asserts the correct ClassName is retured #2');
+        $this->assertEquals('Assign', $mostRecentActionForUser03->BaseAction()->Title, 'Asserts the correct BaseAction is retured #2');
 
+        // Multiple AssignUsersToWorkflowAction in "History", both with Group relations
+        $history04 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance04');
+        $mostRecentActionForUser04 = $history04->getMostRecentActionForUser($this->currentMember);
+        $this->assertInstanceOf(WorkflowActionInstance::class, $mostRecentActionForUser04, 'Asserts the correct ClassName is retured #3');
+        $this->assertEquals('Assigned Again', $mostRecentActionForUser04->BaseAction()->Title, 'Asserts the correct BaseAction is retured #3');
+
+        // Multiple AssignUsersToWorkflowAction in "History", one with Group relations
+        $history05 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance05');
+        $mostRecentActionForUser05 = $history05->getMostRecentActionForUser($this->currentMember);
+        $this->assertInstanceOf(WorkflowActionInstance::class, $mostRecentActionForUser05, 'Asserts the correct ClassName is retured #4');
+        $this->assertEquals('Assigned Me', $mostRecentActionForUser05->BaseAction()->Title, 'Asserts the correct BaseAction is retured #4');
+    }
+
+    /**
+     * Tests WorkflowInstance#canView()
+     */
+    public function testCanView()
+    {
+        // Single, AssignUsersToWorkflowAction in "History"
+        $history01 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance01');
+        $this->assertTrue($history01->canView($this->currentMember));
+
+        // No AssignUsersToWorkflowAction found with Member's related Group in "History"
+        $history02 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance02');
+        $this->assertFalse($history02->canView($this->currentMember));
+
+        // Multiple AssignUsersToWorkflowAction in "History", only one with Group relations
+        $history03 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance03');
+        $this->assertTrue($history03->canView($this->currentMember));
+
+        // Multiple AssignUsersToWorkflowAction in "History", both with Group relations
+        $history04 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance04');
+        $this->assertTrue($history04->canView($this->currentMember));
+
+        // Multiple AssignUsersToWorkflowAction in "History"
+        $history05 = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance05');
+        $this->assertTrue($history05->canView($this->currentMember));
+    }
+
+    public function testValidTransitions()
+    {
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'WorkflowInstance06');
+        $transition1 = $this->objFromFixture(WorkflowTransition::class, 'Transition05');
+        $transition2 = $this->objFromFixture(WorkflowTransition::class, 'Transition06');
+        $member1 = $this->objFromFixture(Member::class, 'Transition05Member');
+        $member2 = $this->objFromFixture(Member::class, 'Transition06Member');
+
+        // Given logged in as admin, check that there are two actions
+        $this->logInWithPermission('ADMIN');
+        $transitions = $instance->validTransitions()->column('ID');
+        $this->assertContains($transition1->ID, $transitions);
+        $this->assertContains($transition2->ID, $transitions);
+
+        // Logged in as a member with permission on one transition, check that only this one is present
+        $member1->logIn();
+        $transitions = $instance->validTransitions()->column('ID');
+        $this->assertContains($transition1->ID, $transitions);
+        $this->assertNotContains($transition2->ID, $transitions);
+
+        // Logged in as a member with permissions via group
+        $member2->logIn();
+        $transitions = $instance->validTransitions()->column('ID');
+        $this->assertNotContains($transition1->ID, $transitions);
+        $this->assertContains($transition2->ID, $transitions);
+    }
 }

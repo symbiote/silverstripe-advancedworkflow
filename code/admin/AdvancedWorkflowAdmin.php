@@ -1,326 +1,350 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Admin;
+
+use SilverStripe\Admin\ModelAdmin;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\GridField\GridField;
+use SilverStripe\Forms\GridField\GridFieldConfig_Base;
+use SilverStripe\Forms\GridField\GridFieldDataColumns;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
+use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldPaginator;
+use SilverStripe\Forms\FieldList;
+use SilverStripe\Forms\FormAction;
+use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
-use SilverStripe\Admin\ModelAdmin;
-use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\View\Requirements;
+use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionItemRequestClass;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\Dev\WorkflowBulkLoader;
+use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction;
+use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldWorkflowRestrictedEditButton;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * @package advancedworkflow
  * @todo UI/UX needs looking at for when current user has no pending and/or submitted items, (Current implementation is bog-standard <p> text)
  */
-class AdvancedWorkflowAdmin extends ModelAdmin {
+class AdvancedWorkflowAdmin extends ModelAdmin
+{
+    private static $menu_title    = 'Workflows';
+    private static $menu_priority = -1;
+    private static $url_segment   = 'workflows';
+    private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
 
-	private static $menu_title    = 'Workflows';
-	private static $menu_priority = -1;
-	private static $url_segment   = 'workflows';
-	private static $menu_icon = "advancedworkflow/images/workflow-menu-icon.png";
-	
-	/**
-	 *
-	 * @var array Allowable actions on this controller.
-	 */
-	private static $allowed_actions = array(
-		'export',
-		'ImportForm'
-	);
-	
-	private static $url_handlers = array(
-		'$ModelClass/export/$ID!' => 'export',
-		'$ModelClass/$Action' => 'handleAction',
-		'' => 'index'
-	);
+    /**
+     *
+     * @var array Allowable actions on this controller.
+     */
+    private static $allowed_actions = array(
+        'export',
+        'ImportForm'
+    );
 
-	private static $managed_models  = 'WorkflowDefinition';
+    private static $url_handlers = array(
+        '$ModelClass/export/$ID!' => 'export',
+        '$ModelClass/$Action' => 'handleAction',
+        '' => 'index'
+    );
 
-	private static $model_importers = array(
-		'WorkflowDefinition' => 'WorkflowBulkLoader'
-	);
+    private static $managed_models = WorkflowDefinition::class;
 
-	private static $dependencies = array(
-		'workflowService'		=> '%$WorkflowService',
-	);
+    private static $model_importers = array(
+        'WorkflowDefinition' => WorkflowBulkLoader::class
+    );
 
-	private static $fileEditActions = 'getCMSActions';
+    private static $dependencies = array(
+        'workflowService' => '%$' . WorkflowService::class,
+    );
 
-	/**
-	 * Defaults are set in {@link getEditForm()}.
-	 * 
-	 * @var array
-	 */
-	private static $fieldOverrides = array();
-	
-	/**
-	 * @var WorkflowService
-	 */
-	public $workflowService;
-	
-	/**
-	 * Initialise javascript translation files
-	 * 
-	 * @return void
-	 */
-	public function init() {
-		parent::init();
-		Requirements::add_i18n_javascript('advancedworkflow/javascript/lang');
-		Requirements::javascript('advancedworkflow/javascript/WorkflowField.js');
-		Requirements::javascript('advancedworkflow/javascript/WorkflowGridField.js');
-		Requirements::css('advancedworkflow/css/WorkflowField.css');
-		Requirements::css('advancedworkflow/css/WorkflowGridField.css');
-	}	
+    private static $fileEditActions = 'getCMSActions';
 
-	/*
+    /**
+     * Defaults are set in {@link getEditForm()}.
+     *
+     * @var array
+     */
+    private static $fieldOverrides = array();
+
+    /**
+     * @var WorkflowService
+     */
+    public $workflowService;
+
+    /**
+     * Initialise javascript translation files
+     *
+     * @return void
+     */
+    protected function init()
+    {
+        parent::init();
+
+        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('/javascript/lang'));
+        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowField.js'));
+        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowGridField.js'));
+        Requirements::css($module->getRelativeResourcePath('/css/WorkflowField.css'));
+        Requirements::css($module->getRelativeResourcePath('/css/WorkflowGridField.css'));
+    }
+
+    /*
 	 * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
 	 * on the objects showing in each field.
 	 */
-	public function getEditForm($id = null, $fields = null) {
-		$form = parent::getEditForm($id, $fields);
-		
-		// Show items submitted into a workflow for current user to action
-		$fieldName = 'PendingObjects';
-		$pending = $this->userObjects(Member::currentUser(), $fieldName);
+    public function getEditForm($id = null, $fields = null)
+    {
+        $form = parent::getEditForm($id, $fields);
 
-		if($this->config()->fieldOverrides) {
-			$displayFields = $this->config()->fieldOverrides;
-		} else {
-			$displayFields = array(
-				'Title'				=> _t('AdvancedWorkflowAdmin.Title', 'Title'),
-				'LastEdited'		=> _t('AdvancedWorkflowAdmin.LastEdited', 'Changed'),
-				'WorkflowTitle'		=> _t('AdvancedWorkflowAdmin.WorkflowTitle', 'Effective workflow'),
-				'WorkflowStatus'	=> _t('AdvancedWorkflowAdmin.WorkflowStatus', 'Current action'),
-			);
-		}
+        // Show items submitted into a workflow for current user to action
+        $fieldName = 'PendingObjects';
+        $pending = $this->userObjects(Member::currentUser(), $fieldName);
 
-		// Pending/Submitted items GridField Config
-		$config = new GridFieldConfig_Base();
-		$config->addComponent(new GridFieldEditButton());
-		$config->addComponent(new GridFieldDetailForm());
-		$config->getComponentByType('GridFieldPaginator')->setItemsPerPage(5);
-		$columns = $config->getComponentByType('GridFieldDataColumns');
-		$columns->setFieldFormatting($this->setFieldFormatting($config));
+        if ($this->config()->fieldOverrides) {
+            $displayFields = $this->config()->fieldOverrides;
+        } else {
+            $displayFields = array(
+                'Title'          => _t('AdvancedWorkflowAdmin.Title', 'Title'),
+                'LastEdited'     => _t('AdvancedWorkflowAdmin.LastEdited', 'Changed'),
+                'WorkflowTitle'  => _t('AdvancedWorkflowAdmin.WorkflowTitle', 'Effective workflow'),
+                'WorkflowStatus' => _t('AdvancedWorkflowAdmin.WorkflowStatus', 'Current action'),
+            );
+        }
 
-		if($pending->count()) {
-			$formFieldTop = GridField::create(
-				$fieldName,
-				$this->isAdminUser(Member::currentUser())?
-					_t(
-						'AdvancedWorkflowAdmin.GridFieldTitleAssignedAll',
-						'All pending items'
-						):
-					_t(
-						'AdvancedWorkflowAdmin.GridFieldTitleAssignedYour',
-						'Your pending items'),
-				$pending,
-				$config
-			);
+        // Pending/Submitted items GridField Config
+        $config = new GridFieldConfig_Base();
+        $config->addComponent(new GridFieldEditButton());
+        $config->addComponent(new GridFieldDetailForm());
+        $config->getComponentByType(GridFieldPaginator::class)->setItemsPerPage(5);
+        $columns = $config->getComponentByType(GridFieldDataColumns::class);
+        $columns->setFieldFormatting($this->setFieldFormatting($config));
 
-			$dataColumns = $formFieldTop->getConfig()->getComponentByType('GridFieldDataColumns');
-			$dataColumns->setDisplayFields($displayFields);
+        if ($pending->count()) {
+            $formFieldTop = GridField::create(
+                $fieldName,
+                $this->isAdminUser(Member::currentUser())?
+                    _t(
+                        'AdvancedWorkflowAdmin.GridFieldTitleAssignedAll',
+                        'All pending items'
+                    ):
+                    _t(
+                        'AdvancedWorkflowAdmin.GridFieldTitleAssignedYour',
+                        'Your pending items'
+                    ),
+                $pending,
+                $config
+            );
 
-			$formFieldTop->setForm($form);
-			$form->Fields()->insertBefore($formFieldTop, 'WorkflowDefinition');
-		}
+            $dataColumns = $formFieldTop->getConfig()->getComponentByType(GridFieldDataColumns::class);
+            $dataColumns->setDisplayFields($displayFields);
 
-		// Show items submitted into a workflow by current user
-		$fieldName = 'SubmittedObjects';
-		$submitted = $this->userObjects(Member::currentUser(), $fieldName);
-		if($submitted->count()) {
-			$formFieldBottom = GridField::create(
-				$fieldName,
-				$this->isAdminUser(Member::currentUser())?
-					_t(
-						'AdvancedWorkflowAdmin.GridFieldTitleSubmittedAll',
-						'All submitted items'
-						):
-					_t(
-						'AdvancedWorkflowAdmin.GridFieldTitleSubmittedYour',
-						'Your submitted items'),
-				$submitted,
-				$config
-			);
+            $formFieldTop->setForm($form);
+            $form->Fields()->insertBefore($formFieldTop, WorkflowDefinition::class);
+        }
 
-			$dataColumns = $formFieldBottom->getConfig()->getComponentByType('GridFieldDataColumns');
-			$dataColumns->setDisplayFields($displayFields);
+        // Show items submitted into a workflow by current user
+        $fieldName = 'SubmittedObjects';
+        $submitted = $this->userObjects(Member::currentUser(), $fieldName);
+        if ($submitted->count()) {
+            $formFieldBottom = GridField::create(
+                $fieldName,
+                $this->isAdminUser(Member::currentUser())?
+                    _t(
+                        'AdvancedWorkflowAdmin.GridFieldTitleSubmittedAll',
+                        'All submitted items'
+                    ):
+                    _t(
+                        'AdvancedWorkflowAdmin.GridFieldTitleSubmittedYour',
+                        'Your submitted items'
+                    ),
+                $submitted,
+                $config
+            );
 
-			$formFieldBottom->setForm($form);
-			$formFieldBottom->getConfig()->removeComponentsByType('GridFieldEditButton');
-			$formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
-			$form->Fields()->insertBefore($formFieldBottom, 'WorkflowDefinition');
-		}
-		
-		$grid = $form->Fields()->dataFieldByName('WorkflowDefinition');
-		if ($grid) {
-			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemEditFormCallback(function ($form) {
-				$record = $form->getRecord();
-				if ($record) {
-					$record->updateAdminActions($form->Actions());
-				}
-			});
-			
-			$grid->getConfig()->getComponentByType('GridFieldDetailForm')->setItemRequestClass('WorkflowDefinitionItemRequestClass');
-			$grid->getConfig()->addComponent(new GridFieldExportAction());
-			$grid->getConfig()->removeComponentsByType('GridFieldExportButton');
-		}
-		
-		return $form;
-	}
+            $dataColumns = $formFieldBottom->getConfig()->getComponentByType(GridFieldDataColumns::class);
+            $dataColumns->setDisplayFields($displayFields);
 
-	/*
+            $formFieldBottom->setForm($form);
+            $formFieldBottom->getConfig()->removeComponentsByType(GridFieldEditButton::class);
+            $formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
+            $form->Fields()->insertBefore($formFieldBottom, WorkflowDefinition::class);
+        }
+
+        $grid = $form->Fields()->dataFieldByName(WorkflowDefinition::class);
+        if ($grid) {
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemEditFormCallback(function ($form) {
+                $record = $form->getRecord();
+                if ($record) {
+                    $record->updateAdminActions($form->Actions());
+                }
+            });
+
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
+            $grid->getConfig()->addComponent(new GridFieldExportAction());
+            $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
+        }
+
+        return $form;
+    }
+
+    /*
 	 * @param Member $user
 	 * @return boolean
 	 */
-	public function isAdminUser(Member $user) {
-		if(Permission::checkMember($user, 'ADMIN')) {
-			return true;
-		}
-		return false;
-	}
+    public function isAdminUser(Member $user)
+    {
+        if (Permission::checkMember($user, 'ADMIN')) {
+            return true;
+        }
+        return false;
+    }
 
-	/*
+    /*
 	 * By default, we implement GridField_ColumnProvider to allow users to click through to the PagesAdmin.
 	 * We would also like a "Quick View", that allows users to quickly make a decision on a given workflow-bound content-object
 	 */
-	public function columns() {
-		$fields = array(
-			'Title' => array(
-				'link' => function($value, $item) {
-					$pageAdminLink = singleton('CMSPageEditController')->Link('show');
-					return sprintf('<a href="%s/%s">%s</a>',$pageAdminLink,$item->Link,$value);
-				}
-			),
-			'WorkflowStatus' => array(
-				'text' => function($value, $item) {
-					return $item->WorkflowCurrentAction;
-				}
-			)
-		);
-		return $fields;
-	}
+    public function columns()
+    {
+        $fields = array(
+            'Title' => array(
+                'link' => function ($value, $item) {
+                    $pageAdminLink = singleton(CMSPageEditController::class)->Link('show');
+                    return sprintf('<a href="%s/%s">%s</a>', $pageAdminLink, $item->Link, $value);
+                }
+            ),
+            'WorkflowStatus' => array(
+                'text' => function ($value, $item) {
+                    return $item->WorkflowCurrentAction;
+                }
+            )
+        );
+        return $fields;
+    }
 
-	/*
+    /*
 	 * Discreet method used by both intro gridfields to format the target object's links and clickable text
 	 *
 	 * @param GridFieldConfig $config
 	 * @return array $fieldFormatting
 	 */
-	public function setFieldFormatting(&$config) {
-		$fieldFormatting = array();
-		// Parse the column information
-		foreach($this->columns() as $source => $info) {
-			if(isset($info['link']) && $info['link']) {
-				$fieldFormatting[$source] = '<a href=\"$ObjectRecordLink\">$value</a>';
-			}
-			if(isset($info['text']) && $info['text']) {
-				$fieldFormatting[$source] = $info['text'];
-			}
-		}
-		return $fieldFormatting;
-	}
+    public function setFieldFormatting(&$config)
+    {
+        $fieldFormatting = array();
+        // Parse the column information
+        foreach ($this->columns() as $source => $info) {
+            if (isset($info['link']) && $info['link']) {
+                $fieldFormatting[$source] = '<a href=\"$ObjectRecordLink\">$value</a>';
+            }
+            if (isset($info['text']) && $info['text']) {
+                $fieldFormatting[$source] = $info['text'];
+            }
+        }
+        return $fieldFormatting;
+    }
 
-	/**
-	 * Get WorkflowInstance Target objects to show for users in initial gridfield(s)
-	 *
-	 * @param Member $member
-	 * @param string $fieldName The name of the gridfield that determines which dataset to return
-	 * @return DataList
-	 * @todo Add the ability to see embargo/expiry dates in report-gridfields at-a-glance if QueuedJobs module installed
-	 */
-	public function userObjects(Member $user, $fieldName) {
-		$list = new ArrayList();
-		$userWorkflowInstances = $this->getFieldDependentData($user, $fieldName);
-		foreach($userWorkflowInstances as $instance) {
-			if(!$instance->TargetID || !$instance->DefinitionID) {
-				continue;
-			}
-			// @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe define $this->workflowParent()
-			$effectiveWorkflow = DataObject::get_by_id('WorkflowDefinition', $instance->DefinitionID);
-			$target = $instance->getTarget();
-			if(!is_object($effectiveWorkflow) || !$target) {
-				continue;
-			}
-			$instance->setField('WorkflowTitle',$effectiveWorkflow->getField('Title'));
-			$instance->setField('WorkflowCurrentAction',$instance->getCurrentAction());
-			// Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
-			$instance->setField('Title',$target->getField('Title'));
-			$instance->setField('LastEdited',$target->getField('LastEdited'));
-			if (method_exists($target, 'CMSEditLink')) {
-				$instance->setField('ObjectRecordLink', $target->CMSEditLink());
-			}
+    /**
+     * Get WorkflowInstance Target objects to show for users in initial gridfield(s)
+     *
+     * @param Member $member
+     * @param string $fieldName The name of the gridfield that determines which dataset to return
+     * @return DataList
+     * @todo Add the ability to see embargo/expiry dates in report-gridfields at-a-glance if QueuedJobs module installed
+     */
+    public function userObjects(Member $user, $fieldName)
+    {
+        $list = new ArrayList();
+        $userWorkflowInstances = $this->getFieldDependentData($user, $fieldName);
+        foreach ($userWorkflowInstances as $instance) {
+            if (!$instance->TargetID || !$instance->DefinitionID) {
+                continue;
+            }
+            // @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe define $this->workflowParent()
+            $effectiveWorkflow = DataObject::get_by_id(WorkflowDefinition::class, $instance->DefinitionID);
+            $target = $instance->getTarget();
+            if (!is_object($effectiveWorkflow) || !$target) {
+                continue;
+            }
+            $instance->setField('WorkflowTitle', $effectiveWorkflow->getField('Title'));
+            $instance->setField('WorkflowCurrentAction', $instance->getCurrentAction());
+            // Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
+            $instance->setField('Title', $target->getField('Title'));
+            $instance->setField('LastEdited', $target->getField('LastEdited'));
+            if (method_exists($target, 'CMSEditLink')) {
+                $instance->setField('ObjectRecordLink', $target->CMSEditLink());
+            }
 
-			$list->push($instance);
-		}
-		return $list;
-	}
+            $list->push($instance);
+        }
+        return $list;
+    }
 
-	/*
+    /*
 	 * Return content-object data depending on which gridfeld is calling for it
 	 *
 	 * @param Member $user
 	 * @param string $fieldName
 	 */
-	public function getFieldDependentData(Member $user, $fieldName) {
-		if($fieldName == 'PendingObjects') {
-			return $this->workflowService->userPendingItems($user);
-		}
-		if($fieldName == 'SubmittedObjects') {
-			return $this->workflowService->userSubmittedItems($user);
-		}
-	}
-	
-	/**
-	 * Spits out an exported version of the selected WorkflowDefinition for download.
-	 * 
-	 * @param \SS_HTTPRequest $request
-	 * @return \SS_HTTPResponse
-	 */
-	public function export(SS_HTTPRequest $request) {
-		$url = explode('/', $request->getURL());
-		$definitionID = end($url);
-		if($definitionID && is_numeric($definitionID)) {
-			$exporter = new WorkflowDefinitionExporter($definitionID);
-			$exportFilename = WorkflowDefinitionExporter::$export_filename_prefix.'-'.$definitionID.'.yml';
-			$exportBody = $exporter->export();
-			$fileData = array(
-				'name' => $exportFilename,
-				'mime' => 'text/x-yaml',
-				'body' => $exportBody,
-				'size' => $exporter->getExportSize($exportBody)
-			);
-			return $exporter->sendFile($fileData);
-		}
-	}	
-	
-	/**
-	 * Required so we can simply change the visible label of the "Import" button and lose some redundant form-fields.
-	 * 
-	 * @return Form
-	 */
-	public function ImportForm() {
-		$form = parent::ImportForm();
-		if(!$form) {
-			return;
-		}
-		
-		$form->unsetAllActions();
-		$newActionList = new FieldList(array(
-			new FormAction('import', _t('AdvancedWorkflowAdmin.IMPORT', 'Import workflow'))
-		));
-		$form->Fields()->fieldByName('_CsvFile')->getValidator()->setAllowedExtensions(array('yml', 'yaml'));
-		$form->Fields()->removeByName('EmptyBeforeImport');
-		$form->setActions($newActionList);
-		
-		return $form;
-	}	
-}
+    public function getFieldDependentData(Member $user, $fieldName)
+    {
+        if ($fieldName == 'PendingObjects') {
+            return $this->workflowService->userPendingItems($user);
+        }
+        if ($fieldName == 'SubmittedObjects') {
+            return $this->workflowService->userSubmittedItems($user);
+        }
+    }
 
-class WorkflowDefinitionItemRequestClass extends GridFieldDetailForm_ItemRequest {
-	public function updatetemplateversion($data, Form $form, $request) {
-		$record = $form->getRecord();
-		if ($record) {
-			$record->updateFromTemplate();
-		}
-		return $form->loadDataFrom($form->getRecord())->forAjaxTemplate();
-	}
+    /**
+     * Spits out an exported version of the selected WorkflowDefinition for download.
+     *
+     * @param HTTPRequest $request
+     * @return HTTPResponse
+     */
+    public function export(HTTPRequest $request)
+    {
+        $url = explode('/', $request->getURL());
+        $definitionID = end($url);
+        if ($definitionID && is_numeric($definitionID)) {
+            $exporter = new WorkflowDefinitionExporter($definitionID);
+            $exportFilename = WorkflowDefinitionExporter::$export_filename_prefix.'-'.$definitionID.'.yml';
+            $exportBody = $exporter->export();
+            $fileData = array(
+                'name' => $exportFilename,
+                'mime' => 'text/x-yaml',
+                'body' => $exportBody,
+                'size' => $exporter->getExportSize($exportBody)
+            );
+            return $exporter->sendFile($fileData);
+        }
+    }
+
+    /**
+     * Required so we can simply change the visible label of the "Import" button and lose some redundant form-fields.
+     *
+     * @return Form
+     */
+    public function ImportForm()
+    {
+        $form = parent::ImportForm();
+        if (!$form) {
+            return;
+        }
+
+        $form->unsetAllActions();
+        $newActionList = new FieldList(array(
+            new FormAction('import', _t('AdvancedWorkflowAdmin.IMPORT', 'Import workflow'))
+        ));
+        $form->Fields()->fieldByName('_CsvFile')->getValidator()->setAllowedExtensions(array('yml', 'yaml'));
+        $form->Fields()->removeByName('EmptyBeforeImport');
+        $form->setActions($newActionList);
+
+        return $form;
+    }
 }

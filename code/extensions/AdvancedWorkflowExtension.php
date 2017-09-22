@@ -1,155 +1,169 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\Extensions;
+
+use SilverStripe\Control\Controller;
+use SilverStripe\Core\Extension;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\Form;
+use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
-use SilverStripe\Core\Extension;
+use SilverStripe\View\Requirements;
+use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * Handles interactions triggered by users in the backend of the CMS. Replicate this
- * type of functionality wherever you need UI interaction with workflow. 
+ * type of functionality wherever you need UI interaction with workflow.
  *
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class AdvancedWorkflowExtension extends Extension {
-	
-	private static $allowed_actions = array(
-		'updateworkflow',
-		'startworkflow'
-	);
+class AdvancedWorkflowExtension extends Extension
+{
+    private static $allowed_actions = array(
+        'updateworkflow',
+        'startworkflow'
+    );
 
-	public function startworkflow($data, $form, $request) {
-		$item = $form->getRecord();
-		$workflowID = isset($data['TriggeredWorkflowID']) ? intval($data['TriggeredWorkflowID']) : 0;
+    public function startworkflow($data, $form, $request)
+    {
+        $item = $form->getRecord();
+        $workflowID = isset($data['TriggeredWorkflowID']) ? intval($data['TriggeredWorkflowID']) : 0;
 
-		if (!$item || !$item->canEdit()) {
-			return;
-		}
-		
-		// Save a draft, if the user forgets to do so
-		$this->saveAsDraftWithAction($form, $item);
+        if (!$item || !$item->canEdit()) {
+            return;
+        }
 
-		$svc = singleton('WorkflowService');
-		$svc->startWorkflow($item, $workflowID);
-		
-		return $this->returnResponse($form);
-	}
+        // Save a draft, if the user forgets to do so
+        $this->saveAsDraftWithAction($form, $item);
 
-	/**
-	 * Need to update the edit form AFTER it's been transformed to read only so that the workflow stuff is still
-	 * allowed to be added with 'write' permissions
-	 *
-	 * @param Form $form
-	 */
-	public function updateEditForm(Form $form) {
-		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/advanced-workflow-cms.js');
-		$svc    = singleton('WorkflowService');
-		$p      = $form->getRecord();
-		$active = $svc->getWorkflowFor($p);
+        $svc = singleton(WorkflowService::class);
+        $svc->startWorkflow($item, $workflowID);
 
-		if ($active) {
+        return $this->returnResponse($form);
+    }
 
-			$fields = $form->Fields();
-			$current = $active->CurrentAction();
-			$wfFields = $active->getWorkflowFields();
+    /**
+     * Need to update the edit form AFTER it's been transformed to read only so that the workflow stuff is still
+     * allowed to be added with 'write' permissions
+     *
+     * @param Form $form
+     */
+    public function updateEditForm(Form $form)
+    {
+        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+        Requirements::javascript($module->getRelativeResourcePath('javascript/advanced-workflow-cms.js'));
+        $svc    = singleton(WorkflowService::class);
+        $p      = $form->getRecord();
+        $active = $svc->getWorkflowFor($p);
 
-			$allowed = array_keys($wfFields->saveableFields());
-			$data = array();
-			foreach ($allowed as $fieldName) {
-				$data[$fieldName] = $current->$fieldName;
-			}
+        if ($active) {
+            $fields = $form->Fields();
+            $current = $active->CurrentAction();
+            $wfFields = $active->getWorkflowFields();
 
-			$fields->findOrMakeTab(
-				'Root.WorkflowActions',
-				_t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
-			);
-			$fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
+            $allowed = array_keys($wfFields->saveableFields());
+            $data = array();
+            foreach ($allowed as $fieldName) {
+                $data[$fieldName] = $current->$fieldName;
+            }
 
-			$form->loadDataFrom($data);
+            $fields->findOrMakeTab(
+                'Root.WorkflowActions',
+                _t('Workflow.WorkflowActionsTabTitle', 'Workflow Actions')
+            );
+            $fields->addFieldsToTab('Root.WorkflowActions', $wfFields);
 
-			if (!$p->canEditWorkflow()) {
-				$form->makeReadonly();
-			}
+            $form->loadDataFrom($data);
 
-			$this->owner->extend('updateWorkflowEditForm', $form);
-		}
-	}
-	
-	public function updateItemEditForm($form) {
-		$record = $form->getRecord();
-		if ($record && $record->hasExtension('WorkflowApplicable')) {
-			$actions = $form->Actions();
-			$record->extend('updateCMSActions', $actions);
-			$this->updateEditForm($form);
-		}
-	}
+            if (!$p->canEditWorkflow()) {
+                $form->makeReadonly();
+            }
 
-	/**
-	 * Update a workflow based on user input. 
-	 *
-	 * @todo refactor with WorkflowInstance::updateWorkflow
-	 * 
-	 * @param array $data
-	 * @param Form $form
-	 * @param SS_HTTPRequest $request
-	 * @return String
-	 */
-	public function updateworkflow($data, Form $form, $request) {
-		$svc = singleton('WorkflowService');
-		$p = $form->getRecord();
-		$workflow = $svc->getWorkflowFor($p);
-		$action = $workflow->CurrentAction();
+            $this->owner->extend('updateWorkflowEditForm', $form);
+        }
+    }
 
-		if (!$p || !$p->canEditWorkflow()) {
-			return;
-		}
+    public function updateItemEditForm($form)
+    {
+        $record = $form->getRecord();
+        if ($record && $record->hasExtension(WorkflowApplicable::class)) {
+            $actions = $form->Actions();
+            $record->extend('updateCMSActions', $actions);
+            $this->updateEditForm($form);
+        }
+    }
 
-		$allowedFields = $workflow->getWorkflowFields()->saveableFields();
-		unset($allowedFields['TransitionID']);
+    /**
+     * Update a workflow based on user input.
+     *
+     * @todo refactor with WorkflowInstance::updateWorkflow
+     *
+     * @param array $data
+     * @param Form $form
+     * @param HTTPRequest $request
+     * @return string
+     */
+    public function updateworkflow($data, Form $form, $request)
+    {
+        $svc = singleton(WorkflowService::class);
+        $p = $form->getRecord();
+        $workflow = $svc->getWorkflowFor($p);
+        $action = $workflow->CurrentAction();
 
-		$allowed = array_keys($allowedFields);
-		if (count($allowed)) {
-			$form->saveInto($action, $allowed);
-			$action->write();
-		}
+        if (!$p || !$p->canEditWorkflow()) {
+            return;
+        }
 
-		if (isset($data['TransitionID']) && $data['TransitionID']) {
-			$svc->executeTransition($p, $data['TransitionID']);
-		} else {
-			// otherwise, just try to execute the current workflow to see if it
-			// can now proceed based on user input
-			$workflow->execute();
-		}
+        $allowedFields = $workflow->getWorkflowFields()->saveableFields();
+        unset($allowedFields['TransitionID']);
 
-		return $this->returnResponse($form);
-	}
-	
-	protected function returnResponse($form) {
-		if ($this->owner instanceof GridFieldDetailForm_ItemRequest) {
-			$record = $form->getRecord();
-			if ($record && $record->exists()) {
-				return $this->owner->edit($this->owner->getRequest());
-			}
-		} 
-		
-		$negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
-		return $negotiator->respond($this->owner->getRequest());
-	}
-	
-	/**
-	 * Ocassionally users forget to apply their changes via the standard CMS "Save Draft" button,
-	 * and select the action button instead - losing their changes.
-	 * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run.
-	 * See: #72 and #77
-	 * 
-	 * @param \Form $form
-	 * @param \DataObject $item
-	 * @return void
-	 */
-	protected function saveAsDraftWithAction(Form $form, DataObject $item) {
-		$form->saveInto($item);
-		$item->write();
-	}	
+        $allowed = array_keys($allowedFields);
+        if (count($allowed)) {
+            $form->saveInto($action, $allowed);
+            $action->write();
+        }
 
+        if (isset($data['TransitionID']) && $data['TransitionID']) {
+            $svc->executeTransition($p, $data['TransitionID']);
+        } else {
+            // otherwise, just try to execute the current workflow to see if it
+            // can now proceed based on user input
+            $workflow->execute();
+        }
+
+        return $this->returnResponse($form);
+    }
+
+    protected function returnResponse($form)
+    {
+        if ($this->owner instanceof GridFieldDetailForm_ItemRequest) {
+            $record = $form->getRecord();
+            if ($record && $record->exists()) {
+                return $this->owner->edit($this->owner->getRequest());
+            }
+        }
+
+        $negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
+        return $negotiator->respond($this->owner->getRequest());
+    }
+
+    /**
+     * Ocassionally users forget to apply their changes via the standard CMS "Save Draft" button,
+     * and select the action button instead - losing their changes.
+     * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run.
+     * See: #72 and #77
+     *
+     * @param Form $form
+     * @param DataObject $item
+     * @return void
+     */
+    protected function saveAsDraftWithAction(Form $form, DataObject $item)
+    {
+        $form->saveInto($item);
+        $item->write();
+    }
 }

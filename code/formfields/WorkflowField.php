@@ -1,8 +1,21 @@
 <?php
 
+namespace Symbiote\AdvancedWorkflow\FormFields;
+
+use ReflectionClass;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Forms\FormField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\Security\SecurityToken;
-use SilverStripe\Forms\FormField;
+use SilverStripe\View\ArrayData;
+use SilverStripe\View\Requirements;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
+use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * A form field that allows workflow actions and transitions to be edited,
@@ -10,114 +23,130 @@ use SilverStripe\Forms\FormField;
  *
  * @package advancedworkflow
  */
-class WorkflowField extends FormField {
+class WorkflowField extends FormField
+{
+    private static $allowed_actions = array(
+        'action',
+        'transition',
+        'sort'
+    );
 
-	private static $allowed_actions = array(
-		'action',
-		'transition',
-		'sort'
-	);
+    protected $definition;
 
-	protected $definition;
+    public function __construct($name, $title, WorkflowDefinition $definition)
+    {
+        $this->definition = $definition;
+        $this->addExtraClass('workflow-field');
 
-	public function __construct($name, $title, WorkflowDefinition $definition) {
-		$this->definition = $definition;
-		$this->addExtraClass('workflow-field');
+        parent::__construct($name, $title);
+    }
 
-		parent::__construct($name, $title);
-	}
+    public function action()
+    {
+        return new WorkflowFieldActionController($this, 'action');
+    }
 
-	public function action() {
-		return new WorkflowFieldActionController($this, 'action');
-	}
+    public function transition()
+    {
+        return new WorkflowFieldTransitionController($this, 'transition');
+    }
 
-	public function transition() {
-		return new WorkflowFieldTransitionController($this, 'transition');
-	}
+    public function sort($request)
+    {
+        if (!SecurityToken::inst()->checkRequest($request)) {
+            $this->httpError(404);
+        }
 
-	public function sort($request) {
-		if(!SecurityToken::inst()->checkRequest($request)) {
-			$this->httpError(404);
-		}
+        $class = $request->postVar('class');
+        $ids   = $request->postVar('id');
 
-		$class = $request->postVar('class');
-		$ids   = $request->postVar('id');
+        if ($class == WorkflowAction::class) {
+            $objects = $this->Definition()->Actions();
+        } elseif ($class == WorkflowTransition::class) {
+            $parent = $request->postVar('parent');
+            $action = $this->Definition()->Actions()->byID($parent);
 
-		if($class == 'WorkflowAction') {
-			$objects = $this->Definition()->Actions();
-		} elseif($class == 'WorkflowTransition') {
-			$parent = $request->postVar('parent');
-			$action = $this->Definition()->Actions()->byID($parent);
+            if (!$action) {
+                $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDPARENTID', 'An invalid parent ID was specified.'));
+            }
 
-			if(!$action) {
-				$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDPARENTID', 'An invalid parent ID was specified.'));
-			}
+            $objects = $action->Transitions();
+        } else {
+            $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDCLASSTOORDER', 'An invalid class to order was specified.'));
+        }
 
-			$objects = $action->Transitions();
-		} else {
-			$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDCLASSTOORDER', 'An invalid class to order was specified.'));
-		}
+        if (array_diff($ids, $objects->column('ID'))) {
+            $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDIDLIST', 'An invalid list of IDs was provided.'));
+        }
 
-		if(array_diff($ids, $objects->column('ID'))) {
-			$this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDIDLIST', 'An invalid list of IDs was provided.'));
-		}
+        singleton(WorkflowService::class)->reorder($objects, $ids);
 
-		singleton('WorkflowService')->reorder($objects, $ids);
+        return new HTTPResponse(
+            null,
+            200,
+            _t('AdvancedWorkflowAdmin.SORTORDERSAVED', 'The sort order has been saved.')
+        );
+    }
 
-		return new SS_HTTPResponse(
-			null, 200, _t('AdvancedWorkflowAdmin.SORTORDERSAVED', 'The sort order has been saved.')
-		);
-	}
+    public function getTemplate()
+    {
+        return __CLASS__;
+    }
 
-	public function getTemplate() {
-		return 'WorkflowField';
-	}
+    public function FieldHolder($properties = array())
+    {
+        $workflow = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
+        $admin = ModuleLoader::getModule('silverstripe/admin');
 
-	public function FieldHolder($properties = array()) {
-		Requirements::javascript(THIRDPARTY_DIR . '/jquery/jquery.js');
-		Requirements::javascript(THIRDPARTY_DIR . '/jquery-entwine/dist/jquery.entwine-dist.js');
-		Requirements::javascript(ADVANCED_WORKFLOW_DIR . '/javascript/WorkflowField.js');
-		Requirements::css(ADVANCED_WORKFLOW_DIR . '/css/WorkflowField.css');
+        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery/jquery.js'));
+        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery-entwine/dist/jquery.entwine-dist.js'));
+        Requirements::javascript($workflow->getRelativeResourcePath('javascript/WorkflowField.js'));
+        Requirements::css($workflow->getRelativeResourcePath('css/WorkflowField.css'));
 
-		return $this->Field($properties);
-	}
+        return $this->Field($properties);
+    }
 
-	public function Definition() {
-		return $this->definition;
-	}
+    public function Definition()
+    {
+        return $this->definition;
+    }
 
-	public function ActionLink() {
-		$parts = func_get_args();
-		array_unshift($parts, 'action');
+    public function ActionLink()
+    {
+        $parts = func_get_args();
+        array_unshift($parts, 'action');
 
-		return $this->Link(implode('/', $parts));
-	}
+        return $this->Link(implode('/', $parts));
+    }
 
-	public function TransitionLink() {
-		$parts = func_get_args();
-		array_unshift($parts, 'transition');
+    public function TransitionLink()
+    {
+        $parts = func_get_args();
+        array_unshift($parts, 'transition');
 
-		return $this->Link(implode('/', $parts));
-	}
+        return $this->Link(implode('/', $parts));
+    }
 
-	public function CreateableActions() {
-		$list    = new ArrayList();
-		$classes = ClassInfo::subclassesFor('WorkflowAction');
+    public function CreateableActions()
+    {
+        $list    = new ArrayList();
+        $classes = ClassInfo::subclassesFor(WorkflowAction::class);
 
-		array_shift($classes);
-		sort($classes);
+        array_shift($classes);
+        sort($classes);
 
-		foreach($classes as $class) {
-			$reflect = new ReflectionClass($class);
-			$can     = singleton($class)->canCreate() && !$reflect->isAbstract();
+        foreach ($classes as $class) {
+            $reflect = new ReflectionClass($class);
+            $can     = singleton($class)->canCreate() && !$reflect->isAbstract();
 
-			if($can) $list->push(new ArrayData(array(
-				'Title' => singleton($class)->singular_name(),
-				'Class' => $class
-			)));
-		}
+            if ($can) {
+                $list->push(new ArrayData(array(
+                'Title' => singleton($class)->singular_name(),
+                'Class' => $class
+                )));
+            }
+        }
 
-		return $list;
-	}
-
+        return $list;
+    }
 }

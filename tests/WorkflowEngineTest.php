@@ -1,8 +1,19 @@
 <?php
 
-use SilverStripe\ORM\DataObject;
-use SilverStripe\ORM\Versioning\Versioned;
+namespace Symbiote\AdvancedWorkflow\Tests;
+
+use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\Versioned\Versioned;
+use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
+use Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction;
+use Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
+use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
 
 /**
  * Tests for the workflow engine.
@@ -12,306 +23,311 @@ use SilverStripe\Dev\SapphireTest;
  * @package    advancedworkflow
  * @subpackage tests
  */
-class WorkflowEngineTest extends SapphireTest {
+class WorkflowEngineTest extends SapphireTest
+{
+    protected static $fixture_file = 'workflowinstancetargets.yml';
 
-	public static $fixture_file = 'advancedworkflow/tests/workflowinstancetargets.yml';
+    public function testCreateWorkflowInstance()
+    {
+        $definition = new WorkflowDefinition();
+        $definition->Title = "Create Workflow Instance";
+        $definition->write();
 
-	public function testCreateWorkflowInstance() {
+        $stepOne = new WorkflowAction();
+        $stepOne->Title = "Step One";
+        $stepOne->WorkflowDefID = $definition->ID;
+        $stepOne->write();
 
-		$definition = new WorkflowDefinition();
-		$definition->Title = "Create Workflow Instance";
-		$definition->write();
+        $stepTwo = new WorkflowAction();
+        $stepTwo->Title = "Step Two";
+        $stepTwo->WorkflowDefID = $definition->ID;
+        $stepTwo->write();
 
-		$stepOne = new WorkflowAction();
-		$stepOne->Title = "Step One";
-		$stepOne->WorkflowDefID = $definition->ID;
-		$stepOne->write();
+        $transitionOne = new WorkflowTransition();
+        $transitionOne->Title = 'Step One T1';
+        $transitionOne->ActionID = $stepOne->ID;
+        $transitionOne->NextActionID = $stepTwo->ID;
+        $transitionOne->write();
 
-		$stepTwo = new WorkflowAction();
-		$stepTwo->Title = "Step Two";
-		$stepTwo->WorkflowDefID = $definition->ID;
-		$stepTwo->write();
+        $instance = new WorkflowInstance();
+        $instance->write();
 
-		$transitionOne = new WorkflowTransition();
-		$transitionOne->Title = 'Step One T1';
-		$transitionOne->ActionID = $stepOne->ID;
-		$transitionOne->NextActionID = $stepTwo->ID;
-		$transitionOne->write();
+        $instance->beginWorkflow($definition);
 
-		$instance = new WorkflowInstance();
-		$instance->write();
+        $actions = $definition->Actions();
+        $this->assertEquals(2, $actions->Count());
 
-		$instance->beginWorkflow($definition);
+        $transitions = $actions->find('Title', 'Step One')->Transitions();
+        $this->assertEquals(1, $transitions->Count());
+    }
 
-		$actions = $definition->Actions();
-		$this->assertEquals(2, $actions->Count());
+    public function testExecuteImmediateWorkflow()
+    {
+        $def = $this->createDefinition();
 
-		$transitions = $actions->find('Title', 'Step One')->Transitions();
-		$this->assertEquals(1, $transitions->Count());
-	}
+        $actions = $def->Actions();
+        $firstAction = $def->getInitialAction();
+        $this->assertEquals('Step One', $firstAction->Title);
 
-	public function testExecuteImmediateWorkflow() {
-		$def = $this->createDefinition();
+        $instance = new WorkflowInstance();
+        $instance->beginWorkflow($def);
+        $this->assertTrue($instance->CurrentActionID > 0);
 
-		$actions = $def->Actions();
-		$firstAction = $def->getInitialAction();
-		$this->assertEquals('Step One', $firstAction->Title);
+        $instance->execute();
 
-		$instance = new WorkflowInstance();
-		$instance->beginWorkflow($def);
-		$this->assertTrue($instance->CurrentActionID > 0);
+        // the instance should be complete, and have two finished workflow action
+        // instances.
+        $actions = $instance->Actions();
+        $this->assertEquals(2, $actions->Count());
 
-		$instance->execute();
+        foreach ($actions as $action) {
+            $this->assertTrue((bool) $action->Finished);
+        }
+    }
 
-		// the instance should be complete, and have two finished workflow action
-		// instances.
-		$actions = $instance->Actions();
-		$this->assertEquals(2, $actions->Count());
+    /**
+     * Ensure WorkflowInstance returns expected values for a Published target object.
+     */
+    public function testInstanceGetTargetPublished()
+    {
+        $def = $this->createDefinition();
+        $target = $this->objFromFixture(SiteTree::class, 'published-object');
+        $target->publishRecursive();
 
-		foreach($actions as $action) {
-			$this->assertTrue((bool) $action->Finished);
-		}
-	}
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
+        $instance->beginWorkflow($def);
+        $instance->execute();
 
-	/**
-	 * Ensure WorkflowInstance returns expected values for a Published target object.
-	 */
-	public function testInstanceGetTargetPublished() {
-		$def = $this->createDefinition();
-		$target = $this->objFromFixture('SiteTree', 'published-object');
-		$target->doPublish();
+        $this->assertTrue($target->isPublished());
+        $this->assertEquals($target->ID, $instance->getTarget()->ID);
+        $this->assertEquals($target->Title, $instance->getTarget()->Title);
+    }
 
-		$instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
-		$instance->beginWorkflow($def);
-		$instance->execute();
+    /**
+     * Ensure WorkflowInstance returns expected values for a Draft target object.
+     */
+    public function testInstanceGetTargetDraft()
+    {
+        $def = $this->createDefinition();
+        $target = $this->objFromFixture(SiteTree::class, 'draft-object');
 
-		$this->assertTrue($target->isPublished());
-		$this->assertEquals($target->ID, $instance->getTarget()->ID);
-		$this->assertEquals($target->Title, $instance->getTarget()->Title);
-	}
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-draft');
+        $instance->beginWorkflow($def);
+        $instance->execute();
 
-	/**
-	 * Ensure WorkflowInstance returns expected values for a Draft target object.
-	 */
-	public function testInstanceGetTargetDraft() {
-		$def = $this->createDefinition();
-		$target = $this->objFromFixture('SiteTree', 'draft-object');
+        $this->assertFalse($target->isPublished());
+        $this->assertEquals($target->ID, $instance->getTarget()->ID);
+        $this->assertEquals($target->Title, $instance->getTarget()->Title);
+    }
 
-		$instance = $this->objFromFixture('WorkflowInstance', 'target-is-draft');
-		$instance->beginWorkflow($def);
-		$instance->execute();
+    public function testPublishAction()
+    {
+        $this->logInWithPermission();
 
-		$this->assertFalse($target->isPublished());
-		$this->assertEquals($target->ID, $instance->getTarget()->ID);
-		$this->assertEquals($target->Title, $instance->getTarget()->Title);
-	}
+        $action = new PublishItemWorkflowAction;
+        $instance = new WorkflowInstance();
 
-	public function testPublishAction() {
-		$this->logInWithPermission();
+        $page = new SiteTree();
+        $page->Title = 'stuff';
+        $page->write();
 
-		$action = new PublishItemWorkflowAction;
-		$instance = new WorkflowInstance();
+        $instance->TargetClass = SiteTree::class;
+        $instance->TargetID = $page->ID;
 
-		$page = new SiteTree();
-		$page->Title = 'stuff';
-		$page->write();
+        $this->assertFalse($page->isPublished());
 
-		$instance->TargetClass = 'SiteTree';
-		$instance->TargetID = $page->ID;
+        $action->execute($instance);
 
-		$this->assertFalse($page->isPublished());
+        $page = DataObject::get_by_id(SiteTree::class, $page->ID);
+        $this->assertTrue($page->isPublished());
+    }
 
-		$action->execute($instance);
+    public function testCreateDefinitionWithEmptyTitle()
+    {
+        $definition = new WorkflowDefinition();
+        $definition->Title = "";
+        $definition->write();
+        $this->assertContains(
+            'My Workflow',
+            $definition->Title,
+            'Workflow created without title is assigned a default title.'
+        );
+    }
 
-		$page = DataObject::get_by_id('SiteTree', $page->ID);
-		$this->assertTrue($page->isPublished());
+    protected function createDefinition()
+    {
+        $definition = new WorkflowDefinition();
+        $definition->Title = "Dummy Workflow Definition";
+        $definition->write();
 
-	}
+        $stepOne = new WorkflowAction();
+        $stepOne->Title = "Step One";
+        $stepOne->WorkflowDefID = $definition->ID;
+        $stepOne->write();
 
-	public function testCreateDefinitionWithEmptyTitle() {
-		$definition = new WorkflowDefinition();
-		$definition->Title = "";
-		$definition->write();
-		$this->assertContains(
-			'My Workflow',
-			$definition->Title,
-			'Workflow created without title is assigned a default title.'
-		);
-	}
+        $stepTwo = new WorkflowAction();
+        $stepTwo->Title = "Step Two";
+        $stepTwo->WorkflowDefID = $definition->ID;
+        $stepTwo->write();
 
-	protected function createDefinition() {
-		$definition = new WorkflowDefinition();
-		$definition->Title = "Dummy Workflow Definition";
-		$definition->write();
+        $transitionOne = new WorkflowTransition();
+        $transitionOne->Title = 'Step One T1';
+        $transitionOne->ActionID = $stepOne->ID;
+        $transitionOne->NextActionID = $stepTwo->ID;
+        $transitionOne->write();
 
-		$stepOne = new WorkflowAction();
-		$stepOne->Title = "Step One";
-		$stepOne->WorkflowDefID = $definition->ID;
-		$stepOne->write();
+        return $definition;
+    }
 
-		$stepTwo = new WorkflowAction();
-		$stepTwo->Title = "Step Two";
-		$stepTwo->WorkflowDefID = $definition->ID;
-		$stepTwo->write();
+    public function testCreateFromTemplate()
+    {
+        $structure = array(
+            'First step'    => array(
+                'type'      => AssignUsersToWorkflowAction::class,
+                'transitions'   => array(
+                    'second'    => 'Second step'
+                )
+            ),
+            'Second step'   => array(
+                'type'      => NotifyUsersWorkflowAction::class,
+                'transitions'   => array(
+                    'Approve'   => 'Third step'
+                )
+            ),
+        );
 
-		$transitionOne = new WorkflowTransition();
-		$transitionOne->Title = 'Step One T1';
-		$transitionOne->ActionID = $stepOne->ID;
-		$transitionOne->NextActionID = $stepTwo->ID;
-		$transitionOne->write();
+        $template = new WorkflowTemplate('Test');
 
-		return $definition;
-	}
+        $template->setStructure($structure);
 
+        $actions = $template->createRelations();
 
-	public function testCreateFromTemplate() {
-		$structure = array(
-			'First step'	=> array(
-				'type'		=> 'AssignUsersToWorkflowAction',
-				'transitions'	=> array(
-					'second'	=> 'Second step'
-				)
-			),
-			'Second step'	=> array(
-				'type'		=> 'NotifyUsersWorkflowAction',
-				'transitions'	=> array(
-					'Approve'	=> 'Third step'
-				)
-			),
-		);
+        $this->assertEquals(2, count($actions));
+        $this->assertTrue(isset($actions['First step']));
+        $this->assertTrue(isset($actions['Second step']));
 
-		$template = new WorkflowTemplate('Test');
+        $this->assertTrue($actions['First step']->exists());
 
-		$template->setStructure($structure);
+        $transitions = $actions['First step']->Transitions();
 
-		$actions = $template->createRelations();
+        $this->assertTrue($transitions->count() == 1);
+    }
 
-		$this->assertEquals(2, count($actions));
-		$this->assertTrue(isset($actions['First step']));
-		$this->assertTrue(isset($actions['Second step']));
+    /**
+     * Tests whether if user(s) are able to delete a workflow, dependent on permissions.
+     */
+    public function testCanDeleteWorkflow()
+    {
+        // Create a definition
+        $def = $this->createDefinition();
 
-		$this->assertTrue($actions['First step']->exists());
+        // Test a user with lame permissions
+        $memberID = $this->logInWithPermission('SITETREE_VIEW_ALL');
+        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
+        $this->assertFalse($def->canCreate($member));
 
-		$transitions = $actions['First step']->Transitions();
+        // Test a user with good permissions
+        $memberID = $this->logInWithPermission('CREATE_WORKFLOW');
+        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
+        $this->assertTrue($def->canCreate($member));
+    }
 
-		$this->assertTrue($transitions->count() == 1);
+    /**
+     * For a context around this test, see: https://github.com/symbiote/advancedworkflow/issues/141
+     *
+     *  1). Create a workflow definition
+     *  2). Step the content into that workflow
+     *  3). Delete the workflow
+     *  4). Check that the content:
+     *      i). Has no remaining related actions
+     *      ii). Can be re-assigned a new Workflow
+     *  5). Check that the object under workflow, maintains its status (Draft, Published etc)
+     */
+    public function testDeleteWorkflowTargetStillWorks()
+    {
+        // 1). Create a workflow definition
+        $def = $this->createDefinition();
+        $page = SiteTree::create();
+        $page->Title = 'dummy test';
+        $page->WorkflowDefinitionID = $def->ID;     // Normally done via CMS
+        Versioned::set_stage(Versioned::DRAFT);
+        $page->write();
 
+        // Check $page is in draft, pre-deletion
+        $status = ($page->isOnDraftOnly() && !$page->isPublished());
+        $this->assertTrue($status);
 
-	}
+        // 2). Step the content into that workflow
+        $instance = new WorkflowInstance();
+        $instance->beginWorkflow($def, $page);
+        $instance->execute();
 
-	/**
-	 * Tests whether if user(s) are able to delete a workflow, dependent on permissions.
-	 */
-	public function testCanDeleteWorkflow() {
-		// Create a definition
-		$def = $this->createDefinition();
+        // Check the content is assigned
+        $testPage = DataObject::get_by_id(SiteTree::class, $page->ID);
+        $this->assertEquals($instance->TargetID, $testPage->ID);
 
-		// Test a user with lame permissions
-		$memberID = $this->logInWithPermission('SITETREE_VIEW_ALL');
-		$member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
-		$this->assertFalse($def->canCreate($member));
+        // 3). Delete the workflow
+        $def->delete();
 
-		// Test a user with good permissions
-		$memberID = $this->logInWithPermission('CREATE_WORKFLOW');
-		$member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
-		$this->assertTrue($def->canCreate($member));
-	}
+        // Check $testPage is _still_ in draft, post-deletion
+        $status = ($testPage->isOnDraftOnly() && !$testPage->isPublished());
+        $this->assertTrue($status);
 
-	/**
-	 * For a context around this test, see: https://github.com/symbiote/advancedworkflow/issues/141
-	 *
-	 *	1). Create a workflow definition
-	 *	2). Step the content into that workflow
-	 *	3). Delete the workflow
-	 *	4). Check that the content:
-	 *		i). Has no remaining related actions
-	 *		ii). Can be re-assigned a new Workflow
-	 *	5). Check that the object under workflow, maintains its status (Draft, Published etc)
-	 */
-	public function testDeleteWorkflowTargetStillWorks() {
-		// 1). Create a workflow definition
-		$def = $this->createDefinition();
-		$page = SiteTree::create();
-		$page->Title = 'dummy test';
-		$page->WorkflowDefinitionID = $def->ID;	// Normally done via CMS
-		Versioned::set_stage(Versioned::DRAFT);
-		$page->write();
-
-		// Check $page is in draft, pre-deletion
-		$status = ($page->getIsAddedToStage() && !$page->getExistsOnLive());
-		$this->assertTrue($status);
-
-		// 2). Step the content into that workflow
-		$instance = new WorkflowInstance();
-		$instance->beginWorkflow($def, $page);
-		$instance->execute();
-
-		// Check the content is assigned
-		$testPage = DataObject::get_by_id('SiteTree', $page->ID);
-		$this->assertEquals($instance->TargetID, $testPage->ID);
-
-		// 3). Delete the workflow
-		$def->delete();
-
-		// Check $testPage is _still_ in draft, post-deletion
-		$status = ($testPage->getIsAddedToStage() && !$testPage->getExistsOnLive());
-		$this->assertTrue($status);
-
-		/*
+        /*
 		 * 4). i). Check that the content: Has no remaining related actions
 		 * Note: WorkflowApplicable::WorkflowDefinitionID does _not_ get updated until assigned a new workflow
 		 * so we can use it to check that all related actions are gone
 		 */
-		$defID = $testPage->WorkflowDefinitionID;
-		$this->assertEquals(0, DataObject::get('WorkflowAction')->filter('WorkflowDefID', $defID)->count());
+        $defID = $testPage->WorkflowDefinitionID;
+        $this->assertEquals(0, DataObject::get(WorkflowAction::class)->filter('WorkflowDefID', $defID)->count());
 
-		/*
+        /*
 		 * 4). ii). Check that the content: Can be re-assigned a new Workflow Definition
 		 */
-		$newDef = $this->createDefinition();
-		$testPage->WorkflowDefinitionID = $newDef->ID;	// Normally done via CMS
-		$instance = new WorkflowInstance();
-		$instance->beginWorkflow($newDef, $testPage);
-		$instance->execute();
+        $newDef = $this->createDefinition();
+        $testPage->WorkflowDefinitionID = $newDef->ID;  // Normally done via CMS
+        $instance = new WorkflowInstance();
+        $instance->beginWorkflow($newDef, $testPage);
+        $instance->execute();
 
-		// Check the content is assigned to the new Workflow Definition correctly
-		$this->assertEquals($newDef->ID, $testPage->WorkflowDefinitionID);
-		$this->assertEquals(
-			$newDef->Actions()->count(),
-			DataObject::get('WorkflowAction')->filter('WorkflowDefID', $newDef->ID)->count()
-		);
+        // Check the content is assigned to the new Workflow Definition correctly
+        $this->assertEquals($newDef->ID, $testPage->WorkflowDefinitionID);
+        $this->assertEquals(
+            $newDef->Actions()->count(),
+            DataObject::get(WorkflowAction::class)->filter('WorkflowDefID', $newDef->ID)->count()
+        );
 
-		// 5). Check that the object under workflow, maintains its status
-		$newDef2 = $this->createDefinition();
+        // 5). Check that the object under workflow, maintains its status
+        $newDef2 = $this->createDefinition();
 
-		// Login so SiteTree::canPublish() returns true
-		$testPage->WorkflowDefinitionID = $newDef2->ID;	// Normally done via CMS
-		$this->logInWithPermission();
-		$testPage->doPublish();
+        // Login so SiteTree::canPublish() returns true
+        $testPage->WorkflowDefinitionID = $newDef2->ID;     // Normally done via CMS
+        $this->logInWithPermission();
+        $testPage->publishRecursive();
 
-		// Check $testPage is published, pre-deletion (getStatusFlags() returns empty array)
-		$this->assertTrue($testPage->getExistsOnLive());
+        // Check $testPage is published, pre-deletion (getStatusFlags() returns empty array)
+        $this->assertTrue($testPage->isPublished());
 
-		$instance = new WorkflowInstance();
-		$instance->beginWorkflow($newDef2, $testPage);
-		$instance->execute();
+        $instance = new WorkflowInstance();
+        $instance->beginWorkflow($newDef2, $testPage);
+        $instance->execute();
 
-		// Now delete the related WorkflowDefinition and ensure status is the same
-		// (i.e. so it's not 'modified' for example)
-		$newDef2->delete();
+        // Now delete the related WorkflowDefinition and ensure status is the same
+        // (i.e. so it's not 'modified' for example)
+        $newDef2->delete();
 
-		// Check $testPage is _still_ published, post-deletion (getStatusFlags() returns empty array)
-		$this->assertTrue($testPage->getExistsOnLive());
-	}
+        // Check $testPage is _still_ published, post-deletion (getStatusFlags() returns empty array)
+        $this->assertTrue($testPage->isPublished());
+    }
 
     /**
      * Test the diff showing only fields that have changes made to it in a data object.
      */
     public function testInstanceDiff()
     {
-        $instance = $this->objFromFixture('WorkflowInstance', 'target-is-published');
+        $instance = $this->objFromFixture(WorkflowInstance::class, 'target-is-published');
         $target = $instance->getTarget();
-        $target->doPublish();
+        $target->publishRecursive();
 
         $target->Title = 'New title for target';
         $target->write();
@@ -320,5 +336,4 @@ class WorkflowEngineTest extends SapphireTest {
         $this->assertContains('Title', $diff);
         $this->assertNotContains('Content', $diff);
     }
-
 }
