@@ -43,3 +43,24 @@
         text-decoration: none;
     }
 }
+
+/**
+ * Styles for Workflow Definition CMS fields
+ */
+.cms .advancedworkflow-reminderemail {
+    // Display the contents of the field group inline
+    display: inherit;
+
+    // Make the "reminder email" input field smaller
+    .form__fieldgroup-item {
+        margin-left: -20px;
+        margin-top: 0;
+        min-width: 40px;
+        width: 40px;
+        z-index: 5;
+
+        .form-group--no-label {
+            width: inherit;
+        }
+    }
+}
