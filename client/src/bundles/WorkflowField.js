@@ -1,318 +1,315 @@
-import $ from 'jQuery';
+import $ from 'jquery';
+import i18n from 'i18n';
 
-jQuery.entwine("workflow", function($) {
-	$(".workflow-field").entwine({
-		Loading: null,
-		Dialog:  null,
-		onmatch: function() {
-			var self = this;
+$.entwine('workflow', () => {
+  $('.workflow-field').entwine({
+    Loading: null,
+    Dialog: null,
+    onmatch() {
+      const self = this;
 
-			this.setLoading(this.find(".workflow-field-loading"));
-			this.setDialog(this.find(".workflow-field-dialog"));
+      this.setLoading(this.find('.workflow-field-loading'));
+      this.setDialog(this.find('.workflow-field-dialog'));
 
-			this.getDialog().data("workflow-field", this).dialog({
-				autoOpen: false,
-				width:    800,
-				height:   600,
-				modal:    true,
-				dialogClass: 'workflow-field-editor-dialog'
-			});
+      this.getDialog().data('workflow-field', this).dialog({
+        autoOpen: false,
+        width: 800,
+        height: 600,
+        modal: true,
+        dialogClass: 'workflow-field-editor-dialog',
+      });
 
-			this.getDialog().on("click", "button", function() {
-				$(this).addClass("disabled");
-			});
+      this.getDialog().on('click', 'button', () => {
+        $(this).addClass('disabled');
+      });
 
-			this.getDialog().on("submit", "form", function() {
-				$(this).ajaxSubmit(function(response) {
-					if($(response).is(".workflow-field")) {
-						self.getDialog().empty().dialog("close");
-						self.replaceWith(response);
-					} else {
-						self.getDialog().html(response);
-					}
-				});
+      this.getDialog().on('submit', 'form', () => {
+        $(this).ajaxSubmit((response) => {
+          if ($(response).is('.workflow-field')) {
+            self.getDialog().empty().dialog('close');
+            self.replaceWith(response);
+          } else {
+            self.getDialog().html(response);
+          }
+        });
 
-				return false;
-			});
-		},
-		onunmatch: function () {
-			$('.workflow-field-editor-dialog').remove();
-		},
-		showDialog: function(url) {
-			var dlg = this.getDialog();
+        return false;
+      });
+    },
 
-			dlg.empty().dialog("open");
-			dlg.parent().addClass("loading");
+    onunmatch() {
+      $('.workflow-field-editor-dialog').remove();
+    },
 
-			$.get(url).done(function(body) {
-				dlg.html(body).parent().removeClass("loading");
-			});
-		},
-		loading: function(toggle) {
-			this.getLoading().toggle(typeof(toggle) == "undefined" || toggle);
-		}
-	});
+    showDialog(url) {
+      const dlg = this.getDialog();
 
-	function helper() {
-		return $("<div />").addClass("ui-state-highlight").appendTo("body");
-	}
+      dlg.empty().dialog('open');
+      dlg.parent().addClass('loading');
 
-	$(".workflow-field .workflow-field-actions").entwine({
-		onmatch: function() {
-			$(".workflow-field .workflow-field-action-disabled").on('click',function() {
-				return false;
-			});
-			this.sortable({
-				axis:        "y",
-				containment: this,
-				placeholder: "ui-state-highlight workflow-placeholder",
-				handle:      ".workflow-field-action-drag",
-				tolerance:   "pointer",
-				update: function() {
-					var actions = $(this).find(".workflow-field-action");
-					var field   = $(this).closest(".workflow-field");
-					var link    = field.data("sort-link");
-					var ids     = actions.map(function() { return $(this).data("id"); });
+      $.get(url).done((body) => {
+        dlg.html(body).parent().removeClass('loading');
+      });
+    },
 
-					var data = {
-						"id[]":  ids.get(),
-						"class": "WorkflowAction",
-						"SecurityID": field.data("securityid")
-					};
+    loading(toggle) {
+      this.getLoading().toggle(typeof toggle === 'undefined' || toggle);
+    },
+  });
 
-					field.loading();
-					$.post(link, data).done(function() { field.loading(false); });
-				}
-			});
-		}
-	});
+  $('.workflow-field .workflow-field-actions').entwine({
+    onmatch() {
+      $('.workflow-field .workflow-field-action-disabled').on('click', () => false);
 
-	$(".workflow-field .workflow-field-action-transitions").entwine({
-		onmatch: function() {
-			this.sortable({
-				axis:        "y",
-				containment: this,
-				handle:      ".workflow-field-action-drag",
-				tolerance:   "pointer",
-				update: function() {
-					var trans = $(this).find("li");
-					var field = $(this).closest(".workflow-field");
-					var link  = field.data("sort-link");
-					var ids   = trans.map(function() { return $(this).data("id"); });
+      this.sortable({
+        axis: 'y',
+        containment: this,
+        placeholder: 'ui-state-highlight workflow-placeholder',
+        handle: '.workflow-field-action-drag',
+        tolerance: 'pointer',
+        update() {
+          const actions = $(this).find('.workflow-field-action');
+          const field = $(this).closest('.workflow-field');
+          const link = field.data('sort-link');
+          const ids = actions.map(() => $(this).data('id'));
 
-					var data = {
-						"id[]":   ids.get(),
-						"class":  "WorkflowTransition",
-						"parent": $(this).closest(".workflow-field-action").data("id"),
-						"SecurityID": field.data("securityid")
-					};
+          const data = {
+            'id[]': ids.get(),
+            class: 'WorkflowAction',
+            SecurityID: field.data('securityid'),
+          };
 
-					field.loading();
-					$.post(link, data).done(function() { field.loading(false); });
-				}
-			});
-		}
-	});
+          field.loading();
+          $.post(link, data).done(() => { field.loading(false); });
+        },
+      });
+    },
+  });
 
-	$(".workflow-field .workflow-field-create-class").entwine({
-		onmatch: function() {
-			this.chosen().addClass("has-chnz");
-		},
-		onchange: function() {
-			this.siblings(".workflow-field-do-create").toggleClass("disabled", !this.val());
-		}
-	});
+  $('.workflow-field .workflow-field-action-transitions').entwine({
+    onmatch() {
+      this.sortable({
+        axis: 'y',
+        containment: this,
+        handle: '.workflow-field-action-drag',
+        tolerance: 'pointer',
+        update() {
+          const trans = $(this).find('li');
+          const field = $(this).closest('.workflow-field');
+          const link = field.data('sort-link');
+          const ids = trans.map(() => $(this).data('id'));
 
-	$(".workflow-field .workflow-field-do-create").entwine({
-		onclick: function() {
-			var sel   = this.siblings(".workflow-field-create-class");
-			var field = this.closest(".workflow-field");
+          const data = {
+            'id[]': ids.get(),
+            class: 'WorkflowTransition',
+            parent: $(this).closest('.workflow-field-action').data('id'),
+            SecurityID: field.data('securityid'),
+          };
 
-			if(sel.val()) {
-				field.showDialog(sel.val());
-			}
+          field.loading();
+          $.post(link, data).done(() => { field.loading(false); });
+        },
+      });
+    },
+  });
 
-			return false;
-		}
-	});
+  $('.workflow-field .workflow-field-create-class').entwine({
+    onmatch() {
+      this.chosen().addClass('has-chnz');
+    },
 
-	$(".workflow-field .workflow-field-open-dialog").entwine({
-		onclick: function() {
-			this.closest(".workflow-field").showDialog(this.prop("href"));
-			return false;
-		}
-	});
+    onchange() {
+      this.siblings('.workflow-field-do-create').toggleClass('disabled', !this.val());
+    },
+  });
 
-	$(".workflow-field .workflow-field-delete").entwine({
-		onclick: function() {
-			if(confirm(ss.i18n._t('Workflow.DeleteQuestion'))) {
-				var data = {
-					"SecurityID" : this.data("securityid")
-				};
-				$.post(this.prop('href'), data).done(function(body) {
-					$(".workflow-field").replaceWith(body);
-				});
-			}
+  $('.workflow-field .workflow-field-do-create').entwine({
+    onclick() {
+      const sel = this.siblings('.workflow-field-create-class');
+      const field = this.closest('.workflow-field');
 
-			return false;
-		}
-	});
+      if (sel.val()) {
+        field.showDialog(sel.val());
+      }
 
+      return false;
+    },
+  });
 
-	/*
-	 * Simple implementation of the jQuery-UI timepicker widget
-	 * @see: http://trentrichardson.com/examples/timepicker/ for more config options
-	 *
-	 * This will need some more work when it comes to implementing i18n functionality. Fortunately, the library handles these as option-settings quite well.
-	 */
-	$("#Root_PublishingSchedule").entwine({
-		onclick: function() {
-			if(typeof $.fn.timepicker() !== 'object' || !$('input.hasTimePicker').length >0) {
-				return false;
-			}
-			var field = $('input.hasTimePicker');
-			var defaultTime = function() {
-				var date = new Date();
-				return date.getHours()+':'+date.getMinutes();
-			}
-			var pickerOpts = {
-				useLocalTimezone: true,
-				defaultValue: defaultTime,
-				controlType: 'select',
-				timeFormat: 'HH:mm'
-			};
-			field.timepicker(pickerOpts);
-			return false;
-		},
-		onmatch: function(){
-			var self = this,
-				publishDate = this.find('input[name="PublishOnDate[date]"]'),
-				publishTime = this.find('input[name="PublishOnDate[time]"]'),
-				parent = publishDate.parent().parent();
+  $('.workflow-field .workflow-field-open-dialog').entwine({
+    onclick() {
+      this.closest('.workflow-field').showDialog(this.prop('href'));
+      return false;
+    },
+  });
+
+  $('.workflow-field .workflow-field-delete').entwine({
+    onclick() {
+      if (confirm(i18n._t('Workflow.DeleteQuestion'))) {
+        const data = {
+          SecurityID: this.data('securityid'),
+        };
+
+        $.post(this.prop('href'), data).done((body) => {
+          $('.workflow-field').replaceWith(body);
+        });
+      }
+
+      return false;
+    },
+  });
 
 
-			if(!$('#Form_EditForm_action_publish').attr('disabled')){
-				self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
+  /*
+   * Simple implementation of the jQuery-UI timepicker widget
+   * @see: http://trentrichardson.com/examples/timepicker/ for more config options
+   *
+   * This will need some more work when it comes to implementing i18n functionality. Fortunately,
+   * the library handles these as option-settings quite well.
+   */
+  $('#Root_PublishingSchedule').entwine({
+    onclick() {
+      if (typeof $.fn.timepicker() !== 'object' || !$('input.hasTimePicker').length > 0) {
+        return false;
+      }
 
-				publishDate.change(function(){
-					self.checkEmbargo($(publishDate).val(),$(publishTime).val(), parent);
-				});
+      const field = $('input.hasTimePicker');
+      const defaultTime = () => {
+        const date = new Date();
+        return `${date.getHours()}:${date.getMinutes()}`;
+      };
+      const pickerOpts = {
+        useLocalTimezone: true,
+        defaultValue: defaultTime,
+        controlType: 'select',
+        timeFormat: 'HH:mm',
+      };
 
-				publishTime.change(function(){
-					self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
-				});
-			}
+      field.timepicker(pickerOpts);
+      return false;
+    },
 
-			this._super();
-		},
-		/*
-		 * Helper function opens publishing schedule tab when link clicked
-		 */
-		linkScheduled: function(parent){
-			$('#workflow-schedule').click(function(){
-				var tabID = parent.closest('.ui-tabs-panel.tab').attr('id');
-				$('#tab-'+tabID).trigger('click');
-				return false;
-			});
-		},
-		/*
-		 * Checks whether an embargo is present.
-		 * If an embargo is present, display an altered actions panel,
-		 * with a message notifying the user
-		 */
-		checkEmbargo: function(publishDate, publishTime, parent){
+    onmatch() {
+      const self = this;
+      const publishDate = this.find('input[name="PublishOnDate[date]"]');
+      const publishTime = this.find('input[name="PublishOnDate[time]"]');
+      const parent = publishDate.parent().parent();
 
-			// Something has changed, remove any existing embargo message
-			$('.Actions #embargo-message').remove();
+      if (!$('#Form_EditForm_action_publish').attr('disabled')) {
+        self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
 
-			/*
-			 * Fuzzy checking:
-			 * There may not be $(#PublishOnXXX input.date) DOM objects = undefined.
-			 * There may be $(#PublishOnXXX input.date) DOM objects = val() method may return zero-length.
-			 */
-			var noPublishDate = (publishDate === undefined || publishDate.length == 0);
-			var noPublishTime = (publishTime === undefined || publishTime.length == 0);
+        publishDate.change(() => {
+          self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
+        });
 
-			if(noPublishDate && noPublishTime){
-				//No Embargo, remove customizations
-				$('#Form_EditForm_action_publish').removeClass('embargo');
-				$('#Form_EditForm_action_publish').prev('button').removeClass('ui-corner-right');
-			} else {
+        publishTime.change(() => {
+          self.checkEmbargo($(publishDate).val(), $(publishTime).val(), parent);
+        });
+      }
 
-				var link,
-					message;
+      this._super();
+    },
 
-				$('#Form_EditForm_action_publish').addClass('embargo');
-				$('#Form_EditForm_action_publish').prev('button').addClass('ui-corner-right');
+    /*
+     * Helper function opens publishing schedule tab when link clicked
+     */
+    linkScheduled(parent) {
+      $('#workflow-schedule').click(() => {
+        const tabID = parent.closest('.ui-tabs-panel.tab').attr('id');
+        $(`#tab-${tabID}`).trigger('click');
+        return false;
+      });
+    },
 
-				if(publishDate === ''){
-					//Has time, not date
-					message = ss.i18n.sprintf(
-						ss.i18n._t('Workflow.EMBARGOMESSAGETIME'),
-						publishTime
-					);
+    /*
+     * Checks whether an embargo is present.
+     * If an embargo is present, display an altered actions panel,
+     * with a message notifying the user
+     */
+    checkEmbargo(publishDate, publishTime, parent) {
+      // Something has changed, remove any existing embargo message
+      $('.Actions #embargo-message').remove();
 
-				}else if(publishTime === ''){
-					//has date no time
-					message = ss.i18n.sprintf(
-						ss.i18n._t('Workflow.EMBARGOMESSAGEDATE'),
-						publishDate
-					);
-				}else{
-					//has date and time
-					message = ss.i18n.sprintf(
-						ss.i18n._t('Workflow.EMBARGOMESSAGEDATETIME'),
-						publishDate,
-						publishTime
-					);
-				}
+      /*
+       * Fuzzy checking:
+       * There may not be $(#PublishOnXXX input.date) DOM objects = undefined.
+       * There may be $(#PublishOnXXX input.date) DOM objects = val() method may return zero-length.
+       */
+      const noPublishDate = (publishDate === undefined || publishDate.length === 0);
+      const noPublishTime = (publishTime === undefined || publishTime.length === 0);
 
-				message = message.replace('<a>','<a href="#" id="workflow-schedule">');
+      if (noPublishDate && noPublishTime) {
+        // No Embargo, remove customizations
+        $('#Form_EditForm_action_publish').removeClass('embargo');
+        $('#Form_EditForm_action_publish').prev('button').removeClass('ui-corner-right');
+      } else {
+        let message = '';
 
-				//Append message with link
-				$('.Actions #ActionMenus').after('<p class="edit-info" id="embargo-message">' + message + '</p>');
+        $('#Form_EditForm_action_publish').addClass('embargo');
+        $('#Form_EditForm_action_publish').prev('button').addClass('ui-corner-right');
 
-				//Active link
-				this.linkScheduled(parent);
-			}
+        if (publishDate === '') {
+            // Has time, not date
+          message = i18n.sprintf(
+            i18n._t('Workflow.EMBARGOMESSAGETIME'),
+            publishTime
+          );
+        } else if (publishTime === '') {
+            // has date no time
+          message = i18n.sprintf(
+            i18n._t('Workflow.EMBARGOMESSAGEDATE'),
+            publishDate
+          );
+        } else {
+          // has date and time
+          message = i18n.sprintf(
+            i18n._t('Workflow.EMBARGOMESSAGEDATETIME'),
+            publishDate,
+            publishTime
+          );
+        }
 
-			return false;
-		}
-	});
+        message = message.replace('<a>', '<a href="#" id="workflow-schedule">');
+
+        // Append message with link
+        $('.Actions #ActionMenus')
+          .after(`<p class="edit-info" id="embargo-message">${message}</p>`);
+
+        // Active link
+        this.linkScheduled(parent);
+      }
+
+      return false;
+    },
+  });
 });
 
-jQuery.entwine("ss", function($) {
+$.entwine('ss', () => {
+  // Hide the uneccesary "Show Specification..." link included on ImportForms by default
+  $('.importSpec').entwine({
+    onmatch() {
+      this.hide();
+    },
+  });
 
-	// Hide the uneccesary "Show Specification..." link included on ImportForms by default
-	$('.importSpec').entwine({
-		onmatch: function() {
-			this.hide();
-		}
-	});
+  // Remove the somehat hard-coded 'CSV' string from error message
+  $('#Form_ImportForm_error').entwine({
+    onmatch() {
+      this.html(this.html().replace('CSV', ''));
+    },
+  });
 
-	// Remove the somehat hard-coded 'CSV' string from error message
-	$('#Form_ImportForm_error').entwine({
-		onmatch: function() {
-			var ele = this;
-			ele.html(ele.html().replace('CSV', ''));
-		}
-	});
+  /**
+   * Prevents actions from causing an ajax reload of the field.
+   *
+   * This is specific to workflow export logic, where we don't want an AJAX request
+   * interfering with browser download headers.
+   */
+  $('.ss-gridfield .action.no-ajax.export-link').entwine({
+    onclick() {
+      window.location.href = $.path.makeUrlAbsolute(this.attr('href'));
 
-	/**
-	 * Prevents actions from causing an ajax reload of the field.
-	 *
-	 * This is specific to workflow export logic, where we don't want an AJAX request
-	 * interfering with browser download headers.
-	 */
-	$('.ss-gridfield .action.no-ajax.export-link').entwine({
-		onclick: function(e){
-
-			window.location.href = $.path.makeUrlAbsolute(
-				$(this).attr('href')
-			);
-
-			return false;
-		}
-	});
-
+      return false;
+    },
+  });
 });

@@ -1,34 +1,43 @@
 import $ from 'jQuery';
+import i18n from 'i18n';
 
-;(function ($) {
-	$(function () {
+$.entwine('ss', () => {
+  $('.advancedWorkflowTransition').entwine({
+    onclick(e) {
+      e.preventDefault();
 
-		$('.advancedWorkflowTransition').live('click', function (e) {
-			e.preventDefault();
-			// get the stuff for it and show a dialog
+      // get the stuff for it and show a dialog
+      const comments = prompt('Comments');
+      const instanceId = this.parents('ul').attr('data-instance-id');
+      const transitionId = this.attr('data-transition-id');
+      const securityId = $('[name=SecurityID]').val();
+      if (!securityId) {
+        alert('Invalid SecurityID field!');
+        return false;
+      }
 
-			var comments = prompt("Comments");
+      $.post(
+        'AdvancedWorkflowActionController/transition',
+        {
+          SecurityID: securityId,
+          comments,
+          transition: transitionId,
+          id: instanceId,
+        },
+        (data) => {
+          if (data) {
+            const parsedData = $.parseJSON(data);
 
-			var instanceId = $(this).parents('ul').attr('data-instance-id');
-			var transitionId = $(this).attr('data-transition-id');
-			var securityId = $('[name=SecurityID]').val();
-			if (!securityId) {
-				alert("Invalid SecurityID field!");
-				return false;
-			}
+            if (parsedData.success) {
+              location.href = parsedData.link;
+            } else {
+              alert(i18n._t('Workflow.ProcessError'));
+            }
+          }
+        }
+      );
 
-			$.post('AdvancedWorkflowActionController/transition', {SecurityID: securityId, comments: comments, transition: transitionId, id: instanceId}, function (data) {
-				if (data) {
-					data = $.parseJSON(data);
-					if (data.success) {
-						location.href = data.link;
-					} else {
-						alert(ss.i18n._t('Workflow.ProcessError'));
-					}
-				}
-			})
-
-			return false;
-		})
-	})
-})(jQuery);
+      return false;
+    },
+  });
+});
