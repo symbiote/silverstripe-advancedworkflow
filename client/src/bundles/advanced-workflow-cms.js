@@ -1,6 +1,6 @@
-import $ from 'jQuery';
+import jQuery from 'jquery';
 
-$.entwine('ss', () => {
+jQuery.entwine('ss', ($) => {
   $('.cms-edit-form')
     .find('.Actions, .btn-toolbar')
     .find('#ActionMenus_WorkflowOptions .action')

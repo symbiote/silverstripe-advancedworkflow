@@ -1,7 +1,7 @@
-import $ from 'jquery';
+import jQuery from 'jquery';
 import i18n from 'i18n';
 
-$.entwine('workflow', () => {
+jQuery.entwine('workflow', ($) => {
   $('.workflow-field').entwine({
     Loading: null,
     Dialog: null,
@@ -284,7 +284,7 @@ $.entwine('workflow', () => {
   });
 });
 
-$.entwine('ss', () => {
+jQuery.entwine('ss', ($) => {
   // Hide the uneccesary "Show Specification..." link included on ImportForms by default
   $('.importSpec').entwine({
     onmatch() {

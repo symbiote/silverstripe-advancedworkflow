@@ -1,7 +1,7 @@
-import $ from 'jQuery';
+import jQuery from 'jquery';
 import i18n from 'i18n';
 
-$.entwine('ss', () => {
+jQuery.entwine('ss', ($) => {
   $('.advancedWorkflowTransition').entwine({
     onclick(e) {
       e.preventDefault();

@@ -1,6 +1,6 @@
-import $ from 'jQuery';
+import jQuery from 'jquery';
 
-$.entwine('ss', () => {
+jQuery.entwine('ss', ($) => {
   // Disable clicking on each disabled table-row.
   $('.ss-gridfield .ss-gridfield-item').entwine({
     onmatch() {
