@@ -15,6 +15,10 @@
 			margin: 0;
 			padding: $grid;
 		}
+
+        .workflow-field-do-create {
+            margin-left: $grid / 2;
+        }
 	}
 
 	.workflow-field-create {
@@ -33,10 +37,6 @@
 			.chzn-single-with-drop {
 				border-radius: $radius $radius 0 0;
 			}
-		}
-
-		.ss-ui-button {
-			border-color: rgba(0, 0, 0, .2);
 		}
 	}
 
@@ -102,7 +102,7 @@
 				cursor: move;
 				margin: -$grid/4 0;
 				width: 4px;
-				height: $height + $grid/2 + 1;
+				height: $height + $grid/2 + 4;
 			}
 			.workflow-field-action-icon {
 				width: 16px;
@@ -118,6 +118,8 @@
 		}
 
 		.workflow-field-action-transitions {
+            padding-left: 0;
+
 			li {
 				background: $light-grey;
 				border: 1px solid $light-blue;
@@ -132,16 +134,27 @@
 					float: left;
 					margin: -$grid/2 0;
 					width: 4px;
-					height: 24px;
+					height: 40px;
 				}
+
 				.workflow-field-transition-title {
 					float: left;
 					min-width: $min-width + 30px;
 					overflow: auto;
 				}
-				.ui-icon, span {
+
+                .workflow-field-transition-text {
+                    margin-top: 6px;
+                }
+
+				span {
 					float: left;
 				}
+
+                .workflow-transition-actions {
+                    display: inline;
+                    float: none;
+                }
 			}
 		}
 	}
@@ -174,4 +187,10 @@
 			margin: -2px 0 0 10px;
 		}
 	}
+
+    .workflow-field-editor-dialog {
+        .tab-content {
+            clear: both;
+        }
+    }
 }

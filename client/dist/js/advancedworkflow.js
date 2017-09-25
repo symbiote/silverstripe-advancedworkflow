@@ -10362,7 +10362,7 @@ jQuery.entwine("workflow", function ($) {
 			});
 
 			this.getDialog().on("click", "button", function () {
-				$(this).addClass("loading ui-state-disabled");
+				$(this).addClass("disabled");
 			});
 
 			this.getDialog().on("submit", "form", function () {
@@ -10470,7 +10470,7 @@ jQuery.entwine("workflow", function ($) {
 			this.chosen().addClass("has-chnz");
 		},
 		onchange: function onchange() {
-			this.siblings(".workflow-field-do-create").toggleClass("ui-state-disabled", !this.val());
+			this.siblings(".workflow-field-do-create").toggleClass("disabled", !this.val());
 		}
 	});
 

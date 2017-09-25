@@ -129,7 +129,7 @@ class WorkflowField extends FormField
 
     public function CreateableActions()
     {
-        $list    = new ArrayList();
+        $list    = ArrayList::create();
         $classes = ClassInfo::subclassesFor(WorkflowAction::class);
 
         array_shift($classes);
@@ -140,13 +140,24 @@ class WorkflowField extends FormField
             $can     = singleton($class)->canCreate() && !$reflect->isAbstract();
 
             if ($can) {
-                $list->push(new ArrayData(array(
-                'Title' => singleton($class)->singular_name(),
-                'Class' => $class
-                )));
+                $list->push(ArrayData::create([
+                    'Title' => singleton($class)->singular_name(),
+                    'Class' => $this->sanitiseClassName($class),
+                ]));
             }
         }
 
         return $list;
+    }
+
+    /**
+     * Sanitise a model class' name for inclusion in a link
+     *
+     * @param string $class
+     * @return string
+     */
+    protected function sanitiseClassName($class)
+    {
+        return str_replace('\\', '-', $class);
     }
 }

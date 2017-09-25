@@ -233,17 +233,15 @@ class WorkflowDefinition extends DataObject
         }
 
         if (class_exists(AbstractQueuedJob::class)) {
-            $before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
-            $after  = _t('WorkflowDefinition.SENDREMINDERDAYSAFTER', ' days without action.');
-
             $fields->addFieldToTab(
                 'Root.Main',
-                FieldGroup::create(
-                    _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email'),
-                    LabelField::create('ReminderEmailBefore', $before),
-                    NumericField::create('RemindDays', ''),
-                    LabelField::create('ReminderEmailAfter', $after)
-                )->addExtraClass('advancedworkflow-reminderemail')
+                NumericField::create(
+                    'ReminderEmail',
+                    _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email')
+                )->setDescription(_t(
+                    __CLASS__ . '.ReminderEmailDescription',
+                    'Send reminder email after the specified number of days without action.'
+                ))
             );
         }
 
