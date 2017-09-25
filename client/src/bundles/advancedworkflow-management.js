@@ -1,3 +1,4 @@
+import $ from 'jQuery';
 
 ;(function ($) {
 	$(function () {
@@ -5,9 +6,9 @@
 		$('.advancedWorkflowTransition').live('click', function (e) {
 			e.preventDefault();
 			// get the stuff for it and show a dialog
-			
+
 			var comments = prompt("Comments");
-			
+
 			var instanceId = $(this).parents('ul').attr('data-instance-id');
 			var transitionId = $(this).attr('data-transition-id');
 			var securityId = $('[name=SecurityID]').val();

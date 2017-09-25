@@ -1,7 +1,9 @@
+import $ from 'jQuery';
+
 (function($) {
 
 	$.entwine('ss', function($) {
-		
+
 		// Disable clicking on each disabled table-row.
 		$('.ss-gridfield .ss-gridfield-item').entwine({
 			onmatch: function(e) {
@@ -16,27 +18,27 @@
 							return (e.target.nodeName === 'A' && e.target.className.match(/edit-link/) === null);
 						});
 						ele.find('a.edit-link').attr('title', '');
-				}			
+				}
 			}
 		});
-		
+
 		// Override GridField's method of providing cursor styles on hover.
 		$('.AdvancedWorkflowAdmin .ss-gridfield-item.disabled').entwine({
 			onmouseover: function() {
 				this.css('cursor', 'default');
 			}
-		});	
-		
+		});
+
 		/*
-		 * Prevent a precursor POST to gridfield record URLs (all Pending/Submitted GridFields) 
+		 * Prevent a precursor POST to gridfield record URLs (all Pending/Submitted GridFields)
 		 * when clicking on target-object's hyperlinks, which results in a 404.
-		 */		
+		 */
 		$('.ss-gridfield .ss-gridfield-item td.col-Title a').entwine({
-			onclick: function(e) {	
+			onclick: function(e) {
 				e.stopPropagation();
 			}
 		});
-		
+
 		/*
 		 * Reload the current (central) CMS pane, to ensure that previously related content
 		 * objects, are visually cleared from the UI immediately.
@@ -47,8 +49,8 @@
 				$('.cms-container').reloadCurrentPanel();
 				e.preventDefault();
 			}
-		});	
-		
+		});
+
 	});
-	
+
 }(jQuery));

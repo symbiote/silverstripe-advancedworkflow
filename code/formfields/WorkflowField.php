@@ -100,8 +100,8 @@ class WorkflowField extends FormField
 
         Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery/jquery.js'));
         Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery-entwine/dist/jquery.entwine-dist.js'));
-        Requirements::javascript($workflow->getRelativeResourcePath('javascript/WorkflowField.js'));
-        Requirements::css($workflow->getRelativeResourcePath('css/WorkflowField.css'));
+        Requirements::javascript($workflow->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
+        Requirements::css($workflow->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
 
         return $this->Field($properties);
     }

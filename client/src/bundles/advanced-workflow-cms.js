@@ -1,3 +1,5 @@
+import $ from 'jQuery';
+
 ;(function($) {
     $(function() {
         $.entwine('ss', function($) {

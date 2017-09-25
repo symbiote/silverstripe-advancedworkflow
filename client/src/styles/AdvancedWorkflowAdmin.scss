@@ -1,5 +1,5 @@
 .icon.icon-16.icon-advancedworkflowadmin {
-	background-image: url(../images/workflow-menu-icon.png);
+	background-image: url("images/workflow-menu-icon.png");
 }
 .field.date, .field.datetime {
 	.message {
@@ -21,24 +21,24 @@
     span.badge.status-embargo,
     span.badge.status-expiry,
     span.badge.status-embargo_expiry {
-        background-color: #ebfbff;
-        color: #1F9433;
+        background-color: $grey-light;
+        color: $brand-success;
 
         #cms-content-tools-CMSMain & {
-            -webkit-box-shadow: 0px 0px 6px 2px #ebfbff;
-            box-shadow: 0px 0px 6px 2px #ebfbff;
+            -webkit-box-shadow: 0px 0px 6px 2px $grey-light;
+            box-shadow: 0px 0px 6px 2px $grey-light;
         }
     }
 }
 
 .workflow-field-diff {
     del {
-        background-color: #FDD;
-        color: #f44;
+        background-color: $pale-red;
+        color: $brand-danger;
         padding: 2px;
     }
     ins {
-        background-color: #DFD;
+        background-color: $pale-green;
         padding: 2px;
         text-decoration: none;
     }
