@@ -19,12 +19,12 @@ jQuery.entwine('workflow', ($) => {
         dialogClass: 'workflow-field-editor-dialog',
       });
 
-      this.getDialog().on('click', 'button', () => {
-        $(this).addClass('disabled');
+      this.getDialog().on('click', 'button', (event) => {
+        $(event.currentTarget).addClass('disabled');
       });
 
-      this.getDialog().on('submit', 'form', () => {
-        $(this).ajaxSubmit((response) => {
+      this.getDialog().on('submit', 'form', (event) => {
+        $(event.currentTarget).ajaxSubmit((response) => {
           if ($(response).is('.workflow-field')) {
             self.getDialog().empty().dialog('close');
             self.replaceWith(response);
