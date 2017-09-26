@@ -87,7 +87,7 @@ class WorkflowDefinitionExporter
     {
         // Disable any access to use of WorkflowExport if user has no SecurityAdmin access
         if (!Permission::check('CMS_ACCESS_SecurityAdmin')) {
-            throw Exception(_t('ErrorPage.403'), 403);
+            throw Exception(_t('SilverStripe\\ErrorPage\\ErrorPage.CODE_403', '403 - Forbidden'), 403);
         }
         $def = $this->getDefinition();
         $templateData = new ArrayData(array(
