@@ -88,11 +88,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
 
         $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
 
-        Requirements::add_i18n_javascript($module->getRelativeResourcePath('/javascript/lang'));
-        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowField.js'));
-        Requirements::javascript($module->getRelativeResourcePath('/javascript/WorkflowGridField.js'));
-        Requirements::css($module->getRelativeResourcePath('/css/WorkflowField.css'));
-        Requirements::css($module->getRelativeResourcePath('/css/WorkflowGridField.css'));
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('client/lang'));
+        Requirements::javascript($module->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
+        Requirements::css($module->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
     }
 
     /*

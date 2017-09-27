@@ -91,22 +91,22 @@ class PublishItemWorkflowAction extends WorkflowAction
         $fields = parent::getCMSFields();
 
         if (class_exists(AbstractQueuedJob::class)) {
-            $before = _t('PublishItemWorkflowAction.DELAYPUBDAYSBEFORE', 'Delay publication ');
-            $after  = _t('PublishItemWorkflowAction.DELAYPUBDAYSAFTER', ' days');
-            $allowEmbargoed =  _t(
-                'PublishItemWorkflowAction.ALLOWEMBARGOEDEDITING',
-                'Allow editing while item is embargoed? (does not apply without embargo)'
-            );
-
-            $fields->addFieldsToTab('Root.Main', array(
-                new CheckboxField('AllowEmbargoedEditing', $allowEmbargoed),
-                new FieldGroup(
-                    _t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay'),
-                    new LabelField('PublishDelayBefore', $before),
-                    new NumericField('PublishDelay', ''),
-                    new LabelField('PublishDelayAfter', $after)
+            $fields->addFieldsToTab('Root.Main', [
+                CheckboxField::create(
+                    'AllowEmbargoedEditing',
+                    _t(
+                        __CLASS__ . '.ALLOWEMBARGOEDEDITING',
+                        'Allow editing while item is embargoed? (does not apply without embargo)'
+                    )
                 ),
-            ));
+                NumericField::create(
+                    'PublishDelay',
+                    _t('PublishItemWorkflowAction.PUBLICATIONDELAY', 'Publication Delay')
+                )->setDescription(_t(
+                    __CLASS__ . '.PublicationDelayDescription',
+                    'Delay publiation by the specified number of days'
+                ))
+            ]);
         }
 
         return $fields;

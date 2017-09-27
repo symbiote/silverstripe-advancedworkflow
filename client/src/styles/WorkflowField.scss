@@ -1,0 +1,181 @@
+.workflow-field {
+  position: relative;
+  padding-bottom: 0;
+
+  .workflow-field-header {
+    background: $med-blue;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: $wf-radius $wf-radius 0 0;
+
+    h3 {
+      background: $dark-blue;
+      border-bottom: 1px solid rgba(0, 0, 0, .1);
+      color: $white;
+      text-shadow: 0 1px 0 rgba(0, 0, 0, .1);
+      margin: 0;
+      padding: $wf-grid;
+    }
+
+    .workflow-field-do-create {
+      margin-left: $wf-grid / 2;
+    }
+  }
+
+  .workflow-field-create {
+    padding: $wf-grid/2 $wf-grid;
+  }
+
+  .workflow-field-actions {
+    background: $white;
+    border: 1px solid rgba(0, 0, 0, .2);
+    border-top: 0;
+    border-radius: 0 0 $wf-radius $wf-radius;
+    padding: $wf-grid;
+
+    .workflow-field-action {
+      margin-bottom: $wf-grid/2;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      .workflow-field-action-disabled {
+        opacity: 0.35;
+        filter: Alpha(Opacity=35);
+        cursor: default;
+
+        // These default styles are taken from .ss-ui-button (_forms.scss) so we don't end up with mousover/focus states on disabled buttons.
+        // @todo These styles need to be dynamcally included from CMS, they are obviousely "hard-coded" for now.
+        &.ui-state-hover,
+        &.ui-state-focus {
+          text-decoration: none;
+          background-color: #e6e6e6;
+          background: url("data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjUwJSIgeTE9IjAlIiB4Mj0iNTAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iI2Q5ZDlkOSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==");
+          background: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, $white), color-stop(100%, $grey-lightish));
+          background: -webkit-linear-gradient($white, $grey-lightish);
+          background: -moz-linear-gradient($white, $grey-lightish);
+          background: -o-linear-gradient($white, $grey-lightish);
+          background: -ms-linear-gradient($white, $grey-lightish);
+          background: linear-gradient($white, $grey-lightish);
+          -webkit-text-shadow: $white 0 1px 1px;
+          -moz-text-shadow: $white 0 1px 1px;
+          text-shadow: $white 0 1px 1px;
+          -webkit-box-shadow: none;
+          -moz-box-shadow: none;
+          box-shadow: none;
+        }
+      }
+    }
+
+    .workflow-field-action-header {
+      background: $light-blue;
+      border: 1px solid $med-blue;
+      border-left: 0;
+      overflow: auto;
+      padding: $wf-grid/4 $wf-grid $wf-grid/4 0;
+
+      .workflow-field-action-icon,
+      .workflow-field-action-drag {
+        display: block;
+        float: left;
+      }
+
+      .workflow-field-action-drag {
+        background: $med-blue;
+        cursor: move;
+        margin: -$wf-grid/4 0;
+        width: 4px;
+        height: $wf-height + $wf-grid/2 + 4;
+      }
+
+      .workflow-field-action-icon {
+        width: 16px;
+        height: 16px;
+        margin: $wf-height/4 $wf-grid 0 $wf-grid;
+      }
+
+      h4 {
+        float: left;
+        margin: $wf-height/4 $wf-grid 0 0;
+        min-width: $wf-min-width;
+        text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+    }
+
+    .workflow-field-action-transitions {
+      padding-left: 0;
+
+      li {
+        background: $light-grey;
+        border: 1px solid $light-blue;
+        border-left: 0;
+        border-top: 0;
+        overflow: auto;
+        padding: $wf-grid/2 $wf-grid/2 $wf-grid/2 0;
+
+        .workflow-field-action-drag {
+          background: $light-blue;
+          cursor: move;
+          float: left;
+          margin: -$wf-grid/2 0;
+          width: 4px;
+          height: 41px;
+        }
+
+        .workflow-field-transition-title {
+          float: left;
+          min-width: $wf-min-width + 30px;
+          overflow: auto;
+        }
+
+        .workflow-field-transition-text {
+          margin-top: 6px;
+        }
+
+        span {
+          float: left;
+        }
+
+        .workflow-transition-actions {
+          display: inline;
+          float: none;
+        }
+      }
+    }
+  }
+
+  .workflow-placeholder {
+    margin-bottom: $wf-grid / 2;
+    height: $wf-grid * 4;
+  }
+
+  .workflow-field-loading {
+    background: rgba(0, 0, 0, .15) url("images/spinner.gif") no-repeat center center;
+    border-radius: 0 0 $wf-radius $wf-radius;
+    bottom: 0;
+    display: none;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+    z-index: 999;
+  }
+}
+
+.cms {
+  table.ss-gridfield-table {
+    .btn-icon-download-csv {
+      display: inline-block;
+      vertical-align: middle;
+      width: 16px;
+      height: 16px;
+      margin: -2px 0 0 10px;
+    }
+  }
+
+  .workflow-field-editor-dialog {
+    .tab-content {
+      clear: both;
+    }
+  }
+}

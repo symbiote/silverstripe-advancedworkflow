@@ -1,0 +1,45 @@
+.icon.icon-16.icon-advancedworkflowadmin {
+  background-image: url("images/workflow-menu-icon.png");
+}
+
+.field.date,
+.field.datetime {
+  .message {
+    &.required {
+      position: relative;
+      top: 10px;
+    }
+  }
+}
+
+// Embargo & expiry badge styling
+//
+// 3 different statuses - embargo, expiry, embargo & expiry (both assigned)
+//  Note: CSS nesting convention based on SilverStripe admin styling
+.cms-tree.jstree {
+  span.badge.status-embargo,
+  span.badge.status-expiry,
+  span.badge.status-embargo_expiry {
+    background-color: $grey-light;
+    color: $brand-success;
+
+    #cms-content-tools-CMSMain & {
+      -webkit-box-shadow: 0 0 6px 2px $grey-light;
+      box-shadow: 0 0 6px 2px $grey-light;
+    }
+  }
+}
+
+.workflow-field-diff {
+  del {
+    background-color: $pale-red;
+    color: $brand-danger;
+    padding: 2px;
+  }
+
+  ins {
+    background-color: $pale-green;
+    padding: 2px;
+    text-decoration: none;
+  }
+}

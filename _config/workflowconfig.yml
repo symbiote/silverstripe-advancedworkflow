@@ -12,4 +12,4 @@ SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
     - Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - advancedworkflow/css/AdvancedWorkflowAdmin.css
+    - advancedworkflow/client/dist/styles/advancedworkflow.css

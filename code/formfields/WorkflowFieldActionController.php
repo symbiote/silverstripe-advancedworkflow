@@ -37,7 +37,7 @@ class WorkflowFieldActionController extends RequestHandler
 
     public function handleAdd()
     {
-        $class = $this->request->param('Class');
+        $class = $this->unsanitiseClassName($this->request->param('Class'));
 
         if (!class_exists($class) || !is_subclass_of($class, WorkflowAction::class)) {
             $this->httpError(400);
@@ -52,7 +52,11 @@ class WorkflowFieldActionController extends RequestHandler
         $record = new $class();
         $record->WorkflowDefID = $this->parent->Definition()->ID;
 
-        return new WorkflowFieldItemController($this, "new/$class", $record);
+        return new WorkflowFieldItemController(
+            $this,
+            Controller::join_links('new', $this->sanitiseClassName($class)),
+            $record
+        );
     }
 
     public function handleItem()
@@ -80,5 +84,27 @@ class WorkflowFieldActionController extends RequestHandler
     public function Link($action = null)
     {
         return Controller::join_links($this->parent->Link(), $this->name, $action);
+    }
+
+    /**
+     * Sanitise a model class' name for inclusion in a link
+     *
+     * @param string $class
+     * @return string
+     */
+    protected function sanitiseClassName($class)
+    {
+        return str_replace('\\', '-', $class);
+    }
+
+    /**
+     * Unsanitise a model class' name from a URL param
+     *
+     * @param string $class
+     * @return string
+     */
+    protected function unsanitiseClassName($class)
+    {
+        return str_replace('-', '\\', $class);
     }
 }

@@ -32,6 +32,7 @@ use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\FormFields\WorkflowField;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
  * An overall definition of a workflow
@@ -231,16 +232,17 @@ class WorkflowDefinition extends DataObject
             $fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class));
         }
 
-        if (class_exists('AbstractQueuedJob')) {
-            $before = _t('WorkflowDefinition.SENDREMINDERDAYSBEFORE', 'Send reminder email after ');
-            $after  = _t('WorkflowDefinition.SENDREMINDERDAYSAFTER', ' days without action.');
-
-            $fields->addFieldToTab('Root.Main', new FieldGroup(
-                _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email'),
-                new LabelField('ReminderEmailBefore', $before),
-                new NumericField('RemindDays', ''),
-                new LabelField('ReminderEmailAfter', $after)
-            ));
+        if (class_exists(AbstractQueuedJob::class)) {
+            $fields->addFieldToTab(
+                'Root.Main',
+                NumericField::create(
+                    'ReminderEmail',
+                    _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email')
+                )->setDescription(_t(
+                    __CLASS__ . '.ReminderEmailDescription',
+                    'Send reminder email after the specified number of days without action.'
+                ))
+            );
         }
 
         if ($this->ID) {

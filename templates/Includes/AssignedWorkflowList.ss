@@ -1,7 +1,7 @@
 
 <% if UserWorkflows %>
 
-<% require javascript(advancedworkflow/javascript/advancedworkflow-management.js) %>
+<% require javascript(advancedworkflow/client/dist/js/advancedworkflow.js) %>
 
 <table class="userWorkflowTable">
 	<thead>

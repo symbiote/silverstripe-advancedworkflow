@@ -96,12 +96,9 @@ class WorkflowField extends FormField
     public function FieldHolder($properties = array())
     {
         $workflow = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
-        $admin = ModuleLoader::getModule('silverstripe/admin');
 
-        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery/jquery.js'));
-        Requirements::javascript($admin->getRelativeResourcePath('thirdparty/jquery-entwine/dist/jquery.entwine-dist.js'));
-        Requirements::javascript($workflow->getRelativeResourcePath('javascript/WorkflowField.js'));
-        Requirements::css($workflow->getRelativeResourcePath('css/WorkflowField.css'));
+        Requirements::javascript($workflow->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
+        Requirements::css($workflow->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
 
         return $this->Field($properties);
     }
@@ -129,7 +126,7 @@ class WorkflowField extends FormField
 
     public function CreateableActions()
     {
-        $list    = new ArrayList();
+        $list    = ArrayList::create();
         $classes = ClassInfo::subclassesFor(WorkflowAction::class);
 
         array_shift($classes);
@@ -140,13 +137,24 @@ class WorkflowField extends FormField
             $can     = singleton($class)->canCreate() && !$reflect->isAbstract();
 
             if ($can) {
-                $list->push(new ArrayData(array(
-                'Title' => singleton($class)->singular_name(),
-                'Class' => $class
-                )));
+                $list->push(ArrayData::create([
+                    'Title' => singleton($class)->singular_name(),
+                    'Class' => $this->sanitiseClassName($class),
+                ]));
             }
         }
 
         return $list;
+    }
+
+    /**
+     * Sanitise a model class' name for inclusion in a link
+     *
+     * @param string $class
+     * @return string
+     */
+    protected function sanitiseClassName($class)
+    {
+        return str_replace('\\', '-', $class);
     }
 }

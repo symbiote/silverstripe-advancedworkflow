@@ -1,0 +1,34 @@
+{
+  "name": "symbiote-advancedworkflow",
+  "version": "4.0.0",
+  "description": "Adds configurable workflow support to the CMS, with a GUI for creating custom workflow definitions.",
+  "scripts": {
+    "build": "yarn && NODE_ENV=production webpack -p --bail --progress",
+    "watch": "yarn && NODE_ENV=development webpack --watch --progress",
+    "css": "WEBPACK_CHILD=css npm run build",
+    "lint": "eslint client/src; sass-lint -v"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/symbiote/silverstripe-advancedworkflow.git"
+  },
+  "keywords": [
+    "silverstripe",
+    "cms",
+    "workflow"
+  ],
+  "author": "SilverStripe Ltd",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/symbiote/silverstripe-advancedworkflow/issues"
+  },
+  "homepage": "https://github.com/symbiote/silverstripe-advancedworkflow#readme",
+  "dependencies": {
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
+    "@silverstripe/webpack-config": "^0.2.5",
+    "eslint": "^2.7.0",
+    "eslint-config-airbnb": "^6.2.0"
+  }
+}

@@ -95,21 +95,21 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 
         $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
 
-        Requirements::add_i18n_javascript($module->getRelativeResourcePath('javascript/lang'));
+        Requirements::add_i18n_javascript($module->getRelativeResourcePath('client/lang'));
 
         // Add timepicker functionality
         // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
         Requirements::css(
             $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css')
         );
-        Requirements::css($module->getRelativeResourcePath('css/WorkflowCMS.css'));
+        Requirements::css($module->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
         Requirements::javascript(
             $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js')
         );
         Requirements::javascript(
             $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js')
         );
-        Requirements::javascript($module->getRelativeResourcePath('javascript/WorkflowField.js'));
+        Requirements::javascript($module->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
 
         // Fields
         // ------
