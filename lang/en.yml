@@ -7,6 +7,8 @@ en:
     CREATE_WORKFLOW_HELP: 'Users can create workflow definitions'
     DELETE_WORKFLOW: 'Delete workflow'
     DELETE_WORKFLOW_HELP: 'Users can delete workflow definitions and active workflows'
+    EDITEMBARGO: 'Editable embargoed item in workflow'
+    EDITEMBARGOHELP: 'Allow users to edit items that have been embargoed by a workflow'
     JOB_REMINDER_COMMENT: '%s: Reminder email sent\n\n'
     REASSIGNACTIVE: 'Reassign active workflows'
     REASSIGNACTIVEHELP: 'Users can reassign active workflows to different users and groups'
@@ -25,7 +27,6 @@ en:
     INVALIDIDLIST: 'An invalid list of IDs was provided.'
     INVALIDPARENTID: 'An invalid parent ID was specified.'
     LastEdited: Changed
-    MENUTITLE: Workflows
     SORTORDERSAVED: 'The sort order has been saved.'
     Title: Title
     WorkflowStatus: 'Current action'
@@ -44,12 +45,7 @@ en:
     ASSIGNUSERS: 'Assign Users'
     GROUPS: Groups
     INITIATOR: 'Assign Initiator'
-    PLURALNAME: 'Assign Users To Workflow Actions'
-    SINGULARNAME: 'Assign Users To Workflow Action'
     USERS: Users
-  CancelWorkflowAction:
-    PLURALNAME: 'Cancel Workflow Actions'
-    SINGULARNAME: 'Cancel Workflow Action'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Context Object Not Found'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'You do not have permission to execute this action'
@@ -58,46 +54,112 @@ en:
     Export: Export
   GridFieldEditButton_ss:
     EXPORT: Export
-  ImportedWorkflowTemplate:
-    PLURALNAME: 'Imported Workflow Templates'
-    SINGULARNAME: 'Imported Workflow Template'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comment history up to this notification.'
-    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS' workflow admin,\n			useful for allowing users to enact workflow transitions, directly from emails."
+    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n\t\t\tAdditionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n\t\t\tthe CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS' workflow admin,\n\t\t\tuseful for allowing users to enact workflow transitions, directly from emails."
     EMAILFROM: 'Email from'
     EMAILSUBJECT: 'Email subject'
     EMAILTEMPLATE: 'Email template'
     FIELDNAME: 'Field name'
     FORMATTINGHELP: 'Formatting Help'
-    FORMATTINGNOTE: "Notification emails can contain HTML formatting. The following special variables are replaced with their\n			respective values in the email subject, email from and template/body."
-    INITIATORNOTE: "These fields will be populated from the member that initiates the workflow request. For example,\n			{$Initiator.Email}."
-    LISTING_TEMPLATE: 'Listing Template - Items will be the list of all actions in the workflow (synonym to Actions). Also available will be all properties of the current Workflow Instance'
-    MEMBERNOTE: "These fields will be populated from the member that initiates the notification action. For example,\n			{$Member.FirstName}."
+    FORMATTINGNOTE: "Notification emails can contain HTML formatting. The following special variables are replaced with their\n\t\t\trespective values in the email subject, email from and template/body."
+    INITIATORNOTE: "These fields will be populated from the member that initiates the workflow request. For example,\n\t\t\t{$Initiator.Email}."
+    MEMBERNOTE: "These fields will be populated from the member that initiates the notification action. For example,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Notification Email'
     NOTIFICATIONNOTE: 'All users attached to the workflow will be sent an email when this action is run.'
-    PLURALNAME: 'Notify Users Workflow Actions'
-    SINGULARNAME: 'Notify Users Workflow Action'
   PublishItemWorkflowAction:
+    ALLOWEMBARGOEDEDITING: 'Allow editing while item is embargoed? (does not apply without embargo)'
     DELAYPUBDAYSAFTER: ' days'
     DELAYPUBDAYSBEFORE: 'Delay publication '
-    PLURALNAME: 'Publish Item Workflow Actions'
     PUBLICATIONDELAY: 'Publication Delay'
-    SINGULARNAME: 'Publish Item Workflow Action'
   SetPropertyWorkflowAction:
-    PLURALNAME: 'Set Property Workflow Actions'
     PROPERTY: Property
     PROPERTYTITLE: 'Property to set; if this exists as a setter method, will be called passing the value'
-    SINGULARNAME: 'Set Property Workflow Action'
-  SimpleApprovalWorkflowAction:
-    PLURALNAME: 'Simple Approval Workflow Actions'
-    SINGULARNAME: 'Simple Approval Workflow Action'
   SiteTree:
     WorkflowOptions: 'Workflow options'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Assign Users To Workflow Actions'
+    PLURALS:
+      one: 'An Assign Users To Workflow Action'
+      other: '{count} Assign Users To Workflow Actions'
+    SINGULARNAME: 'Assign Users To Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Cancel Workflow Actions'
+    PLURALS:
+      one: 'A Cancel Workflow Action'
+      other: '{count} Cancel Workflow Actions'
+    SINGULARNAME: 'Cancel Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'Notify Users Workflow Actions'
+    PLURALS:
+      one: 'A Notify Users Workflow Action'
+      other: '{count} Notify Users Workflow Actions'
+    SINGULARNAME: 'Notify Users Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 'Publish Item Workflow Actions'
+    PLURALS:
+      one: 'A Publish Item Workflow Action'
+      other: '{count} Publish Item Workflow Actions'
+    SINGULARNAME: 'Publish Item Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    PLURALNAME: 'Set Property Workflow Actions'
+    PLURALS:
+      one: 'A Set Property Workflow Action'
+      other: '{count} Set Property Workflow Actions'
+    SINGULARNAME: 'Set Property Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Simple Approval Workflow Actions'
+    PLURALS:
+      one: 'A Simple Approval Workflow Action'
+      other: '{count} Simple Approval Workflow Actions'
+    SINGULARNAME: 'Simple Approval Workflow Action'
+  Symbiote\AdvancedWorkflow\Actions\UnpublishItemWorkflowAction:
+    PLURALNAME: 'Unpublish Item Workflow Actions'
+    PLURALS:
+      one: 'An Unpublish Item Workflow Action'
+      other: '{count} Unpublish Item Workflow Actions'
+    SINGULARNAME: 'Unpublish Item Workflow Action'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: Workflows
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    PLURALNAME: 'Imported Workflow Templates'
+    PLURALS:
+      one: 'An Imported Workflow Template'
+      other: '{count} Imported Workflow Templates'
+    SINGULARNAME: 'Imported Workflow Template'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Workflow Actions'
+    PLURALS:
+      one: 'A Workflow Action'
+      other: '{count} Workflow Actions'
+    SINGULARNAME: 'Workflow Action'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    PLURALNAME: 'Workflow Action Instances'
+    PLURALS:
+      one: 'A Workflow Action Instance'
+      other: '{count} Workflow Action Instances'
+    SINGULARNAME: 'Workflow Action Instance'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Workflow Definitions'
+    PLURALS:
+      one: 'A Workflow Definition'
+      other: '{count} Workflow Definitions'
+    SINGULARNAME: 'Workflow Definition'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    PLURALNAME: 'Workflow Instances'
+    PLURALS:
+      one: 'A Workflow Instance'
+      other: '{count} Workflow Instances'
+    SINGULARNAME: 'Workflow Instance'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Workflow Transitions'
+    PLURALS:
+      one: 'A Workflow Transition'
+      other: '{count} Workflow Transitions'
+    SINGULARNAME: 'Workflow Transition'
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: ' days'
     DELAYUNPUBDAYSBEFORE: 'Delay unpublishing by '
-    PLURALNAME: 'Unpublish Item Workflow Actions'
-    SINGULARNAME: 'Unpublish Item Workflow Action'
     UNPUBLICATIONDELAY: 'Delay Un-publishing'
   Workflow:
     WorkflowActionsTabTitle: 'Workflow Actions'
@@ -111,15 +173,11 @@ en:
     ExecutedLabel: Executed
     FRONTENDCOMMENT: Comment
     FinishedLabel: Finished
-    PLURALNAME: 'Workflow Actions'
-    SINGULARNAME: 'Workflow Action'
     TITLE: Title
     TitleDescription: 'The Title is used as the button label for this Workflow Action'
     Transitions: Transitions
     TypeLabel: Type
   WorkflowActionInstance:
-    PLURALNAME: 'Workflow Action Instances'
-    SINGULARNAME: 'Workflow Action Instance'
     Title: Title
   WorkflowApplicable:
     ADDITIONAL_WORKFLOW_DEFINITIONS: 'Additional Workflows'
@@ -135,11 +193,9 @@ en:
     GROUPS: 'Restrict to Groups'
     INITIAL_ACTION_BUTTON_TEXT: 'Initial Action Button Text'
     LATEST_VERSION: 'Latest version is %s'
-    PLURALNAME: 'Workflow Definitions'
     REMINDEREMAIL: 'Reminder Email'
     SENDREMINDERDAYSAFTER: ' days without action.'
     SENDREMINDERDAYSBEFORE: 'Send reminder email after '
-    SINGULARNAME: 'Workflow Definition'
     TEMPLATE_INFO: 'Template Info'
     TEMPLATE_NAME: 'Source Template'
     TEMPLATE_VERSION: 'Template Version'
@@ -154,17 +210,21 @@ en:
     INVALID_YML_FORMAT_NO_PARSE: 'Invalid YAML format. Unable to parse.'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Active
-    BADGE_PUBLISH: 'Embargo'
-    BADGE_UNPUBLISH: 'Expiry'
-    BADGE_PUBLISH_UNPUBLISH: 'Embargo & Expiry'
+    BADGE_PUBLISH: Embargo
+    BADGE_PUBLISH_UNPUBLISH: Embargo+Expiry
+    BADGE_UNPUBLISH: Expiry
     CompletedWorkflowStateTitle: Completed
+    INVALIDEXPIRY: 'The unpublish date cannot be before the publish date.'
+    INVALIDSAMEEMBARGOEXPIRY: 'The publish date and unpublish date cannot be the same.'
     PUBLISH_ON: 'Scheduled publish date'
     REQUESTED_PUBLISH_DATE: 'Requested publish date'
     REQUESTED_PUBLISH_DATE_H3: 'Expiry and Embargo'
     REQUESTED_PUBLISH_DATE_INTRO: 'Enter a date and/or time to specify embargo and expiry dates.'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'These settings won''t take effect until any approval actions are run'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'If an embargo is already set, adding a new one prior to that date''s passing will overwrite it'
+    REQUESTED_PUBLISH_DATE_RIGHT_TITLE: 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank'
     REQUESTED_UNPUBLISH_DATE: 'Requested un-publish date'
+    REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE: 'To request this page to <strong>never expire</strong> leave the date and time fields blank'
     TabTitle: 'Publishing Schedule'
     UNPUBLISH_ON: 'Scheduled un-publish date'
   WorkflowField:
@@ -176,9 +236,7 @@ en:
   WorkflowInstance:
     ActionLogTitle: Log
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
-    PLURALNAME: 'Workflow Instances'
     REASSIGN_HEADER: 'Reassign workflow'
-    SINGULARNAME: 'Workflow Instance'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Instance #%s of %s'
     TargetClassLabel: 'Target Class'
@@ -194,10 +252,10 @@ en:
     TableHeaderSubmitted: Submitted
   WorkflowReminderEmail:
     Action: 'Click here to action this workflow'
-    Content: "This is an automated reminder that the workflow '{title}' you are currently\n	assigned to has not been actioned for {days} days. The\n	workflow was last updated on {date} at {time}."
+    Content: "This is an automated reminder that the workflow '{title}' you are currently\n\tassigned to has not been actioned for {days} days. The\n\tworkflow was last updated on {date} at {time}."
     Differences: 'These are the changes made'
-    HeadingTitle: 'Title'
-    HeadingDiff: 'Differences'
+    HeadingDiff: Differences
+    HeadingTitle: Title
   WorkflowReminderTask:
     SAVE: Save
   WorkflowService:
@@ -209,10 +267,8 @@ en:
     ACTION: Action
     Active: Active
     NEXT_ACTION: 'Next Action'
-    PLURALNAME: 'Workflow Transitions'
     Passive: Passive
     SELECTONE: '(Select one)'
-    SINGULARNAME: 'Workflow Transition'
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
     TYPE: Type
     TabTitle: 'Restrict to users'
