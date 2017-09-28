@@ -216,6 +216,11 @@ class WorkflowService implements PermissionProvider {
 	 * a definition specified. 
 	 * 
 	 * @param DataObject $object
+     *              The object to start a workflow against
+     *
+     * @param WorkflowDefinition $workflowID
+     *              The WorkflowDefinition to trigger a new workflow instance of, or its ID
+     *
 	 */
 	public function startWorkflow(DataObject $object, $workflowID = null) {
 		$existing = $this->getWorkflowFor($object);
@@ -223,8 +228,8 @@ class WorkflowService implements PermissionProvider {
 			throw new ExistingWorkflowException(_t('WorkflowService.EXISTING_WORKFLOW_ERROR', "That object already has a workflow running"));
 		}
 
-		$definition = null;
-		if($workflowID) {
+		$definition = is_object($workflowID) && $workflowID instanceof WorkflowDefinition ? $workflowID : null;
+		if(is_numeric($workflowID)) {
 
 			// Retrieve the workflow definition that has been triggered.
 
