@@ -1,6 +1,11 @@
 ---
 Name: workflowconfig
 ---
+SilverStripe\Core\Injector\Injector:
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
+    class: Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
+    type: prototype
+    
 SilverStripe\CMS\Model\SiteTree:
   extensions:
     - Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
