@@ -36,8 +36,8 @@
     },
     "autoload": {
         "psr-4": {
-            "Symbiote\\AdvandedWorkflow\\": "code/",
-            "Symbiote\\AdvandedWorkflow\\Tests\\": "tests/"
+            "Symbiote\\AdvancedWorkflow\\": "code/",
+            "Symbiote\\AdvancedWorkflow\\Tests\\": "tests/"
         }
     },
     "replace": {
