@@ -95,10 +95,8 @@ class WorkflowField extends FormField
 
     public function FieldHolder($properties = array())
     {
-        $workflow = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
-
-        Requirements::javascript($workflow->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
-        Requirements::css($workflow->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
+        Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
+        Requirements::css('symbiote/silverstripe-advancedworkflow:client/dist/styles/advancedworkflow.css');
 
         return $this->Field($properties);
     }

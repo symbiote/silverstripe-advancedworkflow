@@ -93,23 +93,21 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         // requirements
         // ------------
 
-        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
-
-        Requirements::add_i18n_javascript($module->getRelativeResourcePath('client/lang'));
+        Requirements::add_i18n_javascript('symbiote/silverstripe-advancedworkflow:client/lang');
 
         // Add timepicker functionality
         // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
         Requirements::css(
-            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css')
+            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
         );
-        Requirements::css($module->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
+        Requirements::css('symbiote/silverstripe-advancedworkflow:client/dist/styles/advancedworkflow.css');
         Requirements::javascript(
-            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js')
+            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js'
         );
         Requirements::javascript(
-            $module->getRelativeResourcePath('thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js')
+            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js'
         );
-        Requirements::javascript($module->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
+        Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
 
         // Fields
         // ------
