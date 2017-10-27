@@ -33,7 +33,7 @@ class PublishItemWorkflowAction extends WorkflowAction
         'AllowEmbargoedEditing' => true
     );
 
-    private static $icon = 'advancedworkflow/images/publish.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/publish.png';
 
     private static $table_name = 'PublishItemWorkflowAction';
 

@@ -27,7 +27,7 @@ class UnpublishItemWorkflowAction extends WorkflowAction
         'UnpublishDelay' => 'Int'
     );
 
-    private static $icon = 'advancedworkflow/images/unpublish.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/unpublish.png';
 
     private static $table_name = 'UnpublishItemWorkflowAction';
 

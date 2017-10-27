@@ -14,7 +14,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
  */
 class CancelWorkflowAction extends WorkflowAction
 {
-    private static $icon = 'advancedworkflow/images/cancel.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/cancel.png';
 
     private static $table_name = 'CancelWorkflowAction';
 }
