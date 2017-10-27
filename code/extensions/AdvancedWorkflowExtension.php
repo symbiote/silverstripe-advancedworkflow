@@ -54,8 +54,7 @@ class AdvancedWorkflowExtension extends Extension
      */
     public function updateEditForm(Form $form)
     {
-        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
-        Requirements::javascript($module->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
+        Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
         $svc    = singleton(WorkflowService::class);
         $p      = $form->getRecord();
         $active = $svc->getWorkflowFor($p);

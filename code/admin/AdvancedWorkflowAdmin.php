@@ -86,11 +86,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     {
         parent::init();
 
-        $module = ModuleLoader::getModule('symbiote/silverstripe-advancedworkflow');
-
-        Requirements::add_i18n_javascript($module->getRelativeResourcePath('client/lang'));
-        Requirements::javascript($module->getRelativeResourcePath('client/dist/js/advancedworkflow.js'));
-        Requirements::css($module->getRelativeResourcePath('client/dist/styles/advancedworkflow.css'));
+        Requirements::add_i18n_javascript('symbiote/silverstripe-advancedworkflow:client/lang');
+        Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
+        Requirements::css('symbiote/silverstripe-advancedworkflow:client/dist/styles/advancedworkflow.css');
     }
 
     /*
