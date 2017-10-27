@@ -82,7 +82,7 @@ class WorkflowDefinition extends DataObject
         'Groups' => Group::class,
     );
 
-    private static $icon = 'advancedworkflow/images/definition.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/definition.png';
 
     public static $default_workflow_title_base = 'My Workflow';
 

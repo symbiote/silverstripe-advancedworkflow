@@ -39,7 +39,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
         'EmailTemplate' => 'Text'
     );
 
-    private static $icon = 'advancedworkflow/images/notify.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/notify.png';
 
     private static $table_name = 'NotifyUsersWorkflowAction';
 

@@ -1,7 +1,7 @@
 
 <% if UserWorkflows %>
 
-<% require javascript(advancedworkflow/client/dist/js/advancedworkflow.js) %>
+<% require javascript(symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js) %>
 
 <table class="userWorkflowTable">
 	<thead>

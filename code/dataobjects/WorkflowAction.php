@@ -58,7 +58,7 @@ class WorkflowAction extends DataObject
      */
     private static $instance_class = WorkflowActionInstance::class;
 
-    private static $icon = 'advancedworkflow/images/action.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/action.png';
 
     private static $table_name = 'WorkflowAction';
 

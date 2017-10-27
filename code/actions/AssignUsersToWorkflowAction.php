@@ -32,7 +32,7 @@ class AssignUsersToWorkflowAction extends WorkflowAction
         'Groups' => Group::class,
     );
 
-    private static $icon = 'advancedworkflow/images/assign.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/assign.png';
 
     private static $table_name = 'AssignUsersToWorkflowAction';
 

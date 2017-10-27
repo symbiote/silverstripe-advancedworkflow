@@ -53,7 +53,7 @@ class WorkflowTransition extends DataObject
         'Groups' => Group::class,
     );
 
-    private static $icon = 'advancedworkflow/images/transition.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/transition.png';
 
     private static $table_name = 'WorkflowTransition';
 

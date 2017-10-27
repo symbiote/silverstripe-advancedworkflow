@@ -5,7 +5,7 @@ SilverStripe\Core\Injector\Injector:
   Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
     class: Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
     type: prototype
-    
+
 SilverStripe\CMS\Model\SiteTree:
   extensions:
     - Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
@@ -17,4 +17,4 @@ SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
     - Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
-    - advancedworkflow/client/dist/styles/advancedworkflow.css
+    - symbiote/silverstripe-advancedworkflow:client/dist/styles/advancedworkflow.css

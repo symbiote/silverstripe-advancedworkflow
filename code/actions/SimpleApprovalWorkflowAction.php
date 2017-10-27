@@ -19,7 +19,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
  */
 class SimpleApprovalWorkflowAction extends WorkflowAction
 {
-    private static $icon = 'advancedworkflow/images/approval.png';
+    private static $icon = 'symbiote/silverstripe-advancedworkflow:images/approval.png';
 
     private static $table_name = 'SimpleApprovalWorkflowAction';
 
