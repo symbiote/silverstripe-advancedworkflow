@@ -24,16 +24,16 @@ and bolts of how things fit together, and will enable you to
 customize your workflow to your needs.
 
 We assume you've got users and groups set up already.
-Now, wwitch to the "Workflow" section in the CMS menu. Create a new workflow there
+Now, switch to the "Workflow" section in the CMS menu. Create a new workflow there
 through the "Add Workflow Definition" button. Call it "Two-step workflow" for now. After saving the item, assign it to the "Editors" group
 
 **Actions**
 
 1. You should have noticed a new item appear in the main CMS content-area entitled; "Workflow". 
 2. From its drop-down menu, select the "Assign Users To Workflow Action" option and then select the "Create" button.
-3. In the popup dialogue that appears, type the title: "Apply for approval" (Note: the first workflow action's title is used for the apply button's label in the CMS UI)
-4. Leave everything else as-is, but in the "Groups" drop-down menu - locate and select the "Editors" group, then select "Save"
-5. Create another action, this time selecting the "Notify Users Workflow Action" option. Call it "Notify Editors". Leave everything-else as-is, but because this action sends emails, enter an email subject, a from-address and email-body template (see the "Formatting Help" menu at the bottom of the popup dialogue), then click Save.
+3. In the popup dialogue that appears, type the title: "Apply for approval" (Note: the first workflow action's title is used for the apply button's label in the CMS UI).
+4. Leave everything else as-is, but in the "Groups" drop-down menu - locate and select the "Editors" group, then select "Save".
+5. Create another action, this time selecting the "Notify Users Workflow Action" option. Call it "Notify Editors". Leave everything-else as-is, but because this action sends emails, enter an email subject, a from-address and email-body template (see the "Formatting Help" menu at the bottom of the popup dialogue), then click "Save".
 6. Create another action and select the "Simple Approval Workflow Action" option, select the "Create" button and in the popup, give it the title "Editor Approval", then select "Save". Note: in a simple workflow such as this, the approval action doesn't actually do anything. However, it's good practice to have it as it provides a clear reference point of where approval occurs. In a more complex workflow, you might use a "Counting Approval" action to do things like count the number of people who have approved.
 7. Create another action "Assign Users To Workflow Action", and entitle this one "Assign Managers". Leave everything else as-is and locate and select the "Managers" group from the "Groups" drop-down, then select "Save".
 8. Create another action "Notify Users Workflow Action", and name it "Notify Managers". Leave everything-else as-is, but like the previous "Notify Users Workflow Action", enter the email-specific details, then select "Save".

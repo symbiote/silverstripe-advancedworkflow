@@ -10,7 +10,7 @@ You should be prompted to download a file which you should save to your local co
 To import, simply login to another SilverStripe installation and navigate to the Workflow Admin of that CMS. You should see an "Import" heading
 at the bottom of the central CMS pane with a "Browse" button below that.
 
-Select the "Browse" button and locate the downloaded file in the your computer's file-browser that will automatically appear, then select the
+Select the "Browse" button and locate the downloaded file in your computer's file-browser that will automatically appear, then select the
 "Import Definition" button. That's it!
 
 # Exported related user and group Data
