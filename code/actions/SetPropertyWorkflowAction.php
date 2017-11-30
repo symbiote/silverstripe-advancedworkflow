@@ -24,14 +24,14 @@ class SetPropertyWorkflowAction extends WorkflowAction {
 	}
 
     protected function resolveValue($value) {
-        if (strpos($value, 'strtotime')) {
+        if (strpos($value, 'strtotime') !== false) {
             if (preg_match('/strtotime\((.*?)\)/', $value, $matches)) {
                 $timepart = $matches[1];
                 $value = str_replace($matches[0], strtotime($timepart), $value);
             }
         }
 
-        if (strpos($value, 'date')) {
+        if (strpos($value, 'date') !== false) {
             $find = $format = $tstamp = false;
             if (preg_match('/date\((.*?),\s*(.*?)\)/', $value, $matches)) {
                 $find = $matches[0];
