@@ -78,7 +78,9 @@ class WorkflowDefinition extends DataObject {
 		if(!$this->Sort) {
 			$this->Sort = DB::query('SELECT MAX("Sort") + 1 FROM "WorkflowDefinition"')->value();
 		}
-		if(!$this->ID) {
+		if(!$this->ID && !$this->Title) {
+            // Assign a default title if the title hasn't been defined already (e.g. from basing off
+            // of an existing template)
 			$this->Title = $this->getDefaultWorkflowTitle();
 		}
 		parent::onBeforeWrite();
@@ -321,7 +323,8 @@ class WorkflowDefinition extends DataObject {
 	/**
 	 * If a workflow-title doesn't already exist, we automatically create a suitable default title
 	 * when users attempt to create title-less workflow definitions or upload/create Workflows that would
-	 * otherwise have the same name.
+	 * otherwise have the same name. Note that this logic is not run when adding a new workflow that is based off
+     * of an existing workflow, as a template
 	 *
 	 * @return string
 	 * @todo	Filter query on current-user's workflows. Avoids confusion when other users may already have 'My Workflow 1'
