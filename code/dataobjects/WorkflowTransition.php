@@ -147,8 +147,14 @@ class WorkflowTransition extends DataObject
             'Root.RestrictToUsers',
             _t('WorkflowTransition.TabTitle', 'Restrict to users')
         );
-        $fields->addFieldToTab('Root.RestrictToUsers', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members));
-        $fields->addFieldToTab('Root.RestrictToUsers', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), Group::class));
+        $fields->addFieldToTab(
+            'Root.RestrictToUsers',
+            new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Restrict to Users'), $members)
+        );
+        $fields->addFieldToTab(
+            'Root.RestrictToUsers',
+            new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Restrict to Groups'), Group::class)
+        );
 
         $this->extend('updateCMSFields', $fields);
 
@@ -277,7 +283,8 @@ class WorkflowTransition extends DataObject
         }
         // Have we found some identical values?
         if ($data[$check[0]] == $data[$check[1]]) {
-            self::$extendedMethodReturn['fieldName'] = $check[0]; // Used to display to the user, so the first of the array is fine
+            // Used to display to the user, so the first of the array is fine
+            self::$extendedMethodReturn['fieldName'] = $check[0];
             self::$extendedMethodReturn['fieldValid'] = false;
             self::$extendedMethodReturn['fieldMsg'] = _t(
                 'WorkflowTransition.TRANSITIONLOOP',

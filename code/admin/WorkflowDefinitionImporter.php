@@ -22,8 +22,8 @@ class WorkflowDefinitionImporter
     /**
      * Generates an array of WorkflowTemplate Objects of all uploaded workflows.
      *
-     * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first constructor param matches $name
-     *                      is returned.
+     * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first
+     *                      constructor param matches $name is returned.
      * @return WorkflowTemplate $template | array $importedDefs
      */
     public function getImportedWorkflows($name = null)
@@ -82,7 +82,10 @@ class WorkflowDefinitionImporter
             $parsed = Yaml::parse($parts[1]);
             return $parsed;
         } catch (Exception $e) {
-            $msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE', 'Invalid YAML format. Unable to parse.');
+            $msg = _t(
+                'WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE',
+                'Invalid YAML format. Unable to parse.'
+            );
             throw new ValidationException($msg);
         }
     }

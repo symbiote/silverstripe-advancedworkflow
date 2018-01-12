@@ -228,8 +228,14 @@ class WorkflowDefinition extends DataObject
             _t('WorkflowDefinition.INITIAL_ACTION_BUTTON_TEXT', 'Initial Action Button Text')
         ));
         if ($this->ID) {
-            $fields->addFieldToTab('Root.Main', new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers));
-            $fields->addFieldToTab('Root.Main', new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class));
+            $fields->addFieldToTab(
+                'Root.Main',
+                new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers)
+            );
+            $fields->addFieldToTab(
+                'Root.Main',
+                new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class)
+            );
         }
 
         if (class_exists(AbstractQueuedJob::class)) {
@@ -248,10 +254,26 @@ class WorkflowDefinition extends DataObject
         if ($this->ID) {
             if ($this->Template) {
                 $template = $this->workflowService->getNamedTemplate($this->Template);
-                $fields->addFieldToTab('Root.Main', new ReadonlyField('Template', $this->fieldLabel('Template'), $this->Template));
-                $fields->addFieldToTab('Root.Main', new ReadonlyField('TemplateDesc', _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'), $template ? $template->getDescription() : ''));
-                $fields->addFieldToTab('Root.Main', $tv = new ReadonlyField('TemplateVersion', $this->fieldLabel('TemplateVersion')));
-                $tv->setRightTitle(sprintf(_t('WorkflowDefinition.LATEST_VERSION', 'Latest version is %s'), $template ? $template->getVersion() : ''));
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    new ReadonlyField('Template', $this->fieldLabel('Template'), $this->Template)
+                );
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    new ReadonlyField(
+                        'TemplateDesc',
+                        _t('WorkflowDefinition.TEMPLATE_INFO', 'Template Info'),
+                        $template ? $template->getDescription() : ''
+                    )
+                );
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    $tv = new ReadonlyField('TemplateVersion', $this->fieldLabel('TemplateVersion'))
+                );
+                $tv->setRightTitle(sprintf(_t(
+                    'WorkflowDefinition.LATEST_VERSION',
+                    'Latest version is %s'
+                ), $template ? $template->getVersion() : ''));
             }
 
             $fields->addFieldToTab('Root.Main', new WorkflowField(
@@ -270,8 +292,21 @@ class WorkflowDefinition extends DataObject
                 }
                 $templates = array_combine(array_keys($templates), array_keys($templates));
 
-                $fields->addFieldToTab('Root.Main', $dd = new DropdownField('Template', _t('WorkflowDefinition.CHOOSE_TEMPLATE', 'Choose template (optional)'), $items));
-                $dd->setRightTitle(_t('WorkflowDefinition.CHOOSE_TEMPLATE_RIGHT', 'If set, this workflow definition will be automatically updated if the template is changed'));
+                $fields->addFieldToTab(
+                    'Root.Main',
+                    $dd = new DropdownField(
+                        'Template',
+                        _t(
+                            'WorkflowDefinition.CHOOSE_TEMPLATE',
+                            'Choose template (optional)'
+                        ),
+                        $items
+                    )
+                );
+                $dd->setRightTitle(_t(
+                    'WorkflowDefinition.CHOOSE_TEMPLATE_RIGHT',
+                    'If set, this workflow definition will be automatically updated if the template is changed'
+                ));
             }
 
             /*
@@ -279,12 +314,15 @@ class WorkflowDefinition extends DataObject
              *
              * $import = singleton('WorkflowDefinitionImporter')->getImportedWorkflows();
              * if (is_array($import)) {
-             * $_imports = array('' => '');
-             * foreach ($imports as $import) {
-             *      $_imports[$import->getName()] = $import->getName();
-             * }
-             * $imports = array_combine(array_keys($_imports), array_keys($_imports));
-             * $fields->addFieldToTab('Root.Main', new DropdownField('Import', _t('WorkflowDefinition.CHOOSE_IMPORT', 'Choose import (optional)'), $imports));
+             *     $_imports = array('' => '');
+             *     foreach ($imports as $import) {
+             *         $_imports[$import->getName()] = $import->getName();
+             *     }
+             *     $imports = array_combine(array_keys($_imports), array_keys($_imports));
+             *     $fields->addFieldToTab('Root.Main', new DropdownField('Import', _t(
+             *         'WorkflowDefinition.CHOOSE_IMPORT',
+             *         'Choose import (optional)'
+             *     ), $imports));
              * }
              */
 
@@ -357,7 +395,10 @@ class WorkflowDefinition extends DataObject
         if ($this->Template) {
             $template = $this->workflowService->getNamedTemplate($this->Template);
             if ($template && $this->TemplateVersion != $template->getVersion()) {
-                $label = sprintf(_t('WorkflowDefinition.UPDATE_FROM_TEMLPATE', 'Update to latest template version (%s)'), $template->getVersion());
+                $label = sprintf(_t(
+                    'WorkflowDefinition.UPDATE_FROM_TEMLPATE',
+                    'Update to latest template version (%s)'
+                ), $template->getVersion());
                 $actions->push($action = FormAction::create('updatetemplateversion', $label));
             }
         }
@@ -377,8 +418,8 @@ class WorkflowDefinition extends DataObject
      * otherwise have the same name.
      *
      * @return string
-     * @todo    Filter query on current-user's workflows. Avoids confusion when other users may already have 'My Workflow 1'
-     *          and user sees 'My Workflow 2'
+     * @todo    Filter query on current-user's workflows. Avoids confusion when other users may already have
+     *          'My Workflow 1' and user sees 'My Workflow 2'
      */
     public function getDefaultWorkflowTitle()
     {

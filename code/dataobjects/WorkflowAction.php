@@ -230,7 +230,10 @@ class WorkflowAction extends DataObject
 
         $fields = new FieldList(new TabSet('Root'));
         $typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
-        $fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
+        $fields->addFieldToTab(
+            'Root.Main',
+            new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name())
+        );
         $titleField = new TextField('Title', $this->fieldLabel('Title'));
         $titleField->setDescription(_t(
             'WorkflowAction.TitleDescription',
@@ -247,7 +250,10 @@ class WorkflowAction extends DataObject
             ),
             _t('AllowEditing.NoString', 'No')
         ));
-        $fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'), $this->AllowCommenting));
+        $fields->addFieldToTab(
+            'Root.Main',
+            new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'), $this->AllowCommenting)
+        );
         $this->extend('updateCMSFields', $fields);
         return $fields;
     }

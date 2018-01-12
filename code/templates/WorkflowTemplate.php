@@ -192,7 +192,10 @@ class WorkflowTemplate
     {
         $type = $actionTemplate['type'];
         if (!$type || !class_exists($type)) {
-            throw new Exception(_t('WorkflowTemplate.INVALID_TEMPLATE_ACTION', 'Invalid action class specified in template'));
+            throw new Exception(_t(
+                'WorkflowTemplate.INVALID_TEMPLATE_ACTION',
+                'Invalid action class specified in template'
+            ));
         }
 
         $action = $type::create();

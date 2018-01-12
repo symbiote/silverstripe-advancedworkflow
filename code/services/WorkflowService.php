@@ -85,7 +85,9 @@ class WorkflowService implements PermissionProvider
      */
     public function getDefinitionFor(DataObject $dataObject)
     {
-        if ($dataObject->hasExtension(WorkflowApplicable::class) || $dataObject->hasExtension(FileWorkflowApplicable::class)) {
+        if ($dataObject->hasExtension(WorkflowApplicable::class)
+            || $dataObject->hasExtension(FileWorkflowApplicable::class)
+        ) {
             if ($dataObject->WorkflowDefinitionID) {
                 return DataObject::get_by_id(WorkflowDefinition::class, $dataObject->WorkflowDefinitionID);
             }
@@ -117,10 +119,14 @@ class WorkflowService implements PermissionProvider
         // Make sure the correct extensions have been applied to the data object.
 
         $workflow = null;
-        if ($object->hasExtension(WorkflowApplicable::class) || $object->hasExtension(FileWorkflowApplicable::class)) {
+        if ($object->hasExtension(WorkflowApplicable::class)
+            || $object->hasExtension(FileWorkflowApplicable::class)
+        ) {
             // Validate the workflow ID against the data object.
 
-            if (($object->WorkflowDefinitionID == $workflowID) || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))) {
+            if (($object->WorkflowDefinitionID == $workflowID)
+                || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))
+            ) {
                 if (is_null($workflow)) {
                     $workflow = DataObject::get_by_id(WorkflowDefinition::class, $workflowID);
                 }
@@ -130,10 +136,11 @@ class WorkflowService implements PermissionProvider
     }
 
     /**
-     *  Retrieves and collates the workflow definitions for a data object, where the first element will be the main workflow definition.
+     * Retrieves and collates the workflow definitions for a data object, where the first element will be the
+     * main workflow definition.
      *
-     *  @param DataObject object
-     *  @return array
+     * @param DataObject object
+     * @return array
      */
 
     public function getDefinitionsFor($object)
@@ -172,10 +179,15 @@ class WorkflowService implements PermissionProvider
         if ($item instanceof WorkflowAction) {
             $id = $item->WorkflowID;
             return DataObject::get_by_id(WorkflowInstance::class, $id);
-        } elseif (is_object($item) && ($item->hasExtension(WorkflowApplicable::class) || $item->hasExtension(FileWorkflowApplicable::class))) {
+        } elseif (is_object($item) && ($item->hasExtension(WorkflowApplicable::class)
+                || $item->hasExtension(FileWorkflowApplicable::class))
+        ) {
             $filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
             $complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
-            return DataObject::get_one(WorkflowInstance::class, $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')');
+            return DataObject::get_one(
+                WorkflowInstance::class,
+                $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')'
+            );
         }
     }
 
@@ -224,11 +236,17 @@ class WorkflowService implements PermissionProvider
         }
 
         if (!$workflow) {
-            throw new Exception(_t('WorkflowService.INVALID_WORKFLOW_TARGET', "A transition was executed on a target that does not have a workflow."));
+            throw new Exception(_t(
+                'WorkflowService.INVALID_WORKFLOW_TARGET',
+                "A transition was executed on a target that does not have a workflow."
+            ));
         }
 
         if ($transition->Action()->WorkflowDefID != $workflow->DefinitionID) {
-            throw new Exception(_t('WorkflowService.INVALID_TRANSITION_WORKFLOW', "Transition #$transition->ID is not attached to workflow #$workflow->ID."));
+            throw new Exception(_t(
+                'WorkflowService.INVALID_TRANSITION_WORKFLOW',
+                "Transition #$transition->ID is not attached to workflow #$workflow->ID."
+            ));
         }
 
         $workflow->performTransition($transition);
@@ -245,7 +263,10 @@ class WorkflowService implements PermissionProvider
     {
         $existing = $this->getWorkflowFor($object);
         if ($existing) {
-            throw new ExistingWorkflowException(_t('WorkflowService.EXISTING_WORKFLOW_ERROR', "That object already has a workflow running"));
+            throw new ExistingWorkflowException(_t(
+                'WorkflowService.EXISTING_WORKFLOW_ERROR',
+                "That object already has a workflow running"
+            ));
         }
 
         $definition = null;
@@ -431,7 +452,10 @@ class WorkflowService implements PermissionProvider
             'DELETE_WORKFLOW' => array(
                 'name' => _t('AdvancedWorkflow.DELETE_WORKFLOW', 'Delete workflow'),
                 'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-                'help' => _t('AdvancedWorkflow.DELETE_WORKFLOW_HELP', 'Users can delete workflow definitions and active workflows'),
+                'help' => _t(
+                    'AdvancedWorkflow.DELETE_WORKFLOW_HELP',
+                    'Users can delete workflow definitions and active workflows'
+                ),
                 'sort' => 1
             ),
             'APPLY_WORKFLOW' => array(
@@ -443,19 +467,28 @@ class WorkflowService implements PermissionProvider
             'VIEW_ACTIVE_WORKFLOWS' => array(
                 'name'     => _t('AdvancedWorkflow.VIEWACTIVE', 'View active workflows'),
                 'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-                'help'     => _t('AdvancedWorkflow.VIEWACTIVEHELP', 'Users can view active workflows via the workflows admin panel'),
+                'help'     => _t(
+                    'AdvancedWorkflow.VIEWACTIVEHELP',
+                    'Users can view active workflows via the workflows admin panel'
+                ),
                 'sort'     => 3
             ),
             'REASSIGN_ACTIVE_WORKFLOWS' => array(
                 'name'     => _t('AdvancedWorkflow.REASSIGNACTIVE', 'Reassign active workflows'),
                 'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-                'help'     => _t('AdvancedWorkflow.REASSIGNACTIVEHELP', 'Users can reassign active workflows to different users and groups'),
+                'help'     => _t(
+                    'AdvancedWorkflow.REASSIGNACTIVEHELP',
+                    'Users can reassign active workflows to different users and groups'
+                ),
                 'sort'     => 4
             ),
             'EDIT_EMBARGOED_WORKFLOW' => array(
                 'name'     => _t('AdvancedWorkflow.EDITEMBARGO', 'Editable embargoed item in workflow'),
                 'category' => _t('AdvancedWorkflow.ADVANCED_WORKFLOW', 'Advanced Workflow'),
-                'help'     => _t('AdvancedWorkflow.EDITEMBARGOHELP', 'Allow users to edit items that have been embargoed by a workflow'),
+                'help'     => _t(
+                    'AdvancedWorkflow.EDITEMBARGOHELP',
+                    'Allow users to edit items that have been embargoed by a workflow'
+                ),
                 'sort'     => 5
             ),
         );

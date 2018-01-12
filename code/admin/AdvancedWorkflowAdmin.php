@@ -29,7 +29,8 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 
 /**
  * @package advancedworkflow
- * @todo UI/UX needs looking at for when current user has no pending and/or submitted items, (Current implementation is bog-standard <p> text)
+ * @todo UI/UX needs looking at for when current user has no pending and/or submitted items, (Current
+ * implementation is bog-standard <p> text)
  */
 class AdvancedWorkflowAdmin extends ModelAdmin
 {
@@ -92,8 +93,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-     * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
-     * on the objects showing in each field.
+     * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and
+     * that user's permissions on the objects showing in each field.
      */
     public function getEditForm($id = null, $fields = null)
     {
@@ -175,14 +176,16 @@ class AdvancedWorkflowAdmin extends ModelAdmin
 
         $grid = $form->Fields()->dataFieldByName(WorkflowDefinition::class);
         if ($grid) {
-            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemEditFormCallback(function ($form) {
-                $record = $form->getRecord();
-                if ($record) {
-                    $record->updateAdminActions($form->Actions());
-                }
-            });
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)
+                ->setItemEditFormCallback(function ($form) {
+                    $record = $form->getRecord();
+                    if ($record) {
+                        $record->updateAdminActions($form->Actions());
+                    }
+                });
 
-            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
+            $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)
+                ->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
             $grid->getConfig()->addComponent(new GridFieldExportAction());
             $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
         }
@@ -204,7 +207,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
 
     /*
      * By default, we implement GridField_ColumnProvider to allow users to click through to the PagesAdmin.
-     * We would also like a "Quick View", that allows users to quickly make a decision on a given workflow-bound content-object
+     * We would also like a "Quick View", that allows users to quickly make a decision on a given workflow-bound
+     * content-object
      */
     public function columns()
     {
@@ -261,7 +265,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             if (!$instance->TargetID || !$instance->DefinitionID) {
                 continue;
             }
-            // @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe define $this->workflowParent()
+            // @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe
+            // define $this->workflowParent()
             $effectiveWorkflow = DataObject::get_by_id(WorkflowDefinition::class, $instance->DefinitionID);
             $target = $instance->getTarget();
             if (!is_object($effectiveWorkflow) || !$target) {
@@ -269,7 +274,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             }
             $instance->setField('WorkflowTitle', $effectiveWorkflow->getField('Title'));
             $instance->setField('WorkflowCurrentAction', $instance->getCurrentAction());
-            // Note the order of property-setting here, somehow $instance->Title is overwritten by the Target Title property..
+            // Note the order of property-setting here, somehow $instance->Title is overwritten by the Target
+            // Title property..
             $instance->setField('Title', $target->getField('Title'));
             $instance->setField('LastEdited', $target->getField('LastEdited'));
             if (method_exists($target, 'CMSEditLink')) {
