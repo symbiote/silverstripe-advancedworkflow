@@ -8,6 +8,7 @@ use SilverStripe\Forms\ReadonlyField;
 use SilverStripe\Forms\TextareaField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
 
 /**
@@ -63,8 +64,11 @@ class WorkflowActionInstance extends DataObject
         $fieldDiff = $this->Workflow()->getTargetDiff();
 
         foreach ($fieldDiff as $field) {
-            $display = ReadonlyField::create('workflow-' . $field->Name, $field->Title, $field->Diff)
-                ->setDontEscape(true)
+            $display = ReadonlyField::create(
+                'workflow-' . $field->Name,
+                $field->Title,
+                DBField::create_field('HTMLText', $field->Diff)
+            )
                 ->addExtraClass('workflow-field-diff');
             $fields->push($display);
         }
