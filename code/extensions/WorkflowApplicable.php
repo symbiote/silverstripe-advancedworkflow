@@ -21,7 +21,6 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
-use Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use Symbiote\QueuedJobs\Service\AbstractQueuedJob;
@@ -37,17 +36,17 @@ use Symbiote\QueuedJobs\Service\AbstractQueuedJob;
  */
 class WorkflowApplicable extends DataExtension
 {
-    private static $has_one = array(
+    private static $has_one = [
         'WorkflowDefinition' => WorkflowDefinition::class,
-    );
+    ];
 
-    private static $many_many = array(
+    private static $many_many = [
         'AdditionalWorkflowDefinitions' => WorkflowDefinition::class
-    );
+    ];
 
-    private static $dependencies = array(
+    private static $dependencies = [
         'workflowService' => '%$' . WorkflowService::class,
-    );
+    ];
 
     /**
      *
@@ -109,7 +108,8 @@ class WorkflowApplicable extends DataExtension
             $this->updateFields($fields);
         }
 
-        // Instantiate a hidden form field to pass the triggered workflow definition through, allowing a dynamic form action.
+        // Instantiate a hidden form field to pass the triggered workflow definition through,
+        // allowing a dynamic form action.
 
         $fields->push(HiddenField::create(
             'TriggeredWorkflowID'
@@ -122,10 +122,13 @@ class WorkflowApplicable extends DataExtension
             return $fields;
         }
 
-        $tab       = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
+        $tab = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
 
         if (Permission::check('APPLY_WORKFLOW')) {
-            $definition = new DropdownField('WorkflowDefinitionID', _t('WorkflowApplicable.DEFINITION', 'Applied Workflow'));
+            $definition = new DropdownField(
+                'WorkflowDefinitionID',
+                _t('WorkflowApplicable.DEFINITION', 'Applied Workflow')
+            );
             $definitions = $this->workflowService->getDefinitions()->map()->toArray();
             $definition->setSource($definitions);
             $definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
@@ -161,7 +164,12 @@ class WorkflowApplicable extends DataExtension
             $config->addComponent(new GridFieldDetailForm());
 
             $insts = $this->owner->WorkflowInstances();
-            $log   = new GridField('WorkflowLog', _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'), $insts, $config);
+            $log = new GridField(
+                'WorkflowLog',
+                _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'),
+                $insts,
+                $config
+            );
 
             $tab->push($log);
         }
@@ -176,7 +184,11 @@ class WorkflowApplicable extends DataExtension
                 if ($this->canEditWorkflow()) {
                     $workflowOptions = new Tab(
                         'WorkflowOptions',
-                        _t('SiteTree.WorkflowOptions', 'Workflow options', 'Expands a view for workflow specific buttons')
+                        _t(
+                            'SiteTree.WorkflowOptions',
+                            'Workflow options',
+                            'Expands a view for workflow specific buttons'
+                        )
                     );
 
                     $menu = $actions->fieldByName('ActionMenus');
@@ -200,9 +212,14 @@ class WorkflowApplicable extends DataExtension
                         }
                     }
 
-                    // $action = FormAction::create('updateworkflow', $active->CurrentAction() ? $active->CurrentAction()->Title : _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
+                    // $action = FormAction::create('updateworkflow', $active->CurrentAction() ?
+                    // $active->CurrentAction()->Title :
+                    // _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
                     // 	->setAttribute('data-icon', 'navigation');
-                    // $actions->fieldByName('MajorActions') ? $actions->fieldByName('MajorActions')->push($action) : $actions->push($action);
+
+                    // $actions->fieldByName('MajorActions') ?
+                    // $actions->fieldByName('MajorActions')->push($action) :
+                    // $actions->push($action);
                 }
             } else {
                 // Instantiate the workflow definition initial actions.
@@ -223,10 +240,16 @@ class WorkflowApplicable extends DataExtension
                         if ($definition->getInitialAction() && $this->owner->canEdit()) {
                             $action = FormAction::create(
                                 "startworkflow-{$definition->ID}",
-                                $definition->InitialActionButtonText ? $definition->InitialActionButtonText : $definition->getInitialAction()->Title
-                            )->addExtraClass('start-workflow')->setAttribute('data-workflow', $definition->ID);
+                                $definition->InitialActionButtonText ?
+                                    $definition->InitialActionButtonText :
+                                    $definition->getInitialAction()->Title
+                            )
+                                ->addExtraClass('start-workflow')
+                                ->setAttribute('data-workflow', $definition->ID)
+                                ->addExtraClass('btn-primary');
 
-                            // The first element is the main workflow definition, and will be displayed as a major action.
+                            // The first element is the main workflow definition,
+                            // and will be displayed as a major action.
                             if (!$addedFirst) {
                                 $addedFirst = true;
                                 $action->setAttribute('data-icon', 'navigation');
@@ -304,10 +327,10 @@ class WorkflowApplicable extends DataExtension
 
     public function WorkflowInstances()
     {
-        return WorkflowInstance::get()->filter(array(
+        return WorkflowInstance::get()->filter([
             'TargetClass' => $this->owner->baseClass(),
-            'TargetID'    => $this->owner->ID
-        ));
+            'TargetID' => $this->owner->ID
+        ]);
     }
 
     /**
