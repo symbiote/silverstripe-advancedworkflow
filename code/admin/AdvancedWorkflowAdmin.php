@@ -92,9 +92,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-	 * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
-	 * on the objects showing in each field.
-	 */
+     * Shows up to x2 GridFields for Pending and Submitted items, dependent upon the current CMS user and that user's permissions
+     * on the objects showing in each field.
+     */
     public function getEditForm($id = null, $fields = null)
     {
         $form = parent::getEditForm($id, $fields);
@@ -191,9 +191,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-	 * @param Member $user
-	 * @return boolean
-	 */
+     * @param Member $user
+     * @return boolean
+     */
     public function isAdminUser(Member $user)
     {
         if (Permission::checkMember($user, 'ADMIN')) {
@@ -203,9 +203,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-	 * By default, we implement GridField_ColumnProvider to allow users to click through to the PagesAdmin.
-	 * We would also like a "Quick View", that allows users to quickly make a decision on a given workflow-bound content-object
-	 */
+     * By default, we implement GridField_ColumnProvider to allow users to click through to the PagesAdmin.
+     * We would also like a "Quick View", that allows users to quickly make a decision on a given workflow-bound content-object
+     */
     public function columns()
     {
         $fields = array(
@@ -225,11 +225,11 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-	 * Discreet method used by both intro gridfields to format the target object's links and clickable text
-	 *
-	 * @param GridFieldConfig $config
-	 * @return array $fieldFormatting
-	 */
+     * Discreet method used by both intro gridfields to format the target object's links and clickable text
+     *
+     * @param GridFieldConfig $config
+     * @return array $fieldFormatting
+     */
     public function setFieldFormatting(&$config)
     {
         $fieldFormatting = array();
@@ -282,11 +282,11 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     }
 
     /*
-	 * Return content-object data depending on which gridfeld is calling for it
-	 *
-	 * @param Member $user
-	 * @param string $fieldName
-	 */
+     * Return content-object data depending on which gridfeld is calling for it
+     *
+     * @param Member $user
+     * @param string $fieldName
+     */
     public function getFieldDependentData(Member $user, $fieldName)
     {
         if ($fieldName == 'PendingObjects') {

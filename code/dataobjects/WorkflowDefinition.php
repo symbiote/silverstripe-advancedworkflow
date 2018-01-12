@@ -275,18 +275,18 @@ class WorkflowDefinition extends DataObject
             }
 
             /*
-			 * Uncomment to allow pre-uploaded exports to appear in a new DropdownField.
-			 *
-			 * $import = singleton('WorkflowDefinitionImporter')->getImportedWorkflows();
-			 * if (is_array($import)) {
-			 * $_imports = array('' => '');
-			 * foreach ($imports as $import) {
-			 * 		$_imports[$import->getName()] = $import->getName();
-			 * }
-			 * $imports = array_combine(array_keys($_imports), array_keys($_imports));
-			 * $fields->addFieldToTab('Root.Main', new DropdownField('Import', _t('WorkflowDefinition.CHOOSE_IMPORT', 'Choose import (optional)'), $imports));
-			 * }
-			 */
+             * Uncomment to allow pre-uploaded exports to appear in a new DropdownField.
+             *
+             * $import = singleton('WorkflowDefinitionImporter')->getImportedWorkflows();
+             * if (is_array($import)) {
+             * $_imports = array('' => '');
+             * foreach ($imports as $import) {
+             *      $_imports[$import->getName()] = $import->getName();
+             * }
+             * $imports = array_combine(array_keys($_imports), array_keys($_imports));
+             * $fields->addFieldToTab('Root.Main', new DropdownField('Import', _t('WorkflowDefinition.CHOOSE_IMPORT', 'Choose import (optional)'), $imports));
+             * }
+             */
 
             $message = _t(
                 'WorkflowDefinition.ADDAFTERSAVING',
@@ -506,10 +506,10 @@ class WorkflowDefinition extends DataObject
         }
 
         /*
-		 * DELETE_WORKFLOW should trump all other canDelete() return values on
-		 * related objects.
-		 * @see {@link $this->onBeforeDelete()}
-		 */
+         * DELETE_WORKFLOW should trump all other canDelete() return values on
+         * related objects.
+         * @see {@link $this->onBeforeDelete()}
+         */
         return Permission::checkMember($member, 'DELETE_WORKFLOW');
     }
 

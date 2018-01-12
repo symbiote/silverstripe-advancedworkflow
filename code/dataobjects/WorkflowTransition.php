@@ -261,12 +261,12 @@ class WorkflowTransition extends DataObject
     }
 
     /*
-	 * A simple field same-value checker.
-	 *
-	 * @param array $data
-	 * @return array
-	 * @see {@link AWRequiredFields}
-	 */
+     * A simple field same-value checker.
+     *
+     * @param array $data
+     * @return array
+     * @see {@link AWRequiredFields}
+     */
     public function extendedRequiredFieldsNotSame($data = null)
     {
         $check = array('ActionID','NextActionID');

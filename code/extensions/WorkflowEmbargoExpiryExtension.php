@@ -282,15 +282,15 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         }
 
         /*
-		 * Without checking if there's actually a workflow in effect, simply saving
-		 * as draft, would clear the Scheduled Publish & Unpublish date fields, which we obviously
-		 * don't want during a workflow: These date fields should be treated as a content
-		 * change that also requires approval (where such an approval step exists).
-		 *
-		 * - Check to see if we've got 'desired' publish/unpublish date(s).
-		 * - Check if there's a workflow attached to this content
-		 * - Reset values if it's safe to do so
-		 */
+         * Without checking if there's actually a workflow in effect, simply saving
+         * as draft, would clear the Scheduled Publish & Unpublish date fields, which we obviously
+         * don't want during a workflow: These date fields should be treated as a content
+         * change that also requires approval (where such an approval step exists).
+         *
+         * - Check to see if we've got 'desired' publish/unpublish date(s).
+         * - Check if there's a workflow attached to this content
+         * - Reset values if it's safe to do so
+         */
         if (!$this->getIsWorkflowInEffect()) {
             $resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
             if ($resetPublishOnDate) {
@@ -386,11 +386,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Define an array of message-parts for use by {@link getIntroMessage()}
-	 *
-	 * @param string $key
-	 * @return array
-	 */
+     * Define an array of message-parts for use by {@link getIntroMessage()}
+     *
+     * @param string $key
+     * @return array
+     */
     public function getIntroMessageParts($key)
     {
         $parts = array(
@@ -408,11 +408,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Display some messages to the user, a little more complex that a simple one-liner
-	 *
-	 * @param string $key
-	 * @return string
-	 */
+     * Display some messages to the user, a little more complex that a simple one-liner
+     *
+     * @param string $key
+     * @return string
+     */
     public function getIntroMessage($key)
     {
         $msg = $this->getIntroMessageParts($key);
@@ -422,8 +422,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Validate
-	 */
+     * Validate
+     */
     public function getCMSValidator()
     {
         $required = new AWRequiredFields();
@@ -482,8 +482,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Sets property as boolean true|false if an effective workflow is found or not
-	 */
+     * Sets property as boolean true|false if an effective workflow is found or not
+     */
     public function setIsWorkflowInEffect()
     {
         // if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date

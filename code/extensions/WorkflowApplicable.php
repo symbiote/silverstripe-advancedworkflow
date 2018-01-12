@@ -215,7 +215,7 @@ class WorkflowApplicable extends DataExtension
                     // $action = FormAction::create('updateworkflow', $active->CurrentAction() ?
                     // $active->CurrentAction()->Title :
                     // _t('WorkflowApplicable.UPDATE_WORKFLOW', 'Update Workflow'))
-                    // 	->setAttribute('data-icon', 'navigation');
+                    //  ->setAttribute('data-icon', 'navigation');
 
                     // $actions->fieldByName('MajorActions') ?
                     // $actions->fieldByName('MajorActions')->push($action) :

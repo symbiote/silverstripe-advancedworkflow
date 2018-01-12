@@ -130,12 +130,12 @@ class WorkflowAction extends DataObject
     }
 
     /*
-	 * If there is only a single action defined for a workflow, there's no sense
-	 * in allowing users to add a transition to it (and causing errors).
-	 * Hide the "Add Transition" button in this case
-	 *
-	 * @return boolean true if we should disable the button, false otherwise
-	 */
+     * If there is only a single action defined for a workflow, there's no sense
+     * in allowing users to add a transition to it (and causing errors).
+     * Hide the "Add Transition" button in this case
+     *
+     * @return boolean true if we should disable the button, false otherwise
+     */
     public function canAddTransition()
     {
         return ($this->WorkflowDef()->numChildren() >1);

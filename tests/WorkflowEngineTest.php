@@ -274,16 +274,16 @@ class WorkflowEngineTest extends SapphireTest
         $this->assertTrue($status);
 
         /*
-		 * 4). i). Check that the content: Has no remaining related actions
-		 * Note: WorkflowApplicable::WorkflowDefinitionID does _not_ get updated until assigned a new workflow
-		 * so we can use it to check that all related actions are gone
-		 */
+         * 4). i). Check that the content: Has no remaining related actions
+         * Note: WorkflowApplicable::WorkflowDefinitionID does _not_ get updated until assigned a new workflow
+         * so we can use it to check that all related actions are gone
+         */
         $defID = $testPage->WorkflowDefinitionID;
         $this->assertEquals(0, DataObject::get(WorkflowAction::class)->filter('WorkflowDefID', $defID)->count());
 
         /*
-		 * 4). ii). Check that the content: Can be re-assigned a new Workflow Definition
-		 */
+         * 4). ii). Check that the content: Can be re-assigned a new Workflow Definition
+         */
         $newDef = $this->createDefinition();
         $testPage->WorkflowDefinitionID = $newDef->ID;  // Normally done via CMS
         $instance = new WorkflowInstance();

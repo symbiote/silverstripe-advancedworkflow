@@ -481,10 +481,10 @@ class WorkflowInstance extends DataObject
 
         $hasAccess = $this->userHasAccess($member);
         /*
-		 * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
-		 * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects Gridfield, even though;
-		 * - She had permissions granted via the workflow definition to run the preceeding Action that took her here.
-		 */
+         * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
+         * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects Gridfield, even though;
+         * - She had permissions granted via the workflow definition to run the preceeding Action that took her here.
+         */
         if (!$hasAccess) {
             if ($this->getMostRecentActionForUser($member)) {
                 return true;
@@ -791,9 +791,9 @@ class WorkflowInstance extends DataObject
         $i = 0;
         foreach ($history as $inst) {
             /*
-			 * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction in $history.
-			 * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
-			 */
+             * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction in $history.
+             * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
+             */
             $assignedMembers = $inst->BaseAction()->getAssignedMembers();
             if ($i <= 1 && $assignedMembers->count() > 0 && $assignedMembers->find('ID', $member->ID)) {
                 return $inst;
