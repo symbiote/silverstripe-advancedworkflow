@@ -93,21 +93,23 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         // requirements
         // ------------
 
-        Requirements::add_i18n_javascript('symbiote/silverstripe-advancedworkflow:client/lang');
+        $module = 'symbiote/silverstripe-advancedworkflow';
+
+        Requirements::add_i18n_javascript($module . ':client/lang');
 
         // Add timepicker functionality
         // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
         Requirements::css(
-            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
+            $module . ':javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
         );
-        Requirements::css('symbiote/silverstripe-advancedworkflow:client/dist/styles/advancedworkflow.css');
+        Requirements::css($module . ':client/dist/styles/advancedworkflow.css');
         Requirements::javascript(
-            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js'
+            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js'
         );
         Requirements::javascript(
-            'symbiote/silverstripe-advancedworkflow:thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js'
+            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js'
         );
-        Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
+        Requirements::javascript($module . ':client/dist/js/advancedworkflow.js');
 
         // Fields
         // ------
@@ -135,13 +137,20 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
                     'DesiredPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
                 )->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE', 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank')
+                    _t(
+                        'WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE',
+                        'To request this page to be <strong>published immediately</strong> '
+                        . 'leave the date and time fields blank'
+                    )
                 ),
                 $ut = DatetimeField::create(
                     'DesiredUnPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
                 )->setRightTitle(
-                    _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE', 'To request this page to <strong>never expire</strong> leave the date and time fields blank')
+                    _t(
+                        'WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE',
+                        'To request this page to <strong>never expire</strong> leave the date and time fields blank'
+                    )
                 ),
                 DatetimeField::create(
                     'PublishOnDate',
@@ -282,15 +291,15 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         }
 
         /*
-		 * Without checking if there's actually a workflow in effect, simply saving
-		 * as draft, would clear the Scheduled Publish & Unpublish date fields, which we obviously
-		 * don't want during a workflow: These date fields should be treated as a content
-		 * change that also requires approval (where such an approval step exists).
-		 *
-		 * - Check to see if we've got 'desired' publish/unpublish date(s).
-		 * - Check if there's a workflow attached to this content
-		 * - Reset values if it's safe to do so
-		 */
+         * Without checking if there's actually a workflow in effect, simply saving
+         * as draft, would clear the Scheduled Publish & Unpublish date fields, which we obviously
+         * don't want during a workflow: These date fields should be treated as a content
+         * change that also requires approval (where such an approval step exists).
+         *
+         * - Check to see if we've got 'desired' publish/unpublish date(s).
+         * - Check if there's a workflow attached to this content
+         * - Reset values if it's safe to do so
+         */
         if (!$this->getIsWorkflowInEffect()) {
             $resetPublishOnDate = $this->owner->DesiredPublishDate && $this->owner->PublishOnDate;
             if ($resetPublishOnDate) {
@@ -317,8 +326,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         // if no unpublish or publish time, then the Workflow Publish Action will publish without a job
         if ((!$unPublishTime && $publishTime) // the unpublish date is not set
             || (
-                $unPublishTime > $now // unpublish date has not passed
-                && ($publishTime && ($publishTime < $unPublishTime)) // publish date not set or happens before unpublish date
+                // unpublish date has not passed
+                $unPublishTime > $now
+                // publish date not set or happens before unpublish date
+                && ($publishTime && ($publishTime < $unPublishTime))
             )
         ) {
             // Trigger time immediately if passed
@@ -386,18 +397,27 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Define an array of message-parts for use by {@link getIntroMessage()}
-	 *
-	 * @param string $key
-	 * @return array
-	 */
+     * Define an array of message-parts for use by {@link getIntroMessage()}
+     *
+     * @param string $key
+     * @return array
+     */
     public function getIntroMessageParts($key)
     {
         $parts = array(
             'PublishDateIntro' => array(
-                'INTRO'=>_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO', 'Enter a date and/or time to specify embargo and expiry dates.'),
-                'BULLET_1'=>_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_1', 'These settings won\'t take effect until any approval actions are run'),
-                'BULLET_2'=>_t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_2', 'If an embargo is already set, adding a new one prior to that date\'s passing will overwrite it')
+                'INTRO'=>_t(
+                    'WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO',
+                    'Enter a date and/or time to specify embargo and expiry dates.'
+                ),
+                'BULLET_1'=>_t(
+                    'WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_1',
+                    'These settings won\'t take effect until any approval actions are run'
+                ),
+                'BULLET_2'=>_t(
+                    'WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_INTRO_BULLET_2',
+                    'If an embargo is already set, adding a new one prior to that date\'s passing will overwrite it'
+                )
             )
         );
         // If there's no effective workflow, no need for the first bullet-point
@@ -408,11 +428,11 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Display some messages to the user, a little more complex that a simple one-liner
-	 *
-	 * @param string $key
-	 * @return string
-	 */
+     * Display some messages to the user, a little more complex that a simple one-liner
+     *
+     * @param string $key
+     * @return string
+     */
     public function getIntroMessage($key)
     {
         $msg = $this->getIntroMessageParts($key);
@@ -422,8 +442,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Validate
-	 */
+     * Validate
+     */
     public function getCMSValidator()
     {
         $required = new AWRequiredFields();
@@ -454,12 +474,18 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
             // the times are the same
             if ($publish && $unpublish && $publish == $unpublish) {
                 $response = array_merge($response, array(
-                    'fieldMsg'   => _t('WorkflowEmbargoExpiryExtension.INVALIDSAMEEMBARGOEXPIRY', 'The publish date and unpublish date cannot be the same.'),
+                    'fieldMsg'   => _t(
+                        'WorkflowEmbargoExpiryExtension.INVALIDSAMEEMBARGOEXPIRY',
+                        'The publish date and unpublish date cannot be the same.'
+                    ),
                     'fieldValid' => false
                 ));
             } elseif ($publish && $unpublish && $publish > $unpublish) {
                 $response = array_merge($response, array(
-                    'fieldMsg'   => _t('WorkflowEmbargoExpiryExtension.INVALIDEXPIRY', 'The unpublish date cannot be before the publish date.'),
+                    'fieldMsg'   => _t(
+                        'WorkflowEmbargoExpiryExtension.INVALIDEXPIRY',
+                        'The unpublish date cannot be before the publish date.'
+                    ),
                     'fieldValid' => false
                 ));
             }
@@ -482,8 +508,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     }
 
     /*
-	 * Sets property as boolean true|false if an effective workflow is found or not
-	 */
+     * Sets property as boolean true|false if an effective workflow is found or not
+     */
     public function setIsWorkflowInEffect()
     {
         // if there is a workflow applied, we can't set the publishing date directly, only the 'desired' publishing date
@@ -542,7 +568,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
             $publishTime = $this->owner->dbObject('PublishOnDate');
 
             if ($publishTime && $publishTime->InFuture() || // when scheduled publish date is in the future
-                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is waiting)
+                // when there isn't a publish date, but a Job is in place (publish immediately, but queued jobs is
+                // waiting)
                 (!$publishTime && $this->owner->PublishJobID != 0)
             ) {
                 return false;

@@ -204,7 +204,9 @@ abstract class FrontEndWorkflowController extends Controller
         if (!$this->Title) {
             if ($this->getContextObject()) {
                 if ($workflow = $this->contextObj->getWorkflowInstance()) {
-                    $this->Title = $workflow->currentAction()->BaseAction()->PageTitle ? $workflow->currentAction()->BaseAction()->PageTitle : $workflow->currentAction()->Title;
+                    $this->Title = $workflow->currentAction()->BaseAction()->PageTitle
+                        ? $workflow->currentAction()->BaseAction()->PageTitle
+                        : $workflow->currentAction()->Title;
                 }
             }
         }

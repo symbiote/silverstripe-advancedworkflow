@@ -22,8 +22,8 @@ class WorkflowDefinitionImporter
     /**
      * Generates an array of WorkflowTemplate Objects of all uploaded workflows.
      *
-     * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first constructor param matches $name
-     *                      is returned.
+     * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first
+     *                      constructor param matches $name is returned.
      * @return WorkflowTemplate $template | array $importedDefs
      */
     public function getImportedWorkflows($name = null)
@@ -65,9 +65,9 @@ class WorkflowDefinitionImporter
         // Make sure the linefeeds are all converted to \n, PCRE '$' will not match anything else.
         $convertLF = str_replace(array("\r\n", "\r"), "\n", $source);
         /*
-		 * Remove illegal colons from Transition/Action titles, otherwise sfYamlParser will barf on them
-		 * Note: The regex relies on there being single quotes wrapped around these in the export .ss template
-		 */
+         * Remove illegal colons from Transition/Action titles, otherwise sfYamlParser will barf on them
+         * Note: The regex relies on there being single quotes wrapped around these in the export .ss template
+         */
         $converted = preg_replace("#('[^:\n][^']+)(:)([^']+')#", "$1;$3", $convertLF);
         $parts = preg_split('#^---$#m', $converted, -1, PREG_SPLIT_NO_EMPTY);
 
@@ -82,7 +82,10 @@ class WorkflowDefinitionImporter
             $parsed = Yaml::parse($parts[1]);
             return $parsed;
         } catch (Exception $e) {
-            $msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE', 'Invalid YAML format. Unable to parse.');
+            $msg = _t(
+                'WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_PARSE',
+                'Invalid YAML format. Unable to parse.'
+            );
             throw new ValidationException($msg);
         }
     }

@@ -146,14 +146,16 @@ class AdvancedWorkflowExtension extends Extension
             }
         }
 
-        $negotiator = method_exists($this->owner, 'getResponseNegotiator') ? $this->owner->getResponseNegotiator() : Controller::curr()->getResponseNegotiator();
+        $negotiator = method_exists($this->owner, 'getResponseNegotiator')
+            ? $this->owner->getResponseNegotiator()
+            : Controller::curr()->getResponseNegotiator();
         return $negotiator->respond($this->owner->getRequest());
     }
 
     /**
      * Ocassionally users forget to apply their changes via the standard CMS "Save Draft" button,
      * and select the action button instead - losing their changes.
-     * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run.
+     * Calling this from a controller method saves a draft automatically for the user, whenever a workflow action is run
      * See: #72 and #77
      *
      * @param Form $form

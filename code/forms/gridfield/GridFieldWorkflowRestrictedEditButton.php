@@ -32,8 +32,8 @@ class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider
      * Append a 'disabled' CSS class to GridField rows whose WorkflowInstance records are not viewable/editable
      * by the current user.
      *
-     * This is used to visually "grey out" records and it's leveraged in some overriding JavaScript, to maintain an ability
-     * to click the target object's hyperlink.
+     * This is used to visually "grey out" records and it's leveraged in some overriding JavaScript, to maintain
+     * an ability to click the target object's hyperlink.
      *
      * @param GridField $gridField
      * @param DataObject $record

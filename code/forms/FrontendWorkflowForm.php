@@ -23,7 +23,10 @@ class FrontendWorkflowForm extends Form
         // Protection against CSRF attacks
         $token = $this->getSecurityToken();
         if (!$token->checkRequest($request)) {
-            $this->httpError(400, _t('AdvancedWorkflowFrontendForm.SECURITYTOKENCHECK', "Security token doesn't match, possible CSRF attack."));
+            $this->httpError(400, _t(
+                'AdvancedWorkflowFrontendForm.SECURITYTOKENCHECK',
+                "Security token doesn't match, possible CSRF attack."
+            ));
         }
 
         // Determine the action button clicked
@@ -73,7 +76,14 @@ class FrontendWorkflowForm extends Form
         ) {
             return $this->httpError(
                 403,
-                sprintf(_t('AdvancedWorkflowFrontendForm.ACTIONCONTROLLERCHECK', 'Action "%s" not allowed on controller (Class: %s)'), $funcName, get_class($this->controller))
+                sprintf(
+                    _t(
+                        'AdvancedWorkflowFrontendForm.ACTIONCONTROLLERCHECK',
+                        'Action "%s" not allowed on controller (Class: %s)'
+                    ),
+                    $funcName,
+                    get_class($this->controller)
+                )
             );
         } elseif ($this->hasMethod($funcName)
             && !$this->checkAccessAction($funcName)
@@ -82,7 +92,10 @@ class FrontendWorkflowForm extends Form
         ) {
             return $this->httpError(
                 403,
-                sprintf(_t('AdvancedWorkflowFrontendForm.ACTIONFORMCHECK', 'Action "%s" not allowed on form (Name: "%s")'), $funcName, $this->Name())
+                sprintf(_t(
+                    'AdvancedWorkflowFrontendForm.ACTIONFORMCHECK',
+                    'Action "%s" not allowed on form (Name: "%s")'
+                ), $funcName, $this->Name())
             );
         }
 

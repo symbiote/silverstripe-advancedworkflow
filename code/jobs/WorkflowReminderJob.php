@@ -94,7 +94,10 @@ class WorkflowReminderJob extends AbstractQueuedJob
             $action = $instance->CurrentAction();
 
             $currentComment = $action->Comment;
-            $action->Comment = sprintf(_t('AdvancedWorkflow.JOB_REMINDER_COMMENT', '%s: Reminder email sent\n\n'), date('Y-m-d H:i:s')) . $currentComment;
+            $action->Comment = sprintf(_t(
+                'AdvancedWorkflow.JOB_REMINDER_COMMENT',
+                '%s: Reminder email sent\n\n'
+            ), date('Y-m-d H:i:s')) . $currentComment;
             try {
                 $action->write();
             } catch (Exception $ex) {

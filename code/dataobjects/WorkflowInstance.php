@@ -126,7 +126,10 @@ class WorkflowInstance extends DataObject
 
                 $fields->addFieldsToTab('Root.Main', array(
                     new HiddenField('DirectUpdate', '', 1),
-                    new HeaderField('InstanceReassignHeader', _t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')),
+                    new HeaderField(
+                        'InstanceReassignHeader',
+                        _t('WorkflowInstance.REASSIGN_HEADER', 'Reassign workflow')
+                    ),
                     new CheckboxSetField('Users', _t('WorkflowDefinition.USERS', 'Users'), $cmsUsers),
                     new TreeMultiselectField('Groups', _t('WorkflowDefinition.GROUPS', 'Groups'), Group::class)
                 ));
@@ -141,7 +144,10 @@ class WorkflowInstance extends DataObject
 
                 $transitions = $action->getValidTransitions();
                 if ($transitions) {
-                    $fields->replaceField('TransitionID', DropdownField::create("TransitionID", "Next action", $transitions->map()));
+                    $fields->replaceField(
+                        'TransitionID',
+                        DropdownField::create("TransitionID", "Next action", $transitions->map())
+                    );
                 }
             }
         }
@@ -303,7 +309,10 @@ class WorkflowInstance extends DataObject
             $this->write();
         }
 
-        if ($for && ($for->hasExtension(WorkflowApplicable::class) || $for->hasExtension(FileWorkflowApplicable::class))) {
+        if ($for
+            && ($for->hasExtension(WorkflowApplicable::class)
+                || $for->hasExtension(FileWorkflowApplicable::class))
+        ) {
             $this->TargetClass = DataObject::getSchema()->baseDataClass($for);
             $this->TargetID = $for->ID;
         }
@@ -349,7 +358,10 @@ class WorkflowInstance extends DataObject
     {
         if (!$this->CurrentActionID) {
             throw new Exception(
-                sprintf(_t('WorkflowInstance.EXECUTE_EXCEPTION', 'Attempted to start an invalid workflow instance #%s!'), $this->ID)
+                sprintf(_t(
+                    'WorkflowInstance.EXECUTE_EXCEPTION',
+                    'Attempted to start an invalid workflow instance #%s!'
+                ), $this->ID)
             );
         }
 
@@ -425,7 +437,10 @@ class WorkflowInstance extends DataObject
         $valid = $allTransitions->find('ID', $transition->ID);
         if (!$valid) {
             throw new Exception(
-                sprintf(_t('WorkflowInstance.WORKFLOW_TRANSITION_EXCEPTION', 'Invalid transition state for action #%s'), $action->ID)
+                sprintf(_t(
+                    'WorkflowInstance.WORKFLOW_TRANSITION_EXCEPTION',
+                    'Invalid transition state for action #%s'
+                ), $action->ID)
             );
         }
 
@@ -481,10 +496,11 @@ class WorkflowInstance extends DataObject
 
         $hasAccess = $this->userHasAccess($member);
         /*
-		 * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
-		 * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects Gridfield, even though;
-		 * - She had permissions granted via the workflow definition to run the preceeding Action that took her here.
-		 */
+         * If the next action is AssignUsersToWorkflowAction, execute() resets all user+group relations.
+         * Therefore current user no-longer has permission to view this WorkflowInstance in PendingObjects
+         * Gridfield, even though;
+         * - She had permissions granted via the workflow definition to run the preceeding Action that took her here.
+         */
         if (!$hasAccess) {
             if ($this->getMostRecentActionForUser($member)) {
                 return true;
@@ -545,10 +561,12 @@ class WorkflowInstance extends DataObject
             return true;
         }
 
-        // This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to users assigned-to that WorkflowInstance.
-        // However; lowly authors (users entering items into a workflow) are not assigned - but we still wish them to see their submitted content.
+        // This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to
+        // users assigned-to that WorkflowInstance. However; lowly authors (users entering items into a workflow) are
+        // not assigned - but we still wish them to see their submitted content.
         $inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
-        // This method is used in more than just the ModelAdmin. Check for the current controller to determine where canView() expectations differ
+        // This method is used in more than just the ModelAdmin. Check for the current controller to determine where
+        // canView() expectations differ
         if ($this->getTarget() && Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {
             if ($this->getVersionedConnection($this->getTarget()->ID, $member->ID)) {
                 return true;
@@ -728,7 +746,8 @@ class WorkflowInstance extends DataObject
     }
 
     /**
-     * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed" to view WorkflowInstances within GridFields
+     * We need a way to "associate" an author with this WorkflowInstance and its Target() to see if she is "allowed"
+     * to view WorkflowInstances within GridFields
      * @see {@link $this->userHasAccess()}
      *
      * @param number $recordID
@@ -791,9 +810,10 @@ class WorkflowInstance extends DataObject
         $i = 0;
         foreach ($history as $inst) {
             /*
-			 * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction in $history.
-			 * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
-			 */
+             * This iteration represents the 1st instance in the list - the most recent AssignUsersToWorkflowAction
+             * in $history.
+             * If there's no match for $member here or on the _previous_ AssignUsersToWorkflowAction, then bail out:
+             */
             $assignedMembers = $inst->BaseAction()->getAssignedMembers();
             if ($i <= 1 && $assignedMembers->count() > 0 && $assignedMembers->find('ID', $member->ID)) {
                 return $inst;

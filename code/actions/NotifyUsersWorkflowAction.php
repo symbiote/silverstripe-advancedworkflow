@@ -232,8 +232,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             'NotifyUsersWorkflowAction.CONTEXTNOTE',
             'Any summary fields from the workflow target will be available. For example, {$Context.Title}.
 			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in
-			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS\' workflow admin,
-			useful for allowing users to enact workflow transitions, directly from emails.'
+			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS\''
+            . 'workflow admin, useful for allowing users to enact workflow transitions, directly from emails.'
         );
         $fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
         $commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');

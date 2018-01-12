@@ -130,12 +130,12 @@ class WorkflowAction extends DataObject
     }
 
     /*
-	 * If there is only a single action defined for a workflow, there's no sense
-	 * in allowing users to add a transition to it (and causing errors).
-	 * Hide the "Add Transition" button in this case
-	 *
-	 * @return boolean true if we should disable the button, false otherwise
-	 */
+     * If there is only a single action defined for a workflow, there's no sense
+     * in allowing users to add a transition to it (and causing errors).
+     * Hide the "Add Transition" button in this case
+     *
+     * @return boolean true if we should disable the button, false otherwise
+     */
     public function canAddTransition()
     {
         return ($this->WorkflowDef()->numChildren() >1);
@@ -230,7 +230,10 @@ class WorkflowAction extends DataObject
 
         $fields = new FieldList(new TabSet('Root'));
         $typeLabel = _t('WorkflowAction.CLASS_LABEL', 'Action Class');
-        $fields->addFieldToTab('Root.Main', new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name()));
+        $fields->addFieldToTab(
+            'Root.Main',
+            new ReadOnlyField('WorkflowActionClass', $typeLabel, $this->singular_name())
+        );
         $titleField = new TextField('Title', $this->fieldLabel('Title'));
         $titleField->setDescription(_t(
             'WorkflowAction.TitleDescription',
@@ -247,7 +250,10 @@ class WorkflowAction extends DataObject
             ),
             _t('AllowEditing.NoString', 'No')
         ));
-        $fields->addFieldToTab('Root.Main', new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'), $this->AllowCommenting));
+        $fields->addFieldToTab(
+            'Root.Main',
+            new CheckboxField('AllowCommenting', $this->fieldLabel('AllowCommenting'), $this->AllowCommenting)
+        );
         $this->extend('updateCMSFields', $fields);
         return $fields;
     }

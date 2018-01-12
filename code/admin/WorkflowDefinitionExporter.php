@@ -163,7 +163,8 @@ class WorkflowDefinitionExporter
 
     private function processTitle($title)
     {
-        // If an import is exported and re-imported, the new export date is appended to Title, making for a very long title
+        // If an import is exported and re-imported, the new export date is appended to Title, making for
+        // a very long title
         return preg_replace("#\s[\d]+\/[\d]+\/[\d]+\s[\d]+-[\d]+-[\d]+(\s[\d]+)?#", '', $title);
     }
 
