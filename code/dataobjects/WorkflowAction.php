@@ -2,6 +2,7 @@
 
 namespace Symbiote\AdvancedWorkflow\DataObjects;
 
+use SilverStripe\Core\Manifest\ModuleResourceLoader;
 use SilverStripe\Forms\CheckboxField;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldList;
@@ -294,6 +295,7 @@ class WorkflowAction extends DataObject
 
     public function Icon()
     {
-        return $this->config()->get('icon');
+        $icon = $this->config()->get('icon');
+        return ModuleResourceLoader::singleton()->resolveURL($icon);
     }
 }
