@@ -40,7 +40,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Symbiote\\AdvancedWorkflow\\": "code/",
+            "Symbiote\\AdvancedWorkflow\\": "src/",
             "Symbiote\\AdvancedWorkflow\\Tests\\": "tests/"
         }
     },
