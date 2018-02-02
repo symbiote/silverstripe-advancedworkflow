@@ -29,14 +29,15 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
 
     protected function setUp()
     {
+        // Prevent failure if queuedjobs module isn't installed.
+        if (!class_exists(AbstractQueuedJob::class)) {
+            static::$fixture_file = '';
+            parent::setUp();
+            $this->markTestSkipped("This test requires queuedjobs");
+        }
         parent::setUp();
 
         DBDatetime::set_mock_now('2014-01-05 12:00:00');
-
-        // Prevent failure if queuedjobs module isn't installed.
-        if (!class_exists(AbstractQueuedJob::class)) {
-            $this->markTestSkipped("This test requires queuedjobs");
-        }
 
         // This doesn't play nicely with PHPUnit
         Config::modify()->set(QueuedJobService::class, 'use_shutdown_function', false);
