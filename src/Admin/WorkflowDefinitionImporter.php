@@ -24,7 +24,7 @@ class WorkflowDefinitionImporter
      *
      * @param string $name. If set, a single-value array comprising a WorkflowTemplate object who's first
      *                      constructor param matches $name is returned.
-     * @return WorkflowTemplate $template | array $importedDefs
+     * @return WorkflowTemplate|WorkflowTemplate[]
      */
     public function getImportedWorkflows($name = null)
     {
