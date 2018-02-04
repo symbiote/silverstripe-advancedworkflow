@@ -37,7 +37,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     private static $menu_title    = 'Workflows';
     private static $menu_priority = -1;
     private static $url_segment   = 'workflows';
-    private static $menu_icon = "symbiote/silverstripe-advancedworkflow:images/workflow-menu-icon.png";
+    private static $menu_icon_class = 'font-icon-flow-tree';
 
     /**
      *
