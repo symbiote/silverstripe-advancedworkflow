@@ -49,6 +49,14 @@ class WorkflowApplicable extends DataExtension
     ];
 
     /**
+     * Temporary record of items having workflow applied / removed to it.
+     * These records should not have canPublish() = false immediately applied until refreshed.
+     *
+     * @var array
+     */
+    protected static $itemsChangingWorkflow = [];
+
+    /**
      *
      * Used to flag to this extension if there's a WorkflowPublishTargetJob running.
      * @var boolean
@@ -319,6 +327,19 @@ class WorkflowApplicable extends DataExtension
      */
     public function onAfterWrite()
     {
+        // Record changes to the workflow on this record
+        $changed = $this->owner->getChangedFields(['WorkflowDefinitionID']);
+        if (isset($changed['WorkflowDefinitionID']) &&
+            (
+                empty($changed['WorkflowDefinitionID']['before'])
+                || empty($changed['WorkflowDefinitionID']['before'])
+            )
+        ) {
+            $key = $this->owner->baseClass() . '#' . $this->owner->ID;
+            static::$itemsChangingWorkflow[$key] = true;
+        }
+
+        // Get workflow instance
         $instance = $this->getWorkflowInstance();
         if ($instance && $instance->CurrentActionID) {
             $action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
@@ -382,6 +403,12 @@ class WorkflowApplicable extends DataExtension
      */
     public function canPublish()
     {
+        // Ignore canPublish() if in the middle of having workflow added / removed
+        $key = $this->owner->baseClass() . '#' . $this->owner->ID;
+        if (isset(static::$itemsChangingWorkflow[$key])) {
+            return null;
+        }
+
         // Override any default behaviour, to allow queuedjobs to complete
         if ($this->isPublishJobRunning()) {
             return true;
