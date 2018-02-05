@@ -482,12 +482,7 @@ class WorkflowDefinition extends DataObject
      */
     public function canWorkflowPublish($member, $target)
     {
-        $publish = $this->extendedCan('canWorkflowPublish', $member, $target);
-
-        if (is_null($publish)) {
-            return false;
-        }
-        return $publish;
+        return $this->extendedCan('canWorkflowPublish', $member, $target);
     }
 
     /**
