@@ -483,9 +483,8 @@ class WorkflowDefinition extends DataObject
     public function canWorkflowPublish($member, $target)
     {
         $publish = $this->extendedCan('canWorkflowPublish', $member, $target);
-
         if (is_null($publish)) {
-            return false;
+            $publish = Permission::checkMember($member, 'ADMIN');
         }
         return $publish;
     }
