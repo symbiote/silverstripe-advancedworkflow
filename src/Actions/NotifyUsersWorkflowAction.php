@@ -164,7 +164,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             return $result;
         }
 
-        $fields = $target->db();
+        $fields = $target->getSchema()->fieldSpecs($target);
         unset($fields['ID']);
 
         foreach ($fields as $field => $fieldDesc) {
