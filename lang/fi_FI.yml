@@ -2,9 +2,12 @@ fi_FI:
   AdvancedWorkflow:
     ADVANCED_WORKFLOW: 'Edistynyt työnkulku'
     APPLY_WORKFLOW: 'Ota työnkulku käyttöön'
+    CREATE_WORKFLOW: 'Luo työnkulku'
+    DELETE_WORKFLOW: 'Poista työnkulku'
     REASSIGNACTIVE: 'Vastuuta uudelleen aktiiviset työnkulut'
     VIEWACTIVE: 'Näytä aktiiviset työnkulut'
   AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Kaikki odottavat kohteet'
     LastEdited: Muokattu
     Title: Otsikko
   AllowEditing:
