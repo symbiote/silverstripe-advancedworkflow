@@ -71,11 +71,11 @@ jQuery.entwine('workflow', ($) => {
           const actions = $(this).find('.workflow-field-action');
           const field = $(this).closest('.workflow-field');
           const link = field.data('sort-link');
-          const ids = actions.map(() => $(this).data('id'));
+          const ids = actions.map((index, element) => $(element).data('id'));
 
           const data = {
             'id[]': ids.get(),
-            class: 'WorkflowAction',
+            class: 'Symbiote\\AdvancedWorkflow\\DataObjects\\WorkflowAction',
             SecurityID: field.data('securityid'),
           };
 
@@ -97,11 +97,11 @@ jQuery.entwine('workflow', ($) => {
           const trans = $(this).find('li');
           const field = $(this).closest('.workflow-field');
           const link = field.data('sort-link');
-          const ids = trans.map(() => $(this).data('id'));
+          const ids = trans.map((index, element) => $(element).data('id'));
 
           const data = {
             'id[]': ids.get(),
-            class: 'WorkflowTransition',
+            class: 'Symbiote\\AdvancedWorkflow\\DataObjects\\WorkflowTransition',
             parent: $(this).closest('.workflow-field-action').data('id'),
             SecurityID: field.data('securityid'),
           };
