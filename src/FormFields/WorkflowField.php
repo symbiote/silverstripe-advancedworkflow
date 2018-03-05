@@ -81,7 +81,7 @@ class WorkflowField extends FormField
             ));
         }
 
-        if (array_diff($ids, $objects->column('ID'))) {
+        if (!$ids || array_diff($ids, $objects->column('ID'))) {
             $this->httpError(400, _t('AdvancedWorkflowAdmin.INVALIDIDLIST', 'An invalid list of IDs was provided.'));
         }
 
