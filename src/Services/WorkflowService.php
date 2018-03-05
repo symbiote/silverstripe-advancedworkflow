@@ -4,6 +4,7 @@ namespace Symbiote\AdvancedWorkflow\Services;
 
 use Exception;
 use SilverStripe\Core\ClassInfo;
+use SilverStripe\Core\Convert;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
@@ -182,7 +183,11 @@ class WorkflowService implements PermissionProvider
         } elseif (is_object($item) && ($item->hasExtension(WorkflowApplicable::class)
                 || $item->hasExtension(FileWorkflowApplicable::class))
         ) {
-            $filter = sprintf('"TargetClass" = \'%s\' AND "TargetID" = %d', ClassInfo::baseDataClass($item), $item->ID);
+            $filter = sprintf(
+                '"TargetClass" = \'%s\' AND "TargetID" = %d',
+                Convert::raw2sql(ClassInfo::baseDataClass($item)),
+                $item->ID
+            );
             $complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
             return DataObject::get_one(
                 WorkflowInstance::class,
