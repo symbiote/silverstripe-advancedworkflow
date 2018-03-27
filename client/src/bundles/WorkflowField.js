@@ -305,8 +305,12 @@ jQuery.entwine('ss', ($) => {
    * This is specific to workflow export logic, where we don't want an AJAX request
    * interfering with browser download headers.
    */
-  $('.ss-gridfield .action.no-ajax.export-link').entwine({
-    onclick() {
+  $('.grid-field .action.no-ajax, .grid-field .no-ajax .action:button').entwine({
+    onclick(e) {
+      if (!this.hasClass('export-link')) {
+        return this._super(e);
+      }
+
       window.location.href = $.path.makeUrlAbsolute(this.attr('href'));
 
       return false;

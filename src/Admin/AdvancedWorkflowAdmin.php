@@ -5,12 +5,14 @@ namespace Symbiote\AdvancedWorkflow\Admin;
 use SilverStripe\Admin\ModelAdmin;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridFieldConfig_Base;
 use SilverStripe\Forms\GridField\GridFieldDataColumns;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Forms\GridField\GridFieldDetailForm;
+use SilverStripe\Forms\GridField\GridFieldImportButton;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\FormAction;
@@ -19,6 +21,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 use SilverStripe\View\Requirements;
 use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionItemRequestClass;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
@@ -100,9 +103,11 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     {
         $form = parent::getEditForm($id, $fields);
 
+        $definitionGridFieldName = $this->sanitiseClassName(WorkflowDefinition::class);
+
         // Show items submitted into a workflow for current user to action
         $fieldName = 'PendingObjects';
-        $pending = $this->userObjects(Member::currentUser(), $fieldName);
+        $pending = $this->userObjects(Security::getCurrentUser(), $fieldName);
 
         if ($this->config()->fieldOverrides) {
             $displayFields = $this->config()->fieldOverrides;
@@ -126,7 +131,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         if ($pending->count()) {
             $formFieldTop = GridField::create(
                 $fieldName,
-                $this->isAdminUser(Member::currentUser())?
+                $this->isAdminUser(Security::getCurrentUser()) ?
                     _t(
                         'AdvancedWorkflowAdmin.GridFieldTitleAssignedAll',
                         'All pending items'
@@ -143,16 +148,16 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             $dataColumns->setDisplayFields($displayFields);
 
             $formFieldTop->setForm($form);
-            $form->Fields()->insertBefore($formFieldTop, WorkflowDefinition::class);
+            $form->Fields()->insertBefore($definitionGridFieldName, $formFieldTop);
         }
 
         // Show items submitted into a workflow by current user
         $fieldName = 'SubmittedObjects';
-        $submitted = $this->userObjects(Member::currentUser(), $fieldName);
+        $submitted = $this->userObjects(Security::getCurrentUser(), $fieldName);
         if ($submitted->count()) {
             $formFieldBottom = GridField::create(
                 $fieldName,
-                $this->isAdminUser(Member::currentUser())?
+                $this->isAdminUser(Security::getCurrentUser()) ?
                     _t(
                         'AdvancedWorkflowAdmin.GridFieldTitleSubmittedAll',
                         'All submitted items'
@@ -171,10 +176,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             $formFieldBottom->setForm($form);
             $formFieldBottom->getConfig()->removeComponentsByType(GridFieldEditButton::class);
             $formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
-            $form->Fields()->insertBefore($formFieldBottom, WorkflowDefinition::class);
+            $form->Fields()->insertBefore($definitionGridFieldName, $formFieldBottom);
         }
 
-        $grid = $form->Fields()->dataFieldByName(WorkflowDefinition::class);
+        $grid = $form->Fields()->fieldByName($definitionGridFieldName);
         if ($grid) {
             $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)
                 ->setItemEditFormCallback(function ($form) {
@@ -188,6 +193,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
                 ->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
             $grid->getConfig()->addComponent(new GridFieldExportAction());
             $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
+            $grid->getConfig()->removeComponentsByType(GridFieldImportButton::class);
         }
 
         return $form;
@@ -315,7 +321,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $definitionID = end($url);
         if ($definitionID && is_numeric($definitionID)) {
             $exporter = new WorkflowDefinitionExporter($definitionID);
-            $exportFilename = WorkflowDefinitionExporter::$export_filename_prefix.'-'.$definitionID.'.yml';
+            $exportFilename = WorkflowDefinitionExporter::config()->get('export_filename_prefix') . '-' . $definitionID . '.yml';
             $exportBody = $exporter->export();
             $fileData = array(
                 'name' => $exportFilename,
