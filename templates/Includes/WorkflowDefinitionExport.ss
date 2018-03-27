@@ -1,9 +1,9 @@
 ---
 Name: exportedworkflow
 ---
-Injector:
+SilverStripe\\Core\\Injector\\Injector:
   ExportedWorkflow:
-    class: WorkflowTemplate
+    class: Symbiote\\AdvancedWorkflow\\Templates\\WorkflowTemplate
     constructor:
 	<% with ExportMetaData %>
       - '$ExportWorkflowDefName $ExportDate'
@@ -62,7 +62,7 @@ Injector:
 		  <% end_if %>
 	  <% end_loop %>
 	  <% end_if %>
-  WorkflowService:
+  Symbiote\\AdvancedWorkflow\\Services\\WorkflowService:
     properties:
       templates:
         - %\$ExportedWorkflow
