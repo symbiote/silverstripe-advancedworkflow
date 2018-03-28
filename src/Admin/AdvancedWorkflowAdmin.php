@@ -319,7 +319,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $definitionID = end($url);
         if ($definitionID && is_numeric($definitionID)) {
             $exporter = new WorkflowDefinitionExporter($definitionID);
-            $exportFilename = WorkflowDefinitionExporter::config()->get('export_filename_prefix') . '-' . $definitionID . '.yml';
+            $exportFilename = WorkflowDefinitionExporter::config()
+                ->get('export_filename_prefix') . '-' . $definitionID . '.yml';
             $exportBody = $exporter->export();
             $fileData = array(
                 'name' => $exportFilename,
