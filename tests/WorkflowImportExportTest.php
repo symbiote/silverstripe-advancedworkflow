@@ -95,8 +95,8 @@ class WorkflowImportExportTest extends SapphireTest
         $formatted = $exporter->format($templateData);
         $numActions = count(preg_split("#\R#", $formatted));
 
-        // Seems arbitrary, but if no actions, then the resulting YAML file is exactly 18 lines long
-        $this->assertEquals(18, $numActions);
+        // Seems arbitrary, but if no actions, then the resulting YAML file is exactly 19 lines long
+        $this->assertEquals(19, $numActions);
 
         // Ensure outputted YAML has no blank lines, where SS's control structures would normally be
         $numBlanks = preg_match("#^\s*$#m", $formatted);
