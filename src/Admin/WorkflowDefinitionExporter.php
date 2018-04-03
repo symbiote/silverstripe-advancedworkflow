@@ -2,6 +2,7 @@
 
 namespace Symbiote\AdvancedWorkflow\Admin;
 
+use Exception;
 use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPResponse;
@@ -82,12 +83,13 @@ class WorkflowDefinitionExporter
      * Runs the export
      *
      * @return string $template
+     * @throws Exception if the current user doesn't have permission to access export functionality
      */
     public function export()
     {
         // Disable any access to use of WorkflowExport if user has no SecurityAdmin access
         if (!Permission::check('CMS_ACCESS_SecurityAdmin')) {
-            throw Exception(_t('SilverStripe\\ErrorPage\\ErrorPage.CODE_403', '403 - Forbidden'), 403);
+            throw new Exception(_t('SilverStripe\\ErrorPage\\ErrorPage.CODE_403', '403 - Forbidden'), 403);
         }
         $def = $this->getDefinition();
         $templateData = new ArrayData(array(

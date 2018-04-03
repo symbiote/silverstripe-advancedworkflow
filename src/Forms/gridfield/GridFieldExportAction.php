@@ -9,8 +9,10 @@ use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridField_ActionProvider;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
 use SilverStripe\Forms\GridField\GridField_FormAction;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use SilverStripe\View\ArrayData;
+use SilverStripe\View\SSViewer;
 use Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin;
 
 /**
@@ -25,7 +27,7 @@ class GridFieldExportAction implements GridField_ColumnProvider, GridField_Actio
     /**
      * Add a column 'Delete'
      *
-     * @param type $gridField
+     * @param GridField $gridField
      * @param array $columns
      */
     public function augmentColumns($gridField, &$columns)
@@ -45,7 +47,7 @@ class GridFieldExportAction implements GridField_ColumnProvider, GridField_Actio
      */
     public function getColumnAttributes($gridField, $record, $columnName)
     {
-        return array('class' => 'col-buttons');
+        return array('class' => 'grid-field__col-compact');
     }
 
     /**
@@ -100,24 +102,23 @@ class GridFieldExportAction implements GridField_ColumnProvider, GridField_Actio
 
         $field = GridField_FormAction::create(
             $gridField,
-            'ExportRecord'.$record->ID,
+            'ExportRecord' . $record->ID,
             false,
             "exportrecord",
             array('RecordID' => $record->ID)
         )
-            ->addExtraClass('gridfield-button-export')
-            ->setAttribute('title', _t('GridAction.Export', "Export"))
-            ->setAttribute('data-icon', 'export')
-            ->setDescription(_t('GridAction.EXPORT_DESCRIPTION', 'Export'));
+            ->addExtraClass('btn btn--no-text btn--icon-md font-icon-export');
 
         $segment1 = Director::baseURL();
         $segment2 = Config::inst()->get(AdvancedWorkflowAdmin::class, 'url_segment');
-        $segment3 = $record->getClassName();
-        $fields = new ArrayData(array(
-            'Link' => Controller::join_links($segment1, 'admin', $segment2, $segment3, 'export', $record->ID)
+        $segment3 = str_replace('\\', '-', $record->getClassName());
+        $data = new ArrayData(array(
+            'Link' => Controller::join_links($segment1, 'admin', $segment2, $segment3, 'export', $record->ID),
+            'ExtraClass' => $field->extraClass(),
         ));
 
-        return $field->Field()->renderWith('Includes/GridField_ExportAction', $fields);
+        $template = SSViewer::get_templates_by_class($this, '', __CLASS__);
+        return $data->renderWith($template);
     }
 
     /**
