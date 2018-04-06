@@ -4,6 +4,7 @@ namespace Symbiote\AdvancedWorkflow\Forms\GridField;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
+use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
@@ -92,6 +93,6 @@ class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider
         $data = new ArrayData(array(
             'Link' => Controller::join_links($gridField->Link('item'), $record->ID, 'edit')
         ));
-        return $data->renderWith('Includes/GridFieldEditButton');
+        return $data->renderWith(GridFieldEditButton::class);
     }
 }
