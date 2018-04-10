@@ -25,8 +25,8 @@ composer require symbiote/silverstripe-advancedworkflow
 The workflow extension is automatically applied to the `SiteTree` class (if available). 
 
 ## Documentation
- - User guide
- - Developer documentation
+ - [User guide](docs/en/userguide/index.md)
+ - [Developer documentation](docs/en/index.md)
 
 ## Contributing
 
