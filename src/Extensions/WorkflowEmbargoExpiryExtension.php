@@ -100,7 +100,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         // Add timepicker functionality
         // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
         Requirements::css(
-            $module . ':javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
+            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
         );
         Requirements::css($module . ':client/dist/styles/advancedworkflow.css');
         Requirements::javascript(
