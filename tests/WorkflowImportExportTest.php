@@ -217,7 +217,7 @@ EOD;
      */
     public function testGetImportedWorkflowsNone()
     {
-        $this->clearFixtures();
+        ImportedWorkflowTemplate::get()->removeAll();
         $importer = new WorkflowDefinitionImporter();
         $imports = $importer->getImportedWorkflows();
         $this->assertEmpty($imports);
