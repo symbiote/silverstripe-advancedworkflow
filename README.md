@@ -1,6 +1,7 @@
 # Advanced Workflow Module
 
 [![Build Status](https://travis-ci.org/symbiote/silverstripe-advancedworkflow.svg?branch=master)](https://travis-ci.org/symbiote/silverstripe-advancedworkflow)
+[![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 
 ## Overview
 
