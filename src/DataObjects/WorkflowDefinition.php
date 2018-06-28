@@ -242,7 +242,7 @@ class WorkflowDefinition extends DataObject
             $fields->addFieldToTab(
                 'Root.Main',
                 NumericField::create(
-                    'ReminderEmail',
+                    'RemindDays',
                     _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email')
                 )->setDescription(_t(
                     __CLASS__ . '.ReminderEmailDescription',
