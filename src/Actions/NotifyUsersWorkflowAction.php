@@ -15,6 +15,7 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\SSViewer;
+use Swift_RfcComplianceException;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
@@ -96,7 +97,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
         $memberFields    = $this->getMemberFields($member);
         $initiatorFields = $this->getMemberFields($initiator);
 
-        $variables = array();
+        $variables = [];
 
         foreach ($contextFields as $field => $val) {
             $variables["\$Context.$field"] = $val;
@@ -109,28 +110,28 @@ class NotifyUsersWorkflowAction extends WorkflowAction
         }
 
         $pastActions = $workflow->Actions()->sort('Created DESC');
-        $variables["\$CommentHistory"] = $this->customise(array(
-            'PastActions'=>$pastActions,
-            'Now'=>DBDatetime::now()
-        ))->renderWith('Includes/CommentHistory');
+        $variables["\$CommentHistory"] = $this->customise([
+            'PastActions' => $pastActions,
+            'Now' => DBDatetime::now()
+        ])->renderWith('Includes/CommentHistory');
 
         $from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
         $subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
 
-        if ($this->config()->whitelist_template_variables) {
-            $item = new ArrayData(array(
-                'Initiator' => new ArrayData($initiatorFields),
-                'Member' => new ArrayData($memberFields),
-                'Context' => new ArrayData($contextFields),
+        if ($this->config()->get('whitelist_template_variables')) {
+            $item = ArrayData::create([
+                'Initiator' => ArrayData::create($initiatorFields),
+                'Member' => ArrayData::create($memberFields),
+                'Context' => ArrayData::create($contextFields),
                 'CommentHistory' => $variables["\$CommentHistory"]
-            ));
+            ]);
         } else {
-            $item = $workflow->customise(array(
+            $item = $workflow->customise([
                 'Items' => $workflow->Actions(),
                 'Member' => $member,
-                'Context' => new ArrayData($contextFields),
+                'Context' => ArrayData::create($contextFields),
                 'CommentHistory' => $variables["\$CommentHistory"]
-            ));
+            ]);
         }
 
 
@@ -141,8 +142,14 @@ class NotifyUsersWorkflowAction extends WorkflowAction
 
         foreach ($members as $member) {
             if ($member->Email) {
-                $email = new Email;
-                $email->setTo($member->Email);
+                $email = Email::create();
+                try {
+                    $email->setTo($member->Email);
+                } catch (Swift_RfcComplianceException $exception) {
+                    // If the email address isn't valid we should skip it rather than break
+                    // the rest of the processing
+                    continue;
+                }
                 $email->setSubject($subject);
                 $email->setFrom($from);
                 $email->setBody($body);
