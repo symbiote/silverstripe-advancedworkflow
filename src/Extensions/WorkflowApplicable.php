@@ -18,12 +18,14 @@ use SilverStripe\Forms\Tab;
 use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataList;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use Symbiote\QueuedJobs\Service\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -80,7 +82,7 @@ class WorkflowApplicable extends DataExtension
      */
     public function isPublishJobRunning()
     {
-        $propIsSet = $this->getIsPublishJobRunning() ? true : false;
+        $propIsSet = (bool) $this->getIsPublishJobRunning();
         return class_exists(AbstractQueuedJob::class) && $propIsSet;
     }
 
@@ -351,7 +353,7 @@ class WorkflowApplicable extends DataExtension
     /**
      * Gets the history of a workflow instance
      *
-     * @return DataObjectSet
+     * @return DataList
      */
     public function getWorkflowHistory($limit = null)
     {
@@ -411,6 +413,8 @@ class WorkflowApplicable extends DataExtension
 
     /**
      * Can only edit content that's NOT in another person's content changeset
+     *
+     * @return bool
      */
     public function canEdit($member)
     {
@@ -420,12 +424,14 @@ class WorkflowApplicable extends DataExtension
         }
 
         if ($active = $this->getWorkflowInstance()) {
-            return $active->canEditTarget($this->owner);
+            return $active->canEditTarget();
         }
     }
 
     /**
      * Can a user edit the current workflow attached to this item?
+     *
+     * @return bool
      */
     public function canEditWorkflow()
     {
