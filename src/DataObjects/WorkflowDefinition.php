@@ -52,7 +52,7 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  */
 class WorkflowDefinition extends DataObject
 {
-    private static $db = array(
+    private static $db = [
         'Title'                 => 'Varchar(128)',
         'Description'       => 'Text',
         'Template'          => 'Varchar',
@@ -60,14 +60,14 @@ class WorkflowDefinition extends DataObject
         'RemindDays'        => 'Int',
         'Sort'              => 'Int',
         'InitialActionButtonText' => 'Varchar',
-    );
+    ];
 
     private static $default_sort = 'Sort';
 
-    private static $has_many = array(
+    private static $has_many = [
         'Actions'   => WorkflowAction::class,
         'Instances' => WorkflowInstance::class
-    );
+    ];
 
     /**
      * By default, a workflow definition is bound to a particular set of users or groups.
@@ -77,20 +77,20 @@ class WorkflowDefinition extends DataObject
      *
      * @var array
      */
-    private static $many_many = array(
+    private static $many_many = [
         'Users' => Member::class,
         'Groups' => Group::class,
-    );
+    ];
 
     private static $icon = 'symbiote/silverstripe-advancedworkflow:images/definition.png';
 
     public static $default_workflow_title_base = 'My Workflow';
 
-    public static $workflow_defs = array();
+    public static $workflow_defs = [];
 
-    private static $dependencies = array(
+    private static $dependencies = [
         'workflowService' => '%$' . WorkflowService::class,
-    );
+    ];
 
     private static $table_name = 'WorkflowDefinition';
 
@@ -242,7 +242,7 @@ class WorkflowDefinition extends DataObject
             $fields->addFieldToTab(
                 'Root.Main',
                 NumericField::create(
-                    'ReminderEmail',
+                    'RemindDays',
                     _t('WorkflowDefinition.REMINDEREMAIL', 'Reminder Email')
                 )->setDescription(_t(
                     __CLASS__ . '.ReminderEmailDescription',
@@ -286,7 +286,7 @@ class WorkflowDefinition extends DataObject
             $templates = $this->workflowService->getTemplates();
 
             if (is_array($templates)) {
-                $items = array('' => '');
+                $items = ['' => ''];
                 foreach ($templates as $template) {
                     $items[$template->getName()] = $template->getName();
                 }
@@ -294,7 +294,7 @@ class WorkflowDefinition extends DataObject
 
                 $fields->addFieldToTab(
                     'Root.Main',
-                    $dd = new DropdownField(
+                    $dd = DropdownField::create(
                         'Template',
                         _t(
                             'WorkflowDefinition.CHOOSE_TEMPLATE',
@@ -303,6 +303,7 @@ class WorkflowDefinition extends DataObject
                         $items
                     )
                 );
+                $dd->setHasEmptyDefault(true);
                 $dd->setRightTitle(_t(
                     'WorkflowDefinition.CHOOSE_TEMPLATE_RIGHT',
                     'If set, this workflow definition will be automatically updated if the template is changed'
@@ -337,9 +338,9 @@ class WorkflowDefinition extends DataObject
         }
 
         if ($this->ID && Permission::check('VIEW_ACTIVE_WORKFLOWS')) {
-            $active = $this->Instances()->filter(array(
-                'WorkflowStatus' => array('Active', 'Paused')
-            ));
+            $active = $this->Instances()->filter([
+                'WorkflowStatus' => ['Active', 'Paused']
+            ]);
 
             $active = new GridField(
                 'Active',
@@ -357,9 +358,9 @@ class WorkflowDefinition extends DataObject
                 $active->getConfig()->addComponent(new GridFieldDetailForm());
             }
 
-            $completed = $this->Instances()->filter(array(
-                'WorkflowStatus' => array('Complete', 'Cancelled')
-            ));
+            $completed = $this->Instances()->filter([
+                'WorkflowStatus' => ['Complete', 'Cancelled']
+            ]);
 
             $config = new GridFieldConfig_Base();
             $config->addComponent(new GridFieldEditButton());
@@ -426,7 +427,7 @@ class WorkflowDefinition extends DataObject
         // Where is the title coming from that we wish to test?
         $incomingTitle = $this->incomingTitle();
         $defs = WorkflowDefinition::get()->map()->toArray();
-        $tmp = array();
+        $tmp = [];
 
         foreach ($defs as $def) {
             $parts = preg_split("#\s#", $def, -1, PREG_SPLIT_NO_EMPTY);
@@ -495,7 +496,7 @@ class WorkflowDefinition extends DataObject
      * @param array $context
      * @return bool
      */
-    public function canCreate($member = null, $context = array())
+    public function canCreate($member = null, $context = [])
     {
         if (is_null($member)) {
             if (!Security::getCurrentUser()) {

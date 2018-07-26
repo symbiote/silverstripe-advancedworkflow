@@ -13,6 +13,8 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Permission;
+use SilverStripe\Security\Security;
 
 /**
  * A workflow action describes a the 'state' a workflow can be in, and
@@ -70,11 +72,18 @@ class WorkflowAction extends DataObject
      * will try and figure out an appropriate value for the actively running workflow
      * if null is returned from this method.
      *
+     * Admin level users can always edit.
+     *
      * @param  DataObject $target
      * @return bool
      */
     public function canEditTarget(DataObject $target)
     {
+        $currentUser = Security::getCurrentUser();
+        if ($currentUser && Permission::checkMember($currentUser, 'ADMIN')) {
+            return true;
+        }
+
         return null;
     }
 

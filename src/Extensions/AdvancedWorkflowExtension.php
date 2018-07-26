@@ -3,6 +3,7 @@
 namespace Symbiote\AdvancedWorkflow\Extensions;
 
 use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Core\Extension;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
@@ -23,25 +24,31 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
  */
 class AdvancedWorkflowExtension extends Extension
 {
-    private static $allowed_actions = array(
+    private static $allowed_actions = [
         'updateworkflow',
         'startworkflow'
-    );
+    ];
 
+    /**
+     * @param array $data
+     * @param Form $form
+     * @param HTTPRequest $request
+     * @return string|null
+     */
     public function startworkflow($data, $form, $request)
     {
         $item = $form->getRecord();
         $workflowID = isset($data['TriggeredWorkflowID']) ? intval($data['TriggeredWorkflowID']) : 0;
 
         if (!$item || !$item->canEdit()) {
-            return;
+            return null;
         }
 
         // Save a draft, if the user forgets to do so
         $this->saveAsDraftWithAction($form, $item);
 
-        $svc = singleton(WorkflowService::class);
-        $svc->startWorkflow($item, $workflowID);
+        $service = singleton(WorkflowService::class);
+        $service->startWorkflow($item, $workflowID);
 
         return $this->returnResponse($form);
     }
@@ -55,9 +62,11 @@ class AdvancedWorkflowExtension extends Extension
     public function updateEditForm(Form $form)
     {
         Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
-        $svc    = singleton(WorkflowService::class);
-        $p      = $form->getRecord();
-        $active = $svc->getWorkflowFor($p);
+        /** @var WorkflowService $service */
+        $service = singleton(WorkflowService::class);
+        /** @var DataObject|WorkflowApplicable $record */
+        $record = $form->getRecord();
+        $active = $service->getWorkflowFor($record);
 
         if ($active) {
             $fields = $form->Fields();
@@ -65,7 +74,7 @@ class AdvancedWorkflowExtension extends Extension
             $wfFields = $active->getWorkflowFields();
 
             $allowed = array_keys($wfFields->saveableFields());
-            $data = array();
+            $data = [];
             foreach ($allowed as $fieldName) {
                 $data[$fieldName] = $current->$fieldName;
             }
@@ -78,7 +87,9 @@ class AdvancedWorkflowExtension extends Extension
 
             $form->loadDataFrom($data);
 
-            if (!$p->canEditWorkflow()) {
+            // Set the form to readonly if the current user doesn't have permission to edit the record, and/or it
+            // is in a state that requires review
+            if (!$record->canEditWorkflow()) {
                 $form->makeReadonly();
             }
 
@@ -86,8 +97,12 @@ class AdvancedWorkflowExtension extends Extension
         }
     }
 
+    /**
+     * @param Form $form
+     */
     public function updateItemEditForm($form)
     {
+        /** @var DataObject $record */
         $record = $form->getRecord();
         if ($record && $record->hasExtension(WorkflowApplicable::class)) {
             $actions = $form->Actions();
@@ -104,17 +119,23 @@ class AdvancedWorkflowExtension extends Extension
      * @param array $data
      * @param Form $form
      * @param HTTPRequest $request
-     * @return string
+     * @return string|null
      */
     public function updateworkflow($data, Form $form, $request)
     {
-        $svc = singleton(WorkflowService::class);
-        $p = $form->getRecord();
-        $workflow = $svc->getWorkflowFor($p);
+        /** @var WorkflowService $service */
+        $service = singleton(WorkflowService::class);
+        /** @var DataObject $record */
+        $record = $form->getRecord();
+        $workflow = $service->getWorkflowFor($record);
+        if (!$workflow) {
+            return null;
+        }
+
         $action = $workflow->CurrentAction();
 
-        if (!$p || !$p->canEditWorkflow()) {
-            return;
+        if (!$record || !$record->canEditWorkflow()) {
+            return null;
         }
 
         $allowedFields = $workflow->getWorkflowFields()->saveableFields();
@@ -127,7 +148,7 @@ class AdvancedWorkflowExtension extends Extension
         }
 
         if (isset($data['TransitionID']) && $data['TransitionID']) {
-            $svc->executeTransition($p, $data['TransitionID']);
+            $service->executeTransition($record, $data['TransitionID']);
         } else {
             // otherwise, just try to execute the current workflow to see if it
             // can now proceed based on user input
