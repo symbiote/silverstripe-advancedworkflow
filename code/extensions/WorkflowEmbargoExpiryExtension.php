@@ -55,10 +55,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 	 * @param FieldList $fields
 	 */
 	public function updateCMSFields(FieldList $fields) {
-	    
+
 	    // requirements
 	    // ------------
-	    
+
 		Requirements::add_i18n_javascript(ADVANCED_WORKFLOW_DIR . '/javascript/lang');
 
 		// Add timepicker functionality
@@ -116,7 +116,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 				)->setDisabled(true)
 			));
 		} else {
-		    
+
 		    // remove fields that have been automatically added that we don't want
 			$fields->removeByName('DesiredPublishDate');
 			$fields->removeByName('DesiredUnPublishDate');
@@ -281,7 +281,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		)) {
 			// Trigger time immediately if passed
 			$this->ensurePublishJob($publishTime < $now ? null : $publishTime);
-		} else {
+		} elseif (!$this->owner->isPublishJobRunning()) {
+			// Do not clear the Job if it is currently running.
 			$this->clearPublishJob();
 		}
 
@@ -292,7 +293,8 @@ class WorkflowEmbargoExpiryExtension extends DataExtension {
 		)) {
 			// Trigger time immediately if passed
 			$this->ensureUnPublishJob($unPublishTime < $now ? null : $unPublishTime);
-		} else {
+		} elseif (!$this->owner->isPublishJobRunning()) {
+			// Do not clear the Job if it is currently running.
 			$this->clearUnPublishJob();
 		}
 	}
