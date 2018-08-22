@@ -138,10 +138,16 @@ class NotifyUsersWorkflowAction extends WorkflowAction
         $view = SSViewer::fromString($this->EmailTemplate);
         $this->extend('updateView', $view);
 
-        $body = $view->process($item);
-
         foreach ($members as $member) {
             if ($member->Email) {
+                // We bind in the assignee at this point, as it changes each loop iteration
+                $assigneeVars = $this->getMemberFields($member);
+                if (count($assigneeVars)) {
+                    $item->Assignee = ArrayData::create($assigneeVars);
+                }
+
+                $body = $view->process($item);
+
                 $email = Email::create();
                 try {
                     $email->setTo($member->Email);
@@ -182,6 +188,15 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             $result['CMSLink'] = $target->CMSEditLink();
         } elseif ($target->hasMethod('WorkflowLink')) {
             $result['CMSLink'] = $target->WorkflowLink();
+        }
+        $result['AbsoluteEditLink'] = isset($result['CMSLink']) ? $result['CMSLink'] : '';
+
+        if ($target->hasMethod('AbsoluteLink')) {
+            $result['AbsoluteLink'] = $target->AbsoluteLink();
+        }
+
+        if ($target->hasMethod('LinkToPendingItems')) {
+            $result['LinkToPendingItems'] = $target->LinkToPendingItems();
         }
 
         return $result;
@@ -239,8 +254,9 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             'NotifyUsersWorkflowAction.CONTEXTNOTE',
             'Any summary fields from the workflow target will be available. For example, {$Context.Title}.
 			Additionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in
-			the CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS\''
-            . 'workflow admin, useful for allowing users to enact workflow transitions, directly from emails.'
+            the CMS (if it is a Page), and {$Context.AbsoluteLink} the frontend link. The {$Context.LinkToPendingItems}
+            variable will generate a link to the CMS workflow admin, useful for allowing users to enact workflow
+            transitions, directly from emails.'
         );
         $fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
         $commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
