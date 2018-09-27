@@ -295,7 +295,12 @@ class WorkflowInstance extends DataObject
         $diff = DataDifferencer::create($liveTarget, $draftTarget);
         $diff->ignoreFields($this->config()->get('diff_ignore_fields'));
 
-        $fields = $diff->ChangedFields();
+        $fields = ArrayList::create();
+        try {
+            $fields = $diff->ChangedFields();
+        } catch (\InvalidArgumentException $iae) {
+            // noop
+        }
 
         return $fields;
     }
