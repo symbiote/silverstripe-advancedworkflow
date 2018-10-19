@@ -131,7 +131,7 @@ class WorkflowApplicable extends DataExtension
                 'WorkflowDefinitionID',
                 _t('WorkflowApplicable.DEFINITION', 'Applied Workflow')
             );
-            $definitions = $this->workflowService->getDefinitions()->map()->toArray();
+            $definitions = $this->getWorkflowService()->getDefinitions()->map()->toArray();
             $definition->setSource($definitions);
             $definition->setEmptyString(_t('WorkflowApplicable.INHERIT', 'Inherit from parent'));
             $tab->push($definition);
@@ -179,7 +179,7 @@ class WorkflowApplicable extends DataExtension
 
     public function updateCMSActions(FieldList $actions)
     {
-        $active = $this->workflowService->getWorkflowFor($this->owner);
+        $active = $this->getWorkflowService()->getWorkflowFor($this->owner);
         $c = Controller::curr();
         if ($c && $c->hasExtension(AdvancedWorkflowExtension::class)) {
             if ($active) {
@@ -225,7 +225,7 @@ class WorkflowApplicable extends DataExtension
                 }
             } else {
                 // Instantiate the workflow definition initial actions.
-                $definitions = $this->workflowService->getDefinitionsFor($this->owner);
+                $definitions = $this->getWorkflowService()->getDefinitionsFor($this->owner);
                 if ($definitions) {
                     $menu = $actions->fieldByName('ActionMenus');
                     if (is_null($menu)) {
@@ -343,7 +343,7 @@ class WorkflowApplicable extends DataExtension
     public function getWorkflowInstance()
     {
         if (!$this->currentInstance) {
-            $this->currentInstance = $this->workflowService->getWorkflowFor($this->owner);
+            $this->currentInstance = $this->getWorkflowService()->getWorkflowFor($this->owner);
         }
 
         return $this->currentInstance;
@@ -357,7 +357,7 @@ class WorkflowApplicable extends DataExtension
      */
     public function getWorkflowHistory($limit = null)
     {
-        return $this->workflowService->getWorkflowHistoryFor($this->owner, $limit);
+        return $this->getWorkflowService()->getWorkflowHistoryFor($this->owner, $limit);
     }
 
     /**
@@ -397,7 +397,7 @@ class WorkflowApplicable extends DataExtension
         }
 
         // use definition to determine if publishing directly is allowed
-        $definition = $this->workflowService->getDefinitionFor($this->owner);
+        $definition = $this->getWorkflowService()->getDefinitionFor($this->owner);
 
         if ($definition) {
             if (!Security::getCurrentUser()) {
@@ -440,5 +440,23 @@ class WorkflowApplicable extends DataExtension
             return $active->canEdit();
         }
         return false;
+    }
+
+    /**
+     * @param WorkflowService $workflowService
+     * @return $this
+     */
+    public function setWorkflowService(WorkflowService $workflowService)
+    {
+        $this->workflowService = $workflowService;
+        return $this;
+    }
+
+    /**
+     * @return WorkflowService
+     */
+    public function getWorkflowService()
+    {
+        return $this->workflowService;
     }
 }
