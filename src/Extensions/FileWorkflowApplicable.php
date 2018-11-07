@@ -32,7 +32,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
 
         // add the workflow fields directly. It's a requirement of workflow on file objects
         // that CMS admins mark the workflow step as being editable for files to be administerable
-        $active = $this->workflowService->getWorkflowFor($this->owner);
+        $active = $this->getWorkflowService()->getWorkflowFor($this->owner);
         if ($active) {
             $current = $active->CurrentAction();
             $wfFields = $active->getWorkflowFields();
@@ -53,7 +53,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
     {
         parent::onAfterWrite();
 
-        $workflow = $this->workflowService->getWorkflowFor($this->owner);
+        $workflow = $this->getWorkflowService()->getWorkflowFor($this->owner);
         $rawData = $this->owner->toMap();
         if ($workflow && $this->owner->TransitionID) {
             // we want to transition, so do so if that's a valid transition to take.
@@ -78,7 +78,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
             if (isset($rawData['TransitionID']) && $rawData['TransitionID']) {
                 // unset the transition ID so this doesn't get re-executed
                 $this->owner->TransitionID = null;
-                $this->workflowService->executeTransition($this->owner, $rawData['TransitionID']);
+                $this->getWorkflowService()->executeTransition($this->owner, $rawData['TransitionID']);
             } else {
                 // otherwise, just try to execute the current workflow to see if it
                 // can now proceed based on user input

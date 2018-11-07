@@ -140,7 +140,7 @@ class WorkflowDefinition extends DataObject
             $this->TemplateVersion = null;
         }
         if ($this->numChildren() == 0 && $this->Template && !$this->TemplateVersion) {
-            $this->workflowService->defineFromTemplate($this, $this->Template);
+            $this->getWorkflowService()->defineFromTemplate($this, $this->Template);
         }
     }
 
@@ -253,7 +253,7 @@ class WorkflowDefinition extends DataObject
 
         if ($this->ID) {
             if ($this->Template) {
-                $template = $this->workflowService->getNamedTemplate($this->Template);
+                $template = $this->getWorkflowService()->getNamedTemplate($this->Template);
                 $fields->addFieldToTab(
                     'Root.Main',
                     new ReadonlyField('Template', $this->fieldLabel('Template'), $this->Template)
@@ -283,7 +283,7 @@ class WorkflowDefinition extends DataObject
             ));
         } else {
             // add in the 'template' info
-            $templates = $this->workflowService->getTemplates();
+            $templates = $this->getWorkflowService()->getTemplates();
 
             if (is_array($templates)) {
                 $items = ['' => ''];
@@ -394,7 +394,7 @@ class WorkflowDefinition extends DataObject
     public function updateAdminActions($actions)
     {
         if ($this->Template) {
-            $template = $this->workflowService->getNamedTemplate($this->Template);
+            $template = $this->getWorkflowService()->getNamedTemplate($this->Template);
             if ($template && $this->TemplateVersion != $template->getVersion()) {
                 $label = sprintf(_t(
                     'WorkflowDefinition.UPDATE_FROM_TEMLPATE',
@@ -408,7 +408,7 @@ class WorkflowDefinition extends DataObject
     public function updateFromTemplate()
     {
         if ($this->Template) {
-            $template = $this->workflowService->getNamedTemplate($this->Template);
+            $template = $this->getWorkflowService()->getNamedTemplate($this->Template);
             $template->updateDefinition($this);
         }
     }
@@ -572,5 +572,23 @@ class WorkflowDefinition extends DataObject
         if (Permission::checkMember($member, "VIEW_ACTIVE_WORKFLOWS")) {
             return true;
         }
+    }
+
+    /**
+     * @param WorkflowService $workflowService
+     * @return $this
+     */
+    public function setWorkflowService(WorkflowService $workflowService)
+    {
+        $this->workflowService = $workflowService;
+        return $this;
+    }
+
+    /**
+     * @return WorkflowService
+     */
+    public function getWorkflowService()
+    {
+        return $this->workflowService;
     }
 }

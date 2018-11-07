@@ -111,7 +111,7 @@ class FrontendWorkflowForm extends Form
                 $acceptType = $request->getHeader('Accept');
                 if (strpos($acceptType, 'application/json') !== false) {
                     // Send validation errors back as JSON with a flag at the start
-                    $response = new HTTPResponse(Convert::array2json($this->validator->getErrors()));
+                    $response = new HTTPResponse(json_encode($this->validator->getErrors()));
                     $response->addHeader('Content-Type', 'application/json');
                 } else {
                     $this->setupFormErrors();
