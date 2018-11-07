@@ -50,7 +50,7 @@ class AdvancedWorkflowActionController extends Controller
                     'link'    => $instance->getTarget()->AbsoluteLink()
                 );
                 if (Director::is_ajax()) {
-                    return Convert::raw2json($result);
+                    return json_encode($result);
                 }
                 return $this->redirect($instance->getTarget()->Link());
             }
@@ -60,7 +60,7 @@ class AdvancedWorkflowActionController extends Controller
             $result = array(
                 'success' => false,
             );
-            return Convert::raw2json($result);
+            return json_encode($result);
         }
 
         return $this->redirect($instance->getTarget()->Link());

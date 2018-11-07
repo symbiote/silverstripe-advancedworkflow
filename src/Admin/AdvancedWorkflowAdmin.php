@@ -300,10 +300,10 @@ class AdvancedWorkflowAdmin extends ModelAdmin
     public function getFieldDependentData(Member $user, $fieldName)
     {
         if ($fieldName == 'PendingObjects') {
-            return $this->workflowService->userPendingItems($user);
+            return $this->getWorkflowService()->userPendingItems($user);
         }
         if ($fieldName == 'SubmittedObjects') {
-            return $this->workflowService->userSubmittedItems($user);
+            return $this->getWorkflowService()->userSubmittedItems($user);
         }
     }
 
@@ -353,5 +353,23 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         $form->setActions($newActionList);
 
         return $form;
+    }
+
+    /**
+     * @param WorkflowService $workflowService
+     * @return $this
+     */
+    public function setWorkflowService(WorkflowService $workflowService)
+    {
+        $this->workflowService = $workflowService;
+        return $this;
+    }
+
+    /**
+     * @return WorkflowService
+     */
+    public function getWorkflowService()
+    {
+        return $this->workflowService;
     }
 }
