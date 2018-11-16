@@ -58,7 +58,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         'AllowEmbargoedEditing' => true
     );
 
-    // This "config" option, might better be handled in _config
+    /**
+     * @deprecated 5.2.0:6.0.0 This setting does nothing and will be removed in in 6.0
+     * @var bool
+     */
     public static $showTimePicker = true;
 
     /**
