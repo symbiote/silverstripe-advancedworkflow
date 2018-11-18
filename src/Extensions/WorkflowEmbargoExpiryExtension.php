@@ -92,23 +92,9 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     {
         // requirements
         // ------------
-
         $module = 'symbiote/silverstripe-advancedworkflow';
-
         Requirements::add_i18n_javascript($module . ':client/lang');
-
-        // Add timepicker functionality
-        // @see https://github.com/trentrichardson/jQuery-Timepicker-Addon
-        Requirements::css(
-            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.css'
-        );
         Requirements::css($module . ':client/dist/styles/advancedworkflow.css');
-        Requirements::javascript(
-            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-sliderAccess.js'
-        );
-        Requirements::javascript(
-            $module . ':thirdparty/javascript/jquery-ui/timepicker/jquery-ui-timepicker-addon.js'
-        );
         Requirements::javascript($module . ':client/dist/js/advancedworkflow.js');
 
         // Fields
@@ -183,13 +169,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
                     _t('WorkflowEmbargoExpiryExtension.UNPUBLISH_ON', 'Scheduled un-publish date')
                 ),
             ));
-        }
-
-        // Enable a jQuery-UI timepicker widget
-        // @todo re-validate this with new DatetimeField API
-        if (self::$showTimePicker) {
-            $dt->addExtraClass('hasTimePicker');
-            $ut->addExtraClass('hasTimePicker');
         }
     }
 
