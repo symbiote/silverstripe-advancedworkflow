@@ -73,13 +73,13 @@ class PublishItemWorkflowAction extends WorkflowAction
             } else {
                 // Ensure previously modified DesiredUnPublishDate values are written
                 $target->write();
-                if ($target->hasMethod('publishSingle')) {
-                    $target->publishSingle();
+                if ($target->hasMethod('publishRecursive')) {
+                    $target->publishRecursive();
                 }
             }
         } else {
-            if ($target->hasMethod('publishSingle')) {
-                $target->publishSingle();
+            if ($target->hasMethod('publishRecursive')) {
+                $target->publishRecursive();
             }
         }
 
