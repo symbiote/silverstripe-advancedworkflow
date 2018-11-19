@@ -32,8 +32,7 @@
         "expose": [
             "client/dist",
             "client/lang",
-            "images",
-            "thirdparty"
+            "images"
         ]
     },
     "suggest": {
