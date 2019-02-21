@@ -27,11 +27,12 @@ class WorkflowReminderTask extends BuildTask
         $sent = 0;
         if (WorkflowInstance::get()->count()) { // Don't attempt the filter if no instances -- prevents a crash
             $active = WorkflowInstance::get()
-                ->innerJoin(WorkflowDefinition::class, '"DefinitionID" = "WorkflowDefinition"."ID"')
-                ->filter(array('WorkflowStatus' => array('Active', 'Paused'), 'RemindDays:GreaterThan' => '0'))
-                ->filter(array('RemindDays:GreaterThan' => '0'));
+                ->innerJoin('WorkflowDefinition', '"DefinitionID" = "WorkflowDefinition"."ID"')
+                ->filter(array(
+                    'WorkflowStatus' => array('Active', 'Paused')
+                ))->where('RemindDays > 0');
 
-            if ($active) {
+            if ($active->exists()) {
                 foreach ($active as $instance) {
                     $edited = strtotime($instance->LastEdited);
                     $days   = $instance->Definition()->RemindDays;
@@ -50,15 +51,17 @@ class WorkflowReminderTask extends BuildTask
                     }
 
                     $email->setSubject("Workflow Reminder: $instance->Title");
-                    $email->setBcc(implode(', ', $members->column(Email::class)));
-                    $email->setHTMLTemplate('WorkflowReminderEmail');
-                    $email->populateTemplate(array(
-                    'Instance' => $instance,
-                    'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : '',
-                    'Diff'     => $instance->getTargetDiff()
+                    $email->setBCC($members->column('Email'));
+                    $email->setHTMLTemplate('email\\WorkflowReminderEmail');
+                    $email->setData(array(
+                        'Instance' => $instance,
+                        'Link' => $target instanceof SiteTree ? "admin/show/$target->ID" : '',
+                        'Diff' => $instance->getTargetDiff()
                     ));
 
                     $email->send();
+
+
                     $sent++;
 
                     $instance->LastEdited = DBDatetime::now()->getTimestamp();
