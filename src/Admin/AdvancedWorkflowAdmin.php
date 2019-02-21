@@ -194,6 +194,8 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             $grid->getConfig()->removeComponentsByType(GridFieldImportButton::class);
         }
 
+        $this->extend('updateEditFormAfter', $form);
+        
         return $form;
     }
 
