@@ -423,6 +423,11 @@ class WorkflowApplicable extends DataExtension
             return true;
         }
 
+        // Override any default behaviour, to allow the draft link generation
+        if ($this->isShareLinkAction()) {
+            return true;
+        }
+
         if ($active = $this->getWorkflowInstance()) {
             return $active->canEditTarget();
         }
@@ -458,5 +463,20 @@ class WorkflowApplicable extends DataExtension
     public function getWorkflowService()
     {
         return $this->workflowService;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isShareLinkAction()
+    {
+        $shareExtension = ShareDraftContentControllerExtension::class;
+        $currentController = Controller::curr();
+
+        if($currentController->hasExtension($shareExtension) && $currentController->getAction() == 'MakeShareDraftLink') {
+            return true;
+        }
+
+        return false;
     }
 }
