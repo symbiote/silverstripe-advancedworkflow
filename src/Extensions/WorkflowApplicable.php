@@ -181,7 +181,7 @@ class WorkflowApplicable extends DataExtension
     {
         $active = $this->getWorkflowService()->getWorkflowFor($this->owner);
         $c = Controller::curr();
-        if ($c && $c->hasExtension(AdvancedWorkflowExtension::class)) {
+        if ($c && $c->hasExtension(AdvancedWorkflowExtension::class) && !$this->owner->isArchived()) {
             if ($active) {
                 if ($this->canEditWorkflow()) {
                     $workflowOptions = new Tab(
