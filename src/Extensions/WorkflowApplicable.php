@@ -21,6 +21,7 @@ use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
+use SilverStripe\ShareDraftContent\Extensions\ShareDraftContentControllerExtension;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
@@ -470,10 +471,9 @@ class WorkflowApplicable extends DataExtension
      */
     public function isShareLinkAction()
     {
-        $shareExtension = ShareDraftContentControllerExtension::class;
         $currentController = Controller::curr();
 
-        if($currentController->hasExtension($shareExtension) && $currentController->getAction() == 'MakeShareDraftLink') {
+        if ($currentController->hasExtension(ShareDraftContentControllerExtension::class) && $currentController->getAction() == 'MakeShareDraftLink') {
             return true;
         }
 
