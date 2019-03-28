@@ -129,12 +129,14 @@ class WorkflowEngineTest extends SapphireTest {
 
         $email = [
             'Subject' => 'Notification test',
-            'From' => 'notify@test.com'
+            'From' => 'notify@test.com',
+            'Template' => 'Hello $Assignee.FirstName $Assignee.Surname ($Assignee.Email)'
         ];
 
         $action = new NotifyUsersWorkflowAction();
         $action->EmailSubject = $email['Subject'];
         $action->EmailFrom = $email['From'];
+        $action->EmailTemplate = $email['Template'];
 
         $instance = new WorkflowInstance();
 
@@ -169,10 +171,13 @@ class WorkflowEngineTest extends SapphireTest {
         $action->execute($instance);
 
         foreach ($testUsers as $userData) {
-            $this->assertEmailSent(
-                $userData['Email'],
-                $email['From'],
-                $email['Subject']
+            $sentEmail = $this->findEmail($userData['Email'], $email['From'], $email['Subject']);
+
+            $this->assertNotNull($sentEmail);
+
+            $this->assertContains(
+                "Hello ${userData['FirstName']} ${userData['Surname']} (${userData['Email']})",
+                $sentEmail['content']
             );
         }
     }

@@ -106,7 +106,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction {
 			if($member->Email) {
                 $assigneeVars = $this->getMemberFields($member);
                 if (count($assigneeVars)) {
-                    $item->Assignee = new ArrayData($assigneeVars);
+                    $item->Assignee = $assigneeVars;
                 }
                 
                 $body = $view->process($item);
