@@ -123,6 +123,65 @@ class WorkflowEngineTest extends SapphireTest {
 		
 	}
 
+    public function testNotifyAction()
+    {
+        $this->logInWithPermission();
+
+        $email = [
+            'Subject' => 'Notification test',
+            'From' => 'notify@test.com',
+            'Template' => 'Hello $Assignee.FirstName $Assignee.Surname ($Assignee.Email)'
+        ];
+
+        $action = new NotifyUsersWorkflowAction();
+        $action->EmailSubject = $email['Subject'];
+        $action->EmailFrom = $email['From'];
+        $action->EmailTemplate = $email['Template'];
+
+        $instance = new WorkflowInstance();
+
+        $testUsers = [
+            [
+                'FirstName' => 'Test',
+                'Surname' => 'Test',
+                'Email' => 'test@test.com'
+            ],
+            [
+                'FirstName' => 'Test2',
+                'Surname' => 'Test2',
+                'Email' => 'test2@test.com'
+            ]
+        ];
+
+        foreach ($testUsers as $userData) {
+            $member = new Member($userData);
+            $member->write();
+
+            $instance->Users()->add($member);
+        }
+
+        $page = new SiteTree();
+        $page->Title = 'stuff';
+        $page->write();
+
+        $instance->TargetClass = 'SiteTree';
+        $instance->TargetID = $page->ID;
+        $instance->write();
+
+        $action->execute($instance);
+
+        foreach ($testUsers as $userData) {
+            $sentEmail = $this->findEmail($userData['Email'], $email['From'], $email['Subject']);
+
+            $this->assertNotNull($sentEmail);
+
+            $this->assertContains(
+                "Hello ${userData['FirstName']} ${userData['Surname']} (${userData['Email']})",
+                $sentEmail['content']
+            );
+        }
+    }
+
 	public function testCreateDefinitionWithEmptyTitle() {
 		$definition = new WorkflowDefinition();
 		$definition->Title = "";
