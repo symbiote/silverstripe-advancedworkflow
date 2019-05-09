@@ -69,7 +69,8 @@ class WorkflowActionInstance extends DataObject
                 $field->Title,
                 DBField::create_field('HTMLText', $field->Diff)
             )
-                ->addExtraClass('workflow-field-diff');
+                ->addExtraClass('workflow-field-diff')
+                ->setTemplate(__CLASS__ . '/ReadonlyField');
             $fields->push($display);
         }
 
