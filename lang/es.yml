@@ -24,7 +24,7 @@ es:
     INVALIDIDLIST: 'Se proporcionó una lista inválida de IDs.'
     INVALIDPARENTID: 'Se especificó un ID de padre inválido.'
     LastEdited: Cambiado
-    MENUTITLE: Flujos de trabajo
+    MENUTITLE: 'Flujos de trabajo'
     SORTORDERSAVED: 'Se guardó el orden de clasificación.'
     Title: Título
     WorkflowStatus: 'Acción actual'
@@ -70,7 +70,7 @@ es:
     NOTIFICATIONEMAIL: 'Email de notificación'
     NOTIFICATIONNOTE: 'Se enviará un email a todos los usuarios vinculados al flujo de trabajo cuando se ejecute esta acción.'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'días'
+    DELAYPUBDAYSAFTER: días
     DELAYPUBDAYSBEFORE: 'Demorar publicación'
     PUBLICATIONDELAY: 'Demora de publicación'
   SiteTree:
@@ -117,7 +117,7 @@ es:
     TITLE: Título
     UPDATE_FROM_TEMLPATE: 'Actualizar a la última versión de la plantilla (%s)'
     USERS: 'Restringir a los usuarios'
-    WORKFLOW: Flujo de trabajo
+    WORKFLOW: 'Flujo de trabajo'
     WORKFLOWACTIVEIINSTANCES: 'Instancias activas de flujo de trabajo'
     WORKFLOWCOMPLETEDIINSTANCES: 'Instancias del flujo de trabajo completadas'
   WorkflowDefinitionImporter:

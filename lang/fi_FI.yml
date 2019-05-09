@@ -2,15 +2,19 @@ fi_FI:
   AdvancedWorkflow:
     ADVANCED_WORKFLOW: 'Edistynyt työnkulku'
     APPLY_WORKFLOW: 'Ota työnkulku käyttöön'
+    CREATE_WORKFLOW: 'Luo työnkulku'
+    DELETE_WORKFLOW: 'Poista työnkulku'
     REASSIGNACTIVE: 'Vastuuta uudelleen aktiiviset työnkulut'
     VIEWACTIVE: 'Näytä aktiiviset työnkulut'
   AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Kaikki odottavat kohteet'
     LastEdited: Muokattu
     Title: Otsikko
   AllowEditing:
-    NoString: 'Ei'
+    NoString: Ei
   NotifyUsersWorkflowAction:
-    EMAILTEMPLATE: 'Sähköpostipohja'
+    EMAILTEMPLATE: Sähköpostipohja
+    PLURALNAME: 'Informoi käyttäjiä työnkulun toiminnoista'
   WorkflowAction:
     Author: Tekijä
     FinishedLabel: Valmistunut
@@ -29,7 +33,7 @@ fi_FI:
     EditAction: Muokkaa
   WorkflowInstance:
     ActionLogTitle: Loki
-    TargetClassLabel: 'Kohdeluokka'
+    TargetClassLabel: Kohdeluokka
     TargetIDLabel: Kohde
     TitleLabel: Otsikko
   WorkflowList:

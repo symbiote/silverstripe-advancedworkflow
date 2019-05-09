@@ -39,11 +39,11 @@ eo:
   AllowEditing:
     ByAssignees: 'De asignitoj'
     ContentSettings: 'Enhavaj agordoj'
-    NoString: 'Ne'
+    NoString: Ne
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Asigni uzantojn'
     GROUPS: Grupoj
-    INITIATOR: 'Asigni initiatanton'
+    INITIATOR: 'Asigni iniciatanton'
     PLURALNAME: 'Asigni uzantojn al laborfluaj agoj'
     SINGULARNAME: 'Asigni uzantojn al laborflua ago'
     USERS: Uzuloj
@@ -69,8 +69,8 @@ eo:
     EMAILTEMPLATE: 'Retpoŝta ŝablono'
     FIELDNAME: 'Nomo de kampo'
     FORMATTINGHELP: 'Formatada helpo'
-    FORMATTINGNOTE: "Sciigaj retpoŝtoj povas enhavi HTML-formatojn. La jenajn specialajn variablojn anstataŭas iliaj respektivaj valoroj en la retpoŝtaj temo, sendinto kaj ŝablono/korpo."
-    INITIATORNOTE: "Ĉi tiuj kampoj pleniĝos el la membro kiu initiatis la laborfluan peton."
+    FORMATTINGNOTE: 'Sciigaj retpoŝtoj povas enhavi HTML-formatojn. La jenajn specialajn variablojn anstataŭas iliaj respektivaj valoroj en la retpoŝtaj temo, sendinto kaj ŝablono/korpo.'
+    INITIATORNOTE: 'Ĉi tiuj kampoj pleniĝos el la membro kiu initiatis la laborfluan peton.'
     LISTING_TEMPLATE: 'Lista ŝablono - elementoj estos la listo de ĉiuj agoj en la laborfluo (sinonimo al agoj). Ankaŭ disponeblos ĉiuj atributoj de la aktuala laborflua elemento.'
     MEMBERNOTE: "Ĉi tiuj kampoj pleniĝos de la membro kiu iniciatos la sciigan agon. Ekzemple,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Sciiga retpoŝto'
@@ -78,23 +78,34 @@ eo:
     PLURALNAME: 'Sciigi uzulajn laborfluajn agojn'
     SINGULARNAME: 'Sciigi uzulan laborfluan agon'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'tagoj'
+    DELAYPUBDAYSAFTER: tagoj
     DELAYPUBDAYSBEFORE: 'Prokrasti publikigon'
     PLURALNAME: 'Publikigi elementajn laborfluajn agojn'
     PUBLICATIONDELAY: 'Publikiga prokrasto'
     SINGULARNAME: 'Publikigi elementan laborfluan agon'
+  SetPropertyWorkflowAction:
+    PLURALNAME: 'Agordi laborfluajn agojn'
+    PROPERTY: Atributo
+    PROPERTYTITLE: 'Agordota atributo; se ĝi ekzistas kiel agordmetodo, ĝi vokiĝos kun la valoron'
+    SINGULARNAME: 'Agordi laborfluan agon'
   SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple aprobi laborfluajn agojn'
     SINGULARNAME: 'Simple aprobi laborfluan agon'
   SiteTree:
     WorkflowOptions: 'Laborfluaj agordoj'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: tagoj
+    DELAYUNPUBDAYSBEFORE: 'Prokrasti malpublikigon je'
+    PLURALNAME: 'Malpublikigi elementajn laborfluajn agojn'
+    SINGULARNAME: 'Malpublikigi elementan laborfluan agon'
+    UNPUBLICATIONDELAY: 'Prokrasti malpublikigon'
   Workflow:
     WorkflowActionsTabTitle: 'Laborfluaj agoj'
   WorkflowAction:
     ALLOW_COMMENTING: 'Ĉu permesi komenti?'
     ALLOW_EDITING: 'Ĉu permesi redakti dum ĉi tiu paŝo?'
     Author: Aŭtoro
-    CLASS_LABEL: 'Agoklaso'
+    CLASS_LABEL: Agoklaso
     COMMENT: Komento
     CommentLabel: Komento
     ExecutedLabel: Plenumis
@@ -118,6 +129,7 @@ eo:
     WORKFLOWLOG: 'Laborflua protokolo'
   WorkflowDefinition:
     ADDAFTERSAVING: 'Vi povos enmeti laborfluajn paŝojn post vi konservis la unuan fojon.'
+    BLOCK_INITIATOR: Blokiniciatinto
     CHOOSE_TEMPLATE: 'Elekti ŝablonon (malnepra)'
     CHOOSE_TEMPLATE_RIGHT: 'Se agordita, ĉi tiu laborflua difino aŭtomate aktualiĝos se la ŝablono ŝanĝiĝos.'
     DESCRIPTION: Priskribo

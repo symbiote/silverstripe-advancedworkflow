@@ -6,13 +6,18 @@ it:
     CREATE_WORKFLOW: 'Crea flusso di lavoro'
     CREATE_WORKFLOW_HELP: 'Gli utenti possono creare definizioni di flussi di lavoro'
     DELETE_WORKFLOW: 'Cancella flusso di lavoro'
+    DELETE_WORKFLOW_HELP: 'Gli utenti possono eliminare le definizioni di flussi di lavoro e attivare flussi di lavoro'
+    JOB_REMINDER_COMMENT: '%s: Email di promemoria inviata\n\n'
+    REASSIGNACTIVE: 'Riassegna flussi di lavoro attivi'
+    REASSIGNACTIVEHELP: 'Gli utenti possono riassegnare flussi di lavoro attivi a utenti e gruppi differenti'
     VIEWACTIVE: 'Visualizza flussi di lavoro attivi'
+    VIEWACTIVEHELP: 'Gli utenti possono vedere i flussi di lavoro attivi attraverso il pannello di amministrazione flussi di lavoro'
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'Devi essere loggato'
   AdvancedWorkflowAdmin:
     GridFieldTitleAssignedAll: 'Tutti gli oggetti in sospeso'
     LastEdited: Cambiato
-    MENUTITLE: Flussi di lavoro
+    MENUTITLE: 'Flussi di lavoro'
     SORTORDERSAVED: 'L''ordinamento e'' stato salvato.'
     Title: Titolo
     WorkflowStatus: 'Azione corrente'
@@ -36,7 +41,7 @@ it:
   NotifyUsersWorkflowAction:
     FIELDNAME: 'Nome del campo'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'giorni'
+    DELAYPUBDAYSAFTER: giorni
     DELAYPUBDAYSBEFORE: 'Ritarda pubblicazione'
   Workflow:
     WorkflowActionsTabTitle: 'Azioni del flusso di lavoro'
@@ -64,7 +69,7 @@ it:
     TEMPLATE_VERSION: 'Versione Template'
     TITLE: Titolo
     USERS: 'Ristretto agli Utenti'
-    WORKFLOW: Flusso di lavoro
+    WORKFLOW: 'Flusso di lavoro'
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Formatto YAML non valido'
     INVALID_YML_FORMAT_NO_PARSE: 'Formatto YAML non valido. Impossibile fare il parse.'
