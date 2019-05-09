@@ -13,7 +13,7 @@ id:
     EMAILFROM: 'Surel dari'
     EMAILSUBJECT: 'Judul surel'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'hari'
+    DELAYPUBDAYSAFTER: hari
   WorkflowAction:
     Author: Pengarang
     COMMENT: Komentar

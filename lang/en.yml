@@ -49,14 +49,9 @@ en:
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Context Object Not Found'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'You do not have permission to execute this action'
-  GridAction:
-    EXPORT_DESCRIPTION: Export
-    Export: Export
-  GridFieldEditButton_ss:
-    EXPORT: Export
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comment history up to this notification.'
-    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n\t\t\tAdditionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n\t\t\tthe CMS (if it is a Page), and the {$Context.LinkToPendingItems} variable will generate a link to the CMS' workflow admin,\n\t\t\tuseful for allowing users to enact workflow transitions, directly from emails."
+    CONTEXTNOTE: "Any summary fields from the workflow target will be available. For example, {$Context.Title}.\n\t\t\tAdditionally, the {$Context.AbsoluteEditLink} variable will contain a link to edit the workflow target in\n            the CMS (if it is a Page), and {$Context.AbsoluteLink} the frontend link. The {$Context.LinkToPendingItems}\n            variable will generate a link to the CMS workflow admin, useful for allowing users to enact workflow\n            transitions, directly from emails."
     EMAILFROM: 'Email from'
     EMAILSUBJECT: 'Email subject'
     EMAILTEMPLATE: 'Email template'
@@ -68,9 +63,6 @@ en:
     NOTIFICATIONEMAIL: 'Notification Email'
     NOTIFICATIONNOTE: 'All users attached to the workflow will be sent an email when this action is run.'
   PublishItemWorkflowAction:
-    ALLOWEMBARGOEDEDITING: 'Allow editing while item is embargoed? (does not apply without embargo)'
-    DELAYPUBDAYSAFTER: ' days'
-    DELAYPUBDAYSBEFORE: 'Delay publication '
     PUBLICATIONDELAY: 'Publication Delay'
   SetPropertyWorkflowAction:
     PROPERTY: Property
@@ -96,10 +88,12 @@ en:
       other: '{count} Notify Users Workflow Actions'
     SINGULARNAME: 'Notify Users Workflow Action'
   Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    ALLOWEMBARGOEDEDITING: 'Allow editing while item is embargoed? (does not apply without embargo)'
     PLURALNAME: 'Publish Item Workflow Actions'
     PLURALS:
       one: 'A Publish Item Workflow Action'
       other: '{count} Publish Item Workflow Actions'
+    PublicationDelayDescription: 'Delay publiation by the specified number of days'
     SINGULARNAME: 'Publish Item Workflow Action'
   Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
     PLURALNAME: 'Set Property Workflow Actions'
@@ -144,6 +138,7 @@ en:
     PLURALS:
       one: 'A Workflow Definition'
       other: '{count} Workflow Definitions'
+    ReminderEmailDescription: 'Send reminder email after the specified number of days without action.'
     SINGULARNAME: 'Workflow Definition'
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     PLURALNAME: 'Workflow Instances'
@@ -157,6 +152,8 @@ en:
       one: 'A Workflow Transition'
       other: '{count} Workflow Transitions'
     SINGULARNAME: 'Workflow Transition'
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Export
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: ' days'
     DELAYUNPUBDAYSBEFORE: 'Delay unpublishing by '
@@ -194,8 +191,6 @@ en:
     INITIAL_ACTION_BUTTON_TEXT: 'Initial Action Button Text'
     LATEST_VERSION: 'Latest version is %s'
     REMINDEREMAIL: 'Reminder Email'
-    SENDREMINDERDAYSAFTER: ' days without action.'
-    SENDREMINDERDAYSBEFORE: 'Send reminder email after '
     TEMPLATE_INFO: 'Template Info'
     TEMPLATE_NAME: 'Source Template'
     TEMPLATE_VERSION: 'Template Version'

@@ -4,11 +4,12 @@ de:
     APPLY_WORKFLOW: 'Arbeitsablauf anwenden'
     APPLY_WORKFLOW_HELP: 'Benutzer können Arbeitsabläufe auf Einträge anwenden'
     CREATE_WORKFLOW: 'Arbeitsablauf erstellen'
+    CREATE_WORKFLOW_HELP: 'Benutzer können Arbeitsablaufdefinitionen erstellen'
     DELETE_WORKFLOW: 'Arbeitsablauf löschen'
     JOB_REMINDER_COMMENT: '%s: Erinnerungs-E-Mail gesendet\n\n'
     REASSIGNACTIVE: 'Aktive Arbeitsabläufe neu zuordnen'
     VIEWACTIVE: 'Aktive Arbeitsabläufe ansehen'
-    WORKFLOW_REMINDER_JOB: 'Arbeitsablauferinnerungsauftrag'
+    WORKFLOW_REMINDER_JOB: Arbeitsablauferinnerungsauftrag
   AdvancedWorkflowActionController:
     ACTION_ERROR: 'Sie müssen angemeldet sein'
   AdvancedWorkflowAdmin:
@@ -28,8 +29,8 @@ de:
   AdvancedWorkflowPublishJob:
     SCHEDULEJOBTITLE: '{type} von {object} geplant'
   AllowEditing:
-    ContentSettings: 'Inhaltseinstellungen'
-    NoString: 'Nein'
+    ContentSettings: Inhaltseinstellungen
+    NoString: Nein
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Benutzer zuordnen'
     GROUPS: Gruppen
@@ -52,55 +53,60 @@ de:
     SINGULARNAME: 'Importierte Arbeitsablaufvorlage'
   NotifyUsersWorkflowAction:
     EMAILFROM: 'E-Mail von'
-    EMAILSUBJECT: 'E-Mail-Betreff'
-    EMAILTEMPLATE: 'E-Mail-Vorlage'
-    FIELDNAME: 'Feldname'
-    FORMATTINGHELP: 'Formatierungshilfe'
-    NOTIFICATIONEMAIL: 'Benachrichtigungs-E-Mail'
+    EMAILSUBJECT: E-Mail-Betreff
+    EMAILTEMPLATE: E-Mail-Vorlage
+    FIELDNAME: Feldname
+    FORMATTINGHELP: Formatierungshilfe
+    NOTIFICATIONEMAIL: Benachrichtigungs-E-Mail
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'Tage'
+    DELAYPUBDAYSAFTER: Tage
     DELAYPUBDAYSBEFORE: 'Veröffentlichung verzögern'
-    PUBLICATIONDELAY: 'Veröffentlichungsverzögerung'
+    PUBLICATIONDELAY: Veröffentlichungsverzögerung
+  SetPropertyWorkflowAction:
+    PROPERTY: Eigenschaft
   SiteTree:
-    WorkflowOptions: 'Arbeitsablaufoptionen'
+    WorkflowOptions: Arbeitsablaufoptionen
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: Tage
   Workflow:
-    WorkflowActionsTabTitle: 'Arbeitsablaufaktionen'
+    WorkflowActionsTabTitle: Arbeitsablaufaktionen
   WorkflowAction:
     ALLOW_COMMENTING: 'Kommentieren erlauben?'
     Author: Autor
-    CLASS_LABEL: 'Aktionsklasse'
+    CLASS_LABEL: Aktionsklasse
     COMMENT: Kommentar
     CommentLabel: Kommentar
     ExecutedLabel: Ausgeführt
     FRONTENDCOMMENT: Kommentar
     FinishedLabel: Abgeschlossen
-    PLURALNAME: 'Arbeitsablaufaktionen'
-    SINGULARNAME: 'Arbeitsablaufaktion'
+    PLURALNAME: Arbeitsablaufaktionen
+    SINGULARNAME: Arbeitsablaufaktion
     TITLE: Titel
     Transitions: Übergänge
     TypeLabel: Typ
   WorkflowActionInstance:
-    PLURALNAME: 'Arbeitsablaufaktionsinstanzen'
-    SINGULARNAME: 'Arbeitsablaufaktionsinstanz'
+    PLURALNAME: Arbeitsablaufaktionsinstanzen
+    SINGULARNAME: Arbeitsablaufaktionsinstanz
     Title: Titel
   WorkflowApplicable:
     ADDITIONAL_WORKFLOW_DEFINITIONS: 'Zusätzliche Arbeitsabläufe'
     DEFINITION: 'Angewandter Arbeitsablauf'
     EFFECTIVE_WORKFLOW: 'Effektiver Arbeitsablauf'
-    WORKFLOWLOG: 'Arbeitsablaufprotokoll'
+    WORKFLOWLOG: Arbeitsablaufprotokoll
   WorkflowDefinition:
     CHOOSE_TEMPLATE: 'Vorlage auswählen (optional)'
     DESCRIPTION: Beschreibung
     GROUPS: 'Auf Gruppen beschränken'
+    INITIAL_ACTION_BUTTON_TEXT: 'Initialer Aktionsschaltflächentext'
     LATEST_VERSION: 'Aktuelle Version ist %s'
-    PLURALNAME: 'Arbeitsablaufdefinitionen'
-    REMINDEREMAIL: 'Erinnerungs-E-Mail'
+    PLURALNAME: Arbeitsablaufdefinitionen
+    REMINDEREMAIL: Erinnerungs-E-Mail
     SENDREMINDERDAYSAFTER: 'Tage ohne Aktion.'
     SENDREMINDERDAYSBEFORE: 'Erinnerungs-E-Mail senden nach'
-    SINGULARNAME: 'Arbeitsablaufdefinition'
-    TEMPLATE_INFO: 'Vorlageninformation'
-    TEMPLATE_NAME: 'Quellvorlage'
-    TEMPLATE_VERSION: 'Vorlagenversion'
+    SINGULARNAME: Arbeitsablaufdefinition
+    TEMPLATE_INFO: Vorlageninformation
+    TEMPLATE_NAME: Quellvorlage
+    TEMPLATE_VERSION: Vorlagenversion
     TITLE: Titel
     UPDATE_FROM_TEMLPATE: 'Auf neueste Vorlagenversion aktualisieren (%s)'
     USERS: 'Auf Benutzer beschränken'
@@ -109,13 +115,14 @@ de:
     WORKFLOWCOMPLETEDIINSTANCES: 'Abgeschlossene Arbeitsablaufinstanzen'
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Ungültiges YAML-Format.'
+    INVALID_YML_FORMAT_NO_PARSE: 'Ungültiges YAML-Format. Kann nicht eingelesen werden.'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Aktiv
     CompletedWorkflowStateTitle: Fertiggestellt
     PUBLISH_ON: 'Geplantes Veröffentlichungsdatum'
     REQUESTED_PUBLISH_DATE: 'Gewünschtes Veröffentlichungsdatum'
     REQUESTED_PUBLISH_DATE_H3: 'Ablauf und Embargo'
-    TabTitle: 'Veröffentlichungsplan'
+    TabTitle: Veröffentlichungsplan
   WorkflowField:
     AddTransitionAction: 'Übergang hinzufügen'
     CreateAction: 'Aktion erstellen'
@@ -124,16 +131,16 @@ de:
     EditAction: Bearbeiten
   WorkflowInstance:
     ActionLogTitle: Protokollieren
-    PLURALNAME: 'Arbeitsablaufinstanzen'
+    PLURALNAME: Arbeitsablaufinstanzen
     REASSIGN_HEADER: 'Arbeitsablauf neu zuordnen'
-    SINGULARNAME: 'Arbeitsablaufinstanz'
+    SINGULARNAME: Arbeitsablaufinstanz
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Instanz #%s von %s'
-    TargetClassLabel: 'Zielklasse'
+    TargetClassLabel: Zielklasse
     TargetIDLabel: Ziel
     TitleLabel: Titel
     WORKFLOW_TRANSITION_EXCEPTION: 'Ungültiger Übergangszustand für Aktion #%s'
-    WorkflowStatusLabel: 'Arbeitsablaufstatus'
+    WorkflowStatusLabel: Arbeitsablaufstatus
   WorkflowList:
     TableHeaderActions: Aktionen
     TableHeaderEditedBy: 'Bearbeitet von'
@@ -145,13 +152,15 @@ de:
     SAVE: Speichern
   WorkflowService:
     EXISTING_WORKFLOW_ERROR: 'Das Objekt verfügt bereits über einen laufenden Arbeitsablauf'
+  WorkflowTemplate:
+    INVALID_TEMPLATE_ACTION: 'Ungültige Aktionsklasse in Vorlage angegeben'
   WorkflowTransition:
     ACTION: Aktion
     Active: Aktiv
     NEXT_ACTION: 'Nächste Aktion'
-    PLURALNAME: 'Arbeitsablaufübergänge'
+    PLURALNAME: Arbeitsablaufübergänge
     Passive: Passiv
     SELECTONE: '(Eines auswählen)'
-    SINGULARNAME: 'Arbeitsablaufübergang'
+    SINGULARNAME: Arbeitsablaufübergang
     TYPE: Typ
     TabTitle: 'Auf Benutzer beschränken'

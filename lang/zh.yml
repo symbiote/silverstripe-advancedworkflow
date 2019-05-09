@@ -1,173 +1,173 @@
 zh:
   AdvancedWorkflow:
-    ADVANCED_WORKFLOW: '高级工作流'
-    APPLY_WORKFLOW: '应用工作流'
-    APPLY_WORKFLOW_HELP: '用户可将工作流应用给项'
-    REASSIGNACTIVE: '重新分配活动的工作流'
-    REASSIGNACTIVEHELP: '用户可以将活动的工作流重新分配给不同的用户和群组'
-    VIEWACTIVE: '查看活动的工作流'
-    VIEWACTIVEHELP: '用户可以通过工作流管理面板查看活动的工作流'
+    ADVANCED_WORKFLOW: 高级工作流
+    APPLY_WORKFLOW: 应用工作流
+    APPLY_WORKFLOW_HELP: 用户可将工作流应用给项
+    REASSIGNACTIVE: 重新分配活动的工作流
+    REASSIGNACTIVEHELP: 用户可以将活动的工作流重新分配给不同的用户和群组
+    VIEWACTIVE: 查看活动的工作流
+    VIEWACTIVEHELP: 用户可以通过工作流管理面板查看活动的工作流
   AdvancedWorkflowActionController:
-    ACTION_ERROR: '您必须登录'
+    ACTION_ERROR: 您必须登录
   AdvancedWorkflowAdmin:
-    GridFieldTitleAssignedAll: '所有挂起的项'
-    GridFieldTitleAssignedYour: '您挂起的项'
-    GridFieldTitleSubmittedAll: '所有提交的项目'
-    GridFieldTitleSubmittedYour: '您提交的项目'
-    INVALIDCLASSTOORDER: '指定的订单类无效。'
+    GridFieldTitleAssignedAll: 所有挂起的项
+    GridFieldTitleAssignedYour: 您挂起的项
+    GridFieldTitleSubmittedAll: 所有提交的项目
+    GridFieldTitleSubmittedYour: 您提交的项目
+    INVALIDCLASSTOORDER: 指定的订单类无效。
     INVALIDIDLIST: '提供了一个无效的 ID 列表。'
     INVALIDPARENTID: '指定了一个无效的父 ID。'
     LastEdited: 已更改
     MENUTITLE: 工作流
-    SORTORDERSAVED: '排序顺序已保存。'
+    SORTORDERSAVED: 排序顺序已保存。
     Title: 题目
-    WorkflowStatus: '当前动作'
-    WorkflowTitle: '有效工作流程'
+    WorkflowStatus: 当前动作
+    WorkflowTitle: 有效工作流程
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: '操作 "%s" 不允许针对控制器进行（类： %s）'
     ACTIONFORMCHECK: '操作 "%s" 不允许针对表单进行（名称："%s"）'
     SECURITYTOKENCHECK: '安全令牌不匹配，可能的 CSRF 攻击。'
   AllowEditing:
-    ByAssignees: '按照代理人'
-    ContentSettings: '内容设置'
+    ByAssignees: 按照代理人
+    ContentSettings: 内容设置
   AssignUsersToWorkflowAction:
-    ASSIGNUSERS: '分配用户'
+    ASSIGNUSERS: 分配用户
     GROUPS: 群组
-    INITIATOR: '分配发起人'
-    PLURALNAME: '将用户分配给工作流操作'
-    SINGULARNAME: '将用户分配给工作流操作'
+    INITIATOR: 分配发起人
+    PLURALNAME: 将用户分配给工作流操作
+    SINGULARNAME: 将用户分配给工作流操作
     USERS: 用户
   CancelWorkflowAction:
-    PLURALNAME: '取消工作流程动作'
-    SINGULARNAME: '删除工作流操作'
+    PLURALNAME: 取消工作流程动作
+    SINGULARNAME: 删除工作流操作
   FrontEndWorkflowController:
-    FRONTENDACTION_CONTEXT_EXCEPTION: '未找到上下文对象'
-    FRONTENDACTION_TRANSITION_EXCEPTION: '您没有权限执行此操作。'
+    FRONTENDACTION_CONTEXT_EXCEPTION: 未找到上下文对象
+    FRONTENDACTION_TRANSITION_EXCEPTION: 您没有权限执行此操作。
   NotifyUsersWorkflowAction:
-    COMMENTHISTORY: '截止到此通知的评论历史。'
+    COMMENTHISTORY: 截止到此通知的评论历史。
     CONTEXTNOTE: "工作流目标的所有总结字段都是可用的。例如，{$Context.Title}。\n此外，{$Context.AbsoluteEditLink} 变量将包含一个可以在 CMS （（若它是一个页面）中编辑工作流目标的链接。"
-    EMAILFROM: '邮件来自'
-    EMAILSUBJECT: '邮件主题'
-    EMAILTEMPLATE: '邮件模板'
-    FIELDNAME: '字段名'
-    FORMATTINGHELP: '格式化帮助'
-    FORMATTINGNOTE: "通知邮件可以含 HTML 格式。以下特殊变量分别以邮件标题、发件人和模板/主体各自的值替换。"
+    EMAILFROM: 邮件来自
+    EMAILSUBJECT: 邮件主题
+    EMAILTEMPLATE: 邮件模板
+    FIELDNAME: 字段名
+    FORMATTINGHELP: 格式化帮助
+    FORMATTINGNOTE: '通知邮件可以含 HTML 格式。以下特殊变量分别以邮件标题、发件人和模板/主体各自的值替换。'
     INITIATORNOTE: "这些字段将填充发起工作流程请求的成员信息。例如，\n{$Initiator.Email}。"
     MEMBERNOTE: "这些字段将填充发起通知操作的成员信息。例如，\n\n{$Member.FirstName}。"
-    NOTIFICATIONEMAIL: '通知邮件'
-    NOTIFICATIONNOTE: '该动作开始时所有该工作流程相关用户均会受到一封邮件'
-    PLURALNAME: '提醒用户工作流程动作'
-    SINGULARNAME: '通知用户工作流动作'
+    NOTIFICATIONEMAIL: 通知邮件
+    NOTIFICATIONNOTE: 该动作开始时所有该工作流程相关用户均会受到一封邮件
+    PLURALNAME: 提醒用户工作流程动作
+    SINGULARNAME: 通知用户工作流动作
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: '天'
-    DELAYPUBDAYSBEFORE: '推迟发布'
-    PLURALNAME: '发布项工作流操作'
-    PUBLICATIONDELAY: '延迟发布'
-    SINGULARNAME: '发布项工作流操作'
+    DELAYPUBDAYSAFTER: 天
+    DELAYPUBDAYSBEFORE: 推迟发布
+    PLURALNAME: 发布项工作流操作
+    PUBLICATIONDELAY: 延迟发布
+    SINGULARNAME: 发布项工作流操作
   SimpleApprovalWorkflowAction:
-    PLURALNAME: '简单的审批工作流活动'
-    SINGULARNAME: '简单的审批工作流活动'
+    PLURALNAME: 简单的审批工作流活动
+    SINGULARNAME: 简单的审批工作流活动
   Workflow:
-    WorkflowActionsTabTitle: '工作流程行动'
+    WorkflowActionsTabTitle: 工作流程行动
   WorkflowAction:
-    ALLOW_COMMENTING: '允许注解？'
-    ALLOW_EDITING: '此步中是否允许编辑？'
+    ALLOW_COMMENTING: 允许注解？
+    ALLOW_EDITING: 此步中是否允许编辑？
     Author: 作者
-    CLASS_LABEL: '动作类'
+    CLASS_LABEL: 动作类
     COMMENT: 评论
     CommentLabel: 评论
     ExecutedLabel: 已执行
     FRONTENDCOMMENT: 评论
     FinishedLabel: 完成
-    PLURALNAME: '工作流动作'
-    SINGULARNAME: '工作流动作'
+    PLURALNAME: 工作流动作
+    SINGULARNAME: 工作流动作
     TITLE: 标题
-    TitleDescription: '标题被用作此工作流程操作的按钮标签'
+    TitleDescription: 标题被用作此工作流程操作的按钮标签
     Transitions: 转换
     TypeLabel: 类型
   WorkflowActionInstance:
-    SINGULARNAME: '工作流动作实例'
+    SINGULARNAME: 工作流动作实例
     Title: 题目
   WorkflowApplicable:
-    DEFINITION: '应用的工作流'
-    EFFECTIVE_WORKFLOW: '有效的工作流'
-    INHERIT: '从父项继承'
-    WORKFLOWLOG: '工作流日志'
+    DEFINITION: 应用的工作流
+    EFFECTIVE_WORKFLOW: 有效的工作流
+    INHERIT: 从父项继承
+    WORKFLOWLOG: 工作流日志
   WorkflowDefinition:
-    ADDAFTERSAVING: '第一次保存后，您可以添加工作流步骤。'
-    CHOOSE_TEMPLATE: '选择模板（可选）'
-    CHOOSE_TEMPLATE_RIGHT: '当设置后，若模板更改此工作流定义会自动更新'
+    ADDAFTERSAVING: 第一次保存后，您可以添加工作流步骤。
+    CHOOSE_TEMPLATE: 选择模板（可选）
+    CHOOSE_TEMPLATE_RIGHT: 当设置后，若模板更改此工作流定义会自动更新
     DESCRIPTION: 描述
-    GROUPS: '群组限制'
+    GROUPS: 群组限制
     LATEST_VERSION: '最新版本是 %s'
-    PLURALNAME: '工作流定义'
-    REMINDEREMAIL: '提醒邮件'
-    SENDREMINDERDAYSAFTER: '无动作的天数。'
-    SENDREMINDERDAYSBEFORE: '于……之后发送提醒邮件'
-    SINGULARNAME: '工作流定义'
-    TEMPLATE_INFO: '模板信息'
-    TEMPLATE_NAME: '源模板'
-    TEMPLATE_VERSION: '模板版本'
+    PLURALNAME: 工作流定义
+    REMINDEREMAIL: 提醒邮件
+    SENDREMINDERDAYSAFTER: 无动作的天数。
+    SENDREMINDERDAYSBEFORE: 于……之后发送提醒邮件
+    SINGULARNAME: 工作流定义
+    TEMPLATE_INFO: 模板信息
+    TEMPLATE_NAME: 源模板
+    TEMPLATE_VERSION: 模板版本
     TITLE: 标题
     UPDATE_FROM_TEMLPATE: '更新至最新的模板版本 (%s)'
-    USERS: '用户限制'
+    USERS: 用户限制
     WORKFLOW: 工作流
-    WORKFLOWACTIVEIINSTANCES: '活动的工作流实例'
-    WORKFLOWCOMPLETEDIINSTANCES: '完成的工作流实例'
+    WORKFLOWACTIVEIINSTANCES: 活动的工作流实例
+    WORKFLOWCOMPLETEDIINSTANCES: 完成的工作流实例
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: 活跃的
     CompletedWorkflowStateTitle: 已完成
-    PUBLISH_ON: '安排的发布日期'
-    REQUESTED_PUBLISH_DATE: '请求的发布日期'
-    REQUESTED_PUBLISH_DATE_H3: '到期和禁止'
-    REQUESTED_PUBLISH_DATE_INTRO: '欲指定禁止和到期日，请输入一个日期和/或时间。'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: '批准动作执行之前，这些设置不会生效'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: '如果已经设置了禁令，在该日期之前添加新的可覆盖该设置'
-    REQUESTED_UNPUBLISH_DATE: '请求未发布的日期'
-    TabTitle: '发布日程表'
-    UNPUBLISH_ON: '安排未发布的日期'
+    PUBLISH_ON: 安排的发布日期
+    REQUESTED_PUBLISH_DATE: 请求的发布日期
+    REQUESTED_PUBLISH_DATE_H3: 到期和禁止
+    REQUESTED_PUBLISH_DATE_INTRO: 欲指定禁止和到期日，请输入一个日期和/或时间。
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 批准动作执行之前，这些设置不会生效
+    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 如果已经设置了禁令，在该日期之前添加新的可覆盖该设置
+    REQUESTED_UNPUBLISH_DATE: 请求未发布的日期
+    TabTitle: 发布日程表
+    UNPUBLISH_ON: 安排未发布的日期
   WorkflowField:
-    AddTransitionAction: '添加转换'
-    CreateAction: '制定计划'
+    AddTransitionAction: 添加转换
+    CreateAction: 制定计划
     CreateLabel: 创建
     DeleteAction: 删除
     EditAction: 编辑
   WorkflowInstance:
     ActionLogTitle: 日志
     EXECUTE_EXCEPTION: '试图启动一个无效的工作流实例 #%s！'
-    REASSIGN_HEADER: '重新分配工作流'
-    SINGULARNAME: '工作流实例'
+    REASSIGN_HEADER: 重新分配工作流
+    SINGULARNAME: 工作流实例
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: '实例 %s 之 #%s'
-    TargetClassLabel: '玻靶'
+    TargetClassLabel: 玻靶
     TargetIDLabel: 目标
     TitleLabel: 题目
     WORKFLOW_TRANSITION_EXCEPTION: '操作 #%s 的过渡状态无效'
-    WorkflowStatusLabel: '工作流程状态'
+    WorkflowStatusLabel: 工作流程状态
   WorkflowList:
-    CommentHistory: '这个请求的评论历史记录：'
+    CommentHistory: 这个请求的评论历史记录：
     TableHeaderActions: 行动
-    TableHeaderEditedBy: '编辑'
+    TableHeaderEditedBy: 编辑
     TableHeaderItem: 项目
     TableHeaderSubmitted: 提交
   WorkflowReminderEmail:
-    Action: '点击此处启动工作流程'
-    Content: "这是一个自动提醒，您当前被分配的工作流程 '{title}' 已经有 {days} 天未被操作了。该工作流程上次更新时间为 {date} {time}。"
+    Action: 点击此处启动工作流程
+    Content: '这是一个自动提醒，您当前被分配的工作流程 ''{title}'' 已经有 {days} 天未被操作了。该工作流程上次更新时间为 {date} {time}。'
   WorkflowReminderTask:
     SAVE: 保存
   WorkflowService:
-    EXISTING_WORKFLOW_ERROR: '那个对象已经有一个工作流在运行'
-    INVALID_WORKFLOW_TARGET: '针对没有工作流的目标执行了过渡。'
+    EXISTING_WORKFLOW_ERROR: 那个对象已经有一个工作流在运行
+    INVALID_WORKFLOW_TARGET: 针对没有工作流的目标执行了过渡。
   WorkflowTemplate:
-    INVALID_TEMPLATE_ACTION: '模板中指定的无效动作类'
+    INVALID_TEMPLATE_ACTION: 模板中指定的无效动作类
   WorkflowTransition:
     ACTION: 动作
     Active: 启动
-    NEXT_ACTION: '下一个动作'
-    PLURALNAME: '工作流过渡'
+    NEXT_ACTION: 下一个动作
+    PLURALNAME: 工作流过渡
     Passive: 消极的
-    SELECTONE: '（选择一个）'
-    SINGULARNAME: '工作流过渡'
-    TRANSITIONLOOP: '过渡操作不能重新触发其父操作。'
+    SELECTONE: （选择一个）
+    SINGULARNAME: 工作流过渡
+    TRANSITIONLOOP: 过渡操作不能重新触发其父操作。
     TYPE: 类型
-    TabTitle: '用户限制'
+    TabTitle: 用户限制

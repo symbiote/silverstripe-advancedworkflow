@@ -310,7 +310,7 @@ class WorkflowApplicable extends DataExtension
     public function LinkToPendingItems()
     {
         $urlBase = Director::absoluteBaseURL();
-        $urlFrag = 'admin/workflows/WorkflowDefinition/EditForm/field';
+        $urlFrag = 'admin/workflows/Symbiote-AdvancedWorkflow-DataObjects-WorkflowDefinition/EditForm/field';
         $urlInst = $this->getWorkflowInstance();
         return Controller::join_links($urlBase, $urlFrag, 'PendingObjects', 'item', $urlInst->ID, 'edit');
     }
