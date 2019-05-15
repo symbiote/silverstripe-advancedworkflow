@@ -1,0 +1,15 @@
+SilverStripe\ORM\DatabaseAdmin:
+  classname_value_remapping:
+    ImportedWorkflowTemplate: Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate
+    WorkflowAction: Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction
+    WorkflowActionInstance: Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance
+    WorkflowDefinition: Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition
+    WorkflowInstance: Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance
+    WorkflowTransition: Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition
+    AssignUsersToWorkflowAction: Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction
+    CancelWorkflowAction: Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction
+    NotifyUsersWorkflowAction: Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction
+    PublishItemWorkflowAction: Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction
+    SetPropertyWorkflowAction: Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction
+    SimpleApprovalWorkflowAction: Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction
+    UnpublishItemWorkflowAction: Symbiote\AdvancedWorkflow\Actions\UnpublishItemWorkflowAction
