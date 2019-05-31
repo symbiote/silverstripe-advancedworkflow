@@ -31,11 +31,19 @@
     background-color: $pale-red;
     color: $brand-danger;
     padding: 2px;
+
+    p {
+      background-color: inherit;
+    }
   }
 
   ins {
     background-color: $pale-green;
     padding: 2px;
     text-decoration: none;
+
+    p {
+      background-color: inherit;
+    }
   }
 }
