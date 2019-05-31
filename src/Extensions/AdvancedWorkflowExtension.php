@@ -89,8 +89,12 @@ class AdvancedWorkflowExtension extends Extension
 
             // Set the form to readonly if the current user doesn't have permission to edit the record, and/or it
             // is in a state that requires review
-            if (!$record->canEditWorkflow() && !$fields->isReadonly()) {
-                $fields->makeReadonly();
+            if (!$record->canEditWorkflow()) {
+                if ($fields->hasMethod('isReadonly') && !$fields->isReadonly()) {
+                    $fields->makeReadonly();
+                } else {
+                    $form->makeReadonly();
+                }
             }
 
             $this->owner->extend('updateWorkflowEditForm', $form);
