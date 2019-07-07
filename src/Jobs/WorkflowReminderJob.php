@@ -55,10 +55,10 @@ class WorkflowReminderJob extends AbstractQueuedJob
     public function process()
     {
         $sent   = 0;
-        $filter = array(
-        'WorkflowStatus'                    => array('Active', 'Paused'),
-        'Definition.RemindDays:GreaterThan' => 0
-        );
+        $filter = [
+            'WorkflowStatus'                    => ['Active', 'Paused'],
+            'Definition.RemindDays:GreaterThan' => 0
+        ];
 
         $active = WorkflowInstance::get()->filter($filter);
 
@@ -70,24 +70,29 @@ class WorkflowReminderJob extends AbstractQueuedJob
                 continue;
             }
 
-            $email   = new Email();
+            $email   = Email::create();
             $bcc     = '';
             $members = $instance->getAssignedMembers();
             $target  = $instance->getTarget();
 
-            if (!$members || !count($members)) {
+            if (!$members || !$members->exists()) {
                 continue;
             }
 
             $email->setSubject("Workflow Reminder: $instance->Title");
-            $email->setBcc(implode(', ', $members->column(Email::class)));
+            $email->setBcc(implode(', ', $members->column('Email')));
             $email->setHTMLTemplate('WorkflowReminderEmail');
             $email->setData(array(
                 'Instance' => $instance,
                 'Link'     => $target instanceof SiteTree ? "admin/show/$target->ID" : ''
             ));
-
-            $email->send();
+            
+            try {
+                $email->send();
+            } catch (Exception $ex) {
+                Injector::inst()->get(LoggerInterface::class)->warning($ex->getMessage());
+            }
+            
             $sent++;
 
             // add a comment to the workflow if possible
