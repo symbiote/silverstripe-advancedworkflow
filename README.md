@@ -11,7 +11,7 @@ with multiple possible transitions between the actions.
 
 ## Requirements
 
- * SilverStripe Framework and CMS 3.1 or newer
+ * SilverStripe Framework and CMS 3.7 or newer
  * (Optional) [Queued Jobs module](https://github.com/nyeholt/silverstripe-queuedjobs) (for embargo/expiry functionality)
  
  Note: The SilverStripe 2.4 version of the module is available from the ss24
