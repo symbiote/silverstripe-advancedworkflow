@@ -222,14 +222,14 @@ EOD;
 	public function testGetImportedWorkflowsOne() {
 		$name = 'My Workflow 21/02/2014 09-01-29';
 		// Pretend a ImportedWorkflowTemplate object has been created by WorkflowBulkLoader
-		$this->objFromFixture('ImportedWorkflowTemplate', 'Import01');		
-		
+		$this->objFromFixture('ImportedWorkflowTemplate', 'Import01');
+
+		/** @var WorkflowDefinitionImporter $importer */
 		$importer = singleton('WorkflowDefinitionImporter');
 		$import = $importer->getImportedWorkflows($name);
 
 		$this->assertNotEmpty($import);
 		$this->assertInstanceOf('WorkflowTemplate', $import);
-		$this->assertEquals(1, count($import));
 		$this->assertEquals($name, $import->getName());
 	}
 	
