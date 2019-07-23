@@ -26,9 +26,6 @@
         "phpunit/phpunit": "^5.7"
     },
 	"extra": {
-		"installer-name": "advancedworkflow",
-        "branch-alias": {
-			"4.x-dev": "4.2.x-dev"
-		}
+		"installer-name": "advancedworkflow"
 	}
 }
