@@ -34,9 +34,11 @@ Once your user groups are set, you can apply Workflow actions to these user grou
 
 See [more on workflow permissions.](workflow-permissions.md)
 
-<div class="alert alert-info" markdown="1">Note: Any user with "full administrative rights" set will see all Workflow 
+[alert]
+Note: Any user with "full administrative rights" set will see all Workflow 
 action buttons in the CMS, plus they will have the ability to draft and publish content regardless of whether or not a 
-workflow is configured on a page.</div>
+workflow is configured on a page.
+[/alert]
 
 ## Step 2. Create a workflow definition
 There is no default workflow in SilverStripe CMS since actual workflows vary greatly across web sites and hence one 
@@ -86,8 +88,10 @@ Cancel", and "Notify Initiator Cancel" - but this time setting the user to the "
 
 ![](_images/advancedworkflow-email-notification.png)
 
-<div class="alert alert-info" markdown="1">You can further restrict certain actions and transitions to specific users, 
-if desired, using the “Users” check boxes and the “Restricted users” tabs on transition forms.</div>
+[alert]
+You can further restrict certain actions and transitions to specific users, 
+if desired, using the “Users” check boxes and the “Restricted users” tabs on transition forms.
+[/alert]
 
 ## Step 4. Assign workflows to a page
 
@@ -105,8 +109,10 @@ Your workflow has now been associated with your page (or section of pages). If y
 notice a new button available labelled as per your first workflow action. For example, this may read "Apply for 
 approval".
 
-<div class="alert alert-info" markdown="1">The default workflow selection is "Inherit from parent" so you can 
-assign a workflow to a parent page and each child page will use that workflow without any further configuration.</div>
+[alert]
+The default workflow selection is "Inherit from parent" so you can 
+assign a workflow to a parent page and each child page will use that workflow without any further configuration.
+[/alert]
 
 ![Apply workflow](_images/advancedworkflow-apply-workflow.png)
 
@@ -135,10 +141,12 @@ attention.
 
 Click anywhere on the table row and in the "Next Action" drop-down menu, make your choice as Editor, then select "Save". You can also see a log of the actions.
 
-<div class="alert alert-info" markdown="1"> You are also able to select the blue content-title text to view the page 
+[alert]
+You are also able to select the blue content-title text to view the page 
 itself within the CMS and manually review the changes before committing to accepting or rejecting them. If you now go 
 back to the _Workflow_ left-hand navigation menu item, you'll notice that the items that were in the "Your Pending Items" list, are no longer
-there. This is because the action is now with the users of the "Content Publishers" group.</div>
+there. This is because the action is now with the users of the "Content Publishers" group.
+[/alert]
 
 Logout of the CMS, and login as your "Content Publisher" user. Select the "Workflows" left-hand navigation menu item, 
 and notice that there is a similar list to before, entitled "Your pending items", again with the "Workflow Test" page being the only item. Click on this item and make your selection as manager, and then select
