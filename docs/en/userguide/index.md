@@ -1,5 +1,7 @@
+---
 title: Managing publishing workflows
 summary: Setting up and using a publishing workflow with the Advanced Workflow module.
+---
 
 # Managing publishing workflows
 
