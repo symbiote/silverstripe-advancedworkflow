@@ -1,3 +1,7 @@
+---
+title: Workflow export/import
+---
+
 # Importing and Exporting Workflows
 
 In the Workflow CMS admin-area, authorised users are able to export a WorkflowDefinition from one SilverStripe installation, and import

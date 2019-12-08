@@ -1,3 +1,7 @@
+---
+title: Setting up workflows
+---
+
 # Setting up a simple CMS workflow
 Since workflows can vary greatly across websites, there's no default workflow. 
 

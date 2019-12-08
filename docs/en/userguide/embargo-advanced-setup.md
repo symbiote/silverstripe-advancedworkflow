@@ -1,3 +1,7 @@
+---
+title: Embargo advanced setup
+---
+
 ## Advanced Embargo and Expirty
 
 ### Publish target by version

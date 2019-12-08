@@ -1,3 +1,7 @@
+---
+title: Using workflows
+---
+
 # Using workflows
 
 ## Requesting publication (authors)
