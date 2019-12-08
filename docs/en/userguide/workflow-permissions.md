@@ -1,3 +1,7 @@
+---
+title: Workflow permissions
+---
+
 # Workflow permissions
 
 ## Adding groups and users

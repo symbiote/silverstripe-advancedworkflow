@@ -1,3 +1,7 @@
+---
+title: Workflow export/import
+---
+
 # Importing and exporting workflows
 
 In the Workflow CMS left-hand navigation menu item, authorised users are able to export a WorkflowDefinition from one 
