@@ -430,7 +430,7 @@ class WorkflowDefinition extends DataObject
         $tmp = [];
 
         foreach ($defs as $def) {
-            $parts = preg_split("#\s#", preg_quote($def), -1, PREG_SPLIT_NO_EMPTY);
+            $parts = preg_split("#\s#", preg_quote($def, '#'), -1, PREG_SPLIT_NO_EMPTY);
             $lastPart = array_pop($parts);
             $match = implode(' ', $parts);
             // @todo do all this in one preg_match_all() call
