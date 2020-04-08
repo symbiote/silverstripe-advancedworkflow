@@ -13,6 +13,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataQuery;
 use SilverStripe\ORM\FieldType\DBDatetime;
+use SilverStripe\ORM\FieldType\DBHTMLText;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
@@ -126,20 +127,20 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
                     'DesiredPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE', 'Requested publish date')
                 )->setRightTitle(
-                    _t(
+                    DBHTMLText::create()->setValue(_t(
                         'WorkflowEmbargoExpiryExtension.REQUESTED_PUBLISH_DATE_RIGHT_TITLE',
                         'To request this page to be <strong>published immediately</strong> '
                         . 'leave the date and time fields blank'
-                    )
+                    ))
                 ),
                 $ut = DatetimeField::create(
                     'DesiredUnPublishDate',
                     _t('WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE', 'Requested un-publish date')
                 )->setRightTitle(
-                    _t(
+                    DBHTMLText::create()->setValue(_t(
                         'WorkflowEmbargoExpiryExtension.REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE',
                         'To request this page to <strong>never expire</strong> leave the date and time fields blank'
-                    )
+                    ))
                 ),
                 DatetimeField::create(
                     'PublishOnDate',
