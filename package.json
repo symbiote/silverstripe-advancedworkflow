@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/symbiote/silverstripe-advancedworkflow#readme",
   "dependencies": {
-    "jquery": "^3.2.1"
+    "jquery": "^3.5.0"
   },
   "devDependencies": {
     "@silverstripe/webpack-config": "^0.5.1",
