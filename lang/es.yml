@@ -24,7 +24,6 @@ es:
     INVALIDIDLIST: 'Se proporcionó una lista inválida de IDs.'
     INVALIDPARENTID: 'Se especificó un ID de padre inválido.'
     LastEdited: Cambiado
-    MENUTITLE: 'Flujos de trabajo'
     SORTORDERSAVED: 'Se guardó el orden de clasificación.'
     Title: Título
     WorkflowStatus: 'Acción actual'
@@ -42,23 +41,10 @@ es:
     ASSIGNUSERS: 'Asignar usuarios'
     GROUPS: Grupos
     INITIATOR: 'Asignar iniciador'
-    PLURALNAME: 'Asignar usuarios a acciones del flujo de trabajo'
-    SINGULARNAME: 'Asignar usuarios a una acción del flujo de trabajo'
     USERS: Usuarios
-  CancelWorkflowAction:
-    PLURALNAME: 'Cancelar acciones del flujo de trabajo'
-    SINGULARNAME: 'Cancelar acción del flujo de trabajo'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'No se encontró el objeto de contexto'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Ud no tiene permiso para ejecutar esta acción'
-  GridAction:
-    EXPORT_DESCRIPTION: Exportar
-    Export: Exportar
-  GridFieldEditButton_ss:
-    EXPORT: Exportar
-  ImportedWorkflowTemplate:
-    PLURALNAME: 'Plantillas de flujo de trabajo importadas'
-    SINGULARNAME: 'Plantilla de flujo de trabajo importada'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Comentar la historia hasta esta notificación.'
     EMAILFROM: 'Email de'
@@ -70,8 +56,6 @@ es:
     NOTIFICATIONEMAIL: 'Email de notificación'
     NOTIFICATIONNOTE: 'Se enviará un email a todos los usuarios vinculados al flujo de trabajo cuando se ejecute esta acción.'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: días
-    DELAYPUBDAYSBEFORE: 'Demorar publicación'
     PUBLICATIONDELAY: 'Demora de publicación'
   SiteTree:
     WorkflowOptions: 'Opciones del flujo de trabajo'
@@ -83,15 +67,11 @@ es:
     Author: Autor
     ExecutedLabel: Ejecutado
     FinishedLabel: Terminado
-    PLURALNAME: 'Acciones del flujo de trabajo'
-    SINGULARNAME: 'Acción del flujo de trabajo'
     TITLE: Título
     TitleDescription: 'El título se usa como el rótulo del botón para esta acción del flujo de trabajo'
     Transitions: Transiciones
     TypeLabel: Tipo
   WorkflowActionInstance:
-    PLURALNAME: 'Instancias de acción del flujo de trabajo'
-    SINGULARNAME: 'Instancia de acción del flujo de trabajo'
     Title: Título
   WorkflowApplicable:
     ADDITIONAL_WORKFLOW_DEFINITIONS: 'Flujos de trabajo adicionales'
@@ -107,11 +87,7 @@ es:
     GROUPS: 'Restringir a grupos'
     INITIAL_ACTION_BUTTON_TEXT: 'Texto del botón Acción inicial'
     LATEST_VERSION: 'La última versión es %s'
-    PLURALNAME: 'Definiciones del flujo de trabajo'
     REMINDEREMAIL: 'Recordatorio por email'
-    SENDREMINDERDAYSAFTER: 'días sin acción.'
-    SENDREMINDERDAYSBEFORE: 'Enviar recordatorio por email después de'
-    SINGULARNAME: 'Definición del flujo de trabajo'
     TEMPLATE_INFO: 'Información de la plantilla'
     TEMPLATE_VERSION: 'Versión de la plantilla'
     TITLE: Título
@@ -144,9 +120,7 @@ es:
   WorkflowInstance:
     ActionLogTitle: Registro
     EXECUTE_EXCEPTION: '¡Se intentó comenzar una instancia inválida de flujo de trabajo #%s!'
-    PLURALNAME: 'Instancias de flujo de trabajo'
     REASSIGN_HEADER: 'Reasignar flujo de trabajo'
-    SINGULARNAME: 'Instancia de flujo de trabajo'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Instancia #%s de %s'
     TargetIDLabel: Destino
@@ -171,10 +145,8 @@ es:
     ACTION: Acción
     Active: Activo
     NEXT_ACTION: 'Proxima acción'
-    PLURALNAME: 'Transiciones del flujo de trabajo'
     Passive: Pasivo
     SELECTONE: '(Elegir una)'
-    SINGULARNAME: 'Transición del flujo de trabajo'
     TRANSITIONLOOP: 'Una transición no puede llevar de nuevo a su acción padre.'
     TYPE: Tipo
     TabTitle: 'Restringir a los usuarios'

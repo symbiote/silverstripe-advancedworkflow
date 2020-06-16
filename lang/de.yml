@@ -21,7 +21,6 @@ de:
     INVALIDIDLIST: 'Eine ungültige Liste mit Kennungen wurde angegeben.'
     INVALIDPARENTID: 'Eine ungültige übergeordnete Kennung wurde angegeben.'
     LastEdited: Geändert
-    MENUTITLE: Arbeitsabläufe
     SORTORDERSAVED: 'Die Sortierreihenfolge wurde gespeichert.'
     Title: Titel
     WorkflowStatus: 'Aktuelle Aktion'
@@ -34,23 +33,10 @@ de:
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'Benutzer zuordnen'
     GROUPS: Gruppen
-    PLURALNAME: 'Benutzer zu Arbeitsablaufaktionen zuordnen'
-    SINGULARNAME: 'Benutzer zur Arbeitsablaufaktion zuordnen'
     USERS: Benutzer
-  CancelWorkflowAction:
-    PLURALNAME: 'Arbeitsablaufaktionen abbrechen'
-    SINGULARNAME: 'Arbeitsablaufaktion abbrechen'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Inhaltsobjekt nicht gefunden'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Sie heben keine Berechtigung, um diese Aktion auszuführen'
-  GridAction:
-    EXPORT_DESCRIPTION: Exportieren
-    Export: Exportieren
-  GridFieldEditButton_ss:
-    EXPORT: Exportieren
-  ImportedWorkflowTemplate:
-    PLURALNAME: 'Importierte Arbeitsablaufvorlagen'
-    SINGULARNAME: 'Importierte Arbeitsablaufvorlage'
   NotifyUsersWorkflowAction:
     EMAILFROM: 'E-Mail von'
     EMAILSUBJECT: E-Mail-Betreff
@@ -59,13 +45,13 @@ de:
     FORMATTINGHELP: Formatierungshilfe
     NOTIFICATIONEMAIL: Benachrichtigungs-E-Mail
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: Tage
-    DELAYPUBDAYSBEFORE: 'Veröffentlichung verzögern'
     PUBLICATIONDELAY: Veröffentlichungsverzögerung
   SetPropertyWorkflowAction:
     PROPERTY: Eigenschaft
   SiteTree:
     WorkflowOptions: Arbeitsablaufoptionen
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Exportieren
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: Tage
   Workflow:
@@ -79,14 +65,10 @@ de:
     ExecutedLabel: Ausgeführt
     FRONTENDCOMMENT: Kommentar
     FinishedLabel: Abgeschlossen
-    PLURALNAME: Arbeitsablaufaktionen
-    SINGULARNAME: Arbeitsablaufaktion
     TITLE: Titel
     Transitions: Übergänge
     TypeLabel: Typ
   WorkflowActionInstance:
-    PLURALNAME: Arbeitsablaufaktionsinstanzen
-    SINGULARNAME: Arbeitsablaufaktionsinstanz
     Title: Titel
   WorkflowApplicable:
     ADDITIONAL_WORKFLOW_DEFINITIONS: 'Zusätzliche Arbeitsabläufe'
@@ -99,11 +81,7 @@ de:
     GROUPS: 'Auf Gruppen beschränken'
     INITIAL_ACTION_BUTTON_TEXT: 'Initialer Aktionsschaltflächentext'
     LATEST_VERSION: 'Aktuelle Version ist %s'
-    PLURALNAME: Arbeitsablaufdefinitionen
     REMINDEREMAIL: Erinnerungs-E-Mail
-    SENDREMINDERDAYSAFTER: 'Tage ohne Aktion.'
-    SENDREMINDERDAYSBEFORE: 'Erinnerungs-E-Mail senden nach'
-    SINGULARNAME: Arbeitsablaufdefinition
     TEMPLATE_INFO: Vorlageninformation
     TEMPLATE_NAME: Quellvorlage
     TEMPLATE_VERSION: Vorlagenversion
@@ -131,9 +109,7 @@ de:
     EditAction: Bearbeiten
   WorkflowInstance:
     ActionLogTitle: Protokollieren
-    PLURALNAME: Arbeitsablaufinstanzen
     REASSIGN_HEADER: 'Arbeitsablauf neu zuordnen'
-    SINGULARNAME: Arbeitsablaufinstanz
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Instanz #%s von %s'
     TargetClassLabel: Zielklasse
@@ -158,9 +134,7 @@ de:
     ACTION: Aktion
     Active: Aktiv
     NEXT_ACTION: 'Nächste Aktion'
-    PLURALNAME: Arbeitsablaufübergänge
     Passive: Passiv
     SELECTONE: '(Eines auswählen)'
-    SINGULARNAME: Arbeitsablaufübergang
     TYPE: Typ
     TabTitle: 'Auf Benutzer beschränken'

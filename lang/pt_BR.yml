@@ -1,1 +1,35 @@
-pt_BR: {  }
+pt_BR:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Workflow avançado'
+    APPLY_WORKFLOW: 'Aplicar workflow'
+    APPLY_WORKFLOW_HELP: 'Os usuários podem aplicar workflow aos itens'
+    CREATE_WORKFLOW: 'Criar workflow'
+    CREATE_WORKFLOW_HELP: 'Os usuários podem criar definições de workflow'
+    DELETE_WORKFLOW: 'Apagar workflow'
+    DELETE_WORKFLOW_HELP: 'Os usuários podem excluir definições de workflow e workflows ativos'
+    REASSIGNACTIVE: 'Reatribuir workflows ativos'
+    VIEWACTIVE: 'Exibir workflows ativos'
+  AdvancedWorkflowActionController:
+    ACTION_ERROR: 'Você precisa estar logado'
+  AdvancedWorkflowAdmin:
+    GridFieldTitleAssignedAll: 'Todos os itens pendentes'
+    GridFieldTitleAssignedYour: 'Seus itens pendentes'
+    IMPORT: 'Importar workflow'
+    LastEdited: Alterado
+    Title: Título
+    WorkflowStatus: 'Ação atual'
+  AllowEditing:
+    ContentSettings: 'Configurações de conteúdo'
+    NoString: Não
+  AssignUsersToWorkflowAction:
+    ASSIGNUSERS: 'Atribuir usuários'
+    GROUPS: Grupos
+    USERS: Usuários
+  FrontEndWorkflowController:
+    FRONTENDACTION_TRANSITION_EXCEPTION: 'Você não tem permissão para executar esta ação'
+  NotifyUsersWorkflowAction:
+    EMAILFROM: 'Email de'
+    EMAILSUBJECT: 'Assunto do email'
+    FIELDNAME: 'Nome do campo'
+  SetPropertyWorkflowAction:
+    PROPERTY: Propriedade

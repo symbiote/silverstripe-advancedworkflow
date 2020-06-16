@@ -14,7 +14,6 @@ fi_FI:
     NoString: Ei
   NotifyUsersWorkflowAction:
     EMAILTEMPLATE: Sähköpostipohja
-    PLURALNAME: 'Informoi käyttäjiä työnkulun toiminnoista'
   WorkflowAction:
     Author: Tekijä
     FinishedLabel: Valmistunut

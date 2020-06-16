@@ -18,7 +18,6 @@ ar:
     INVALIDIDLIST: 'تم إضافة قائمة من التعريفات غير صالحة.'
     INVALIDPARENTID: 'تم تحديد هوية رئيسية غير صالحة.'
     LastEdited: 'تم تغييره'
-    MENUTITLE: 'سير العمل'
     SORTORDERSAVED: 'قد تم حفظ ترتيب الفرز.'
     Title: عنوان
     WorkflowStatus: 'النشاط الحالي'
@@ -34,18 +33,12 @@ ar:
     ASSIGNUSERS: 'تعيين مستخدمين'
     GROUPS: مجموعات
     INITIATOR: 'قم بتعيين قائم بالمبادرة'
-    PLURALNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
-    SINGULARNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
     USERS: مستخدمين
-  CancelWorkflowAction:
-    PLURALNAME: 'إلغاء فعاليات سير العمل'
-    SINGULARNAME: 'إلغاء فعاليات سير العمل'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'لم يتم العثور على عنصر السياق'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'ليس لديك الحق فى تنفيذ هذا الإجراء'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'تاريخ التعليقات حتى هذا الإشعار'
-    CONTEXTNOTE: 'أى مجال من مجالات الملخص من هدف مهام سير العمل سوف تكون متاحة. على سبيل المثال, {$Context.Title}. إضافى إلى ذلك,  متغير {$Context.AbsoluteEditLink} سوف يحتوى على رابط لتعديل هدف مهام سير العمل فى ملف سى إم إس (لو كانت صفحة).'
     EMAILFROM: 'البريد الالكترونى من'
     EMAILSUBJECT: 'عنوان البريد الالكترونى'
     EMAILTEMPLATE: 'نموذج البريد الالكترونى'
@@ -56,17 +49,8 @@ ar:
     MEMBERNOTE: 'هذه المجالات سوف يتم ملأها من العضو الذى سيقوم بمبادرة إجراءات الإشعار. على سبيل المثال, {$Member.FirstName}.'
     NOTIFICATIONEMAIL: 'بريد الكترونى بالإشعارات'
     NOTIFICATIONNOTE: 'جميع المستخدمين المرتبطين بمهام سير العمل سوف يتم إرسال بريد الكترونى لهم عند بدء الإجراء.'
-    PLURALNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
-    SINGULARNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: أيام
-    DELAYPUBDAYSBEFORE: 'تأخير النشر'
-    PLURALNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
     PUBLICATIONDELAY: 'تأخير النشر'
-    SINGULARNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
-  SimpleApprovalWorkflowAction:
-    PLURALNAME: 'إجراءات بسيطة للموافقة على مهام سير العمل'
-    SINGULARNAME: 'إجراء بسيط للموافقة على مهام سير العمل'
   Workflow:
     WorkflowActionsTabTitle: 'إجراءات تسيير العمل'
   WorkflowAction:
@@ -79,14 +63,11 @@ ar:
     ExecutedLabel: 'تم تنفيذه'
     FRONTENDCOMMENT: تعليق
     FinishedLabel: انتهى
-    PLURALNAME: 'فعاليات سير العمل'
-    SINGULARNAME: 'فعالية سير العمل'
     TITLE: عنوان
     TitleDescription: 'يتم استخدام العنوان كتسمية لزر هذا العمل'
     Transitions: التنقلات
     TypeLabel: نوع
   WorkflowActionInstance:
-    SINGULARNAME: 'مثال لفعاليات سير العمل'
     Title: عنوان
   WorkflowApplicable:
     DEFINITION: 'سير العمل المقدم'
@@ -100,11 +81,7 @@ ar:
     DESCRIPTION: الوصف
     GROUPS: 'الإلتزام بالمجموعات'
     LATEST_VERSION: 'الإصدار الأخير هو s%'
-    PLURALNAME: 'تعريفات مهام سير العمل'
     REMINDEREMAIL: 'بريد الكترونى للتذكير'
-    SENDREMINDERDAYSAFTER: أيا
-    SENDREMINDERDAYSBEFORE: 'قم بإرسال بريد إلكترونى للتذكير بعد'
-    SINGULARNAME: 'تعريف مهام سير العمل'
     TEMPLATE_INFO: 'معلومات عن النموذج'
     TEMPLATE_NAME: 'نموذج المصدر'
     TEMPLATE_VERSION: 'إصدار النموذج'
@@ -136,7 +113,6 @@ ar:
     ActionLogTitle: سجل
     EXECUTE_EXCEPTION: 'محاولة بدء مثال غير صالح لسير العمل #s%!'
     REASSIGN_HEADER: 'قم بإعادة تعيين مهام سير العمل'
-    SINGULARNAME: 'مثال لسير العمل'
     TITLE_FOR_DO: 's - %s%'
     TITLE_STUB: 'مثال #s% ل s%'
     TargetClassLabel: 'الفئة المستهدفة'
@@ -164,10 +140,8 @@ ar:
     ACTION: إجراء
     Active: نشيط
     NEXT_ACTION: 'الإجراء التالى'
-    PLURALNAME: 'تحولات مهام سير العمل'
     Passive: سلبي
     SELECTONE: '(اختار واحد)'
-    SINGULARNAME: 'تحول مهام سير العمل'
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'
     TYPE: نوع
     TabTitle: 'حصرا للمستخدمين'

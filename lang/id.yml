@@ -4,16 +4,9 @@ id:
     Title: Judul
   AssignUsersToWorkflowAction:
     GROUPS: Grup
-  GridAction:
-    EXPORT_DESCRIPTION: Ekspor
-    Export: Ekspor
-  GridFieldEditButton_ss:
-    EXPORT: Ekspor
   NotifyUsersWorkflowAction:
     EMAILFROM: 'Surel dari'
     EMAILSUBJECT: 'Judul surel'
-  PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: hari
   WorkflowAction:
     Author: Pengarang
     COMMENT: Komentar
