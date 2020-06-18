@@ -25,7 +25,6 @@ eo:
     INVALIDIDLIST: 'Provizis nevalidan liston de ID-oj'
     INVALIDPARENTID: 'Agordis nevalidan praan ID'
     LastEdited: Ŝanĝita
-    MENUTITLE: Laborfluoj
     SORTORDERSAVED: 'Konservis la ordigan ordon'
     Title: Titolo
     WorkflowStatus: 'Aktuala ago'
@@ -44,26 +43,12 @@ eo:
     ASSIGNUSERS: 'Asigni uzantojn'
     GROUPS: Grupoj
     INITIATOR: 'Asigni iniciatanton'
-    PLURALNAME: 'Asigni uzantojn al laborfluaj agoj'
-    SINGULARNAME: 'Asigni uzantojn al laborflua ago'
     USERS: Uzuloj
-  CancelWorkflowAction:
-    PLURALNAME: 'Nuligi laborfluajn agojn'
-    SINGULARNAME: 'Nuligi laborfluan agon'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Ne trovis enhavan objekton'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Vi ne rajtas plenumi tiun agon'
-  GridAction:
-    EXPORT_DESCRIPTION: Eksporti
-    Export: Eksporti
-  GridFieldEditButton_ss:
-    EXPORT: Eksporti
-  ImportedWorkflowTemplate:
-    PLURALNAME: 'Importitaj laborfluaj ŝablonoj'
-    SINGULARNAME: 'Importita laborflua ŝablono'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Komenta historio ĝis ĉi tiu sciigo.'
-    CONTEXTNOTE: "Disponeblos eventualaj resumaj kampoj el la laborflua celo. Ekzemple, {$Context.Title}.\n\t\t\tPlue, la variablo {$Context.AbsoluteEditLink} enhavos ligilon por redakti la laborfluan celon en\n\t\t\tla CMS (se ĝi estas Paĝo), kaj la variablo {$Context.LinkToPendingItems} generos ligilon al la laborflua administrado de la CMS,\n\t\t\tutilan por ebligi al uzulojn efiki laborfluajn transirojn, rekte el retpoŝtoj."
     EMAILFROM: 'Retpoŝto el'
     EMAILSUBJECT: 'Retpoŝta temo'
     EMAILTEMPLATE: 'Retpoŝta ŝablono'
@@ -71,33 +56,19 @@ eo:
     FORMATTINGHELP: 'Formatada helpo'
     FORMATTINGNOTE: 'Sciigaj retpoŝtoj povas enhavi HTML-formatojn. La jenajn specialajn variablojn anstataŭas iliaj respektivaj valoroj en la retpoŝtaj temo, sendinto kaj ŝablono/korpo.'
     INITIATORNOTE: 'Ĉi tiuj kampoj pleniĝos el la membro kiu initiatis la laborfluan peton.'
-    LISTING_TEMPLATE: 'Lista ŝablono - elementoj estos la listo de ĉiuj agoj en la laborfluo (sinonimo al agoj). Ankaŭ disponeblos ĉiuj atributoj de la aktuala laborflua elemento.'
     MEMBERNOTE: "Ĉi tiuj kampoj pleniĝos de la membro kiu iniciatos la sciigan agon. Ekzemple,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Sciiga retpoŝto'
     NOTIFICATIONNOTE: 'Retpoŝto sendiĝos al ĉiuj uzuloj ligitaj al la laborfluo, kiam la ago ruliĝos.'
-    PLURALNAME: 'Sciigi uzulajn laborfluajn agojn'
-    SINGULARNAME: 'Sciigi uzulan laborfluan agon'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: tagoj
-    DELAYPUBDAYSBEFORE: 'Prokrasti publikigon'
-    PLURALNAME: 'Publikigi elementajn laborfluajn agojn'
     PUBLICATIONDELAY: 'Publikiga prokrasto'
-    SINGULARNAME: 'Publikigi elementan laborfluan agon'
   SetPropertyWorkflowAction:
-    PLURALNAME: 'Agordi laborfluajn agojn'
     PROPERTY: Atributo
     PROPERTYTITLE: 'Agordota atributo; se ĝi ekzistas kiel agordmetodo, ĝi vokiĝos kun la valoron'
-    SINGULARNAME: 'Agordi laborfluan agon'
-  SimpleApprovalWorkflowAction:
-    PLURALNAME: 'Simple aprobi laborfluajn agojn'
-    SINGULARNAME: 'Simple aprobi laborfluan agon'
   SiteTree:
     WorkflowOptions: 'Laborfluaj agordoj'
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: tagoj
     DELAYUNPUBDAYSBEFORE: 'Prokrasti malpublikigon je'
-    PLURALNAME: 'Malpublikigi elementajn laborfluajn agojn'
-    SINGULARNAME: 'Malpublikigi elementan laborfluan agon'
     UNPUBLICATIONDELAY: 'Prokrasti malpublikigon'
   Workflow:
     WorkflowActionsTabTitle: 'Laborfluaj agoj'
@@ -111,15 +82,11 @@ eo:
     ExecutedLabel: Plenumis
     FRONTENDCOMMENT: Komento
     FinishedLabel: Finis
-    PLURALNAME: 'Laborfluaj agoj'
-    SINGULARNAME: 'Laborflua ago'
     TITLE: Titolo
     TitleDescription: 'La titolo uziĝas kiel la butona etikedo por ĉi tiu laborflua ago'
     Transitions: Transiroj
     TypeLabel: Tipo
   WorkflowActionInstance:
-    PLURALNAME: 'Ekzemploj de laborfluaj agoj '
-    SINGULARNAME: 'Ekzemplo de laborflua ago'
     Title: Titolo
   WorkflowApplicable:
     ADDITIONAL_WORKFLOW_DEFINITIONS: 'Kromaj laborfluoj'
@@ -129,18 +96,13 @@ eo:
     WORKFLOWLOG: 'Laborflua protokolo'
   WorkflowDefinition:
     ADDAFTERSAVING: 'Vi povos enmeti laborfluajn paŝojn post vi konservis la unuan fojon.'
-    BLOCK_INITIATOR: Blokiniciatinto
     CHOOSE_TEMPLATE: 'Elekti ŝablonon (malnepra)'
     CHOOSE_TEMPLATE_RIGHT: 'Se agordita, ĉi tiu laborflua difino aŭtomate aktualiĝos se la ŝablono ŝanĝiĝos.'
     DESCRIPTION: Priskribo
     GROUPS: 'Limigi al grupoj'
     INITIAL_ACTION_BUTTON_TEXT: 'Teksto de komencaga butono'
     LATEST_VERSION: 'Lasta versio estas %s'
-    PLURALNAME: 'Laborfluaj difinoj'
     REMINDEREMAIL: 'Memoriga retpoŝto'
-    SENDREMINDERDAYSAFTER: 'tagoj sen ago.'
-    SENDREMINDERDAYSBEFORE: 'Sendi retpoŝton post'
-    SINGULARNAME: 'Laborflua difino'
     TEMPLATE_INFO: 'Ŝablona informo'
     TEMPLATE_NAME: 'Fonta ŝablono'
     TEMPLATE_VERSION: 'Ŝablona versio'
@@ -174,9 +136,7 @@ eo:
   WorkflowInstance:
     ActionLogTitle: Protokolo
     EXECUTE_EXCEPTION: 'Provis startigi nevalidan laborfluan ekzemplon #%s!'
-    PLURALNAME: 'Laborfluaj ekzemploj'
     REASSIGN_HEADER: 'Reagordi laborfluon'
-    SINGULARNAME: 'Laborflua ekzemplo'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Ekzemplo #%s el %s'
     TargetClassLabel: 'Cela klaso'
@@ -204,10 +164,8 @@ eo:
     ACTION: Ago
     Active: Aktiva
     NEXT_ACTION: 'Sekva ago'
-    PLURALNAME: 'Laborfluaj transiroj'
     Passive: Pasiva
     SELECTONE: '(Elektu iun)'
-    SINGULARNAME: 'Laborflua transiro'
     TRANSITIONLOOP: 'Transira ago ne povas konduki al sia patra ago.'
     TYPE: Tipo
     TabTitle: 'Limigi al uzuloj'

@@ -18,7 +18,6 @@ zh:
     INVALIDIDLIST: '提供了一个无效的 ID 列表。'
     INVALIDPARENTID: '指定了一个无效的父 ID。'
     LastEdited: 已更改
-    MENUTITLE: 工作流
     SORTORDERSAVED: 排序顺序已保存。
     Title: 题目
     WorkflowStatus: 当前动作
@@ -34,18 +33,12 @@ zh:
     ASSIGNUSERS: 分配用户
     GROUPS: 群组
     INITIATOR: 分配发起人
-    PLURALNAME: 将用户分配给工作流操作
-    SINGULARNAME: 将用户分配给工作流操作
     USERS: 用户
-  CancelWorkflowAction:
-    PLURALNAME: 取消工作流程动作
-    SINGULARNAME: 删除工作流操作
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 未找到上下文对象
     FRONTENDACTION_TRANSITION_EXCEPTION: 您没有权限执行此操作。
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 截止到此通知的评论历史。
-    CONTEXTNOTE: "工作流目标的所有总结字段都是可用的。例如，{$Context.Title}。\n此外，{$Context.AbsoluteEditLink} 变量将包含一个可以在 CMS （（若它是一个页面）中编辑工作流目标的链接。"
     EMAILFROM: 邮件来自
     EMAILSUBJECT: 邮件主题
     EMAILTEMPLATE: 邮件模板
@@ -56,17 +49,8 @@ zh:
     MEMBERNOTE: "这些字段将填充发起通知操作的成员信息。例如，\n\n{$Member.FirstName}。"
     NOTIFICATIONEMAIL: 通知邮件
     NOTIFICATIONNOTE: 该动作开始时所有该工作流程相关用户均会受到一封邮件
-    PLURALNAME: 提醒用户工作流程动作
-    SINGULARNAME: 通知用户工作流动作
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 天
-    DELAYPUBDAYSBEFORE: 推迟发布
-    PLURALNAME: 发布项工作流操作
     PUBLICATIONDELAY: 延迟发布
-    SINGULARNAME: 发布项工作流操作
-  SimpleApprovalWorkflowAction:
-    PLURALNAME: 简单的审批工作流活动
-    SINGULARNAME: 简单的审批工作流活动
   Workflow:
     WorkflowActionsTabTitle: 工作流程行动
   WorkflowAction:
@@ -79,14 +63,11 @@ zh:
     ExecutedLabel: 已执行
     FRONTENDCOMMENT: 评论
     FinishedLabel: 完成
-    PLURALNAME: 工作流动作
-    SINGULARNAME: 工作流动作
     TITLE: 标题
     TitleDescription: 标题被用作此工作流程操作的按钮标签
     Transitions: 转换
     TypeLabel: 类型
   WorkflowActionInstance:
-    SINGULARNAME: 工作流动作实例
     Title: 题目
   WorkflowApplicable:
     DEFINITION: 应用的工作流
@@ -100,11 +81,7 @@ zh:
     DESCRIPTION: 描述
     GROUPS: 群组限制
     LATEST_VERSION: '最新版本是 %s'
-    PLURALNAME: 工作流定义
     REMINDEREMAIL: 提醒邮件
-    SENDREMINDERDAYSAFTER: 无动作的天数。
-    SENDREMINDERDAYSBEFORE: 于……之后发送提醒邮件
-    SINGULARNAME: 工作流定义
     TEMPLATE_INFO: 模板信息
     TEMPLATE_NAME: 源模板
     TEMPLATE_VERSION: 模板版本
@@ -136,7 +113,6 @@ zh:
     ActionLogTitle: 日志
     EXECUTE_EXCEPTION: '试图启动一个无效的工作流实例 #%s！'
     REASSIGN_HEADER: 重新分配工作流
-    SINGULARNAME: 工作流实例
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: '实例 %s 之 #%s'
     TargetClassLabel: 玻靶
@@ -164,10 +140,8 @@ zh:
     ACTION: 动作
     Active: 启动
     NEXT_ACTION: 下一个动作
-    PLURALNAME: 工作流过渡
     Passive: 消极的
     SELECTONE: （选择一个）
-    SINGULARNAME: 工作流过渡
     TRANSITIONLOOP: 过渡操作不能重新触发其父操作。
     TYPE: 类型
     TabTitle: 用户限制

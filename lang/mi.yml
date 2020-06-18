@@ -17,7 +17,6 @@ mi:
     INVALIDCLASSTOORDER: 'I tāurua he tauaha muhu ki te raupapa.'
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
-    MENUTITLE: 'Ngā reremahi'
     SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
@@ -30,18 +29,12 @@ mi:
     ASSIGNUSERS: 'Tautapa Kaiwhakamahi'
     GROUPS: 'Ngā Rōpū'
     INITIATOR: 'Tautapa Kaitīmata'
-    PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
     USERS: 'Ngā Kaiwhakamahi'
-  CancelWorkflowAction:
-    PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
   FrontEndWorkflowController:
     FRONTENDACTION_CONTEXT_EXCEPTION: 'Kāore I Kitea Te Ahanoa Horopaki'
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Kāore ō whakaaetanga kia kawe i tēnei hohenga'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Hītori tākupu tae mai ki tēnei whakamōhiotanga.'
-    CONTEXTNOTE: "Ka wātea ngā āpure rāpopoto mai i te ūnga reremahi. Hei tauira, {$Context.Title}.\n\t\t\tI tua atu, ka whai hononga te taurangi {$Context.AbsoluteEditLink} hei whakatikatika i te ūnga i te\n\t\t\tCMS (mēnā he Whārangi tēnā)."
     EMAILFROM: 'Īmēra mai'
     EMAILSUBJECT: 'Kaupapa īmēra'
     EMAILTEMPLATE: 'Tātauira īmēra'
@@ -52,17 +45,8 @@ mi:
     MEMBERNOTE: "Ka whakakīa ēnei āpure i te mema ka tīmata i te hohenga whakamōhio. Hei tauira,\n\t\t\t{$Member.FirstName}."
     NOTIFICATIONEMAIL: 'Īmēra Whakamōhio'
     NOTIFICATIONNOTE: 'Ka tukuna he īmēra ki ngā kaiwhakamahi katoa e tāpiritia ana ki te reremahi ina whakahaeretia tēnei hohenga.'
-    PLURALNAME: 'Whakamōhiotia Ngā Hohenga Reremahi Kaiwhakamahi'
-    SINGULARNAME: 'Whakamōhiotia Te Hohenga Reremahi Kaiwhakamahi'
   PublishItemWorkflowAction:
-    DELAYPUBDAYSAFTER: 'ngā rā'
-    DELAYPUBDAYSBEFORE: 'Takaware whakaputanga'
-    PLURALNAME: 'Whakaputaina Ngā Hohenga Reremahi Tuemi'
     PUBLICATIONDELAY: 'Takawarenga Whakaputa'
-    SINGULARNAME: 'Whakaputaina Te Hohenga Reremahi Tuemi'
-  SimpleApprovalWorkflowAction:
-    PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
-    SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
   Workflow:
     WorkflowActionsTabTitle: 'Ngā Hohenga Reremahi'
   WorkflowAction:
@@ -75,14 +59,10 @@ mi:
     ExecutedLabel: 'Kua Kawea'
     FRONTENDCOMMENT: Tākupu
     FinishedLabel: 'Kua Oti'
-    PLURALNAME: 'Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Hohenga Reremahi'
     TITLE: Taitara
     TitleDescription: 'Ka whakamahia te Taitara hei tapanga pātene mō tēnei Rerenga Mahi'
     Transitions: 'Ngā Whakawhiti'
     TypeLabel: Momo
-  WorkflowActionInstance:
-    SINGULARNAME: 'Tauira Hohenga Reremahi'
   WorkflowApplicable:
     DEFINITION: 'Reremahi Kua Hoatu'
     EFFECTIVE_WORKFLOW: 'Reremahi Tōtika'
@@ -95,11 +75,7 @@ mi:
     DESCRIPTION: Whakamāramatanga
     GROUPS: 'Whakawhāitihia ki ngā Rōpū'
     LATEST_VERSION: 'Ko %s te putanga hou rawa'
-    PLURALNAME: 'Ngā Whakamāramatanga Reremahi'
     REMINDEREMAIL: 'Īmēra Whakamaumahara'
-    SENDREMINDERDAYSAFTER: 'ngā rā kore hohenga.'
-    SENDREMINDERDAYSBEFORE: 'Tuku īmēra whakamaumahara i muri i'
-    SINGULARNAME: 'Whakamāramatanga Reremahi'
     TEMPLATE_INFO: 'Mōhiohio Tātauira'
     TEMPLATE_NAME: 'Tātauira Pūtake'
     TEMPLATE_VERSION: 'Putanga Tātauira'
@@ -131,7 +107,6 @@ mi:
     ActionLogTitle: Rangitaki
     EXECUTE_EXCEPTION: 'I whakamātauria te tīmatanga o tētahi tauira reremahi muhu #%s!'
     REASSIGN_HEADER: 'Tautapatia anō te reremahi'
-    SINGULARNAME: 'Tauira Reremahi'
     TITLE_FOR_DO: '%s - %s'
     TITLE_STUB: 'Tauira #%s o te %s'
     TargetClassLabel: 'Tauaha Ūnga'
@@ -149,9 +124,7 @@ mi:
   WorkflowTransition:
     ACTION: Hohenga
     NEXT_ACTION: 'Hohenga Panuku'
-    PLURALNAME: 'Ngā Whakawhiti Reremahi'
     SELECTONE: '(Tīpakohia kotahi)'
-    SINGULARNAME: 'Whakawhitinga Reremahi'
     TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
     TYPE: Momo
     TabTitle: 'Whakawhāitihia ki ngā Kaiwhakamahi'
