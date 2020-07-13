@@ -1,3 +1,7 @@
+---
+title: Setting up workflows
+---
+
 # Setting up a simple CMS workflow
 Since workflows can vary greatly across websites, there's no default workflow. 
 
@@ -26,7 +30,9 @@ Once your user groups are set, you can apply Workflow actions to these user grou
 
 See [more on workflow permissions.](workflow-permissions.md)
 
-<div class="note" markdown="1">Note: Any user with ‘full administrative rights’ set will see all Workflow action buttons in the CMS, plus they will have the ability to Publish and Draft content regardless of whether or not a workflow is configured on a page.</div>
+[note]
+Note: Any user with ‘full administrative rights’ set will see all Workflow action buttons in the CMS, plus they will have the ability to Publish and Draft content regardless of whether or not a workflow is configured on a page.
+[/note]
 
 ## **Step 2. Create a Workflow Definition**
 There is no default workflow in SilverStripe CMS since actual workflows vary greatly across web sites and hence one must be created. 
@@ -116,7 +122,9 @@ Next, select the "Notify Publishers" action and fill out the "Notification Email
 
 Repeat these steps for the other actions (assign and notify) but this time setting the user to the "Initiator".
 
-<div class="note" markdown="1">You can further restrict certain actions and transitions to specific users if desired using the “User” check boxes and the “restricted users” tabs on transition forms.</div>
+[note]
+You can further restrict certain actions and transitions to specific users if desired using the “User” check boxes and the “restricted users” tabs on transition forms.
+[/note]
 
 ## **Step 5. Assign Workflows to a Page**
 
