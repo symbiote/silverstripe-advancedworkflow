@@ -8,6 +8,7 @@ use SilverStripe\Core\Extension;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
 use SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Permission;
 use SilverStripe\View\Requirements;
@@ -66,6 +67,12 @@ class AdvancedWorkflowExtension extends Extension
         $service = singleton(WorkflowService::class);
         /** @var DataObject|WorkflowApplicable $record */
         $record = $form->getRecord();
+        if ($record && $record->ID) {
+            $reload = DataList::create(get_class($record))->byID($record->ID);
+            if ($reload->LastEdited > $record->LastEdited) {
+                $form->loadDataFrom($reload, Form::MERGE_DEFAULT);
+            }
+        }
         $active = $service->getWorkflowFor($record);
 
         if ($active) {
