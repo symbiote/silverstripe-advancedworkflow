@@ -296,8 +296,11 @@ class WorkflowInstance extends DataObject
         $diff->ignoreFields($this->config()->get('diff_ignore_fields'));
 
         $fields = ArrayList::create();
+
         try {
-            $fields = $diff->ChangedFields();
+            if ($diff && !(is_null($diff->fromRecord) && is_null($diff->toRecord))) {
+                $fields = $diff->ChangedFields();
+            }
         } catch (\InvalidArgumentException $iae) {
             // noop
         }
@@ -320,7 +323,8 @@ class WorkflowInstance extends DataObject
             $this->write();
         }
 
-        if ($for
+        if (
+            $for
             && ($for->hasExtension(WorkflowApplicable::class)
                 || $for->hasExtension(FileWorkflowApplicable::class))
         ) {
@@ -789,7 +793,7 @@ class WorkflowInstance extends DataObject
         $action = WorkflowAction::get()
             /** @skipUpgrade */
             ->leftJoin('WorkflowActionInstance', $join)
-            ->where('"WorkflowActionInstance"."ID" = '.$this->CurrentActionID)
+            ->where('"WorkflowActionInstance"."ID" = ' . $this->CurrentActionID)
             ->first();
         if (!$action) {
             return 'N/A';
@@ -814,7 +818,7 @@ class WorkflowInstance extends DataObject
 
         // WorkflowActionInstances in reverse creation-order so we get the most recent one's first
         $history = $this->Actions()->filter(array(
-            'Finished' =>1,
+            'Finished' => 1,
             'BaseAction.ClassName' => AssignUsersToWorkflowAction::class
         ))->Sort('Created', 'DESC');
 
