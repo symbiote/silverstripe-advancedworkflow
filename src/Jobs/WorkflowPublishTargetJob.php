@@ -46,11 +46,13 @@ class WorkflowPublishTargetJob extends AbstractQueuedJob
                 $target->PublishOnDate = '';
                 $target->writeWithoutVersion();
                 $target->publishRecursive();
+                $this->extend('onAfterWorkflowPublish', $target);
             } elseif ($this->publishType == 'unpublish') {
                 $target->setIsPublishJobRunning(true);
                 $target->UnPublishOnDate = '';
                 $target->writeWithoutVersion();
                 $target->doUnpublish();
+                $this->extend('onAfterWorkflowUnublish', $target);
             }
         }
         $this->currentStep = 1;

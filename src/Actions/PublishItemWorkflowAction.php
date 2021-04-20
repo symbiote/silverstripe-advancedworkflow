@@ -75,11 +75,13 @@ class PublishItemWorkflowAction extends WorkflowAction
                 $target->write();
                 if ($target->hasMethod('publishRecursive')) {
                     $target->publishRecursive();
+                    $this->extend('onAfterWorkflowPublish', $target);
                 }
             }
         } else {
             if ($target->hasMethod('publishRecursive')) {
                 $target->publishRecursive();
+                $this->extend('onAfterWorkflowPublish', $target);
             }
         }
 
