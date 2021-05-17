@@ -7,6 +7,8 @@ eo:
     CREATE_WORKFLOW_HELP: 'Uzantoj povas krei laborfluajn difinojn'
     DELETE_WORKFLOW: 'Forigi laborfluon'
     DELETE_WORKFLOW_HELP: 'Uzantoj povas forigi laborfluajn difinojn kaj aktivajn laborfluojn'
+    EDITEMBARGO: 'Redaktebla embargita ero troviĝas en la laborfluo'
+    EDITEMBARGOHELP: 'Permesi al uzantoj redakti erojn embargitajn de laborfluo'
     JOB_REMINDER_COMMENT: '%s: Sendis memorigan retpoŝton\n\n'
     REASSIGNACTIVE: 'Reagordi aktivajn laborfluojn'
     REASSIGNACTIVEHELP: 'Uzantoj povas reatribui aktivajn laborfluojn al diversaj uzantoj kaj grupoj'
@@ -49,6 +51,7 @@ eo:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Vi ne rajtas plenumi tiun agon'
   NotifyUsersWorkflowAction:
     COMMENTHISTORY: 'Komenta historio ĝis ĉi tiu sciigo.'
+    CONTEXTNOTE: "Ajnaj resumaj kampoj el la laborfluo estos haveblaj. Ekzemple, {$Context.Title}.\n\t\t\tPlue, la variablo {$Context.AbsoluteEditLink} enhavos ligilon por redakti la laborfluan celon en\n            la CMS (se ĝi estas Paĝo), kaj la interfacan ligilon {$Context.AbsoluteLink}. La variablo {$Context.LinkToPendingItems}\n            generos ligilon al la CMS-laborflua mastrumado, utilan por ebligi al uzantoj aplki laborfluajn\n            transirojn, rekte el retpoŝto."
     EMAILFROM: 'Retpoŝto el'
     EMAILSUBJECT: 'Retpoŝta temo'
     EMAILTEMPLATE: 'Retpoŝta ŝablono'
@@ -66,6 +69,91 @@ eo:
     PROPERTYTITLE: 'Agordota atributo; se ĝi ekzistas kiel agordmetodo, ĝi vokiĝos kun la valoron'
   SiteTree:
     WorkflowOptions: 'Laborfluaj agordoj'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Asigni uzantojn al laborfluaj agoj'
+    PLURALS:
+      one: 'Unu asigno uzantojn al laborflua ago'
+      other: '{count} asignoj uzantojn al laborfluaj agoj'
+    SINGULARNAME: 'Asigni uzantojn al laborflua ago'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Nuligi laborfluajn agojn'
+    PLURALS:
+      one: 'Unu nuligo laborfluan agon'
+      other: '{count} nuligoj laborfluajn agojn'
+    SINGULARNAME: 'Nuligi laborfluan agon'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'Sciigi uzulajn laborfluajn agojn'
+    PLURALS:
+      one: 'Unu sciigo uzulan laborfluan agon'
+      other: '{count} sciigoj uzulajn laborfluajn agojn'
+    SINGULARNAME: 'Sciigi uzulan laborfluan agon'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    ALLOWEMBARGOEDEDITING: 'Ĉu ebligi redaktadon dum ero estas embargita? (ne validas sen embargo)'
+    PLURALNAME: 'Publikigi elementajn laborfluajn agojn'
+    PLURALS:
+      one: 'Unu publikigo elementan laborfluan agon'
+      other: '{count} publikigoj elementajn laborfluajn agojn'
+    PublicationDelayDescription: 'Prokrasti publikigon laŭ la agordita nombro da tagoj'
+    SINGULARNAME: 'Publikigi elementan laborfluan agon'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    PLURALNAME: 'Agordi laborfluajn agojn'
+    PLURALS:
+      one: 'Unu agordo laborfluan agon'
+      other: '{count} agordoj laborfluajn agojn'
+    SINGULARNAME: 'Agordi laborfluan agon'
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Simple aprobi laborfluajn agojn'
+    PLURALS:
+      one: 'Unu simpla aprobo laborfluajn agojn'
+      other: '{count} simplaj aproboj laborfluajn agojn'
+    SINGULARNAME: 'Simple aprobi laborfluan agon'
+  Symbiote\AdvancedWorkflow\Actions\UnpublishItemWorkflowAction:
+    PLURALNAME: 'Malpublikigi elementajn laborfluajn agojn'
+    PLURALS:
+      one: 'Unu malpublikigo elementan laborfluan agon'
+      other: '{count} malpublikigoj elementajn laborfluajn agojn'
+    SINGULARNAME: 'Malpublikigi elementan laborfluan agon'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: Laborfluoj
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    PLURALNAME: 'Importitaj laborfluaj ŝablonoj'
+    PLURALS:
+      one: 'Unu importita laborflua ŝablono'
+      other: '{count} importitaj laborfluaj ŝablonoj'
+    SINGULARNAME: 'Importita laborflua ŝablono'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Laborfluaj agoj'
+    PLURALS:
+      one: 'Unu laborflua ago'
+      other: '{count} laborfluaj agoj'
+    SINGULARNAME: 'Laborflua ago'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    PLURALNAME: 'Ekzemploj de laborfluaj agoj '
+    PLURALS:
+      one: 'Unu ekzemplo de laborflua ago'
+      other: '{count} ekzemploj de laborfluaj agoj '
+    SINGULARNAME: 'Ekzemplo de laborflua ago'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Laborfluaj difinoj'
+    PLURALS:
+      one: 'Unu laborflua ago'
+      other: '{count} laborfluaj agoj'
+    ReminderEmailDescription: 'Sendi retpoŝtan memorigon post la agordita nombro da tagoj sen ago'
+    SINGULARNAME: 'Laborflua difino'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    PLURALNAME: 'Laborfluaj ekzemploj'
+    PLURALS:
+      one: 'Unu ekzemplo de laborfluo'
+      other: '{count} ekzemploj de laborfluoj'
+    SINGULARNAME: 'Laborflua ekzemplo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Laborfluaj transiroj'
+    PLURALS:
+      one: 'Unu laborflua transiro'
+      other: '{count} laborfluaj transiroj'
+    SINGULARNAME: 'Laborflua transiro'
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Eksporti
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: tagoj
     DELAYUNPUBDAYSBEFORE: 'Prokrasti malpublikigon je'
@@ -117,14 +205,21 @@ eo:
     INVALID_YML_FORMAT_NO_PARSE: 'Nevalida YAML-formato. Ne povas analizi.'
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Aktiva
+    BADGE_PUBLISH: Embargo
+    BADGE_PUBLISH_UNPUBLISH: Embargo+eksvalidiĝo
+    BADGE_UNPUBLISH: Eksvalidiĝo
     CompletedWorkflowStateTitle: Kompletigita
+    INVALIDEXPIRY: 'La dato de malpublikigo ne povas esti antaŭ la dato de publikigo.'
+    INVALIDSAMEEMBARGOEXPIRY: 'La dato de dato de publikigo kaj la dato demalpublikigo ne povas esti samaj.'
     PUBLISH_ON: 'Planita publikiga dato'
     REQUESTED_PUBLISH_DATE: 'Petita publikiga dato'
     REQUESTED_PUBLISH_DATE_H3: 'Malvalidiĝo kaj embargo'
     REQUESTED_PUBLISH_DATE_INTRO: 'Enigu daton kaj/aŭ horon por agordi embargan kaj malvalidiĝan datojn.'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Tiuj agordoj ekefikos nur kiam eventualaj agoj estas rulitaj'
     REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Se embargo jam estas agordita, aldoni novan antaŭ la paso de ties dato anstataŭos ĝin'
+    REQUESTED_PUBLISH_DATE_RIGHT_TITLE: 'Por peti ke ĉi tiu paĝo <strong>tuj publikiĝu</strong> lasu vakaj la datan kaj horan kampojn'
     REQUESTED_UNPUBLISH_DATE: 'Petita malpublikiga dato'
+    REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE: 'Por peti ke ĉi tiu paĝo <strong>neniam eksvalidiĝu</strong> lasu vakaj la datan kaj horan kampojn'
     TabTitle: 'Publikiga plano'
     UNPUBLISH_ON: 'Planita malpublikiga dato'
   WorkflowField:
@@ -153,6 +248,9 @@ eo:
   WorkflowReminderEmail:
     Action: 'Klaku ĉi tie por efikigi ĉi tiun laborfluon'
     Content: "Ĉi tiu estas aŭtomata memorigo ke la laborfluo '{title}', al kiu vi aktuale\n\testas asignita, ne estas plenumigita por {days} tagoj. \n\tLa laborfluo laste ĝisdatiĝis je {date} je {time}."
+    Differences: 'Jen la faritaj ŝanĝoj'
+    HeadingDiff: Diferencoj
+    HeadingTitle: Titolo
   WorkflowReminderTask:
     SAVE: Konservi
   WorkflowService:
