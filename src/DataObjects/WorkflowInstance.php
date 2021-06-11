@@ -323,8 +323,7 @@ class WorkflowInstance extends DataObject
             $this->write();
         }
 
-        if (
-            $for
+        if ($for
             && ($for->hasExtension(WorkflowApplicable::class)
                 || $for->hasExtension(FileWorkflowApplicable::class))
         ) {
