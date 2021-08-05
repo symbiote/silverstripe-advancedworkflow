@@ -3,6 +3,7 @@
 namespace Symbiote\AdvancedWorkflow\Jobs;
 
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use SilverStripe\Core\Extensible;
 
 // Prevent failure if queuedjobs module isn't installed.
 if (!class_exists(AbstractQueuedJob::class)) {
@@ -16,6 +17,8 @@ if (!class_exists(AbstractQueuedJob::class)) {
  */
 class WorkflowPublishTargetJob extends AbstractQueuedJob
 {
+    use Extensible;
+
     public function __construct($obj = null, $type = null)
     {
         if ($obj) {
