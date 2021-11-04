@@ -13,6 +13,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
 use Symbiote\AdvancedWorkflow\Templates\WorkflowTemplate;
+use SilverStripe\ORM\ValidationException;
 
 /**
  * Tests for workflow import/export logic.
@@ -109,7 +110,8 @@ class WorkflowImportExportTest extends SapphireTest
     public function testParseBadYAMLNoHeaderImport()
     {
         $importer = new WorkflowDefinitionImporter();
-        $this->setExpectedException('Exception', 'Invalid YAML format.');
+        $this->expectException(\Exception::class);
+        $this->expectExceptionMessage('Invalid YAML format.');
         $source = <<<'EOD'
 SilverStripe\Core\Injector\Injector\Injector:
   ExportedWorkflow:
@@ -143,7 +145,8 @@ EOD;
     public function testParseBadYAMLMalformedImport()
     {
         $importer = new WorkflowDefinitionImporter();
-        $this->setExpectedException('SilverStripe\\ORM\\ValidationException', 'Invalid YAML format. Unable to parse.');
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Invalid YAML format. Unable to parse.');
         $source = <<<'EOD'
 ---
 Name: exportedworkflow
@@ -256,7 +259,7 @@ EOD;
         $imports = $importer->getImportedWorkflows();
 
         $this->assertNotEmpty($imports);
-        $this->assertInternalType('array', $imports);
+        $this->assertIsArray($imports);
         $this->assertGreaterThan(1, count($imports));
     }
 }

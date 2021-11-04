@@ -15,14 +15,15 @@
         }
     ],
     "require": {
+        "php": "^7.3 || ^8.0",
         "silverstripe/cms": "^4",
-        "silverstripe/framework": "^4",
+        "silverstripe/framework": "^4.10",
         "silverstripe/admin": "^1",
         "silverstripe/versioned": "^1",
         "symfony/yaml": "~3.2"
     },
     "require-dev": {
-        "sminnee/phpunit": "^5.7",
+        "phpunit/phpunit": "^9.5",
         "squizlabs/php_codesniffer": "^3"
     },
     "extra": {

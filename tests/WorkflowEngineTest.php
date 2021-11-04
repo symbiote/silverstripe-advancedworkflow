@@ -147,7 +147,7 @@ class WorkflowEngineTest extends SapphireTest
         $definition = new WorkflowDefinition();
         $definition->Title = "";
         $definition->write();
-        $this->assertContains(
+        $this->assertStringContainsString(
             'My Workflow',
             $definition->Title,
             'Workflow created without title is assigned a default title.'
