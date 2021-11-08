@@ -28,7 +28,7 @@ class WorkflowInstanceTest extends SapphireTest
      */
     protected $currentMember;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->currentMember = $this->objFromFixture(Member::class, 'ApproverMember01');

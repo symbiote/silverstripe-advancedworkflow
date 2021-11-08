@@ -27,7 +27,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
 {
     protected static $fixture_file = 'WorkflowEmbargoExpiry.yml';
 
-    protected function setUp()
+    protected function setUp(): void
     {
         // Prevent failure if queuedjobs module isn't installed.
         if (!class_exists(AbstractQueuedJob::class)) {
@@ -43,7 +43,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         Config::modify()->set(QueuedJobService::class, 'use_shutdown_function', false);
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         DBDatetime::clear_mock_now();
         parent::tearDown();
