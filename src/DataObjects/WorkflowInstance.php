@@ -165,6 +165,8 @@ class WorkflowInstance extends DataObject
 
         $fields->addFieldsToTab('Root.Main', $grid);
 
+        $this->extend('updateCMSFields', $fields);
+
         return $fields;
     }
 
