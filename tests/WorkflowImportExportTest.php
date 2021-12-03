@@ -133,7 +133,7 @@ SilverStripe\Core\Injector\Injector\Injector:
   Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
-        - %$ExportedWorkflow
+        - '%$ExportedWorkflow'
 EOD;
 
         $importer->parseYAMLImport($source);
@@ -172,7 +172,7 @@ SilverStripe\Core\Injector\Injector
   Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
-        - %$ExportedWorkflow
+        - '%$ExportedWorkflow'
 EOD;
 
         $importer->parseYAMLImport($source);
@@ -208,7 +208,7 @@ SilverStripe\Core\Injector\Injector:
   Symbiote\AdvancedWorkflow\Services\WorkflowService:
     properties:
       templates:
-        - %$ExportedWorkflow
+        - '%$ExportedWorkflow'
 EOD;
 
         $this->assertNotEmpty($importer->parseYAMLImport($source));
