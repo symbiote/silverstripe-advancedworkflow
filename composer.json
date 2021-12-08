@@ -20,7 +20,7 @@
         "silverstripe/framework": "^4.10",
         "silverstripe/admin": "^1",
         "silverstripe/versioned": "^1",
-        "symfony/yaml": "~3.2"
+        "symfony/yaml": "^3 || ^4"
     },
     "require-dev": {
         "phpunit/phpunit": "^9.5",
