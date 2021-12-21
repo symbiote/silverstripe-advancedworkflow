@@ -6,4 +6,4 @@ Only:
 SilverStripe\Core\Injector\Injector:
   Symbiote\AdvancedWorkflow\Jobs\WorkflowReminderJob:
     properties:
-      queuedJobService: %$Symbiote\QueuedJobs\Services\QueuedJobService
+      queuedJobService: '%$Symbiote\QueuedJobs\Services\QueuedJobService'
