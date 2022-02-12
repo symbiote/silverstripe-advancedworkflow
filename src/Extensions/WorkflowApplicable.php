@@ -161,12 +161,12 @@ class WorkflowApplicable extends DataExtension
         }
 
         if ($this->owner->ID) {
-            $config = new GridFieldConfig_Base();
-            $config->addComponent(new GridFieldEditButton());
-            $config->addComponent(new GridFieldDetailForm());
+            $config = GridFieldConfig_Base::create();
+            $config->addComponent(GridFieldEditButton::create());
+            $config->addComponent(GridFieldDetailForm::create());
 
             $insts = $this->owner->WorkflowInstances();
-            $log = new GridField(
+            $log = GridField::create(
                 'WorkflowLog',
                 _t('WorkflowApplicable.WORKFLOWLOG', 'Workflow Log'),
                 $insts,

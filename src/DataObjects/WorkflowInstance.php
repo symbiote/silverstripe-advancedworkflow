@@ -157,7 +157,7 @@ class WorkflowInstance extends DataObject
             'WorkflowID' => $this->ID
         ));
 
-        $grid = new GridField(
+        $grid = GridField::create(
             'Actions',
             _t('WorkflowInstance.ActionLogTitle', 'Log'),
             $items

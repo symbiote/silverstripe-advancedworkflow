@@ -119,9 +119,9 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         }
 
         // Pending/Submitted items GridField Config
-        $config = new GridFieldConfig_Base();
-        $config->addComponent(new GridFieldEditButton());
-        $config->addComponent(new GridFieldDetailForm());
+        $config = GridFieldConfig_Base::create();
+        $config->addComponent(GridFieldEditButton::create());
+        $config->addComponent(GridFieldDetailForm::create());
         $config->getComponentByType(GridFieldPaginator::class)->setItemsPerPage(5);
         $columns = $config->getComponentByType(GridFieldDataColumns::class);
         $columns->setFieldFormatting($this->setFieldFormatting($config));
@@ -173,7 +173,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
 
             $formFieldBottom->setForm($form);
             $formFieldBottom->getConfig()->removeComponentsByType(GridFieldEditButton::class);
-            $formFieldBottom->getConfig()->addComponent(new GridFieldWorkflowRestrictedEditButton());
+            $formFieldBottom->getConfig()->addComponent(GridFieldWorkflowRestrictedEditButton::create());
             $form->Fields()->insertBefore($definitionGridFieldName, $formFieldBottom);
         }
 
@@ -189,7 +189,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
 
             $grid->getConfig()->getComponentByType(GridFieldDetailForm::class)
                 ->setItemRequestClass(WorkflowDefinitionItemRequestClass::class);
-            $grid->getConfig()->addComponent(new GridFieldExportAction());
+            $grid->getConfig()->addComponent(GridFieldExportAction::create());
             $grid->getConfig()->removeComponentsByType(GridFieldExportButton::class);
             $grid->getConfig()->removeComponentsByType(GridFieldImportButton::class);
         }

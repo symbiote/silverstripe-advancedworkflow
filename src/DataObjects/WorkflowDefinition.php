@@ -342,11 +342,11 @@ class WorkflowDefinition extends DataObject
                 'WorkflowStatus' => ['Active', 'Paused']
             ]);
 
-            $active = new GridField(
+            $active = GridField::create(
                 'Active',
                 _t('WorkflowDefinition.WORKFLOWACTIVEIINSTANCES', 'Active Workflow Instances'),
                 $active,
-                new GridFieldConfig_RecordEditor()
+                GridFieldConfig_RecordEditor::create()
             );
 
             $active->getConfig()->removeComponentsByType(GridFieldAddNewButton::class);
@@ -354,19 +354,19 @@ class WorkflowDefinition extends DataObject
 
             if (!Permission::check('REASSIGN_ACTIVE_WORKFLOWS')) {
                 $active->getConfig()->removeComponentsByType(GridFieldEditButton::class);
-                $active->getConfig()->addComponent(new GridFieldViewButton());
-                $active->getConfig()->addComponent(new GridFieldDetailForm());
+                $active->getConfig()->addComponent(GridFieldViewButton::create());
+                $active->getConfig()->addComponent(GridFieldDetailForm::create());
             }
 
             $completed = $this->Instances()->filter([
                 'WorkflowStatus' => ['Complete', 'Cancelled']
             ]);
 
-            $config = new GridFieldConfig_Base();
-            $config->addComponent(new GridFieldEditButton());
-            $config->addComponent(new GridFieldDetailForm());
+            $config = GridFieldConfig_Base::create();
+            $config->addComponent(GridFieldEditButton::create());
+            $config->addComponent(GridFieldDetailForm::create());
 
-            $completed = new GridField(
+            $completed = GridField::create(
                 'Completed',
                 _t('WorkflowDefinition.WORKFLOWCOMPLETEDIINSTANCES', 'Completed Workflow Instances'),
                 $completed,

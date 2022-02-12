@@ -5,6 +5,7 @@ namespace Symbiote\AdvancedWorkflow\Forms\GridField;
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\Director;
 use SilverStripe\Core\Config\Config;
+use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
 use SilverStripe\Forms\GridField\GridField;
 use SilverStripe\Forms\GridField\GridField_ActionProvider;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
@@ -22,7 +23,9 @@ use Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin;
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  */
-class GridFieldExportAction implements GridField_ColumnProvider, GridField_ActionProvider
+class GridFieldExportAction extends AbstractGridFieldComponent implements
+    GridField_ColumnProvider,
+    GridField_ActionProvider
 {
     /**
      * Add a column 'Delete'
