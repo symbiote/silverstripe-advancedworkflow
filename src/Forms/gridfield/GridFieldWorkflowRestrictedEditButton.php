@@ -3,6 +3,7 @@
 namespace Symbiote\AdvancedWorkflow\Forms\GridField;
 
 use SilverStripe\Control\Controller;
+use SilverStripe\Forms\GridField\AbstractGridFieldComponent;
 use SilverStripe\Forms\GridField\GridField_ColumnProvider;
 use SilverStripe\Forms\GridField\GridFieldEditButton;
 use SilverStripe\Security\Permission;
@@ -14,7 +15,7 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
  *
  * @package advancedworkflow
  */
-class GridFieldWorkflowRestrictedEditButton implements GridField_ColumnProvider
+class GridFieldWorkflowRestrictedEditButton extends AbstractGridFieldComponent implements GridField_ColumnProvider
 {
     /**
      * Add a column
