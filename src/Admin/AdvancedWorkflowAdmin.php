@@ -317,7 +317,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
      */
     public function export(HTTPRequest $request)
     {
-        $url = explode('/', $request->getURL());
+        $url = explode('/', $request->getURL() ?? '');
         $definitionID = end($url);
         if ($definitionID && is_numeric($definitionID)) {
             $exporter = new WorkflowDefinitionExporter($definitionID);

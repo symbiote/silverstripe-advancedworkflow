@@ -161,7 +161,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNotEquals(0, $page->PublishJobID);
         $this->assertEquals(0, $page->UnPublishJobID);
 
-        $publish = strtotime($page->PublishJob()->StartAfter);
+        $publish = strtotime($page->PublishJob()->StartAfter ?? '');
         $this->assertFalse($publish);
     }
 
@@ -179,7 +179,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertEquals(0, $page->PublishJobID);
         $this->assertNotEquals(0, $page->UnPublishJobID);
 
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter ?? '');
 
         $this->assertFalse($unpublish);
     }
@@ -198,7 +198,7 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertEquals(0, $page->PublishJobID);
         $this->assertNotEquals(0, $page->UnPublishJobID);
 
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter ?? '');
 
         $this->assertFalse($unpublish);
     }
@@ -217,8 +217,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNotEquals(0, $page->PublishJobID);
         $this->assertNotEquals(0, $page->UnPublishJobID);
 
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+        $publish = strtotime($page->PublishJob()->StartAfter ?? '');
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter ?? '');
 
         $this->assertFalse($publish);
         $this->assertNotFalse($unpublish);
@@ -238,8 +238,8 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         $this->assertNotEquals(0, $page->PublishJobID);
         $this->assertNotEquals(0, $page->UnPublishJobID);
 
-        $publish = strtotime($page->PublishJob()->StartAfter);
-        $unpublish = strtotime($page->UnPublishJob()->StartAfter);
+        $publish = strtotime($page->PublishJob()->StartAfter ?? '');
+        $unpublish = strtotime($page->UnPublishJob()->StartAfter ?? '');
 
         $this->assertNotFalse($publish);
         $this->assertNotFalse($unpublish);
@@ -380,30 +380,30 @@ class WorkflowEmbargoExpiryTest extends SapphireTest
         DBDatetime::set_mock_now('2016-01-16 00:00:00');
 
         $flags = $page->getStatusFlags(false);
-        $this->assertNotContains('embargo_expiry', array_keys($flags));
-        $this->assertNotContains('embargo', array_keys($flags));
-        $this->assertNotContains('expiry', array_keys($flags));
+        $this->assertNotContains('embargo_expiry', array_keys($flags ?? []));
+        $this->assertNotContains('embargo', array_keys($flags ?? []));
+        $this->assertNotContains('expiry', array_keys($flags ?? []));
 
         $page->PublishOnDate = '2016-02-01 00:00:00';
         $page->UnPublishOnDate = null;
         $flags = $page->getStatusFlags(false);
-        $this->assertNotContains('embargo_expiry', array_keys($flags));
-        $this->assertContains('embargo', array_keys($flags));
-        $this->assertNotContains('expiry', array_keys($flags));
+        $this->assertNotContains('embargo_expiry', array_keys($flags ?? []));
+        $this->assertContains('embargo', array_keys($flags ?? []));
+        $this->assertNotContains('expiry', array_keys($flags ?? []));
 
         $page->PublishOnDate = null;
         $page->UnPublishOnDate = '2016-02-01 00:00:00';
         $flags = $page->getStatusFlags(false);
-        $this->assertNotContains('embargo_expiry', array_keys($flags));
-        $this->assertNotContains('embargo', array_keys($flags));
-        $this->assertContains('expiry', array_keys($flags));
+        $this->assertNotContains('embargo_expiry', array_keys($flags ?? []));
+        $this->assertNotContains('embargo', array_keys($flags ?? []));
+        $this->assertContains('expiry', array_keys($flags ?? []));
 
         $page->PublishOnDate = '2016-02-01 00:00:00';
         $page->UnPublishOnDate = '2016-02-08 00:00:00';
         $flags = $page->getStatusFlags(false);
-        $this->assertContains('embargo_expiry', array_keys($flags));
-        $this->assertNotContains('embargo', array_keys($flags));
-        $this->assertNotContains('expiry', array_keys($flags));
+        $this->assertContains('embargo_expiry', array_keys($flags ?? []));
+        $this->assertNotContains('embargo', array_keys($flags ?? []));
+        $this->assertNotContains('expiry', array_keys($flags ?? []));
     }
 
     /**

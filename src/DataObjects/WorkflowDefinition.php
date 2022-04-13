@@ -273,7 +273,7 @@ class WorkflowDefinition extends DataObject
                 $tv->setRightTitle(sprintf(_t(
                     'WorkflowDefinition.LATEST_VERSION',
                     'Latest version is %s'
-                ), $template ? $template->getVersion() : ''));
+                ) ?? '', $template ? $template->getVersion() : ''));
             }
 
             $fields->addFieldToTab('Root.Main', new WorkflowField(
@@ -290,7 +290,7 @@ class WorkflowDefinition extends DataObject
                 foreach ($templates as $template) {
                     $items[$template->getName()] = $template->getName();
                 }
-                $templates = array_combine(array_keys($templates), array_keys($templates));
+                $templates = array_combine(array_keys($templates ?? []), array_keys($templates ?? []));
 
                 $fields->addFieldToTab(
                     'Root.Main',
@@ -399,7 +399,7 @@ class WorkflowDefinition extends DataObject
                 $label = sprintf(_t(
                     'WorkflowDefinition.UPDATE_FROM_TEMLPATE',
                     'Update to latest template version (%s)'
-                ), $template->getVersion());
+                ) ?? '', $template->getVersion());
                 $actions->push($action = FormAction::create('updatetemplateversion', $label));
             }
         }
@@ -430,11 +430,11 @@ class WorkflowDefinition extends DataObject
         $tmp = [];
 
         foreach ($defs as $def) {
-            $parts = preg_split("#\s#", preg_quote($def, '#'), -1, PREG_SPLIT_NO_EMPTY);
+            $parts = preg_split("#\s#", preg_quote($def ?? '', '#'), -1, PREG_SPLIT_NO_EMPTY);
             $lastPart = array_pop($parts);
             $match = implode(' ', $parts);
             // @todo do all this in one preg_match_all() call
-            if (preg_match("#$match#", $incomingTitle)) {
+            if (preg_match("#$match#", $incomingTitle ?? '')) {
                 // @todo use a simple incrementer??
                 if ($incomingTitle.' '.$lastPart == $def) {
                     array_push($tmp, $lastPart);
@@ -443,7 +443,7 @@ class WorkflowDefinition extends DataObject
         }
 
         $incr = 1;
-        if (count($tmp)) {
+        if (count($tmp ?? [])) {
             sort($tmp, SORT_NUMERIC);
             $incr = (int)end($tmp)+1;
         }

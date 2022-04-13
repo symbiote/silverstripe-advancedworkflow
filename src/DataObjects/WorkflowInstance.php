@@ -340,7 +340,7 @@ class WorkflowInstance extends DataObject
 
         $title = $for && $for->hasField('Title')
             ? sprintf(_t('WorkflowInstance.TITLE_FOR_DO', '%s - %s'), $definition->Title, $for->Title)
-            : sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s'), $this->ID, $definition->Title);
+            : sprintf(_t('WorkflowInstance.TITLE_STUB', 'Instance #%s of %s') ?? '', $this->ID, $definition->Title);
 
         $this->Title           = $title;
         $this->DefinitionID    = $definition->ID;
@@ -377,7 +377,7 @@ class WorkflowInstance extends DataObject
                 sprintf(_t(
                     'WorkflowInstance.EXECUTE_EXCEPTION',
                     'Attempted to start an invalid workflow instance #%s!'
-                ), $this->ID)
+                ) ?? '', $this->ID)
             );
         }
 
@@ -408,7 +408,7 @@ class WorkflowInstance extends DataObject
             $this->performTransition($transition);
         } else {
             // see if there are any transitions available, even if they are not valid.
-            if ($action->Finished && !count($action->BaseAction()->Transitions())) {
+            if ($action->Finished && !count($action->BaseAction()->Transitions() ?? [])) {
                 $this->WorkflowStatus  = 'Complete';
                 $this->CurrentActionID = 0;
             } else {
@@ -456,7 +456,7 @@ class WorkflowInstance extends DataObject
                 sprintf(_t(
                     'WorkflowInstance.WORKFLOW_TRANSITION_EXCEPTION',
                     'Invalid transition state for action #%s'
-                ), $action->ID)
+                ) ?? '', $action->ID)
             );
         }
 

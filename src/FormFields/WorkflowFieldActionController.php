@@ -39,7 +39,7 @@ class WorkflowFieldActionController extends RequestHandler
     {
         $class = $this->unsanitiseClassName($this->request->param('Class'));
 
-        if (!class_exists($class) || !is_subclass_of($class, WorkflowAction::class)) {
+        if (!class_exists($class ?? '') || !is_subclass_of($class, WorkflowAction::class)) {
             $this->httpError(400);
         }
 
@@ -94,7 +94,7 @@ class WorkflowFieldActionController extends RequestHandler
      */
     protected function sanitiseClassName($class)
     {
-        return str_replace('\\', '-', $class);
+        return str_replace('\\', '-', $class ?? '');
     }
 
     /**
@@ -105,6 +105,6 @@ class WorkflowFieldActionController extends RequestHandler
      */
     protected function unsanitiseClassName($class)
     {
-        return str_replace('-', '\\', $class);
+        return str_replace('-', '\\', $class ?? '');
     }
 }

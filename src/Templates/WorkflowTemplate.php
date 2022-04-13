@@ -191,7 +191,7 @@ class WorkflowTemplate
     protected function createAction($name, $actionTemplate, WorkflowDefinition $definition = null)
     {
         $type = $actionTemplate['type'];
-        if (!$type || !class_exists($type)) {
+        if (!$type || !class_exists($type ?? '')) {
             throw new Exception(_t(
                 'WorkflowTemplate.INVALID_TEMPLATE_ACTION',
                 'Invalid action class specified in template'
@@ -279,7 +279,7 @@ class WorkflowTemplate
             foreach ($actionTemplate['transitions'] as $transitionName => $transitionTemplate) {
                 $target = $transitionTemplate;
                 if (is_array($transitionTemplate)) {
-                    $to = array_keys($transitionTemplate);
+                    $to = array_keys($transitionTemplate ?? []);
                     $transitionName = $to[0];
                     $target = $transitionTemplate[$transitionName];
                 }
@@ -315,12 +315,12 @@ class WorkflowTemplate
         $existingActions = array();
 
         $existing = $definition->Actions()->column('Title');
-        $structure = array_keys($this->structure);
+        $structure = array_keys($this->structure ?? []);
 
-        $removeNames = array_diff($existing, $structure);
+        $removeNames = array_diff($existing ?? [], $structure);
 
         foreach ($definition->Actions() as $action) {
-            if (in_array($action->Title, $removeNames)) {
+            if (in_array($action->Title, $removeNames ?? [])) {
                 $action->delete();
                 continue;
             }
@@ -399,13 +399,13 @@ class WorkflowTemplate
         $hasUsers = false;
         $hasGroups = false;
         if ($manyMany = $object->stat('many_many')) {
-            if (in_array(Member::class, $manyMany)) {
+            if (in_array(Member::class, $manyMany ?? [])) {
                 $hasUsers = true;
-                $userRelationName = array_keys($manyMany);
+                $userRelationName = array_keys($manyMany ?? []);
             }
-            if (in_array(Group::class, $manyMany)) {
+            if (in_array(Group::class, $manyMany ?? [])) {
                 $hasGroups = true;
-                $groupRelationName = array_keys($manyMany);
+                $groupRelationName = array_keys($manyMany ?? []);
             }
         }
 

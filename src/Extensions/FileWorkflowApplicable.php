@@ -65,7 +65,7 @@ class FileWorkflowApplicable extends WorkflowApplicable
             $allowedFields = $workflow->getWorkflowFields()->saveableFields();
             unset($allowedFields['TransitionID']);
 
-            $allowed = array_keys($allowedFields);
+            $allowed = array_keys($allowedFields ?? []);
 
             foreach ($allowed as $field) {
                 if (isset($rawData[$field])) {

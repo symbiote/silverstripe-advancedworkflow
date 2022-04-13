@@ -49,7 +49,7 @@ class WorkflowReminderJob extends AbstractQueuedJob
      */
     public function getSignature()
     {
-        return md5($this->getTitle());
+        return md5($this->getTitle() ?? '');
     }
 
     public function process()
@@ -63,7 +63,7 @@ class WorkflowReminderJob extends AbstractQueuedJob
         $active = WorkflowInstance::get()->filter($filter);
 
         foreach ($active as $instance) {
-            $edited = strtotime($instance->LastEdited);
+            $edited = strtotime($instance->LastEdited ?? '');
             $days   = $instance->Definition()->RemindDays;
 
             if ($edited + ($days * 3600 * 24) > time()) {
@@ -102,7 +102,7 @@ class WorkflowReminderJob extends AbstractQueuedJob
             $action->Comment = sprintf(_t(
                 'AdvancedWorkflow.JOB_REMINDER_COMMENT',
                 '%s: Reminder email sent\n\n'
-            ), date('Y-m-d H:i:s')) . $currentComment;
+            ) ?? '', date('Y-m-d H:i:s')) . $currentComment;
             try {
                 $action->write();
             } catch (Exception $ex) {

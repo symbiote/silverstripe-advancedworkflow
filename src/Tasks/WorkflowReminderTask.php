@@ -34,7 +34,7 @@ class WorkflowReminderTask extends BuildTask
 
             if ($active->exists()) {
                 foreach ($active as $instance) {
-                    $edited = strtotime($instance->LastEdited);
+                    $edited = strtotime($instance->LastEdited ?? '');
                     $days   = $instance->Definition()->RemindDays;
 
                     if ($edited + $days * 3600 * 24 > DBDatetime::now()->getTimestamp()) {
@@ -46,7 +46,7 @@ class WorkflowReminderTask extends BuildTask
                     $members = $instance->getAssignedMembers();
                     $target  = $instance->getTarget();
 
-                    if (!$members || !count($members)) {
+                    if (!$members || !count($members ?? [])) {
                         continue;
                     }
 
