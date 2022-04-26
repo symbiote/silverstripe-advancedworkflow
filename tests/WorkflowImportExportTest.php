@@ -73,7 +73,7 @@ class WorkflowImportExportTest extends SapphireTest
         ));
 
         $formatted = $exporter->format($templateData);
-        $numActions = count(preg_split("#\R#", $formatted));
+        $numActions = count(preg_split("#\R#", $formatted ?? '') ?? []);
 
         $this->assertNotEmpty($formatted);
         // Seems arbitrary, but if no actions, then the resulting YAML file is exactly 18 lines long
@@ -94,13 +94,13 @@ class WorkflowImportExportTest extends SapphireTest
         $templateData = new ArrayData(array());
 
         $formatted = $exporter->format($templateData);
-        $numActions = count(preg_split("#\R#", $formatted));
+        $numActions = count(preg_split("#\R#", $formatted ?? '') ?? []);
 
         // Seems arbitrary, but if no actions, then the resulting YAML file is exactly 19 lines long
         $this->assertEquals(19, $numActions);
 
         // Ensure outputted YAML has no blank lines, where SS's control structures would normally be
-        $numBlanks = preg_match("#^\s*$#m", $formatted);
+        $numBlanks = preg_match("#^\s*$#m", $formatted ?? '');
         $this->assertEquals(0, $numBlanks);
     }
 
@@ -260,6 +260,6 @@ EOD;
 
         $this->assertNotEmpty($imports);
         $this->assertIsArray($imports);
-        $this->assertGreaterThan(1, count($imports));
+        $this->assertGreaterThan(1, count($imports ?? []));
     }
 }

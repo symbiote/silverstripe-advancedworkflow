@@ -86,7 +86,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
     {
         $members = $workflow->getAssignedMembers();
 
-        if (!$members || !count($members)) {
+        if (!$members || !count($members ?? [])) {
             return true;
         }
 
@@ -115,8 +115,8 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             'Now' => DBDatetime::now()
         ])->renderWith('Includes/CommentHistory');
 
-        $from = str_replace(array_keys($variables), array_values($variables), $this->EmailFrom);
-        $subject = str_replace(array_keys($variables), array_values($variables), $this->EmailSubject);
+        $from = str_replace(array_keys($variables ?? []), array_values($variables ?? []), $this->EmailFrom ?? '');
+        $subject = str_replace(array_keys($variables ?? []), array_values($variables ?? []), $this->EmailSubject ?? '');
 
         if ($this->config()->get('whitelist_template_variables')) {
             $item = ArrayData::create([
@@ -142,7 +142,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             if ($member->Email) {
                 // We bind in the assignee at this point, as it changes each loop iteration
                 $assigneeVars = $this->getMemberFields($member);
-                if (count($assigneeVars)) {
+                if (count($assigneeVars ?? [])) {
                     $item->Assignee = ArrayData::create($assigneeVars);
                 }
 
@@ -220,7 +220,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
             }
         }
 
-        if ($member && !array_key_exists('Name', $result)) {
+        if ($member && !array_key_exists('Name', $result ?? [])) {
             $result['Name'] = $member->getName();
         }
 
@@ -261,7 +261,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
         $fieldName = _t('NotifyUsersWorkflowAction.FIELDNAME', 'Field name');
         $commentHistory = _t('NotifyUsersWorkflowAction.COMMENTHISTORY', 'Comment history up to this notification.');
 
-        $memberFields = implode(', ', array_keys($this->getMemberFields()));
+        $memberFields = implode(', ', array_keys($this->getMemberFields() ?? []));
 
         return "<p>$note</p>
 			<p><strong>{\$Member.($memberFields)}</strong><br>$member</p>

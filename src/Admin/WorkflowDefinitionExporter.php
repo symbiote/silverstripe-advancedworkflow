@@ -111,9 +111,9 @@ class WorkflowDefinitionExporter
     {
         $viewer = SSViewer::execute_template(['type' => 'Includes', 'WorkflowDefinitionExport'], $templateData);
         // Temporary until we find the source of the replacement in SSViewer
-        $processed = str_replace('&amp;', '&', $viewer);
+        $processed = str_replace('&amp;', '&', $viewer ?? '');
         // Clean-up newline "gaps" that SSViewer leaves behind from the placement of template control structures
-        return preg_replace("#^\R+|^[\t\s]*\R+#m", '', $processed);
+        return preg_replace("#^\R+|^[\t\s]*\R+#m", '', $processed ?? '');
     }
 
     /**
@@ -125,7 +125,7 @@ class WorkflowDefinitionExporter
      */
     public function getExportSize($str)
     {
-        return mb_strlen($str, 'UTF-8');
+        return mb_strlen($str ?? '', 'UTF-8');
     }
 
     /**
@@ -137,7 +137,7 @@ class WorkflowDefinitionExporter
     {
         $def = $this->getDefinition();
         return new ArrayData(array(
-            'ExportHost' => preg_replace("#http(s)?://#", '', Director::protocolAndHost()),
+            'ExportHost' => preg_replace("#http(s)?://#", '', Director::protocolAndHost() ?? ''),
             'ExportDate' => date('d/m/Y H-i-s'),
             'ExportUser' => $this->member->FirstName.' '.$this->member->Surname,
             'ExportVersionFramework' => $this->ssVersion(),
@@ -155,8 +155,8 @@ class WorkflowDefinitionExporter
     private function ssVersion()
     {
         // Remove colons so they don't screw with YAML parsing
-        $versionSapphire = str_replace(':', '', singleton(SapphireInfo::class)->Version());
-        $versionLeftMain = str_replace(':', '', singleton(LeftAndMain::class)->CMSVersion());
+        $versionSapphire = str_replace(':', '', singleton(SapphireInfo::class)->Version() ?? '');
+        $versionLeftMain = str_replace(':', '', singleton(LeftAndMain::class)->CMSVersion() ?? '');
         if ($versionSapphire != _t('SilverStripe\\Admin\\LeftAndMain.VersionUnknown', 'Unknown')) {
             return $versionSapphire;
         }
@@ -167,7 +167,7 @@ class WorkflowDefinitionExporter
     {
         // If an import is exported and re-imported, the new export date is appended to Title, making for
         // a very long title
-        return preg_replace("#\s[\d]+\/[\d]+\/[\d]+\s[\d]+-[\d]+-[\d]+(\s[\d]+)?#", '', $title);
+        return preg_replace("#\s[\d]+\/[\d]+\/[\d]+\s[\d]+-[\d]+-[\d]+(\s[\d]+)?#", '', $title ?? '');
     }
 
     /**
@@ -180,10 +180,13 @@ class WorkflowDefinitionExporter
     public function sendFile($filedata)
     {
         $response = new HTTPResponse($filedata['body']);
-        if (preg_match("#MSIE\s(6|7|8)?\.0#", $_SERVER['HTTP_USER_AGENT'])) {
+        if (preg_match("#MSIE\s(6|7|8)?\.0#", $_SERVER['HTTP_USER_AGENT'] ?? '')) {
             // IE headers
             $response->addHeader("Cache-Control", "public");
-            $response->addHeader("Content-Disposition", "attachment; filename=\"".basename($filedata['name'])."\"");
+            $response->addHeader(
+                "Content-Disposition",
+                "attachment; filename=\"".basename($filedata['name'] ?? '')."\""
+            );
             $response->addHeader("Content-Type", "application/force-download");
             $response->addHeader("Content-Type", "application/octet-stream");
             $response->addHeader("Content-Type", "application/download");
@@ -192,8 +195,11 @@ class WorkflowDefinitionExporter
             $response->addHeader("Content-Length", $filedata['size']);
         } else {
             // Everyone else
-            $response->addHeader("Content-Type", $filedata['mime']."; name=\"".addslashes($filedata['name'])."\"");
-            $response->addHeader("Content-disposition", "attachment; filename=".addslashes($filedata['name']));
+            $response->addHeader(
+                "Content-Type",
+                $filedata['mime']."; name=\"".addslashes($filedata['name'] ?? '')."\""
+            );
+            $response->addHeader("Content-disposition", "attachment; filename=".addslashes($filedata['name'] ?? ''));
             $response->addHeader("Content-Length", $filedata['size']);
         }
         return $response;

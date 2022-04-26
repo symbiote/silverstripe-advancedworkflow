@@ -202,7 +202,7 @@ class WorkflowEngineTest extends SapphireTest
 
         $actions = $template->createRelations();
 
-        $this->assertEquals(2, count($actions));
+        $this->assertEquals(2, count($actions ?? []));
         $this->assertTrue(isset($actions['First step']));
         $this->assertTrue(isset($actions['Second step']));
 

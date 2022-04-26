@@ -354,7 +354,7 @@ class WorkflowService implements PermissionProvider
         $instances = new ArrayList();
         foreach ($userInstances as $inst) {
             $instToArray = $inst->getAssignedMembers();
-            if (!count($instToArray)>0 || !in_array($user->ID, $instToArray->column())) {
+            if (!count($instToArray ?? [])>0 || !in_array($user->ID, $instToArray->column() ?? [])) {
                 continue;
             }
             $instances->push($inst);
@@ -426,7 +426,7 @@ class WorkflowService implements PermissionProvider
      */
     public function reorder($objects, $newOrder)
     {
-        $sortVals = array_values($objects->map('ID', 'Sort')->toArray());
+        $sortVals = array_values($objects->map('ID', 'Sort')->toArray() ?? []);
         sort($sortVals);
 
         // save the new ID values - but only use existing sort values to prevent

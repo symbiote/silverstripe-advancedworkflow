@@ -34,12 +34,12 @@ class WorkflowDefinitionImporter
             if (!$import->Content) {
                 continue;
             }
-            $structure = unserialize($import->Content);
+            $structure = unserialize($import->Content ?? '');
             $struct = $structure[Injector::class]['ExportedWorkflow'];
             $template = Injector::inst()->createWithArgs(WorkflowTemplate::class, $struct['constructor']);
             $template->setStructure($struct['properties']['structure']);
             if ($name) {
-                if ($struct['constructor'][0] == trim($name)) {
+                if ($struct['constructor'][0] == trim($name ?? '')) {
                     return $template;
                 }
                 continue;
@@ -58,22 +58,22 @@ class WorkflowDefinitionImporter
      */
     public function parseYAMLImport($source)
     {
-        if (is_file($source)) {
-            $source = file_get_contents($source);
+        if (is_file($source ?? '')) {
+            $source = file_get_contents($source ?? '');
         }
 
         // Make sure the linefeeds are all converted to \n, PCRE '$' will not match anything else.
-        $convertLF = str_replace(array("\r\n", "\r"), "\n", $source);
+        $convertLF = str_replace(array("\r\n", "\r"), "\n", $source ?? '');
         /*
          * Remove illegal colons from Transition/Action titles, otherwise sfYamlParser will barf on them
          * Note: The regex relies on there being single quotes wrapped around these in the export .ss template
          */
-        $converted = preg_replace("#('[^:\n][^']+)(:)([^']+')#", "$1;$3", $convertLF);
-        $parts = preg_split('#^---$#m', $converted, -1, PREG_SPLIT_NO_EMPTY);
+        $converted = preg_replace("#('[^:\n][^']+)(:)([^']+')#", "$1;$3", $convertLF ?? '');
+        $parts = preg_split('#^---$#m', $converted ?? '', -1, PREG_SPLIT_NO_EMPTY);
 
         // If we got an odd number of parts the config, file doesn't have a header.
         // We know in advance the number of blocks imported content will have so we settle for a count()==2 check.
-        if (count($parts) != 2) {
+        if (count($parts ?? []) != 2) {
             $msg = _t('WorkflowDefinitionImporter.INVALID_YML_FORMAT_NO_HEADER', 'Invalid YAML format.');
             throw new ValidationException($msg);
         }

@@ -30,7 +30,7 @@ class AWRequiredFields extends RequiredFields
             $fieldName = $extended['fieldName'];
             $formField = $extended['fieldField'];
             $errorMessage = sprintf(
-                $extended['fieldMsg'],
+                $extended['fieldMsg'] ?? '',
                 strip_tags('"'.(($formField && $formField->Title()) ? $formField->Title() : $fieldName).'"')
             );
 
@@ -72,12 +72,12 @@ class AWRequiredFields extends RequiredFields
             'fieldMsg'   => null,
         );
         $caller = $this->getCaller();
-        $methods = get_class_methods($caller);
+        $methods = get_class_methods($caller ?? '');
         if (!$methods) {
             return $return;
         }
         foreach ($methods as $method) {
-            if (!preg_match("#extendedRequiredFields#", $method)) {
+            if (!preg_match("#extendedRequiredFields#", $method ?? '')) {
                 continue;
             }
             // One of the DO's validation methods has failed

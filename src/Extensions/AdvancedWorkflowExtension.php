@@ -73,7 +73,7 @@ class AdvancedWorkflowExtension extends Extension
             $current = $active->CurrentAction();
             $wfFields = $active->getWorkflowFields();
 
-            $allowed = array_keys($wfFields->saveableFields());
+            $allowed = array_keys($wfFields->saveableFields() ?? []);
             $data = [];
             foreach ($allowed as $fieldName) {
                 $data[$fieldName] = $current->$fieldName;
@@ -145,8 +145,8 @@ class AdvancedWorkflowExtension extends Extension
         $allowedFields = $workflow->getWorkflowFields()->saveableFields();
         unset($allowedFields['TransitionID']);
 
-        $allowed = array_keys($allowedFields);
-        if (count($allowed)) {
+        $allowed = array_keys($allowedFields ?? []);
+        if (count($allowed ?? [])) {
             $form->saveInto($action, $allowed);
             $action->write();
         }
