@@ -91,16 +91,11 @@ de:
     WORKFLOW: Arbeitsablauf
     WORKFLOWACTIVEIINSTANCES: 'Aktive Arbeitsablaufinstanzen'
     WORKFLOWCOMPLETEDIINSTANCES: 'Abgeschlossene Arbeitsablaufinstanzen'
+    ActiveWorkflowStateTitle: Aktiv
+    CompletedWorkflowStateTitle: Fertiggestellt
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Ungültiges YAML-Format.'
     INVALID_YML_FORMAT_NO_PARSE: 'Ungültiges YAML-Format. Kann nicht eingelesen werden.'
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Aktiv
-    CompletedWorkflowStateTitle: Fertiggestellt
-    PUBLISH_ON: 'Geplantes Veröffentlichungsdatum'
-    REQUESTED_PUBLISH_DATE: 'Gewünschtes Veröffentlichungsdatum'
-    REQUESTED_PUBLISH_DATE_H3: 'Ablauf und Embargo'
-    TabTitle: Veröffentlichungsplan
   WorkflowField:
     AddTransitionAction: 'Übergang hinzufügen'
     CreateAction: 'Aktion erstellen'

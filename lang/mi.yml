@@ -85,18 +85,8 @@ mi:
     WORKFLOW: Reremahi
     WORKFLOWACTIVEIINSTANCES: 'Ngā Tauira Reremahi Hohe'
     WORKFLOWCOMPLETEDIINSTANCES: 'Ngā Tauira Reremahi Oti'
-  WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Hohe
     CompletedWorkflowStateTitle: 'Kua Oti'
-    PUBLISH_ON: 'Rā whakaputa kua whakaritea'
-    REQUESTED_PUBLISH_DATE: 'I tonoa te rā whakaputa'
-    REQUESTED_PUBLISH_DATE_H3: 'Mōnehutanga me te Rāhui'
-    REQUESTED_PUBLISH_DATE_INTRO: 'Tāurua he rā, he wā hoki/rānei hei whakarite rā rāhui me te mōnehu.'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Kāore ēnei tautuhinga e whai mana kia whakahaeretia rā anō ngā hohenga whakaaetanga'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Mēnā kua tautuhi kētia tētahi rāhuitanga, ka tuhiruatia mā te tāpiri i te mea hou i mua i te hipa o taua rā'
-    REQUESTED_UNPUBLISH_DATE: 'I tonoa te rā wetewhakaputa'
-    TabTitle: 'Hōtaka Whakaputa'
-    UNPUBLISH_ON: 'Rā wetewhakaputa kua whakaritea'
   WorkflowField:
     AddTransitionAction: 'Tāpiri Whakawhiti'
     CreateAction: 'Hangaia he hohenga'

@@ -200,28 +200,11 @@ en:
     WORKFLOW: Workflow
     WORKFLOWACTIVEIINSTANCES: 'Active Workflow Instances'
     WORKFLOWCOMPLETEDIINSTANCES: 'Completed Workflow Instances'
+    ActiveWorkflowStateTitle: Active
+    CompletedWorkflowStateTitle: Completed
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Invalid YAML format.'
     INVALID_YML_FORMAT_NO_PARSE: 'Invalid YAML format. Unable to parse.'
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Active
-    BADGE_PUBLISH: Embargo
-    BADGE_PUBLISH_UNPUBLISH: Embargo+Expiry
-    BADGE_UNPUBLISH: Expiry
-    CompletedWorkflowStateTitle: Completed
-    INVALIDEXPIRY: 'The unpublish date cannot be before the publish date.'
-    INVALIDSAMEEMBARGOEXPIRY: 'The publish date and unpublish date cannot be the same.'
-    PUBLISH_ON: 'Scheduled publish date'
-    REQUESTED_PUBLISH_DATE: 'Requested publish date'
-    REQUESTED_PUBLISH_DATE_H3: 'Expiry and Embargo'
-    REQUESTED_PUBLISH_DATE_INTRO: 'Enter a date and/or time to specify embargo and expiry dates.'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'These settings won''t take effect until any approval actions are run'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'If an embargo is already set, adding a new one prior to that date''s passing will overwrite it'
-    REQUESTED_PUBLISH_DATE_RIGHT_TITLE: 'To request this page to be <strong>published immediately</strong> leave the date and time fields blank'
-    REQUESTED_UNPUBLISH_DATE: 'Requested un-publish date'
-    REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE: 'To request this page to <strong>never expire</strong> leave the date and time fields blank'
-    TabTitle: 'Publishing Schedule'
-    UNPUBLISH_ON: 'Scheduled un-publish date'
   WorkflowField:
     AddTransitionAction: 'Add Transition'
     CreateAction: 'Create an action'

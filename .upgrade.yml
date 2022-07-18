@@ -22,14 +22,13 @@ mappings:
   AdvancedWorkflowExtension: Symbiote\AdvancedWorkflow\Extensions\AdvancedWorkflowExtension
   FileWorkflowApplicable: Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable
   WorkflowApplicable: Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable
-  WorkflowEmbargoExpiryExtension: Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension
+  WorkflowEmbargoExpiryExtension: Terraformers\EmbargoExpiry\Extension\EmbargoExpiryExtension
   WorkflowField: Symbiote\AdvancedWorkflow\FormFields\WorkflowField
   WorkflowFieldActionController: Symbiote\AdvancedWorkflow\FormFields\WorkflowFieldActionController
   WorkflowFieldItemController: Symbiote\AdvancedWorkflow\FormFields\WorkflowFieldItemController
   WorkflowFieldTransitionController: Symbiote\AdvancedWorkflow\FormFields\WorkflowFieldTransitionController
   AWRequiredFields: Symbiote\AdvancedWorkflow\Forms\AWRequiredFields
   FrontendWorkflowForm: Symbiote\AdvancedWorkflow\Forms\FrontendWorkflowForm
-  WorkflowPublishTargetJob: Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob
   WorkflowReminderJob: Symbiote\AdvancedWorkflow\Jobs\WorkflowReminderJob
   WorkflowService: Symbiote\AdvancedWorkflow\Services\WorkflowService
   ExistingWorkflowException: Symbiote\AdvancedWorkflow\Services\ExistingWorkflowException

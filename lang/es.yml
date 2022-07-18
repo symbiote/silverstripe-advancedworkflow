@@ -96,21 +96,11 @@ es:
     WORKFLOW: 'Flujo de trabajo'
     WORKFLOWACTIVEIINSTANCES: 'Instancias activas de flujo de trabajo'
     WORKFLOWCOMPLETEDIINSTANCES: 'Instancias del flujo de trabajo completadas'
+    ActiveWorkflowStateTitle: Activo
+    CompletedWorkflowStateTitle: Completo
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Formato YAML inválido.'
     INVALID_YML_FORMAT_NO_PARSE: 'Formato YAML inválido. Imposible analizar.'
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Activo
-    CompletedWorkflowStateTitle: Completo
-    PUBLISH_ON: 'Fecha prevista de publicación'
-    REQUESTED_PUBLISH_DATE: 'Fecha solicitada de publicación'
-    REQUESTED_PUBLISH_DATE_H3: 'Caducidad y Embargo'
-    REQUESTED_PUBLISH_DATE_INTRO: 'Ingresar una fecha y/u hora para especificar las fechas de embargo y caducidad.'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Estos parámetros no tendrán efecto hasta que se ejecuten las acciones de aprobación'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Si ya se estableció un embargo, agregar uno nuevo antes que pase esa fecha, lo sobrescribirá.'
-    REQUESTED_UNPUBLISH_DATE: 'Fecha solicitada para anular la publicación'
-    TabTitle: 'Horario de publicación'
-    UNPUBLISH_ON: 'Fecha prevista para anular la publicación'
   WorkflowField:
     AddTransitionAction: 'Agregar transición'
     CreateAction: 'Crear una acción'

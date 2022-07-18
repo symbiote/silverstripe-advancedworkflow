@@ -17,7 +17,7 @@ extending from `ModelAdmin`. `mysite/_config/config.yml`:
 	    extensions:
 	        - AdvancedWorkflowExtension
 
-We strongly recommend also setting the `NotifyUsersWorkflowAction` configuration parameter `whitelist_template_variables` 
+We strongly recommend also setting the `NotifyUsersWorkflowAction` configuration parameter `whitelist_template_variables`
 to true on new projects. This configuration will achieve this:
 
 	:::yml
@@ -27,23 +27,9 @@ to true on new projects. This configuration will achieve this:
 See the Security section below for more details.
 
 ### Embargo and Expiry
-This add-on functionality allows you to embargo some content changes to only appear as published at some future date. To enable it,
-add the `WorkflowEmbargoExpiryExtension`.
 
-	:::yml
-	SiteTree:
-	    extensions:
-	        - WorkflowEmbargoExpiryExtension
-
-Make sure the [QueuedJobs](https://github.com/nyeholt/silverstripe-queuedjobs) 
-module is installed and configured correctly.
-You should have a cronjob similar to the following in place, running 
-as the webserver user.
-
-	*/1 * * * * cd  && sudo -u www php /var/www/framework/cli-script.php dev/tasks/ProcessJobQueueTask
-
-It also allows for an optional subsequent expiry date. Note: Changes to these dates also constitute modifications to the content and as such
-are subject to the same workflow approval processes, where a particular workflow instance is in effect. The embargo export functionality can also be used independently of any workflow.
+You can optionally add the [Embargy & Expiry](https://github.com/silverstripe-terraformers/silverstripe-embargo-expiry)
+module to your project to allow changes to be published (and/or unpublished) at future dates.
 
 ### Sending reminder emails
 
