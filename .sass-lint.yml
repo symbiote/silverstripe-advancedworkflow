@@ -1,10 +1,7 @@
 # sass-lint config to match the AirBNB style guide
 # See silverstripe-admin
 files:
-  include: '**/client/src/**/*.scss'
-  ignore:
-    - 'client/src/styles/legacy/*'
-    - 'src/**/*'
+  include: 'client/src/**/*.scss'
 options:
   formatter: stylish
   merge-default-rules: false
