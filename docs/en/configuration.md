@@ -31,6 +31,19 @@ See the Security section below for more details.
 You can optionally add the [Embargy & Expiry](https://github.com/silverstripe-terraformers/silverstripe-embargo-expiry)
 module to your project to allow changes to be published (and/or unpublished) at future dates.
 
+**Note:** You will need to use version 1.2.1 or greater.
+
+#### Migrating from an older Workflow version
+
+If you have an existing project which used the `WorkflowEmbargoExpiryExtension`, then you will need to go through a
+couple of migration steps.
+
+1) Update usages of `WorkflowEmbargoExpiryExtension` to `EmbargoExpiryExtension` (from the Terraformers module)
+2) Run the `EmbargoExpiryMigrationTask` to migrate over any existing Workflow jobs to the new Terraformers' jobs
+   * This task will require you to define some basic configuration where you tell us what classes you have applied the
+     `EmbargoExpiryExtension` to. Other than that, you just need to run it
+   * See the class for more info
+
 ### Sending reminder emails
 
 The workflow engine can send out email reminders if a workflow has been open for longer
