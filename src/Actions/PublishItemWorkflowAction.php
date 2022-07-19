@@ -40,7 +40,7 @@ class PublishItemWorkflowAction extends WorkflowAction
             $this->queueEmbargoExpiryJobs($target);
 
             $target->write();
-        } else if ($target->hasExtension(Versioned::class)) {
+        } elseif ($target->hasExtension(Versioned::class)) {
             /** @var DataObject|Versioned $target */
             $target->publishRecursive();
         }

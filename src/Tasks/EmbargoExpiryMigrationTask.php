@@ -69,5 +69,4 @@ class EmbargoExpiryMigrationTask extends BuildTask
             }
         }
     }
-
 }
