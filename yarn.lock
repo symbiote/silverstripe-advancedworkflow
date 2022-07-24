@@ -1647,6 +1647,11 @@ eslint-config-airbnb@^6.2.0:
   version "6.2.0"
   resolved "https://registry.yarnpkg.com/eslint-config-airbnb/-/eslint-config-airbnb-6.2.0.tgz#4a28196aa4617de01b8c914e992a82e5d0886a6e"
 
+eslint-plugin-react@^4.2.3:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-4.3.0.tgz#c79aac8069d62de27887c13b8298d592088de378"
+  integrity sha512-ajQ9S74FUln2GcwgpPUQqRLcT6UFDhvAMIiDX4F68tDnuihNXcAA7LI19MmRGGOuJnpMVDXugJg+wf9K+bf6kg==
+
 eslint@^2.7.0:
   version "2.13.1"
   resolved "https://registry.yarnpkg.com/eslint/-/eslint-2.13.1.tgz#e4cc8fa0f009fb829aaae23855a29360be1f6c11"
