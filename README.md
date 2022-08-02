@@ -1,8 +1,7 @@
 # Advanced Workflow Module
 
 [![CI](https://github.com/symbiote/silverstripe-advancedworkflow/actions/workflows/ci.yml/badge.svg)](https://github.com/symbiote/silverstripe-advancedworkflow/actions/workflows/ci.yml)
-[![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/symbiote/silverstripe-advancedworkflow/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/symbiote/silverstripe-advancedworkflow/?branch=master)
-[![SilverStripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
+[![Silverstripe supported module](https://img.shields.io/badge/silverstripe-supported-0071C4.svg)](https://www.silverstripe.org/software/addons/silverstripe-commercially-supported-module-list/)
 
 ## Overview
 
@@ -12,10 +11,10 @@ with multiple possible transitions between the actions.
 
 ## Requirements
 
- * SilverStripe Framework and CMS 3.1 or newer
+ * Silverstripe Framework and CMS 3.1 or newer
  * (Optional) [Queued Jobs module](https://github.com/nyeholt/silverstripe-queuedjobs) (for embargo/expiry functionality)
  
- Note: The SilverStripe 2.4 version of the module is available from the ss24
+ Note: The Silverstripe 2.4 version of the module is available from the ss24
  branch of the repository.
 
 ## Installation
