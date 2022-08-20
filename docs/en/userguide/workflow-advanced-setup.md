@@ -1,3 +1,6 @@
+---
+title: Advanced Transitions
+---
 # Advanced Transitions
 
 Sometimes an action will have a single transition from itself to the next action; when the workflow begins execution,
