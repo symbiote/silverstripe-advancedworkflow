@@ -1,9 +1,12 @@
+---
+title: Workflow permissions
+---
 # Workflow permissions
 
 ## Adding groups and users
 
-First of all, login to the CMS as an administrator. Ensure you have "Authors", "Editors" and "Managers" groups created 
-with a single user linked to each group (in the standard "Security" admin). Assign the six "Advanced Workflow" 
+First of all, login to the CMS as an administrator. Ensure you have "Authors", "Editors" and "Managers" groups created
+with a single user linked to each group (in the standard "Security" admin). Assign the six "Advanced Workflow"
 permissions to each group.
 
 ## Workflow permissions

@@ -1,3 +1,6 @@
+---
+title: What is a Workflow?
+---
 # What is a Workflow?
 Workflows enforce content changes to go through approval processes before being published.
 For example, you might have a team of staff who author content, but they are not allowed to publish that content publicly
