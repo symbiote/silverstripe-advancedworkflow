@@ -19,13 +19,15 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\ORM\CMSPreviewable;
 use SilverStripe\ORM\DataExtension;
 use SilverStripe\ORM\DataList;
+use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
-use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Terraformers\EmbargoExpiry\Extension\EmbargoExpiryExtension;
 
 /**
  * DataObjects that have the WorkflowApplicable extension can have a
@@ -35,6 +37,10 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ * @property DataObject|EmbargoExpiryExtension|$this $owner
+ * @property int $WorkflowDefinitionID
+ * @method WorkflowDefinition WorkflowDefinition()
+ * @method ManyManyList|WorkflowDefinition[] AdditionalWorkflowDefinitions()
  */
 class WorkflowApplicable extends DataExtension
 {
@@ -51,48 +57,11 @@ class WorkflowApplicable extends DataExtension
     ];
 
     /**
-     *
-     * Used to flag to this extension if there's a WorkflowPublishTargetJob running.
-     * @var boolean
-     */
-    public $isPublishJobRunning = false;
-
-    /**
-     *
-     * @param boolean $truth
-     */
-    public function setIsPublishJobRunning($truth)
-    {
-        $this->isPublishJobRunning = $truth;
-    }
-
-    /**
-     *
-     * @return boolean
-     */
-    public function getIsPublishJobRunning()
-    {
-        return $this->isPublishJobRunning;
-    }
-
-    /**
-     *
-     * @see {@link $this->isPublishJobRunning}
-     * @return boolean
-     */
-    public function isPublishJobRunning()
-    {
-        $propIsSet = (bool) $this->getIsPublishJobRunning();
-        return class_exists(AbstractQueuedJob::class) && $propIsSet;
-    }
-
-    /**
      * @var WorkflowService
      */
     public $workflowService;
 
     /**
-     *
      * A cache var for the current workflow instance
      *
      * @var WorkflowInstance
@@ -121,7 +90,7 @@ class WorkflowApplicable extends DataExtension
     public function updateFields(FieldList $fields)
     {
         if (!$this->owner->ID) {
-            return $fields;
+            return;
         }
 
         $tab = $fields->fieldByName('Root') ? $fields->findOrMakeTab('Root.Workflow') : $fields;
@@ -322,8 +291,9 @@ class WorkflowApplicable extends DataExtension
     public function onAfterWrite()
     {
         $instance = $this->getWorkflowInstance();
+
         if ($instance && $instance->CurrentActionID) {
-            $action = $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
+            $instance->CurrentAction()->BaseAction()->targetUpdated($instance);
         }
     }
 
@@ -385,12 +355,13 @@ class WorkflowApplicable extends DataExtension
     public function canPublish()
     {
         // Override any default behaviour, to allow queuedjobs to complete
-        if ($this->isPublishJobRunning()) {
+        if ($this->isEmbargoExpiryJobRunning()) {
             return true;
         }
 
         if ($active = $this->getWorkflowInstance()) {
-            $publish = $active->canPublishTarget($this->owner);
+            $publish = $active->canPublishTarget();
+
             if (!is_null($publish)) {
                 return $publish;
             }
@@ -403,29 +374,46 @@ class WorkflowApplicable extends DataExtension
             if (!Security::getCurrentUser()) {
                 return false;
             }
+
             $member = Security::getCurrentUser();
 
             $canPublish = $definition->canWorkflowPublish($member, $this->owner);
 
             return $canPublish;
         }
+
+        // Don't affect the canPublish() result one way or the other
+        return null;
     }
 
     /**
      * Can only edit content that's NOT in another person's content changeset
      *
-     * @return bool
+     * @return bool|null
      */
     public function canEdit($member)
     {
         // Override any default behaviour, to allow queuedjobs to complete
-        if ($this->isPublishJobRunning()) {
+        if ($this->owner->isEmbargoExpiryJobRunning()) {
             return true;
         }
 
         if ($active = $this->getWorkflowInstance()) {
             return $active->canEditTarget();
         }
+
+        // Don't affect the canEdit() result one way or the other
+        return null;
+    }
+
+    public function isEmbargoExpiryJobRunning(): bool
+    {
+        // Can't be running any Embargo/Expiry jobs if the Extension isn't present on the $owner
+        if (!$this->owner->hasExtension(EmbargoExpiryExtension::class)) {
+            return false;
+        }
+
+        return $this->owner->getIsPublishJobRunning() || $this->owner->getIsUnPublishJobRunning();
     }
 
     /**
@@ -436,9 +424,11 @@ class WorkflowApplicable extends DataExtension
     public function canEditWorkflow()
     {
         $active = $this->getWorkflowInstance();
+
         if ($active) {
             return $active->canEdit();
         }
+
         return false;
     }
 
@@ -449,6 +439,7 @@ class WorkflowApplicable extends DataExtension
     public function setWorkflowService(WorkflowService $workflowService)
     {
         $this->workflowService = $workflowService;
+
         return $this;
     }
 
@@ -458,5 +449,17 @@ class WorkflowApplicable extends DataExtension
     public function getWorkflowService()
     {
         return $this->workflowService;
+    }
+
+    public function preventEmbargoExpiryQueueJobs(): bool
+    {
+        // If there is an active WorkflowInstance, then we don't want to allow Embargo & Expiry to queue jobs. We'll do
+        // that ourselves later
+        if ($this->getWorkflowInstance()) {
+            return true;
+        }
+
+        // Similarly, if there is any assigned WorkflowDefinition, then we don't want to queue Jobs in this way
+        return (bool) $this->getWorkflowService()->getDefinitionFor($this->owner);
     }
 }

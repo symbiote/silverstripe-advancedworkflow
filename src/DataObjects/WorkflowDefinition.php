@@ -375,13 +375,13 @@ class WorkflowDefinition extends DataObject
 
             $fields->findOrMakeTab(
                 'Root.Active',
-                _t('WorkflowEmbargoExpiryExtension.ActiveWorkflowStateTitle', 'Active')
+                _t('WorkflowDefinition.ActiveWorkflowStateTitle', 'Active')
             );
             $fields->addFieldToTab('Root.Active', $active);
 
             $fields->findOrMakeTab(
                 'Root.Completed',
-                _t('WorkflowEmbargoExpiryExtension.CompletedWorkflowStateTitle', 'Completed')
+                _t('WorkflowDefinition.CompletedWorkflowStateTitle', 'Completed')
             );
             $fields->addFieldToTab('Root.Completed', $completed);
         }

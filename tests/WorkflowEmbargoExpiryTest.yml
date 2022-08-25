@@ -1,0 +1,29 @@
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+  requestPublication:
+    Title: 'Request Publish'
+  approvePublication:
+    Title: 'Approve Publish'
+
+Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+  requestPublication:
+    Title: 'Approve'
+    WorkflowDefID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication
+
+Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+  approvePublication:
+    Title: 'Publish'
+    WorkflowDefID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.approvePublication
+
+SilverStripe\CMS\Model\SiteTree:
+  emptyEmbargoExpiry:
+    Title: 'Empty embargo and expiry'
+    WorkflowDefinitionID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication
+  processEmbargoExpiry:
+    Title: 'Process embargo and expiry'
+    WorkflowDefinitionID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication
+  processEmbargo:
+    Title: 'Process embargo'
+    WorkflowDefinitionID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication
+  processExpiry:
+    Title: 'Process expiry'
+    WorkflowDefinitionID: =>Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition.requestPublication

@@ -91,18 +91,8 @@ zh:
     WORKFLOW: 工作流
     WORKFLOWACTIVEIINSTANCES: 活动的工作流实例
     WORKFLOWCOMPLETEDIINSTANCES: 完成的工作流实例
-  WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: 活跃的
     CompletedWorkflowStateTitle: 已完成
-    PUBLISH_ON: 安排的发布日期
-    REQUESTED_PUBLISH_DATE: 请求的发布日期
-    REQUESTED_PUBLISH_DATE_H3: 到期和禁止
-    REQUESTED_PUBLISH_DATE_INTRO: 欲指定禁止和到期日，请输入一个日期和/或时间。
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 批准动作执行之前，这些设置不会生效
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 如果已经设置了禁令，在该日期之前添加新的可覆盖该设置
-    REQUESTED_UNPUBLISH_DATE: 请求未发布的日期
-    TabTitle: 发布日程表
-    UNPUBLISH_ON: 安排未发布的日期
   WorkflowField:
     AddTransitionAction: 添加转换
     CreateAction: 制定计划

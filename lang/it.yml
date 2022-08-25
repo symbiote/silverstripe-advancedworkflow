@@ -55,12 +55,11 @@ it:
     TITLE: Titolo
     USERS: 'Ristretto agli Utenti'
     WORKFLOW: 'Flusso di lavoro'
+    ActiveWorkflowStateTitle: Attivo
+    CompletedWorkflowStateTitle: Completato
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Formatto YAML non valido'
     INVALID_YML_FORMAT_NO_PARSE: 'Formatto YAML non valido. Impossibile fare il parse.'
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Attivo
-    CompletedWorkflowStateTitle: Completato
   WorkflowField:
     AddTransitionAction: 'Aggiungi Transazione'
     CreateAction: 'Crea un azione'

@@ -200,28 +200,11 @@ eo:
     WORKFLOW: Laborfluo
     WORKFLOWACTIVEIINSTANCES: 'Aktivaj laborfluaj ekzemploj'
     WORKFLOWCOMPLETEDIINSTANCES: 'Kompletaj laborfluaj ekzemploj'
+    ActiveWorkflowStateTitle: Aktiva
+    CompletedWorkflowStateTitle: Kompletigita
   WorkflowDefinitionImporter:
     INVALID_YML_FORMAT_NO_HEADER: 'Nevalida YAML-formato.'
     INVALID_YML_FORMAT_NO_PARSE: 'Nevalida YAML-formato. Ne povas analizi.'
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Aktiva
-    BADGE_PUBLISH: Embargo
-    BADGE_PUBLISH_UNPUBLISH: Embargo+eksvalidiĝo
-    BADGE_UNPUBLISH: Eksvalidiĝo
-    CompletedWorkflowStateTitle: Kompletigita
-    INVALIDEXPIRY: 'La dato de malpublikigo ne povas esti antaŭ la dato de publikigo.'
-    INVALIDSAMEEMBARGOEXPIRY: 'La dato de dato de publikigo kaj la dato demalpublikigo ne povas esti samaj.'
-    PUBLISH_ON: 'Planita publikiga dato'
-    REQUESTED_PUBLISH_DATE: 'Petita publikiga dato'
-    REQUESTED_PUBLISH_DATE_H3: 'Malvalidiĝo kaj embargo'
-    REQUESTED_PUBLISH_DATE_INTRO: 'Enigu daton kaj/aŭ horon por agordi embargan kaj malvalidiĝan datojn.'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'Tiuj agordoj ekefikos nur kiam eventualaj agoj estas rulitaj'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'Se embargo jam estas agordita, aldoni novan antaŭ la paso de ties dato anstataŭos ĝin'
-    REQUESTED_PUBLISH_DATE_RIGHT_TITLE: 'Por peti ke ĉi tiu paĝo <strong>tuj publikiĝu</strong> lasu vakaj la datan kaj horan kampojn'
-    REQUESTED_UNPUBLISH_DATE: 'Petita malpublikiga dato'
-    REQUESTED_UNPUBLISH_DATE_RIGHT_TITLE: 'Por peti ke ĉi tiu paĝo <strong>neniam eksvalidiĝu</strong> lasu vakaj la datan kaj horan kampojn'
-    TabTitle: 'Publikiga plano'
-    UNPUBLISH_ON: 'Planita malpublikiga dato'
   WorkflowField:
     AddTransitionAction: 'Aldoni transiron'
     CreateAction: 'Krei agon'

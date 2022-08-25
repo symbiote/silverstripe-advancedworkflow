@@ -91,18 +91,8 @@ ar:
     WORKFLOW: 'سير العمل'
     WORKFLOWACTIVEIINSTANCES: 'أمثلة مهام سير العمل النشطة'
     WORKFLOWCOMPLETEDIINSTANCES: 'حالات مهام سير العمل المكتملة'
-  WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: نشط
     CompletedWorkflowStateTitle: أكتمل
-    PUBLISH_ON: 'موعد النشر المحدد'
-    REQUESTED_PUBLISH_DATE: 'موعد النشر المطلوب'
-    REQUESTED_PUBLISH_DATE_H3: 'انتهاء الصلاحية و الحظر'
-    REQUESTED_PUBLISH_DATE_INTRO: 'قم بإدخال تاريخ و/أو وقت لتحديد موعد الحظر و مواعيد انتهاء الصلاحية.'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_1: 'هذه الإعدادات لن تنفذ حتى يتم اتخاذ إجراءات الموافقة'
-    REQUESTED_PUBLISH_DATE_INTRO_BULLET_2: 'إذا تم بالفعل تطبيق الحظر, فإن إضافة موعد حظر جديد قبل هذا الموعد سوف يقوم باستبدال هذا الموعد'
-    REQUESTED_UNPUBLISH_DATE: 'موعد مطلوب لعدم النشر'
-    TabTitle: 'نشر الجدول الزمني'
-    UNPUBLISH_ON: 'موعد محدد لعد النشر'
   WorkflowField:
     AddTransitionAction: 'أضف انتقال'
     CreateAction: 'قم بعمل نشاط'

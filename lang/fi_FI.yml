@@ -23,7 +23,6 @@ fi_FI:
     Title: Otsikko
   WorkflowDefinition:
     TITLE: Otsikko
-  WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Aktiivinen
     CompletedWorkflowStateTitle: Valmistunut
   WorkflowField:
