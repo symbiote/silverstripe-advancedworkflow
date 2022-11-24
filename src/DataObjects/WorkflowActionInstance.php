@@ -10,6 +10,7 @@ use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\FieldType\DBField;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 
 /**
  * A workflow action attached to a {@link WorkflowInstance} that has been run,
@@ -215,7 +216,7 @@ class WorkflowActionInstance extends DataObject
      */
     public function actionComplete(WorkflowTransition $transition)
     {
-        $this->MemberID = Member::currentUserID();
+        $this->MemberID = Security::getCurrentUser()->ID;
         $this->write();
         $this->extend('onActionComplete', $transition);
     }

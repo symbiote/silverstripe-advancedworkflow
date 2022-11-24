@@ -398,7 +398,7 @@ class WorkflowTemplate
         // Only some target class variants actually have Group/User relations
         $hasUsers = false;
         $hasGroups = false;
-        if ($manyMany = $object->stat('many_many')) {
+        if ($manyMany = $object::config()->get('many_many')) {
             if (in_array(Member::class, $manyMany ?? [])) {
                 $hasUsers = true;
                 $userRelationName = array_keys($manyMany ?? []);
