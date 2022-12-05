@@ -185,7 +185,7 @@ class WorkflowService implements PermissionProvider
         ) {
             $filter = sprintf(
                 '"TargetClass" = \'%s\' AND "TargetID" = %d',
-                Convert::raw2sql(ClassInfo::baseDataClass($item)),
+                Convert::raw2sql(DataObject::getSchema()->baseDataClass($item)),
                 $item->ID
             );
             $complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';

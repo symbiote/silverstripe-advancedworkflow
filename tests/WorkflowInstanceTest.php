@@ -4,6 +4,7 @@ namespace Symbiote\AdvancedWorkflow\Tests;
 
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\Security\Member;
+use SilverStripe\Security\Security;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
@@ -145,13 +146,13 @@ class WorkflowInstanceTest extends SapphireTest
         $this->assertContains($transition2->ID, $transitions);
 
         // Logged in as a member with permission on one transition, check that only this one is present
-        $member1->logIn();
+        Security::setCurrentUser($member1);
         $transitions = $instance->validTransitions()->column('ID');
         $this->assertContains($transition1->ID, $transitions);
         $this->assertNotContains($transition2->ID, $transitions);
 
         // Logged in as a member with permissions via group
-        $member2->logIn();
+        Security::setCurrentUser($member2);
         $transitions = $instance->validTransitions()->column('ID');
         $this->assertNotContains($transition1->ID, $transitions);
         $this->assertContains($transition2->ID, $transitions);

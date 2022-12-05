@@ -7,6 +7,7 @@ use SilverStripe\Admin\LeftAndMain;
 use SilverStripe\Control\Director;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Core\Config\Configurable;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Dev\SapphireInfo;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
@@ -155,12 +156,13 @@ class WorkflowDefinitionExporter
     private function ssVersion()
     {
         // Remove colons so they don't screw with YAML parsing
-        $versionSapphire = str_replace(':', '', singleton(SapphireInfo::class)->Version() ?? '');
-        $versionLeftMain = str_replace(':', '', singleton(LeftAndMain::class)->CMSVersion() ?? '');
-        if ($versionSapphire != _t('SilverStripe\\Admin\\LeftAndMain.VersionUnknown', 'Unknown')) {
-            return $versionSapphire;
-        }
-        return $versionLeftMain;
+        Deprecation::withNoReplacement(function () {
+            $versionSapphire = str_replace(':', '', singleton(SapphireInfo::class)->Version() ?? '');
+            if ($versionSapphire != _t('SilverStripe\\Admin\\LeftAndMain.VersionUnknown', 'Unknown')) {
+                return $versionSapphire;
+            }
+        });
+        return str_replace(':', '', singleton(LeftAndMain::class)->CMSVersion() ?? '');
     }
 
     private function processTitle($title)
