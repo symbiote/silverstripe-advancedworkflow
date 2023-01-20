@@ -792,7 +792,6 @@ class WorkflowInstance extends DataObject
     {
         $join = '"WorkflowAction"."ID" = "WorkflowActionInstance"."BaseActionID"';
         $action = WorkflowAction::get()
-            /** @skipUpgrade */
             ->leftJoin('WorkflowActionInstance', $join)
             ->where('"WorkflowActionInstance"."ID" = ' . $this->CurrentActionID)
             ->first();
