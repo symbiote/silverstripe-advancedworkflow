@@ -55,7 +55,6 @@ class WorkflowFieldItemController extends Controller
         $save->addExtraClass('btn btn-primary font-icon-save')
              ->setUseButtonTag(true);
 
-        /** @skipUpgrade */
         $form = Form::create($this, 'Form', $fields, FieldList::create($save), $validator);
         if ($record && $record instanceof DataObject && $record->exists()) {
             $form->loadDataFrom($record);

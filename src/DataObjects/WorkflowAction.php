@@ -199,7 +199,6 @@ class WorkflowAction extends DataObject
     {
         parent::onAfterDelete();
         $wfActionInstances = WorkflowActionInstance::get()
-            /** @skipUpgrade */
             ->leftJoin('WorkflowInstance', '"WorkflowInstance"."ID" = "WorkflowActionInstance"."WorkflowID"')
             ->where(sprintf('"BaseActionID" = %d AND ("WorkflowStatus" IN (\'Active\',\'Paused\'))', $this->ID));
         foreach ($wfActionInstances as $wfActionInstance) {
