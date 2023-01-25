@@ -60,12 +60,6 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     );
 
     /**
-     * @deprecated 5.2.0 Will be removed without equivalent functionality to replace it
-     * @var bool
-     */
-    public static $showTimePicker = true;
-
-    /**
      * @var WorkflowService
      */
     protected $workflowService;
