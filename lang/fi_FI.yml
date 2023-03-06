@@ -14,6 +14,7 @@ fi_FI:
     NoString: Ei
   NotifyUsersWorkflowAction:
     EMAILTEMPLATE: Sähköpostipohja
+    EMAILSUBJECT: Otsikko
   WorkflowAction:
     Author: Tekijä
     FinishedLabel: Valmistunut
@@ -23,6 +24,7 @@ fi_FI:
     Title: Otsikko
   WorkflowDefinition:
     TITLE: Otsikko
+    DESCRIPTION: Kuvaus
   WorkflowEmbargoExpiryExtension:
     ActiveWorkflowStateTitle: Aktiivinen
     CompletedWorkflowStateTitle: Valmistunut
@@ -45,3 +47,9 @@ fi_FI:
     NEXT_ACTION: 'Seuraava toimenpide'
     Passive: Passiivinen
     TYPE: Tyyppi
+  AssignUsersToWorkflowAction:
+    GROUPS: Ryhmät
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'Informoi käyttäjiä työnkulun toiminnoista'
+  WorkflowReminderEmail:
+    HeadingTitle: Otsikko

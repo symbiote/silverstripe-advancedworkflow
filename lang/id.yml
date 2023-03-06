@@ -4,6 +4,7 @@ id:
     Title: Judul
   AssignUsersToWorkflowAction:
     GROUPS: Grup
+    USERS: Pengguna
   NotifyUsersWorkflowAction:
     EMAILFROM: 'Surel dari'
     EMAILSUBJECT: 'Judul surel'
@@ -35,3 +36,15 @@ id:
     Passive: Pasiv
     SELECTONE: '(Pilih satu)'
     TYPE: Tipe
+  AllowEditing:
+    NoString: Tidak
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Ekspor
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: hari
+  WorkflowList:
+    TableHeaderActions: Tindakan
+  WorkflowReminderEmail:
+    HeadingTitle: Judul
+  WorkflowReminderTask:
+    SAVE: Simpan

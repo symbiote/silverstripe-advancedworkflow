@@ -1,1 +1,34 @@
-cs: {  }
+cs:
+  AdvancedWorkflowAdmin:
+    Title: Název
+  AllowEditing:
+    NoString: Ne
+  AssignUsersToWorkflowAction:
+    GROUPS: Skupiny
+    USERS: Uživatelé
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Předmět emailu'
+    FORMATTINGHELP: 'Nápověda k formátování'
+  WorkflowAction:
+    Author: Autor
+    TITLE: Název
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Název
+  WorkflowDefinition:
+    DESCRIPTION: Popis
+    TITLE: Název
+  WorkflowField:
+    CreateLabel: Vytvořit
+    DeleteAction: Smazat
+    EditAction: Editovat
+  WorkflowInstance:
+    TitleLabel: Název
+  WorkflowList:
+    TableHeaderActions: Akce
+  WorkflowReminderEmail:
+    HeadingTitle: Název
+  WorkflowReminderTask:
+    SAVE: Uložit
+  WorkflowTransition:
+    TYPE: Typ
