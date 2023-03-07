@@ -71,6 +71,9 @@ es:
     TitleDescription: 'El título se usa como el rótulo del botón para esta acción del flujo de trabajo'
     Transitions: Transiciones
     TypeLabel: Tipo
+    COMMENT: Comentario
+    CommentLabel: Comentario
+    FRONTENDCOMMENT: Comentario
   WorkflowActionInstance:
     Title: Título
   WorkflowApplicable:
@@ -134,6 +137,7 @@ es:
     TableHeaderSubmitted: Enviado
   WorkflowReminderEmail:
     Content: "Este es un recordatorio automático de que el flujo de trabajo '{title}' que Ud actualmente\n⇥asignó, no fue accionado por {days} días. El flujo\n⇥de trabajo se actualizó por última vez el {date} a las {time}."
+    HeadingTitle: Título
   WorkflowReminderTask:
     SAVE: Guardar
   WorkflowService:
@@ -150,3 +154,33 @@ es:
     TRANSITIONLOOP: 'Una transición no puede llevar de nuevo a su acción padre.'
     TYPE: Tipo
     TabTitle: 'Restringir a los usuarios'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Asignar usuarios a acciones del flujo de trabajo'
+    SINGULARNAME: 'Asignar usuarios a una acción del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Cancelar acciones del flujo de trabajo'
+    SINGULARNAME: 'Cancelar acción del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'Flujos de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    PLURALNAME: 'Plantillas de flujo de trabajo importadas'
+    SINGULARNAME: 'Plantilla de flujo de trabajo importada'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Acciones del flujo de trabajo'
+    SINGULARNAME: 'Acción del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    PLURALNAME: 'Instancias de acción del flujo de trabajo'
+    SINGULARNAME: 'Instancia de acción del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Definiciones del flujo de trabajo'
+    SINGULARNAME: 'Definición del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    PLURALNAME: 'Instancias de flujo de trabajo'
+    SINGULARNAME: 'Instancia de flujo de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Transiciones del flujo de trabajo'
+    SINGULARNAME: 'Transición del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Exportar
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: días

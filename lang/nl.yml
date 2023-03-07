@@ -1,1 +1,38 @@
-nl: {  }
+nl:
+  AdvancedWorkflowAdmin:
+    Title: Titel
+  AllowEditing:
+    NoString: Nee
+  AssignUsersToWorkflowAction:
+    GROUPS: Groepen
+    USERS: Gebruikers
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: E-mailonderwerp
+    EMAILTEMPLATE: E-mailtemplate
+    FORMATTINGHELP: 'Hulp met opmaak'
+  WorkflowAction:
+    Author: Auteur
+    COMMENT: Reactie
+    CommentLabel: Reactie
+    FRONTENDCOMMENT: Reactie
+    TITLE: Titel
+    TypeLabel: 'Soort veld'
+  WorkflowActionInstance:
+    Title: Titel
+  WorkflowDefinition:
+    DESCRIPTION: Omschrijving
+    TITLE: Titel
+  WorkflowField:
+    CreateLabel: Aanmaken
+    DeleteAction: Verwijder
+    EditAction: Bewerken
+  WorkflowInstance:
+    TitleLabel: Titel
+  WorkflowList:
+    TableHeaderActions: Acties
+  WorkflowReminderEmail:
+    HeadingTitle: Titel
+  WorkflowReminderTask:
+    SAVE: Opslaan
+  WorkflowTransition:
+    TYPE: 'Soort veld'

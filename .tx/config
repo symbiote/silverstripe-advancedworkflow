@@ -1,14 +1,15 @@
 [main]
 host = https://www.transifex.com
 
-[silverstripe-advancedworkflow.master]
+[o:silverstripe:p:silverstripe-advancedworkflow:r:master]
 file_filter = lang/<lang>.yml
 source_file = lang/en.yml
 source_lang = en
-type = YML
+type        = YML
 
-[silverstripe-advancedworkflow.master-js]
+[o:silverstripe:p:silverstripe-advancedworkflow:r:master-js]
 file_filter = client/lang/src/<lang>.js
 source_file = client/lang/src/en.js
 source_lang = en
-type = KEYVALUEJSON
+type        = KEYVALUEJSON
+

@@ -29,6 +29,7 @@ ar:
   AllowEditing:
     ByAssignees: 'بواسطة المعينين'
     ContentSettings: 'إعدادات المحتوى'
+    NoString: لا
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 'تعيين مستخدمين'
     GROUPS: مجموعات
@@ -129,6 +130,7 @@ ar:
   WorkflowReminderEmail:
     Action: 'اضغط هنا لتنشيط هذا العمل'
     Content: 'هذا تنبيه تلقائي لإبلاغك بأن هذا العمل ‘{العنوان}‘ الذي تم توكيله إليك لم يتم تنشيطه لمدة ‘{أيام}‘ أيام. و أخر تحديث تم للعمل بتاريخ ‘{التاريخ}‘ في ‘{الوقت}‘.'
+    HeadingTitle: عنوان
   WorkflowReminderTask:
     SAVE: حفظ
   WorkflowService:
@@ -145,3 +147,35 @@ ar:
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'
     TYPE: نوع
     TabTitle: 'حصرا للمستخدمين'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
+    SINGULARNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'إلغاء فعاليات سير العمل'
+    SINGULARNAME: 'إلغاء فعاليات سير العمل'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
+    SINGULARNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
+    SINGULARNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'إجراءات بسيطة للموافقة على مهام سير العمل'
+    SINGULARNAME: 'إجراء بسيط للموافقة على مهام سير العمل'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'إجراءات تسيير العمل'
+    SINGULARNAME: 'فعالية سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    SINGULARNAME: 'مثال لفعاليات سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'تعريفات مهام سير العمل'
+    SINGULARNAME: 'تعريف مهام سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    SINGULARNAME: 'مثال لسير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'تحولات مهام سير العمل'
+    SINGULARNAME: 'تحول مهام سير العمل'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: أيام

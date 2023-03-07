@@ -1,1 +1,34 @@
-lt: {  }
+lt:
+  AdvancedWorkflowAdmin:
+    Title: Pavadinimas
+  AllowEditing:
+    NoString: Ne
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupės
+    USERS: Vartotojai
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'El. laiško tema'
+    FORMATTINGHELP: 'Galimos reikšmės turinyje'
+  WorkflowAction:
+    Author: Autorius
+    COMMENT: Komentaras
+    CommentLabel: Komentaras
+    FRONTENDCOMMENT: Komentaras
+    TITLE: Pavadinimas
+  WorkflowActionInstance:
+    Title: Pavadinimas
+  WorkflowDefinition:
+    DESCRIPTION: Aprašymas
+    TITLE: Pavadinimas
+  WorkflowField:
+    CreateLabel: Sukurti
+    DeleteAction: Ištrinti
+    EditAction: Redaguoti
+  WorkflowInstance:
+    TitleLabel: Pavadinimas
+  WorkflowList:
+    TableHeaderActions: Veiksmai
+  WorkflowReminderEmail:
+    HeadingTitle: Pavadinimas
+  WorkflowReminderTask:
+    SAVE: Saugoti

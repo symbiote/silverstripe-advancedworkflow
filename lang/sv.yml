@@ -1,1 +1,36 @@
-sv: {  }
+sv:
+  AdvancedWorkflowAdmin:
+    Title: Titel
+  AllowEditing:
+    NoString: Nej
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupper
+    USERS: Användare
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: E-postämne
+  WorkflowAction:
+    Author: Författare
+    COMMENT: Kommentar
+    CommentLabel: Kommentar
+    FRONTENDCOMMENT: Kommentar
+    TITLE: Titel
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Titel
+  WorkflowDefinition:
+    DESCRIPTION: Beskrivning
+    TITLE: Titel
+  WorkflowField:
+    CreateLabel: Skapa
+    DeleteAction: Radera
+    EditAction: Ändra
+  WorkflowInstance:
+    TitleLabel: Titel
+  WorkflowList:
+    TableHeaderActions: Åtgärder
+  WorkflowReminderEmail:
+    HeadingTitle: Titel
+  WorkflowReminderTask:
+    SAVE: Spara
+  WorkflowTransition:
+    TYPE: Typ

@@ -1,1 +1,37 @@
-fi: {  }
+fi:
+  AdvancedWorkflowAdmin:
+    Title: Nimi
+  AllowEditing:
+    NoString: Ei
+  AssignUsersToWorkflowAction:
+    GROUPS: Ryhmät
+    USERS: Käyttäjät
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Sähköpostin aihe'
+    FORMATTINGHELP: Muotoiluapu
+  WorkflowAction:
+    Author: Kirjoittaja
+    COMMENT: Kommentti
+    CommentLabel: Kommentti
+    FRONTENDCOMMENT: Kommentti
+    TITLE: Nimi
+    TypeLabel: Tyyppi
+  WorkflowActionInstance:
+    Title: Nimi
+  WorkflowDefinition:
+    DESCRIPTION: Kuvaus
+    TITLE: Nimi
+  WorkflowField:
+    CreateLabel: Luo
+    DeleteAction: Poista
+    EditAction: Muokkaa
+  WorkflowInstance:
+    TitleLabel: Nimi
+  WorkflowList:
+    TableHeaderActions: Toiminnot
+  WorkflowReminderEmail:
+    HeadingTitle: Otsikko
+  WorkflowReminderTask:
+    SAVE: Tallenna
+  WorkflowTransition:
+    TYPE: Tyyppi
