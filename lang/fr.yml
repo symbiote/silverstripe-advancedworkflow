@@ -1,1 +1,36 @@
-fr: {  }
+fr:
+  AdvancedWorkflowAdmin:
+    Title: Titre
+  AllowEditing:
+    NoString: Non
+  AssignUsersToWorkflowAction:
+    GROUPS: Groupes
+    USERS: Utilisateurs
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Sujet de l''email'
+  WorkflowAction:
+    Author: Auteur
+    COMMENT: Commentaire
+    CommentLabel: Commentaire
+    FRONTENDCOMMENT: Commentaire
+    TITLE: Titre
+    TypeLabel: Type
+  WorkflowActionInstance:
+    Title: Titre
+  WorkflowDefinition:
+    DESCRIPTION: Description
+    TITLE: Titre
+  WorkflowField:
+    CreateLabel: Créer
+    DeleteAction: Supprimer
+    EditAction: Éditer
+  WorkflowInstance:
+    TitleLabel: Titre
+  WorkflowList:
+    TableHeaderActions: Actions
+  WorkflowReminderEmail:
+    HeadingTitle: Titre
+  WorkflowReminderTask:
+    SAVE: Sauvegarder
+  WorkflowTransition:
+    TYPE: Type

@@ -33,3 +33,20 @@ pt_BR:
     FIELDNAME: 'Nome do campo'
   SetPropertyWorkflowAction:
     PROPERTY: Propriedade
+  WorkflowAction:
+    Author: Autor
+    TITLE: Título
+  WorkflowActionInstance:
+    Title: Título
+  WorkflowDefinition:
+    DESCRIPTION: Descrição
+    TITLE: Título
+  WorkflowField:
+    DeleteAction: Excluir
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Título
+  WorkflowReminderEmail:
+    HeadingTitle: Título
+  WorkflowReminderTask:
+    SAVE: Salvar

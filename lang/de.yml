@@ -124,6 +124,7 @@ de:
     TableHeaderSubmitted: Abgesendet
   WorkflowReminderEmail:
     Action: 'Klicken Sie hier, um diesem Arbeitsablauf nachzukommen'
+    HeadingTitle: Titel
   WorkflowReminderTask:
     SAVE: Speichern
   WorkflowService:
@@ -138,3 +139,29 @@ de:
     SELECTONE: '(Eines auswählen)'
     TYPE: Typ
     TabTitle: 'Auf Benutzer beschränken'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Benutzer zu Arbeitsablaufaktionen zuordnen'
+    SINGULARNAME: 'Benutzer zur Arbeitsablaufaktion zuordnen'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Arbeitsablaufaktionen abbrechen'
+    SINGULARNAME: 'Arbeitsablaufaktion abbrechen'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: Arbeitsabläufe
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    PLURALNAME: 'Importierte Arbeitsablaufvorlagen'
+    SINGULARNAME: 'Importierte Arbeitsablaufvorlage'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: Arbeitsablaufaktionen
+    SINGULARNAME: Arbeitsablaufaktion
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    PLURALNAME: Arbeitsablaufaktionsinstanzen
+    SINGULARNAME: Arbeitsablaufaktionsinstanz
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: Arbeitsablaufdefinitionen
+    SINGULARNAME: Arbeitsablaufdefinition
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    PLURALNAME: Arbeitsablaufinstanzen
+    SINGULARNAME: Arbeitsablaufinstanz
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: Arbeitsablaufübergänge
+    SINGULARNAME: Arbeitsablaufübergang

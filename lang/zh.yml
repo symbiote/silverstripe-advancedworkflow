@@ -29,6 +29,7 @@ zh:
   AllowEditing:
     ByAssignees: 按照代理人
     ContentSettings: 内容设置
+    NoString: 不是
   AssignUsersToWorkflowAction:
     ASSIGNUSERS: 分配用户
     GROUPS: 群组
@@ -129,6 +130,7 @@ zh:
   WorkflowReminderEmail:
     Action: 点击此处启动工作流程
     Content: '这是一个自动提醒，您当前被分配的工作流程 ''{title}'' 已经有 {days} 天未被操作了。该工作流程上次更新时间为 {date} {time}。'
+    HeadingTitle: 题目
   WorkflowReminderTask:
     SAVE: 保存
   WorkflowService:
@@ -145,3 +147,35 @@ zh:
     TRANSITIONLOOP: 过渡操作不能重新触发其父操作。
     TYPE: 类型
     TabTitle: 用户限制
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 将用户分配给工作流操作
+    SINGULARNAME: 将用户分配给工作流操作
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 取消工作流程动作
+    SINGULARNAME: 删除工作流操作
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 提醒用户工作流程动作
+    SINGULARNAME: 通知用户工作流动作
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 发布项工作流操作
+    SINGULARNAME: 发布项工作流操作
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 简单的审批工作流活动
+    SINGULARNAME: 简单的审批工作流活动
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 工作流
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 工作流程行动
+    SINGULARNAME: 工作流动作
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    SINGULARNAME: 工作流动作实例
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 工作流定义
+    SINGULARNAME: 工作流定义
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    SINGULARNAME: 工作流实例
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 工作流过渡
+    SINGULARNAME: 工作流过渡
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: 天

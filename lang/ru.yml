@@ -1,1 +1,37 @@
-ru: {  }
+ru:
+  AdvancedWorkflowAdmin:
+    Title: Заголовок
+  AllowEditing:
+    NoString: Нет
+  AssignUsersToWorkflowAction:
+    GROUPS: Группы
+    USERS: Пользователи
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Тема письма'
+    FORMATTINGHELP: 'Справка по форматированию'
+  WorkflowAction:
+    Author: Автор
+    COMMENT: Комментарий
+    CommentLabel: Комментарий
+    FRONTENDCOMMENT: Комментарий
+    TITLE: Заголовок
+    TypeLabel: Тип
+  WorkflowActionInstance:
+    Title: Заголовок
+  WorkflowDefinition:
+    DESCRIPTION: Описание
+    TITLE: Заголовок
+  WorkflowField:
+    CreateLabel: Создать
+    DeleteAction: Удалить
+    EditAction: Редактировать
+  WorkflowInstance:
+    TitleLabel: Заголовок
+  WorkflowList:
+    TableHeaderActions: Действия
+  WorkflowReminderEmail:
+    HeadingTitle: Заголовок
+  WorkflowReminderTask:
+    SAVE: Сохранить
+  WorkflowTransition:
+    TYPE: Тип

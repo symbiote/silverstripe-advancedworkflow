@@ -31,6 +31,8 @@ it:
     FRONTENDACTION_TRANSITION_EXCEPTION: 'Non hai i permessi per eseguire quest''azione'
   NotifyUsersWorkflowAction:
     FIELDNAME: 'Nome del campo'
+    EMAILSUBJECT: 'Oggetto e-mail'
+    EMAILTEMPLATE: 'Schema e-mail'
   Workflow:
     WorkflowActionsTabTitle: 'Azioni del flusso di lavoro'
   WorkflowAction:
@@ -79,3 +81,21 @@ it:
     Passive: Passivo
     SELECTONE: '(Seleziona uno)'
     TYPE: Tipo
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Cancella azioni del flusso di lavoro'
+    SINGULARNAME: 'Cancella azione del flusso di lavoro'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'Flussi di lavoro'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Azioni del flusso di lavoro'
+    SINGULARNAME: 'Azione del flusso di lavoro'
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Esporta
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: giorni
+  WorkflowList:
+    TableHeaderActions: Azioni
+  WorkflowReminderEmail:
+    HeadingTitle: Titolo
+  WorkflowReminderTask:
+    SAVE: Salva
