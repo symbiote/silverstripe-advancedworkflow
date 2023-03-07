@@ -1,1 +1,41 @@
-hr: {  }
+hr:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Napredni proces "Workflow"'
+    APPLY_WORKFLOW: 'Primjeni proces "workflow"'
+    APPLY_WORKFLOW_HELP: 'Korisnici mogu primjeniti proces na stavke'
+    CREATE_WORKFLOW: 'Kreiraj proces'
+    CREATE_WORKFLOW_HELP: 'Korisnici mogu kreirati definicije procesa'
+    DELETE_WORKFLOW: 'Obriši proces'
+    DELETE_WORKFLOW_HELP: 'Korisnici mogu obrisati definicije procesa i aktivne procese'
+    JOB_REMINDER_COMMENT: '%s: Email podsjetnik poslan\n\n'
+  AdvancedWorkflowAdmin:
+    Title: Naslov
+  AllowEditing:
+    NoString: Ne
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupe
+    USERS: Korisnici
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Komentar
+    CommentLabel: Komentar
+    FRONTENDCOMMENT: Komentar
+    TITLE: Naslov
+    TypeLabel: Tip
+  WorkflowActionInstance:
+    Title: Naslov
+  WorkflowDefinition:
+    DESCRIPTION: Opis
+    TITLE: Naslov
+  WorkflowField:
+    CreateLabel: Kreiraj
+    DeleteAction: Obriši
+    EditAction: Uredi
+  WorkflowInstance:
+    TitleLabel: Naslov
+  WorkflowReminderEmail:
+    HeadingTitle: Naslov
+  WorkflowReminderTask:
+    SAVE: Spremi
+  WorkflowTransition:
+    TYPE: Tip

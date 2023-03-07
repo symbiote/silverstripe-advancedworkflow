@@ -18,6 +18,8 @@ mi:
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
     SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
+    LastEdited: 'Kua Hurihia'
+    Title: Taitara
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
     ACTIONFORMCHECK: 'Kāore e whakaaetia te hohenga "%s" i te puka (Ingoa: %s)'
@@ -128,3 +130,42 @@ mi:
     TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
     TYPE: Momo
     TabTitle: 'Whakawhāitihia ki ngā Kaiwhakamahi'
+    Active: Hohe
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'Whakamōhiotia Ngā Hohenga Reremahi Kaiwhakamahi'
+    SINGULARNAME: 'Whakamōhiotia Te Hohenga Reremahi Kaiwhakamahi'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 'Whakaputaina Ngā Hohenga Reremahi Tuemi'
+    SINGULARNAME: 'Whakaputaina Te Hohenga Reremahi Tuemi'
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
+    SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'Ngā reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Hohenga Reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    SINGULARNAME: 'Tauira Hohenga Reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Ngā Whakamāramatanga Reremahi'
+    SINGULARNAME: 'Whakamāramatanga Reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    SINGULARNAME: 'Tauira Reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Ngā Whakawhiti Reremahi'
+    SINGULARNAME: 'Whakawhitinga Reremahi'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: 'ngā rā'
+  WorkflowActionInstance:
+    Title: Taitara
+  WorkflowList:
+    TableHeaderActions: 'Ngā Mahi'
+  WorkflowReminderEmail:
+    HeadingTitle: Taitara

@@ -1,1 +1,37 @@
-sk: {  }
+sk:
+  AdvancedWorkflowAdmin:
+    Title: Názov
+  AllowEditing:
+    NoString: ' Nie'
+  AssignUsersToWorkflowAction:
+    GROUPS: Skupiny
+    USERS: Používatelia
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: Predmet
+    EMAILTEMPLATE: 'E-mailová šablóna'
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Komentár
+    CommentLabel: Komentár
+    FRONTENDCOMMENT: Komentár
+    TITLE: Názov
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Názov
+  WorkflowDefinition:
+    DESCRIPTION: Popis
+    TITLE: Názov
+  WorkflowField:
+    CreateLabel: Vytvoriť
+    DeleteAction: Vymazať
+    EditAction: Editovať
+  WorkflowInstance:
+    TitleLabel: Názov
+  WorkflowList:
+    TableHeaderActions: Akcie
+  WorkflowReminderEmail:
+    HeadingTitle: Názov
+  WorkflowReminderTask:
+    SAVE: Uložiť
+  WorkflowTransition:
+    TYPE: Typ
