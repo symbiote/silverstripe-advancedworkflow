@@ -20,10 +20,10 @@
     ],
     "require": {
         "php": "^7.4 || ^8.0",
-        "silverstripe/cms": "4.13.0-beta1",
-        "silverstripe/framework": "4.13.0-beta1",
-        "silverstripe/admin": "1.13.0-beta1",
-        "silverstripe/versioned": "1.13.0-beta1",
+        "silverstripe/cms": "4.13.x-dev",
+        "silverstripe/framework": "4.13.x-dev",
+        "silverstripe/admin": "1.13.x-dev",
+        "silverstripe/versioned": "1.13.x-dev",
         "symfony/yaml": "^3 || ^4"
     },
     "require-dev": {
