@@ -15,11 +15,11 @@
 .cms-tree.jstree {
   span.badge.status-embargo,
   span.badge.status-expiry,
-  span.badge.status-embargo_expiry {
+  span.badge.status-embargo_expiry {// sass-lint:disable-line class-name-format
     background-color: $grey-light;
     color: $brand-success;
 
-    #cms-content-tools-CMSMain & {
+    #cms-content-tools-CMSMain & {// sass-lint:disable-line no-ids
       -webkit-box-shadow: 0 0 6px 2px $grey-light;
       box-shadow: 0 0 6px 2px $grey-light;
     }

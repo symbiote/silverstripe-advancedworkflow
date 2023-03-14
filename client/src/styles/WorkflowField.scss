@@ -17,12 +17,12 @@
     }
 
     .workflow-field-do-create {
-      margin-left: $wf-grid / 2;
+      margin-left: calc($wf-grid / 2);
     }
   }
 
   .workflow-field-create {
-    padding: $wf-grid/2 $wf-grid;
+    padding: calc($wf-grid / 2) $wf-grid;
   }
 
   .workflow-field-actions {
@@ -33,7 +33,7 @@
     padding: $wf-grid;
 
     .workflow-field-action {
-      margin-bottom: $wf-grid/2;
+      margin-bottom: calc($wf-grid / 2);
 
       &:last-child {
         margin-bottom: 0;
@@ -57,8 +57,6 @@
           background: -o-linear-gradient($white, $grey-lightish);
           background: -ms-linear-gradient($white, $grey-lightish);
           background: linear-gradient($white, $grey-lightish);
-          -webkit-text-shadow: $white 0 1px 1px;
-          -moz-text-shadow: $white 0 1px 1px;
           text-shadow: $white 0 1px 1px;
           -webkit-box-shadow: none;
           -moz-box-shadow: none;
@@ -72,7 +70,7 @@
       border: 1px solid $med-blue;
       border-left: 0;
       overflow: auto;
-      padding: $wf-grid/4 $wf-grid $wf-grid/4 0;
+      padding: calc($wf-grid / 4) $wf-grid calc($wf-grid / 4) 0;
 
       .workflow-field-action-icon,
       .workflow-field-action-drag {
@@ -83,20 +81,20 @@
       .workflow-field-action-drag {
         background: $med-blue;
         cursor: move;
-        margin: -$wf-grid/4 0;
+        margin: -(calc($wf-grid / 4)) 0;
         width: 4px;
-        height: $wf-height + $wf-grid/2 + 4;
+        height: $wf-height + calc($wf-grid / 2) + 4;
       }
 
       .workflow-field-action-icon {
         width: 16px;
         height: 16px;
-        margin: $wf-height/4 $wf-grid 0 $wf-grid;
+        margin: calc($wf-height / 4) $wf-grid 0 $wf-grid;
       }
 
       h4 {
         float: left;
-        margin: $wf-height/4 $wf-grid 0 0;
+        margin: calc($wf-height / 4) $wf-grid 0 0;
         min-width: $wf-min-width;
         text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
       }
@@ -111,13 +109,13 @@
         border-left: 0;
         border-top: 0;
         overflow: auto;
-        padding: $wf-grid/2 $wf-grid/2 $wf-grid/2 0;
+        padding: calc($wf-grid / 2) calc($wf-grid / 2) calc($wf-grid / 2) 0;
 
         .workflow-field-action-drag {
           background: $light-blue;
           cursor: move;
           float: left;
-          margin: -$wf-grid/2 0;
+          margin: -(calc($wf-grid / 2)) 0;
           width: 4px;
           height: 41px;
         }
@@ -145,8 +143,8 @@
   }
 
   .workflow-placeholder {
-    margin-bottom: $wf-grid / 2;
-    height: $wf-grid * 4;
+    margin-bottom: calc($wf-grid / 2);
+    height: calc($wf-grid * 4);
   }
 
   .workflow-field-loading {
