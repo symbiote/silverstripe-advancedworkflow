@@ -145,6 +145,7 @@ jQuery.entwine('workflow', ($) => {
 
   $('.workflow-field .workflow-field-delete').entwine({
     onclick() {
+      // eslint-disable-next-line no-alert
       if (confirm(i18n._t('Workflow.DeleteQuestion'))) {
         const data = {
           SecurityID: this.data('securityid'),

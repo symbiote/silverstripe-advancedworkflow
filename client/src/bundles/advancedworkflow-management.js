@@ -7,11 +7,13 @@ jQuery.entwine('ss', ($) => {
       e.preventDefault();
 
       // get the stuff for it and show a dialog
+      // eslint-disable-next-line no-alert
       const comments = prompt('Comments');
       const instanceId = this.parents('ul').attr('data-instance-id');
       const transitionId = this.attr('data-transition-id');
       const securityId = $('[name=SecurityID]').val();
       if (!securityId) {
+        // eslint-disable-next-line no-alert
         alert('Invalid SecurityID field!');
         return false;
       }
@@ -31,6 +33,7 @@ jQuery.entwine('ss', ($) => {
             if (parsedData.success) {
               location.href = parsedData.link;
             } else {
+              // eslint-disable-next-line no-alert
               alert(i18n._t('Workflow.ProcessError'));
             }
           }
