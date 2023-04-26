@@ -2,7 +2,11 @@
     "name": "symbiote/silverstripe-advancedworkflow",
     "description": "Adds configurable workflow support to the CMS, with a GUI for creating custom workflow definitions.",
     "type": "silverstripe-vendormodule",
-    "keywords": ["silverstripe", "advancedworkflow", "workflow"],
+    "keywords": [
+        "silverstripe",
+        "advancedworkflow",
+        "workflow"
+    ],
     "license": "BSD-3-Clause",
     "authors": [
         {
