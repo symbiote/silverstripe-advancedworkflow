@@ -9,21 +9,11 @@ A module that provides an action / transition approach to workflow, where a
 single workflow process is split into multiple configurable states (Actions)
 with multiple possible transitions between the actions.
 
-## Requirements
-
- * Silverstripe Framework and CMS 3.1 or newer
- * (Optional) [Queued Jobs module](https://github.com/nyeholt/silverstripe-queuedjobs) (for embargo/expiry functionality)
- 
- Note: The Silverstripe 2.4 version of the module is available from the ss24
- branch of the repository.
-
 ## Installation
 
-```
+```sh
 composer require symbiote/silverstripe-advancedworkflow
 ```
-
-The workflow extension is automatically applied to the `SiteTree` class (if available). 
 
 ## Documentation
  - [User guide](docs/en/userguide/index.md)
