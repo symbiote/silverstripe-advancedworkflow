@@ -157,7 +157,7 @@ If you want to modify the above sample workflow or create a workflow without usi
 
 Workflow Actions are ‘triggers’ for the next process in a workflow such as notifications or publishing content.
 
-Before you begin, you have to save your workflow fefinition. Then, create all your actions to match your desired workflow process and then create the transitions from each action.
+Before you begin, you have to save your workflow definition. Then, create all your actions to match your desired workflow process and then create the transitions from each action.
 
 From the ‘Create an action” drop down, select the following actions:
 
