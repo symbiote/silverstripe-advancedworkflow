@@ -32,3 +32,34 @@ cs:
     SAVE: Uložit
   WorkflowTransition:
     TYPE: Typ
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Skupiny
+    many_many_Users: Uživatelé
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Předmět emailu'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Obsah
+    db_Filename: 'Jméno souboru'
+    db_Name: Jméno
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Název
+    db_Type: Typ
+    has_one_Member: Člen
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Člen
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Popis
+    db_Title: Název
+    has_many_Actions: Akce
+    many_many_Groups: Skupiny
+    many_many_Users: Uživatelé
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Název
+    has_many_Actions: Akce
+    many_many_Groups: Skupiny
+    many_many_Users: Uživatelé
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Název
+    db_Type: Typ
+    many_many_Groups: Skupiny
+    many_many_Users: Uživatelé

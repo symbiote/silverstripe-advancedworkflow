@@ -34,3 +34,38 @@ fa_IR:
     SAVE: ذخیره
   WorkflowTransition:
     TYPE: نوع
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: گروه‌ها
+    many_many_Users: کاربران
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'موضوع پست الکترونیک'
+    db_EmailTemplate: 'قالب پست الکترونیک'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: محتوا
+    db_Filename: 'نام فايل'
+    db_Name: نام
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: دیدگاه
+    db_Sort: مرتب‌سازی
+    db_Title: عنوان
+    db_Type: نوع
+    has_one_Member: عضو
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: دیدگاه
+    has_one_Member: عضو
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: توضحیات
+    db_Sort: مرتب‌سازی
+    db_Title: عنوان
+    many_many_Groups: گروه‌ها
+    many_many_Users: کاربران
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: عنوان
+    many_many_Groups: گروه‌ها
+    many_many_Users: کاربران
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: مرتب‌سازی
+    db_Title: عنوان
+    db_Type: نوع
+    many_many_Groups: گروه‌ها
+    many_many_Users: کاربران

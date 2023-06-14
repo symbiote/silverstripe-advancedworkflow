@@ -1,1 +1,58 @@
-sr_RS: {  }
+sr_RS:
+  AdvancedWorkflowAdmin:
+    Title: Наслов
+  AssignUsersToWorkflowAction:
+    GROUPS: Групе
+    USERS: Корисници
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Групе
+    many_many_Users: Корисници
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Value
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Садржај
+    db_Filename: 'Име датотеке'
+    db_Name: Име
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Наслов
+    has_one_Member: Члан
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Члан
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Опис
+    db_Title: Наслов
+    has_many_Actions: Акције
+    many_many_Groups: Групе
+    many_many_Users: Корисници
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Наслов
+    has_many_Actions: Акције
+    many_many_Groups: Групе
+    many_many_Users: Корисници
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Наслов
+    many_many_Groups: Групе
+    many_many_Users: Корисници
+  WorkflowAction:
+    TITLE: Наслов
+  WorkflowActionInstance:
+    Title: Наслов
+  WorkflowDefinition:
+    DESCRIPTION: Опис
+    TITLE: Наслов
+  WorkflowField:
+    CreateLabel: Креирај
+    DeleteAction: Избриши
+    EditAction: Измени
+  WorkflowInstance:
+    TitleLabel: Наслов
+  WorkflowList:
+    TableHeaderActions: Акције
+  WorkflowReminderEmail:
+    HeadingTitle: Наслов
+  WorkflowReminderTask:
+    SAVE: Сачувај

@@ -39,3 +39,32 @@ hr:
     SAVE: Spremi
   WorkflowTransition:
     TYPE: Tip
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupe
+    many_many_Users: Korisnici
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Sadržaj
+    db_Filename: 'Naziv datoteke'
+    db_Name: Naziv
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentar
+    db_Title: Naslov
+    db_Type: Tip
+    has_one_Member: Član
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Komentar
+    has_one_Member: Član
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Opis
+    db_Title: Naslov
+    many_many_Groups: Grupe
+    many_many_Users: Korisnici
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Naslov
+    many_many_Groups: Grupe
+    many_many_Users: Korisnici
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Naslov
+    db_Type: Tip
+    many_many_Groups: Grupe
+    many_many_Users: Korisnici

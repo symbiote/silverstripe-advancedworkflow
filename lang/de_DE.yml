@@ -1,50 +1,55 @@
-da:
+de_DE:
   AdvancedWorkflowAdmin:
     Title: Titel
   AllowEditing:
-    NoString: Nej
+    NoString: Nein
   AssignUsersToWorkflowAction:
-    GROUPS: Grupper
+    GROUPS: Grouppen
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: Betreff
+    EMAILTEMPLATE: E-Mail-Template
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
-    many_many_Groups: Grupper
+    many_many_Groups: Grouppen
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: Betreff
+    db_EmailTemplate: E-Mail-Template
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Wert
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
-    db_Content: Indhold
-    db_Filename: Filnavn
+    db_Name: Name
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
     db_Title: Titel
-    db_Type: Type
-    has_one_Member: Bruger
+    db_Type: Typ
+    has_one_Member: Mitglied
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
-    has_one_Member: Bruger
+    has_one_Member: Mitglied
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
-    db_Description: Beskrivelse
+    db_Description: Beschreibung
     db_Title: Titel
-    many_many_Groups: Grupper
+    many_many_Groups: Grouppen
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     db_Title: Titel
-    many_many_Groups: Grupper
+    many_many_Groups: Grouppen
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
     db_Title: Titel
-    db_Type: Type
-    many_many_Groups: Grupper
+    db_Type: Typ
+    many_many_Groups: Grouppen
   WorkflowAction:
-    Author: Forfatter
     TITLE: Titel
-    TypeLabel: Type
+    TypeLabel: Typ
   WorkflowActionInstance:
     Title: Titel
   WorkflowDefinition:
-    DESCRIPTION: Beskrivelse
+    DESCRIPTION: Beschreibung
     TITLE: Titel
   WorkflowField:
-    CreateLabel: Opret
-    DeleteAction: Slet
-    EditAction: Rediger
+    DeleteAction: Löschen
+    EditAction: Bearbeiten
   WorkflowInstance:
     TitleLabel: Titel
   WorkflowReminderEmail:
     HeadingTitle: Titel
   WorkflowReminderTask:
-    SAVE: Gem
+    SAVE: Speichern
   WorkflowTransition:
-    TYPE: Type
+    TYPE: Typ

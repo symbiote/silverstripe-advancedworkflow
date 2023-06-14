@@ -1,1 +1,64 @@
-bg: {  }
+bg:
+  AdvancedWorkflowAdmin:
+    Title: Заглавие
+  AllowEditing:
+    NoString: Не
+  AssignUsersToWorkflowAction:
+    GROUPS: Групи
+    USERS: Потребители
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Тема на Email'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Групи
+    many_many_Users: Потребители
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Тема на Email'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Съдържание
+    db_Filename: 'Име на файл'
+    db_Name: Име
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Заглавие
+    db_Type: Тип
+    has_one_Member: Потребител
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Потребител
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Описание
+    db_Title: Заглавие
+    has_many_Actions: Действия
+    many_many_Groups: Групи
+    many_many_Users: Потребители
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Заглавие
+    has_many_Actions: Действия
+    many_many_Groups: Групи
+    many_many_Users: Потребители
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Заглавие
+    db_Type: Тип
+    many_many_Groups: Групи
+    many_many_Users: Потребители
+  WorkflowAction:
+    Author: Автор
+    TITLE: Заглавие
+    TypeLabel: Тип
+  WorkflowActionInstance:
+    Title: Заглавие
+  WorkflowDefinition:
+    DESCRIPTION: Описание
+    TITLE: Заглавие
+  WorkflowField:
+    CreateLabel: Създай
+    DeleteAction: Изтрий
+    EditAction: Редактиране
+  WorkflowInstance:
+    TitleLabel: Заглавие
+  WorkflowList:
+    TableHeaderActions: Действия
+  WorkflowReminderEmail:
+    HeadingTitle: Заглавие
+  WorkflowReminderTask:
+    SAVE: Запис
+  WorkflowTransition:
+    TYPE: Тип

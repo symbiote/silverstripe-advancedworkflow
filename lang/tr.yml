@@ -1,1 +1,46 @@
-tr: {  }
+tr:
+  AdvancedWorkflowAdmin:
+    Title: Başlık
+  AllowEditing:
+    NoString: Hayır
+  AssignUsersToWorkflowAction:
+    GROUPS: Gruplar
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Gruplar
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: İçerik
+    db_Filename: 'Dosya adı'
+    db_Name: Ad
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Başlık
+    has_one_Member: Üye
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Üye
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Açıklama
+    db_Title: Başlık
+    many_many_Groups: Gruplar
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Başlık
+    many_many_Groups: Gruplar
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Başlık
+    many_many_Groups: Gruplar
+  WorkflowAction:
+    Author: Yazar
+    TITLE: Başlık
+  WorkflowActionInstance:
+    Title: Başlık
+  WorkflowDefinition:
+    DESCRIPTION: Açıklama
+    TITLE: Başlık
+  WorkflowField:
+    CreateLabel: Oluştur
+    DeleteAction: Sil
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Başlık
+  WorkflowReminderEmail:
+    HeadingTitle: Başlık
+  WorkflowReminderTask:
+    SAVE: Kaydet

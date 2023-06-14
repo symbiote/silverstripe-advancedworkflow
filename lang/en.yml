@@ -75,6 +75,9 @@ en:
       one: 'An Assign Users To Workflow Action'
       other: '{count} Assign Users To Workflow Actions'
     SINGULARNAME: 'Assign Users To Workflow Action'
+    db_AssignInitiator: 'Assign initiator'
+    many_many_Groups: Groups
+    many_many_Users: Users
   Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
     PLURALNAME: 'Cancel Workflow Actions'
     PLURALS:
@@ -87,6 +90,9 @@ en:
       one: 'A Notify Users Workflow Action'
       other: '{count} Notify Users Workflow Actions'
     SINGULARNAME: 'Notify Users Workflow Action'
+    db_EmailFrom: 'Email from'
+    db_EmailSubject: 'Email subject'
+    db_EmailTemplate: 'Email template'
   Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
     ALLOWEMBARGOEDEDITING: 'Allow editing while item is embargoed? (does not apply without embargo)'
     PLURALNAME: 'Publish Item Workflow Actions'
@@ -95,12 +101,16 @@ en:
       other: '{count} Publish Item Workflow Actions'
     PublicationDelayDescription: 'Delay publiation by the specified number of days'
     SINGULARNAME: 'Publish Item Workflow Action'
+    db_AllowEmbargoedEditing: 'Allow embargoed editing'
+    db_PublishDelay: 'Publish delay'
   Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
     PLURALNAME: 'Set Property Workflow Actions'
     PLURALS:
       one: 'A Set Property Workflow Action'
       other: '{count} Set Property Workflow Actions'
     SINGULARNAME: 'Set Property Workflow Action'
+    db_Property: Property
+    db_Value: Value
   Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
     PLURALNAME: 'Simple Approval Workflow Actions'
     PLURALS:
@@ -113,6 +123,7 @@ en:
       one: 'An Unpublish Item Workflow Action'
       other: '{count} Unpublish Item Workflow Actions'
     SINGULARNAME: 'Unpublish Item Workflow Action'
+    db_UnpublishDelay: 'Unpublish delay'
   Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
     MENUTITLE: Workflows
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
@@ -121,18 +132,37 @@ en:
       one: 'An Imported Workflow Template'
       other: '{count} Imported Workflow Templates'
     SINGULARNAME: 'Imported Workflow Template'
+    db_Content: Content
+    db_Filename: Filename
+    db_Name: Name
+    has_one_Definition: Definition
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
     PLURALNAME: 'Workflow Actions'
     PLURALS:
       one: 'A Workflow Action'
       other: '{count} Workflow Actions'
     SINGULARNAME: 'Workflow Action'
+    db_AllowCommenting: 'Allow commenting'
+    db_AllowEditing: 'Allow editing'
+    db_Comment: Comment
+    db_Executed: Executed
+    db_Sort: Sort
+    db_Title: Title
+    db_Type: Type
+    has_many_Transitions: Transitions
+    has_one_Member: Member
+    has_one_WorkflowDef: 'Workflow def'
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
     PLURALNAME: 'Workflow Action Instances'
     PLURALS:
       one: 'A Workflow Action Instance'
       other: '{count} Workflow Action Instances'
     SINGULARNAME: 'Workflow Action Instance'
+    db_Comment: Comment
+    db_Finished: Finished
+    has_one_BaseAction: 'Base action'
+    has_one_Member: Member
+    has_one_Workflow: Workflow
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     PLURALNAME: 'Workflow Definitions'
     PLURALS:
@@ -140,18 +170,46 @@ en:
       other: '{count} Workflow Definitions'
     ReminderEmailDescription: 'Send reminder email after the specified number of days without action.'
     SINGULARNAME: 'Workflow Definition'
+    db_Description: Description
+    db_InitialActionButtonText: 'Initial action button text'
+    db_RemindDays: 'Remind days'
+    db_Sort: Sort
+    db_Template: Template
+    db_TemplateVersion: 'Template version'
+    db_Title: Title
+    has_many_Actions: Actions
+    has_many_Instances: Instances
+    many_many_Groups: Groups
+    many_many_Users: Users
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     PLURALNAME: 'Workflow Instances'
     PLURALS:
       one: 'A Workflow Instance'
       other: '{count} Workflow Instances'
     SINGULARNAME: 'Workflow Instance'
+    db_TargetClass: 'Target class'
+    db_TargetID: 'Target ID'
+    db_Title: Title
+    db_WorkflowStatus: 'Workflow status'
+    has_many_Actions: Actions
+    has_one_CurrentAction: 'Current action'
+    has_one_Definition: Definition
+    has_one_Initiator: Initiator
+    many_many_Groups: Groups
+    many_many_Users: Users
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
     PLURALNAME: 'Workflow Transitions'
     PLURALS:
       one: 'A Workflow Transition'
       other: '{count} Workflow Transitions'
     SINGULARNAME: 'Workflow Transition'
+    db_Sort: Sort
+    db_Title: Title
+    db_Type: Type
+    has_one_Action: Action
+    has_one_NextAction: 'Next action'
+    many_many_Groups: Groups
+    many_many_Users: Users
   Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
     Export: Export
   UnpublishItemWorkflowAction:
@@ -267,3 +325,14 @@ en:
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
     TYPE: Type
     TabTitle: 'Restrict to users'
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
+    has_one_WorkflowDefinition: 'Workflow definition'
+    many_many_AdditionalWorkflowDefinitions: 'Additional workflow definitions'
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension:
+    db_AllowEmbargoedEditing: 'Allow embargoed editing'
+    db_DesiredPublishDate: 'Desired publish date'
+    db_DesiredUnPublishDate: 'Desired un publish date'
+    db_PublishOnDate: 'Publish on date'
+    db_UnPublishOnDate: 'Un publish on date'
+    has_one_PublishJob: 'Publish job'
+    has_one_UnPublishJob: 'Un publish job'

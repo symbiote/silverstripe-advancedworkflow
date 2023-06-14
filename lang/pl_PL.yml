@@ -1,1 +1,53 @@
-pl_PL: {  }
+pl_PL:
+  AdvancedWorkflowAdmin:
+    Title: Tytuł
+  AllowEditing:
+    NoString: Nie
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Email Subject'
+    EMAILTEMPLATE: 'Szablon e-mail'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Email Subject'
+    db_EmailTemplate: 'Szablon e-mail'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Wartość
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Zawartość
+    db_Name: Nazwa
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentarz
+    db_Title: Tytuł
+    db_Type: Typ
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Komentarz
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Template: Szablon
+    db_Title: Tytuł
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Tytuł
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Tytuł
+    db_Type: Typ
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Komentarz
+    CommentLabel: Komentarz
+    FRONTENDCOMMENT: Komentarz
+    TITLE: Tytuł
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Tytuł
+  WorkflowDefinition:
+    TITLE: Tytuł
+  WorkflowField:
+    CreateLabel: Utwórz
+    DeleteAction: Usuń
+    EditAction: Edytuj
+  WorkflowInstance:
+    TitleLabel: Tytuł
+  WorkflowReminderEmail:
+    HeadingTitle: Tytuł
+  WorkflowReminderTask:
+    SAVE: Zapisz
+  WorkflowTransition:
+    TYPE: Typ

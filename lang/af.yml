@@ -1,1 +1,55 @@
-af: {  }
+af:
+  AdvancedWorkflow:
+    ADVANCED_WORKFLOW: 'Gevorderde werksvloei'
+    APPLY_WORKFLOW: 'Aktiveer werksvloei'
+  AdvancedWorkflowAdmin:
+    Title: Tietel
+  AssignUsersToWorkflowAction:
+    GROUPS: Groepe
+    USERS: Gebruikers
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Groepe
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Inhoud
+    db_Filename: 'Lêer naam'
+    db_Name: Naam
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Tietel
+    has_one_Member: Lid
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Lid
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Beskrywing
+    db_Title: Tietel
+    has_many_Actions: Aksies
+    many_many_Groups: Groepe
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Tietel
+    has_many_Actions: Aksies
+    many_many_Groups: Groepe
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Tietel
+    many_many_Groups: Groepe
+    many_many_Users: Gebruikers
+  WorkflowAction:
+    TITLE: Tietel
+  WorkflowActionInstance:
+    Title: Tietel
+  WorkflowDefinition:
+    DESCRIPTION: Beskrywing
+    TITLE: Tietel
+  WorkflowField:
+    CreateLabel: Skep
+    DeleteAction: Verwyder
+    EditAction: Verander
+  WorkflowInstance:
+    TitleLabel: Tietel
+  WorkflowList:
+    TableHeaderActions: Aksies
+  WorkflowReminderEmail:
+    HeadingTitle: Tietel
+  WorkflowReminderTask:
+    SAVE: Stoor

@@ -1,1 +1,53 @@
-th: {  }
+th:
+  AdvancedWorkflowAdmin:
+    Title: หัวเรื่อง
+  AssignUsersToWorkflowAction:
+    GROUPS: กลุ่ม
+    USERS: ผู้ใช้งาน
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: กลุ่ม
+    many_many_Users: ผู้ใช้งาน
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: เนื้อหา
+    db_Filename: ชื่อไฟล์
+    db_Name: ชื่อ
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: หัวเรื่อง
+    has_one_Member: สมาชิก
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: สมาชิก
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: คำอธิบาย
+    db_Title: หัวเรื่อง
+    has_many_Actions: การกระทำ
+    many_many_Groups: กลุ่ม
+    many_many_Users: ผู้ใช้งาน
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: หัวเรื่อง
+    has_many_Actions: การกระทำ
+    many_many_Groups: กลุ่ม
+    many_many_Users: ผู้ใช้งาน
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: หัวเรื่อง
+    many_many_Groups: กลุ่ม
+    many_many_Users: ผู้ใช้งาน
+  WorkflowAction:
+    Author: ผู้แต่ง
+    TITLE: หัวเรื่อง
+  WorkflowActionInstance:
+    Title: หัวเรื่อง
+  WorkflowDefinition:
+    DESCRIPTION: คำอธิบาย
+    TITLE: หัวเรื่อง
+  WorkflowField:
+    CreateLabel: สร้าง
+    DeleteAction: ลบ
+    EditAction: แก้ไข
+  WorkflowInstance:
+    TitleLabel: หัวเรื่อง
+  WorkflowList:
+    TableHeaderActions: การกระทำ
+  WorkflowReminderEmail:
+    HeadingTitle: หัวเรื่อง
+  WorkflowReminderTask:
+    SAVE: บันทึก

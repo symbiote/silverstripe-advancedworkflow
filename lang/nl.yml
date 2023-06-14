@@ -36,3 +36,43 @@ nl:
     SAVE: Opslaan
   WorkflowTransition:
     TYPE: 'Soort veld'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Groepen
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: E-mailonderwerp
+    db_EmailTemplate: E-mailtemplate
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Waarde
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Inhoud
+    db_Filename: 'Bestandsnaam '
+    db_Name: Naam
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Reactie
+    db_Sort: Volgorde
+    db_Title: Titel
+    db_Type: 'Soort veld'
+    has_one_Member: Lid
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Reactie
+    has_one_Member: Lid
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Omschrijving
+    db_Sort: Volgorde
+    db_Template: Template
+    db_Title: Titel
+    has_many_Actions: Acties
+    many_many_Groups: Groepen
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Titel
+    has_many_Actions: Acties
+    many_many_Groups: Groepen
+    many_many_Users: Gebruikers
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Volgorde
+    db_Title: Titel
+    db_Type: 'Soort veld'
+    many_many_Groups: Groepen
+    many_many_Users: Gebruikers
