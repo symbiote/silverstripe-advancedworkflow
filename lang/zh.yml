@@ -150,12 +150,17 @@ zh:
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     PLURALNAME: 将用户分配给工作流操作
     SINGULARNAME: 将用户分配给工作流操作
+    many_many_Groups: 群组
+    many_many_Users: 用户
   Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
     PLURALNAME: 取消工作流程动作
     SINGULARNAME: 删除工作流操作
   Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
     PLURALNAME: 提醒用户工作流程动作
     SINGULARNAME: 通知用户工作流动作
+    db_EmailFrom: 邮件来自
+    db_EmailSubject: 电子邮件主题
+    db_EmailTemplate: 邮件模板
   Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
     PLURALNAME: 发布项工作流操作
     SINGULARNAME: 发布项工作流操作
@@ -167,15 +172,47 @@ zh:
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
     PLURALNAME: 工作流程行动
     SINGULARNAME: 工作流动作
+    db_Comment: 评论
+    db_Executed: 已执行
+    db_Title: 题目
+    db_Type: 类型
+    has_many_Transitions: 转换
+    has_one_Member: 成员
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
     SINGULARNAME: 工作流动作实例
+    db_Comment: 评论
+    db_Finished: 完成
+    has_one_Member: 成员
+    has_one_Workflow: 工作流
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     PLURALNAME: 工作流定义
     SINGULARNAME: 工作流定义
+    db_Description: 描述
+    db_Template: 模板
+    db_Title: 题目
+    has_many_Actions: 行动
+    many_many_Groups: 群组
+    many_many_Users: 用户
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     SINGULARNAME: 工作流实例
+    db_Title: 题目
+    has_many_Actions: 行动
+    has_one_CurrentAction: 当前动作
+    many_many_Groups: 群组
+    many_many_Users: 用户
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
     PLURALNAME: 工作流过渡
     SINGULARNAME: 工作流过渡
+    db_Title: 题目
+    db_Type: 类型
+    has_one_Action: 动作
+    many_many_Groups: 群组
+    many_many_Users: 用户
   UnpublishItemWorkflowAction:
     DELAYUNPUBDAYSAFTER: 天
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: 值
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: 内容
+    db_Filename: 文件名
+    db_Name: 姓名

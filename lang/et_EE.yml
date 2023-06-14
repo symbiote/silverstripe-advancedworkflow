@@ -1,1 +1,61 @@
-et_EE: {  }
+et_EE:
+  AdvancedWorkflowAdmin:
+    Title: Pealkiri
+  AllowEditing:
+    NoString: Ei
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupid
+    USERS: Kasutajad
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupid
+    many_many_Users: Kasutajad
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Value
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Sisu
+    db_Filename: Failinimi
+    db_Name: Nimi
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Pealkiri
+    has_one_Member: Kasutaja
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Kasutaja
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Kirjeldus
+    db_Title: Pealkiri
+    has_many_Actions: Tegevused
+    many_many_Groups: Grupid
+    many_many_Users: Kasutajad
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Pealkiri
+    has_many_Actions: Tegevused
+    many_many_Groups: Grupid
+    many_many_Users: Kasutajad
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Pealkiri
+    many_many_Groups: Grupid
+    many_many_Users: Kasutajad
+  WorkflowAction:
+    Author: Autor
+    TITLE: Pealkiri
+  WorkflowActionInstance:
+    Title: Pealkiri
+  WorkflowDefinition:
+    DESCRIPTION: Kirjeldus
+    TITLE: Pealkiri
+  WorkflowField:
+    CreateLabel: Loo
+    DeleteAction: Kustuta
+    EditAction: Redigeeri
+  WorkflowInstance:
+    TitleLabel: Pealkiri
+  WorkflowList:
+    TableHeaderActions: Tegevused
+  WorkflowReminderEmail:
+    HeadingTitle: Pealkiri
+  WorkflowReminderTask:
+    SAVE: Salvesta

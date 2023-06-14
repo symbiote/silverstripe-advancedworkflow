@@ -89,6 +89,12 @@ it:
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
     PLURALNAME: 'Azioni del flusso di lavoro'
     SINGULARNAME: 'Azione del flusso di lavoro'
+    db_Comment: Commento
+    db_Executed: Eseguito
+    db_Sort: Ordine
+    db_Title: Titolo
+    db_Type: Tipo
+    has_one_Member: Utente
   Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
     Export: Esporta
   UnpublishItemWorkflowAction:
@@ -99,3 +105,40 @@ it:
     HeadingTitle: Titolo
   WorkflowReminderTask:
     SAVE: Salva
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Gruppi
+    many_many_Users: Utenti
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Oggetto e-mail'
+    db_EmailTemplate: 'Schema e-mail'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Valore
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Contenuto
+    db_Filename: 'Nome del file'
+    db_Name: Nome
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Commento
+    db_Finished: Finito
+    has_one_Member: Utente
+    has_one_Workflow: 'Flusso di lavoro'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Descrizione
+    db_Sort: Ordine
+    db_Title: Titolo
+    has_many_Actions: Azioni
+    many_many_Groups: Gruppi
+    many_many_Users: Utenti
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Titolo
+    has_many_Actions: Azioni
+    has_one_CurrentAction: 'Azione corrente'
+    many_many_Groups: Gruppi
+    many_many_Users: Utenti
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Ordine
+    db_Title: Titolo
+    db_Type: Tipo
+    has_one_Action: Azione
+    many_many_Groups: Gruppi
+    many_many_Users: Utenti

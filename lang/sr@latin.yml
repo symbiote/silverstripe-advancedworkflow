@@ -1,41 +1,42 @@
-sl_SI:
+sr@latin:
   AdvancedWorkflowAdmin:
     Title: Naslov
-  AllowEditing:
-    NoString: Ne
   AssignUsersToWorkflowAction:
     GROUPS: Grupe
-    USERS: Uporabniki
-  NotifyUsersWorkflowAction:
-    EMAILSUBJECT: 'Predmet e-pošte'
+    USERS: Korisnici
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Grupe
-    many_many_Users: Uporabniki
-  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
-    db_EmailSubject: 'Predmet e-pošte'
+    many_many_Users: Korisnici
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
-    db_Content: Vsebina
+    db_Content: Sadržaj
     db_Filename: 'Ime datoteke'
     db_Name: Ime
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentar
     db_Title: Naslov
-    has_one_Member: Uporabnik
+    has_one_Member: Član
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
-    has_one_Member: Uporabnik
+    db_Comment: Komentar
+    has_one_Member: Član
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     db_Description: Opis
     db_Title: Naslov
+    has_many_Actions: Akcije
     many_many_Groups: Grupe
-    many_many_Users: Uporabniki
+    many_many_Users: Korisnici
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     db_Title: Naslov
+    has_many_Actions: Akcije
     many_many_Groups: Grupe
-    many_many_Users: Uporabniki
+    many_many_Users: Korisnici
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
     db_Title: Naslov
     many_many_Groups: Grupe
-    many_many_Users: Uporabniki
+    many_many_Users: Korisnici
   WorkflowAction:
+    COMMENT: Komentar
+    CommentLabel: Komentar
+    FRONTENDCOMMENT: Komentar
     TITLE: Naslov
   WorkflowActionInstance:
     Title: Naslov
@@ -43,12 +44,14 @@ sl_SI:
     DESCRIPTION: Opis
     TITLE: Naslov
   WorkflowField:
-    CreateLabel: Ustvari
+    CreateLabel: Kreiraj
     DeleteAction: Izbriši
-    EditAction: Uredi
+    EditAction: Izmeni
   WorkflowInstance:
     TitleLabel: Naslov
+  WorkflowList:
+    TableHeaderActions: Akcije
   WorkflowReminderEmail:
     HeadingTitle: Naslov
   WorkflowReminderTask:
-    SAVE: Shrani
+    SAVE: Sačuvaj

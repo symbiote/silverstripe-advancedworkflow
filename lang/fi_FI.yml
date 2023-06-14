@@ -51,5 +51,34 @@ fi_FI:
     GROUPS: Ryhmät
   Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
     PLURALNAME: 'Informoi käyttäjiä työnkulun toiminnoista'
+    db_EmailSubject: Otsikko
+    db_EmailTemplate: Sähköpostipohja
   WorkflowReminderEmail:
     HeadingTitle: Otsikko
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Ryhmät
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Arvo
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Sisältö
+    db_Name: Nimi
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Otsikko
+    db_Type: Tyyppi
+    has_one_Member: Käyttäjä
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Finished: Valmistunut
+    has_one_Member: Käyttäjä
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Kuvaus
+    db_Title: Otsikko
+    has_many_Actions: Toimenpiteet
+    many_many_Groups: Ryhmät
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Otsikko
+    has_many_Actions: Toimenpiteet
+    many_many_Groups: Ryhmät
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Otsikko
+    db_Type: Tyyppi
+    many_many_Groups: Ryhmät

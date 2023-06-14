@@ -35,3 +35,42 @@ sk:
     SAVE: Uložiť
   WorkflowTransition:
     TYPE: Typ
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Skupiny
+    many_many_Users: Používatelia
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: Predmet
+    db_EmailTemplate: 'E-mailová šablóna'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Hodnota
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Obsah
+    db_Filename: 'Meno súboru'
+    db_Name: Meno
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentár
+    db_Sort: Usporiadanie
+    db_Title: Názov
+    db_Type: Typ
+    has_one_Member: Člen
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Komentár
+    has_one_Member: Člen
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Popis
+    db_Sort: Usporiadanie
+    db_Title: Názov
+    has_many_Actions: Akcie
+    many_many_Groups: Skupiny
+    many_many_Users: Používatelia
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Názov
+    has_many_Actions: Akcie
+    many_many_Groups: Skupiny
+    many_many_Users: Používatelia
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Usporiadanie
+    db_Title: Názov
+    db_Type: Typ
+    many_many_Groups: Skupiny
+    many_many_Users: Používatelia

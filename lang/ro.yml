@@ -1,1 +1,47 @@
-ro: {  }
+ro:
+  AdvancedWorkflowAdmin:
+    Title: Titlu
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupuri
+  NotifyUsersWorkflowAction:
+    FORMATTINGHELP: 'Ajutor formatare'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupuri
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Continut
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Comentariu
+    db_Title: Titlu
+    has_one_Member: Membru
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Comentariu
+    has_one_Member: Membru
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Title: Titlu
+    many_many_Groups: Grupuri
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Titlu
+    many_many_Groups: Grupuri
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Titlu
+    many_many_Groups: Grupuri
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Comentariu
+    CommentLabel: Comentariu
+    FRONTENDCOMMENT: Comentariu
+    TITLE: Titlu
+  WorkflowActionInstance:
+    Title: Titlu
+  WorkflowDefinition:
+    TITLE: Titlu
+  WorkflowField:
+    CreateLabel: Creaţi
+    DeleteAction: Ştergere
+    EditAction: Editare
+  WorkflowInstance:
+    TitleLabel: Titlu
+  WorkflowReminderEmail:
+    HeadingTitle: Titlu
+  WorkflowReminderTask:
+    SAVE: Salvează

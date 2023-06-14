@@ -1,1 +1,50 @@
-gl_ES: {  }
+gl_ES:
+  AdvancedWorkflowAdmin:
+    Title: Título
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupos
+    USERS: Usuarios
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Contido
+    db_Filename: 'Nome ficheiro'
+    db_Name: Nome
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Título
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Title: Título
+    has_many_Actions: Accións
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Título
+    has_many_Actions: Accións
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Título
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  WorkflowAction:
+    TITLE: Título
+  WorkflowActionInstance:
+    Title: Título
+  WorkflowDefinition:
+    TITLE: Título
+  WorkflowField:
+    CreateLabel: Crear
+    DeleteAction: Eliminar
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Título
+  WorkflowList:
+    TableHeaderActions: Accións
+  WorkflowReminderEmail:
+    HeadingTitle: Título
+  WorkflowReminderTask:
+    SAVE: Gardar
