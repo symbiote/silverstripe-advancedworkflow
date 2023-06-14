@@ -1,0 +1,25 @@
+default:
+  suites:
+    silverstripe-advancedworkflow:
+      paths:
+        - '%paths.modules.silverstripe-advancedworkflow%/tests/behat/features'
+      contexts:
+        - SilverStripe\Framework\Tests\Behaviour\CmsFormsContext
+        - SilverStripe\Framework\Tests\Behaviour\CmsUiContext
+        - SilverStripe\BehatExtension\Context\BasicContext
+        - SilverStripe\BehatExtension\Context\LoginContext
+        - Symbiote\AdvancedWorkflow\Tests\Behat\Context\FeatureContext
+        - Symbiote\AdvancedWorkflow\Tests\Behat\Context\FixtureContext:
+        # Note: double indent for args is intentional
+            - "%paths.modules.silverstripe-advancedworkflow%/tests/behat/features/files/"
+  extensions:
+    SilverStripe\BehatExtension\MinkExtension:
+      default_session: facebook_web_driver
+      javascript_session: facebook_web_driver
+      facebook_web_driver:
+        browser: chrome
+        wd_host: "http://127.0.0.1:9515" #chromedriver port
+      browser_name: chrome
+    SilverStripe\BehatExtension\Extension:
+      bootstrap_file: vendor/silverstripe/cms/tests/behat/serve-bootstrap.php
+      screenshot_path: '%paths.base%/artifacts/screenshots'
