@@ -1,1 +1,60 @@
-sl: {  }
+sl:
+  AdvancedWorkflowAdmin:
+    Title: Naziv
+  AllowEditing:
+    NoString: Ne
+  AssignUsersToWorkflowAction:
+    GROUPS: Skupine
+    USERS: Uporabniki
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Skupine
+    many_many_Users: Uporabniki
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Vsebina
+    db_Filename: 'Ime datoteke'
+    db_Name: Ime
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Naziv
+    db_Type: Tip
+    has_one_Member: Uporabnik
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Uporabnik
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Opis
+    db_Title: Naziv
+    has_many_Actions: Dejanja
+    many_many_Groups: Skupine
+    many_many_Users: Uporabniki
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Naziv
+    has_many_Actions: Dejanja
+    many_many_Groups: Skupine
+    many_many_Users: Uporabniki
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Naziv
+    db_Type: Tip
+    many_many_Groups: Skupine
+    many_many_Users: Uporabniki
+  WorkflowAction:
+    Author: Avtor
+    TITLE: Naziv
+    TypeLabel: Tip
+  WorkflowActionInstance:
+    Title: Naziv
+  WorkflowDefinition:
+    DESCRIPTION: Opis
+    TITLE: Naziv
+  WorkflowField:
+    CreateLabel: Ustvari
+    DeleteAction: Odstrani
+    EditAction: Uredi
+  WorkflowInstance:
+    TitleLabel: Naziv
+  WorkflowList:
+    TableHeaderActions: Dejanja
+  WorkflowReminderEmail:
+    HeadingTitle: Naziv
+  WorkflowReminderTask:
+    SAVE: Shrani
+  WorkflowTransition:
+    TYPE: Tip

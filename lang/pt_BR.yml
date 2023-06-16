@@ -50,3 +50,34 @@ pt_BR:
     HeadingTitle: Título
   WorkflowReminderTask:
     SAVE: Salvar
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupos
+    many_many_Users: Usuários
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'Email de'
+    db_EmailSubject: 'Assunto do email'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Property: Propriedade
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Conteúdo
+    db_Filename: 'Nome do Arquivo'
+    db_Name: Nome
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Título
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Descrição
+    db_Title: Título
+    many_many_Groups: Grupos
+    many_many_Users: Usuários
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Título
+    has_one_CurrentAction: 'Ação atual'
+    many_many_Groups: Grupos
+    many_many_Users: Usuários
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Título
+    many_many_Groups: Grupos
+    many_many_Users: Usuários

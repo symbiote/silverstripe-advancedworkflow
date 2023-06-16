@@ -1,1 +1,53 @@
-pt: {  }
+pt:
+  AdvancedWorkflowAdmin:
+    Title: Título
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupos
+    USERS: Utilizadores
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupos
+    many_many_Users: Utilizadores
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Conteúdo
+    db_Filename: 'Nome do ficheiro'
+    db_Name: Nome
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Título
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Membro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Descrição
+    db_Title: Título
+    has_many_Actions: Ações
+    many_many_Groups: Grupos
+    many_many_Users: Utilizadores
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Título
+    has_many_Actions: Ações
+    many_many_Groups: Grupos
+    many_many_Users: Utilizadores
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Título
+    many_many_Groups: Grupos
+    many_many_Users: Utilizadores
+  WorkflowAction:
+    Author: Autor
+    TITLE: Título
+  WorkflowActionInstance:
+    Title: Título
+  WorkflowDefinition:
+    DESCRIPTION: Descrição
+    TITLE: Título
+  WorkflowField:
+    CreateLabel: Criar
+    DeleteAction: Apagar
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Título
+  WorkflowList:
+    TableHeaderActions: Ações
+  WorkflowReminderEmail:
+    HeadingTitle: Título
+  WorkflowReminderTask:
+    SAVE: Guardar

@@ -210,17 +210,6 @@ en:
     has_one_NextAction: 'Next action'
     many_many_Groups: Groups
     many_many_Users: Users
-  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
-    has_one_WorkflowDefinition: 'Workflow definition'
-    many_many_AdditionalWorkflowDefinitions: 'Additional workflow definitions'
-  Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension:
-    db_AllowEmbargoedEditing: 'Allow embargoed editing'
-    db_DesiredPublishDate: 'Desired publish date'
-    db_DesiredUnPublishDate: 'Desired un publish date'
-    db_PublishOnDate: 'Publish on date'
-    db_UnPublishOnDate: 'Un publish on date'
-    has_one_PublishJob: 'Publish job'
-    has_one_UnPublishJob: 'Un publish job'
   Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
     Export: Export
   UnpublishItemWorkflowAction:
@@ -336,3 +325,14 @@ en:
     TRANSITIONLOOP: 'A transition cannot lead back to its parent action.'
     TYPE: Type
     TabTitle: 'Restrict to users'
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
+    has_one_WorkflowDefinition: 'Workflow definition'
+    many_many_AdditionalWorkflowDefinitions: 'Additional workflow definitions'
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension:
+    db_AllowEmbargoedEditing: 'Allow embargoed editing'
+    db_DesiredPublishDate: 'Desired publish date'
+    db_DesiredUnPublishDate: 'Desired un publish date'
+    db_PublishOnDate: 'Publish on date'
+    db_UnPublishOnDate: 'Un publish on date'
+    has_one_PublishJob: 'Publish job'
+    has_one_UnPublishJob: 'Un publish job'
