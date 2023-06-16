@@ -48,3 +48,41 @@ id:
     HeadingTitle: Judul
   WorkflowReminderTask:
     SAVE: Simpan
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'Surel dari'
+    db_EmailSubject: 'Subyek email'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Nilai
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Konten
+    db_Filename: 'Nama berkas'
+    db_Name: Nama
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentar
+    db_Title: Judul
+    db_Type: Tipe
+    has_many_Transitions: Transisi
+    has_one_Member: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Komentar
+    has_one_Member: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Deskripsi
+    db_Title: Judul
+    has_many_Actions: Tindakan
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Judul
+    has_many_Actions: Tindakan
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Judul
+    db_Type: Tipe
+    has_one_Action: Aksi
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna

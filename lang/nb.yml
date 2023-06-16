@@ -1,1 +1,60 @@
-nb: {  }
+nb:
+  AdvancedWorkflowAdmin:
+    Title: Tittel
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupper
+    USERS: Brukere
+  NotifyUsersWorkflowAction:
+    FORMATTINGHELP: Formatteringshjelp
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupper
+    many_many_Users: Brukere
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Innhold
+    db_Filename: Filnavn
+    db_Name: Navn
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Kommentar
+    db_Title: Tittel
+    has_one_Member: Medlem
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Kommentar
+    has_one_Member: Medlem
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Beskrivelse
+    db_Title: Tittel
+    has_many_Actions: Handlinger
+    many_many_Groups: Grupper
+    many_many_Users: Brukere
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Tittel
+    has_many_Actions: Handlinger
+    many_many_Groups: Grupper
+    many_many_Users: Brukere
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Tittel
+    many_many_Groups: Grupper
+    many_many_Users: Brukere
+  WorkflowAction:
+    Author: Forfatter
+    COMMENT: Kommentar
+    CommentLabel: Kommentar
+    FRONTENDCOMMENT: Kommentar
+    TITLE: Tittel
+  WorkflowActionInstance:
+    Title: Tittel
+  WorkflowDefinition:
+    DESCRIPTION: Beskrivelse
+    TITLE: Tittel
+  WorkflowField:
+    CreateLabel: Opprett
+    DeleteAction: Slett
+    EditAction: Rediger
+  WorkflowInstance:
+    TitleLabel: Tittel
+  WorkflowList:
+    TableHeaderActions: Handlinger
+  WorkflowReminderEmail:
+    HeadingTitle: Tittel
+  WorkflowReminderTask:
+    SAVE: Lagre

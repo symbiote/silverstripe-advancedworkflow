@@ -35,3 +35,40 @@ fi:
     SAVE: Tallenna
   WorkflowTransition:
     TYPE: Tyyppi
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Ryhmät
+    many_many_Users: Käyttäjät
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Sähköpostin aihe'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Sisältö
+    db_Filename: Tiedostonimi
+    db_Name: Nimi
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Kommentti
+    db_Sort: Järjestä
+    db_Title: Otsikko
+    db_Type: Tyyppi
+    has_one_Member: Käyttäjä
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Kommentti
+    has_one_Member: Käyttäjä
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Kuvaus
+    db_Sort: Järjestä
+    db_Template: Sivupohja
+    db_Title: Otsikko
+    has_many_Actions: Toiminnot
+    many_many_Groups: Ryhmät
+    many_many_Users: Käyttäjät
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Otsikko
+    has_many_Actions: Toiminnot
+    many_many_Groups: Ryhmät
+    many_many_Users: Käyttäjät
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Järjestä
+    db_Title: Otsikko
+    db_Type: Tyyppi
+    many_many_Groups: Ryhmät
+    many_many_Users: Käyttäjät

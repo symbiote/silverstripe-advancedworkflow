@@ -1,1 +1,62 @@
-pl: {  }
+pl:
+  AdvancedWorkflowAdmin:
+    Title: Tytuł
+  AllowEditing:
+    NoString: Nie
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupy
+    USERS: Użytkownicy
+  NotifyUsersWorkflowAction:
+    FORMATTINGHELP: 'Pomoc formatowania'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupy
+    many_many_Users: Użytkownicy
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Zawartość
+    db_Filename: 'Nazwa pliku'
+    db_Name: Nazwa
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Tytuł
+    db_Type: 'Rodzaj strony'
+    has_one_Member: Użytkownik
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Użytkownik
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Opis
+    db_Title: Tytuł
+    has_many_Actions: Akcje
+    many_many_Groups: Grupy
+    many_many_Users: Użytkownicy
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Tytuł
+    has_many_Actions: Akcje
+    many_many_Groups: Grupy
+    many_many_Users: Użytkownicy
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Tytuł
+    db_Type: 'Rodzaj strony'
+    many_many_Groups: Grupy
+    many_many_Users: Użytkownicy
+  WorkflowAction:
+    Author: Autor
+    TITLE: Tytuł
+    TypeLabel: 'Rodzaj strony'
+  WorkflowActionInstance:
+    Title: Tytuł
+  WorkflowDefinition:
+    DESCRIPTION: Opis
+    TITLE: Tytuł
+  WorkflowField:
+    CreateLabel: Stwórz
+    DeleteAction: Usuń
+    EditAction: Edytuj
+  WorkflowInstance:
+    TitleLabel: Tytuł
+  WorkflowList:
+    TableHeaderActions: Akcje
+  WorkflowReminderEmail:
+    HeadingTitle: Tytuł
+  WorkflowReminderTask:
+    SAVE: Zapisz
+  WorkflowTransition:
+    TYPE: 'Rodzaj strony'

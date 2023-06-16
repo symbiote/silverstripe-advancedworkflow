@@ -1,1 +1,60 @@
-ja: {  }
+ja:
+  AdvancedWorkflowAdmin:
+    Title: タイトル
+  AssignUsersToWorkflowAction:
+    GROUPS: グループ
+    USERS: ユーザー
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: メールの件名
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: グループ
+    many_many_Users: ユーザー
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: メールの件名
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: 数値
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: 内容
+    db_Filename: ファイル名
+    db_Name: 名前
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: タイトル
+    has_one_Member: メンバー
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: メンバー
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: 説明文
+    db_Template: テンプレート
+    db_Title: タイトル
+    has_many_Actions: アクション
+    many_many_Groups: グループ
+    many_many_Users: ユーザー
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: タイトル
+    has_many_Actions: アクション
+    many_many_Groups: グループ
+    many_many_Users: ユーザー
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: タイトル
+    many_many_Groups: グループ
+    many_many_Users: ユーザー
+  WorkflowAction:
+    Author: 作成者
+    TITLE: タイトル
+  WorkflowActionInstance:
+    Title: タイトル
+  WorkflowDefinition:
+    DESCRIPTION: 説明文
+    TITLE: タイトル
+  WorkflowField:
+    CreateLabel: 作成
+    DeleteAction: 削除
+    EditAction: 編集
+  WorkflowInstance:
+    TitleLabel: タイトル
+  WorkflowList:
+    TableHeaderActions: アクション
+  WorkflowReminderEmail:
+    HeadingTitle: タイトル
+  WorkflowReminderTask:
+    SAVE: 保存

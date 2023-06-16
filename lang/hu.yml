@@ -1,1 +1,46 @@
-hu: {  }
+hu:
+  AdvancedWorkflowAdmin:
+    Title: Cím
+  AssignUsersToWorkflowAction:
+    GROUPS: Csoportok
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Csoportok
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Tartalom
+    db_Filename: Fájlnév
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Hozzászólás
+    db_Title: Cím
+    has_one_Member: Tag
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Hozzászólás
+    has_one_Member: Tag
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Title: Cím
+    many_many_Groups: Csoportok
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Cím
+    many_many_Groups: Csoportok
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Cím
+    many_many_Groups: Csoportok
+  WorkflowAction:
+    Author: Szerző
+    COMMENT: Hozzászólás
+    CommentLabel: Hozzászólás
+    FRONTENDCOMMENT: Hozzászólás
+    TITLE: Cím
+  WorkflowActionInstance:
+    Title: Cím
+  WorkflowDefinition:
+    TITLE: Cím
+  WorkflowField:
+    CreateLabel: Létrehozni
+    DeleteAction: Törlés
+    EditAction: Szerkeszt
+  WorkflowInstance:
+    TitleLabel: Cím
+  WorkflowReminderEmail:
+    HeadingTitle: Cím
+  WorkflowReminderTask:
+    SAVE: Mentés

@@ -32,3 +32,34 @@ lt:
     HeadingTitle: Pavadinimas
   WorkflowReminderTask:
     SAVE: Saugoti
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupės
+    many_many_Users: Vartotojai
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'El. laiško tema'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Turinys
+    db_Filename: 'Bylos pavadinimas'
+    db_Name: Pavadinimas
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Komentaras
+    db_Title: Pavadinimas
+    has_one_Member: Vartotojas
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Komentaras
+    has_one_Member: Vartotojas
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Aprašymas
+    db_Title: Pavadinimas
+    has_many_Actions: Veiksmai
+    many_many_Groups: Grupės
+    many_many_Users: Vartotojai
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Pavadinimas
+    has_many_Actions: Veiksmai
+    many_many_Groups: Grupės
+    many_many_Users: Vartotojai
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Pavadinimas
+    many_many_Groups: Grupės
+    many_many_Users: Vartotojai

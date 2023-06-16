@@ -142,6 +142,8 @@ de:
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     PLURALNAME: 'Benutzer zu Arbeitsablaufaktionen zuordnen'
     SINGULARNAME: 'Benutzer zur Arbeitsablaufaktion zuordnen'
+    many_many_Groups: Gruppe
+    many_many_Users: Benutzer
   Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
     PLURALNAME: 'Arbeitsablaufaktionen abbrechen'
     SINGULARNAME: 'Arbeitsablaufaktion abbrechen'
@@ -150,18 +152,56 @@ de:
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
     PLURALNAME: 'Importierte Arbeitsablaufvorlagen'
     SINGULARNAME: 'Importierte Arbeitsablaufvorlage'
+    db_Content: Inhalt
+    db_Filename: Dateiname
+    db_Name: Name
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
     PLURALNAME: Arbeitsablaufaktionen
     SINGULARNAME: Arbeitsablaufaktion
+    db_Comment: Kommentar
+    db_Executed: Ausgeführt
+    db_Sort: Sortierung
+    db_Title: Titel
+    db_Type: Typ
+    has_many_Transitions: Übergänge
+    has_one_Member: Benutzer
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
     PLURALNAME: Arbeitsablaufaktionsinstanzen
     SINGULARNAME: Arbeitsablaufaktionsinstanz
+    db_Comment: Kommentar
+    db_Finished: Abgeschlossen
+    has_one_Member: Benutzer
+    has_one_Workflow: Arbeitsablauf
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     PLURALNAME: Arbeitsablaufdefinitionen
     SINGULARNAME: Arbeitsablaufdefinition
+    db_Description: Beschreibung
+    db_Sort: Sortierung
+    db_Template: Template
+    db_Title: Titel
+    has_many_Actions: Aktionen
+    many_many_Groups: Gruppe
+    many_many_Users: Benutzer
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
     PLURALNAME: Arbeitsablaufinstanzen
     SINGULARNAME: Arbeitsablaufinstanz
+    db_Title: Titel
+    has_many_Actions: Aktionen
+    has_one_CurrentAction: 'Aktuelle Aktion'
+    many_many_Groups: Gruppe
+    many_many_Users: Benutzer
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
     PLURALNAME: Arbeitsablaufübergänge
     SINGULARNAME: Arbeitsablaufübergang
+    db_Sort: Sortierung
+    db_Title: Titel
+    db_Type: Typ
+    has_one_Action: Aktion
+    many_many_Groups: Gruppe
+    many_many_Users: Benutzer
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'E-Mail von'
+    db_EmailSubject: E-Mail-Betreff
+    db_EmailTemplate: E-Mail-Vorlage
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Property: Eigenschaft
