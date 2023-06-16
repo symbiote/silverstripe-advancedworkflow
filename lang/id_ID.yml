@@ -1,0 +1,58 @@
+id_ID:
+  AdvancedWorkflowAdmin:
+    Title: Judul
+  AllowEditing:
+    NoString: Tidak
+  AssignUsersToWorkflowAction:
+    GROUPS: Kelompok
+    USERS: Pengguna
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Subyek email'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Subyek email'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Konten
+    db_Filename: 'Nama berkas'
+    db_Name: Nama
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Judul
+    has_one_Member: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Deskripsi
+    db_Title: Judul
+    has_many_Actions: Tindakan
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Judul
+    has_many_Actions: Tindakan
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Judul
+    many_many_Groups: Kelompok
+    many_many_Users: Pengguna
+  WorkflowAction:
+    TITLE: Judul
+  WorkflowActionInstance:
+    Title: Judul
+  WorkflowDefinition:
+    DESCRIPTION: Deskripsi
+    TITLE: Judul
+  WorkflowField:
+    CreateLabel: Buat
+    DeleteAction: Hapus
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Judul
+  WorkflowList:
+    TableHeaderActions: Tindakan
+  WorkflowReminderEmail:
+    HeadingTitle: Judul
+  WorkflowReminderTask:
+    SAVE: Simpan

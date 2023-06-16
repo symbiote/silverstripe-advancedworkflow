@@ -35,3 +35,39 @@ ru:
     SAVE: Сохранить
   WorkflowTransition:
     TYPE: Тип
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Группы
+    many_many_Users: Пользователи
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Тема письма'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Содержимое
+    db_Filename: 'Имя файла'
+    db_Name: Название
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Комментарий
+    db_Sort: Сортировать
+    db_Title: Заголовок
+    db_Type: Тип
+    has_one_Member: Пользователь
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Комментарий
+    has_one_Member: Пользователь
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Описание
+    db_Sort: Сортировать
+    db_Title: Заголовок
+    has_many_Actions: Действия
+    many_many_Groups: Группы
+    many_many_Users: Пользователи
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Заголовок
+    has_many_Actions: Действия
+    many_many_Groups: Группы
+    many_many_Users: Пользователи
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Сортировать
+    db_Title: Заголовок
+    db_Type: Тип
+    many_many_Groups: Группы
+    many_many_Users: Пользователи

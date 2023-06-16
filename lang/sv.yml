@@ -34,3 +34,41 @@ sv:
     SAVE: Spara
   WorkflowTransition:
     TYPE: Typ
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupper
+    many_many_Users: Användare
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: E-postämne
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Värde
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Innehåll
+    db_Filename: Filnamn
+    db_Name: Namn
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Comment: Kommentar
+    db_Sort: Sortera
+    db_Title: Titel
+    db_Type: Typ
+    has_one_Member: Medlem
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    db_Comment: Kommentar
+    has_one_Member: Medlem
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Beskrivning
+    db_Sort: Sortera
+    db_Title: Titel
+    has_many_Actions: Åtgärder
+    many_many_Groups: Grupper
+    many_many_Users: Användare
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Titel
+    has_many_Actions: Åtgärder
+    many_many_Groups: Grupper
+    many_many_Users: Användare
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Sortera
+    db_Title: Titel
+    db_Type: Typ
+    many_many_Groups: Grupper
+    many_many_Users: Användare

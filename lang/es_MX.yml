@@ -1,1 +1,59 @@
-es_MX: {  }
+es_MX:
+  AdvancedWorkflowAdmin:
+    Title: Título
+  AssignUsersToWorkflowAction:
+    GROUPS: Grupos
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Grupos
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailSubject: 'Email Subject'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Value
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: Contenido
+    db_Filename: 'Nombre del archivo'
+    db_Name: Nombre
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Title: Título
+    db_Type: Tipo
+    has_one_Member: Miembro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    has_one_Member: Miembro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    db_Description: Descripción
+    db_Title: Título
+    has_many_Actions: Acciones
+    many_many_Groups: Grupos
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    db_Title: Título
+    has_many_Actions: Acciones
+    many_many_Groups: Grupos
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Title: Título
+    db_Type: Tipo
+    many_many_Groups: Grupos
+  WorkflowAction:
+    Author: Autor
+    TITLE: Título
+    TypeLabel: Tipo
+  WorkflowActionInstance:
+    Title: Título
+  WorkflowDefinition:
+    DESCRIPTION: Descripción
+    TITLE: Título
+  WorkflowField:
+    CreateLabel: Crear
+    DeleteAction: Eliminar
+    EditAction: Editar
+  WorkflowInstance:
+    TitleLabel: Título
+  WorkflowList:
+    TableHeaderActions: Acciones
+  WorkflowReminderEmail:
+    HeadingTitle: Título
+  WorkflowReminderTask:
+    SAVE: Guardar
+  WorkflowTransition:
+    TYPE: Tipo
