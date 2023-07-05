@@ -221,13 +221,13 @@ jQuery.entwine('workflow', ($) => {
         $('#Form_EditForm_action_publish').prev('button').addClass('ui-corner-right');
 
         if (publishDate === '') {
-            // Has time, not date
+          // Has time, not date
           message = i18n.sprintf(
             i18n._t('Workflow.EMBARGOMESSAGETIME'),
             publishTime
           );
         } else if (publishTime === '') {
-            // has date no time
+          // has date no time
           message = i18n.sprintf(
             i18n._t('Workflow.EMBARGOMESSAGEDATE'),
             publishDate
