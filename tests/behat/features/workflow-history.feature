@@ -28,6 +28,5 @@ Feature: Workflow Actions history
     And I should not see "Apply for approval"
     And I should not see "Save"
     When I click the "Workflow Actions" CMS tab
-    Then the workflow diff for the "Title" field should be "About <ins>Us!</ins><del>Us</del>"
-    And the workflow diff for the "Content" field should be "<p><ins>my new</ins><del>My</del> content</p>"
-
+    Then the workflow diff for the "Title" field should be "About <del>Us</del> <ins>Us!</ins>"
+    And the workflow diff for the "Content" field should be "<p><del>My</del> <ins>my new</ins> content</p>"
