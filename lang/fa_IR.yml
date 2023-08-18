@@ -10,30 +10,6 @@ fa_IR:
     EMAILSUBJECT: 'موضوع پست الکترونیک'
     EMAILTEMPLATE: 'قالب پست الکترونیک'
     FORMATTINGHELP: 'راهنمای قالب‌بندی'
-  WorkflowAction:
-    Author: نگارنده
-    COMMENT: دیدگاه
-    CommentLabel: دیدگاه
-    FRONTENDCOMMENT: دیدگاه
-    TITLE: عنوان
-    TypeLabel: نوع
-  WorkflowActionInstance:
-    Title: عنوان
-  WorkflowDefinition:
-    DESCRIPTION: توضحیات
-    TITLE: عنوان
-  WorkflowField:
-    CreateLabel: ایجاد
-    DeleteAction: حذف
-    EditAction: ویرایش
-  WorkflowInstance:
-    TitleLabel: عنوان
-  WorkflowReminderEmail:
-    HeadingTitle: عنوان
-  WorkflowReminderTask:
-    SAVE: ذخیره
-  WorkflowTransition:
-    TYPE: نوع
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: گروه‌ها
     many_many_Users: کاربران
@@ -69,3 +45,27 @@ fa_IR:
     db_Type: نوع
     many_many_Groups: گروه‌ها
     many_many_Users: کاربران
+  WorkflowAction:
+    Author: نگارنده
+    COMMENT: دیدگاه
+    CommentLabel: دیدگاه
+    FRONTENDCOMMENT: دیدگاه
+    TITLE: عنوان
+    TypeLabel: نوع
+  WorkflowActionInstance:
+    Title: عنوان
+  WorkflowDefinition:
+    DESCRIPTION: توضحیات
+    TITLE: عنوان
+  WorkflowField:
+    CreateLabel: ایجاد
+    DeleteAction: حذف
+    EditAction: ویرایش
+  WorkflowInstance:
+    TitleLabel: عنوان
+  WorkflowReminderEmail:
+    HeadingTitle: عنوان
+  WorkflowReminderTask:
+    SAVE: ذخیره
+  WorkflowTransition:
+    TYPE: نوع

@@ -33,23 +33,6 @@ pt_BR:
     FIELDNAME: 'Nome do campo'
   SetPropertyWorkflowAction:
     PROPERTY: Propriedade
-  WorkflowAction:
-    Author: Autor
-    TITLE: Título
-  WorkflowActionInstance:
-    Title: Título
-  WorkflowDefinition:
-    DESCRIPTION: Descrição
-    TITLE: Título
-  WorkflowField:
-    DeleteAction: Excluir
-    EditAction: Edit
-  WorkflowInstance:
-    TitleLabel: Título
-  WorkflowReminderEmail:
-    HeadingTitle: Título
-  WorkflowReminderTask:
-    SAVE: Salvar
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Grupos
     many_many_Users: Usuários
@@ -81,3 +64,20 @@ pt_BR:
     db_Title: Título
     many_many_Groups: Grupos
     many_many_Users: Usuários
+  WorkflowAction:
+    Author: Autor
+    TITLE: Título
+  WorkflowActionInstance:
+    Title: Título
+  WorkflowDefinition:
+    DESCRIPTION: Descrição
+    TITLE: Título
+  WorkflowField:
+    DeleteAction: Excluir
+    EditAction: Edit
+  WorkflowInstance:
+    TitleLabel: Título
+  WorkflowReminderEmail:
+    HeadingTitle: Título
+  WorkflowReminderTask:
+    SAVE: Salvar

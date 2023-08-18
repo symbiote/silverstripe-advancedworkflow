@@ -59,21 +59,88 @@ es:
     PUBLICATIONDELAY: 'Demora de publicación'
   SiteTree:
     WorkflowOptions: 'Opciones del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Asignar usuarios a acciones del flujo de trabajo'
+    SINGULARNAME: 'Asignar usuarios a una acción del flujo de trabajo'
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Cancelar acciones del flujo de trabajo'
+    SINGULARNAME: 'Cancelar acción del flujo de trabajo'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'Email de'
+    db_EmailSubject: 'Asunto del Email'
+    db_EmailTemplate: 'Plantilla de Email'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'Flujos de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    PLURALNAME: 'Plantillas de flujo de trabajo importadas'
+    SINGULARNAME: 'Plantilla de flujo de trabajo importada'
+    db_Content: Contenido
+    db_Filename: 'Nombre del archivo'
+    db_Name: Nombre
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Acciones del flujo de trabajo'
+    SINGULARNAME: 'Acción del flujo de trabajo'
+    db_Comment: Comentario
+    db_Executed: Ejecutado
+    db_Sort: Ordenar
+    db_Title: Título
+    db_Type: Tipo
+    has_many_Transitions: Transiciones
+    has_one_Member: Miembro
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    PLURALNAME: 'Instancias de acción del flujo de trabajo'
+    SINGULARNAME: 'Instancia de acción del flujo de trabajo'
+    db_Comment: Comentario
+    db_Finished: Terminado
+    has_one_Member: Miembro
+    has_one_Workflow: 'Flujo de trabajo'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Definiciones del flujo de trabajo'
+    SINGULARNAME: 'Definición del flujo de trabajo'
+    db_Description: Descripción
+    db_Sort: Ordenar
+    db_Title: Título
+    has_many_Actions: Acciones
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    PLURALNAME: 'Instancias de flujo de trabajo'
+    SINGULARNAME: 'Instancia de flujo de trabajo'
+    db_Title: Título
+    has_many_Actions: Acciones
+    has_one_CurrentAction: 'Acción actual'
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Transiciones del flujo de trabajo'
+    SINGULARNAME: 'Transición del flujo de trabajo'
+    db_Sort: Ordenar
+    db_Title: Título
+    db_Type: Tipo
+    has_one_Action: Acción
+    many_many_Groups: Grupos
+    many_many_Users: Usuarios
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Exportar
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: días
   Workflow:
     WorkflowActionsTabTitle: 'Acciones del flujo de trabajo'
   WorkflowAction:
     ALLOW_COMMENTING: '¿Permitir hacer comentarios?'
     ALLOW_EDITING: '¿Permitir editar durante este paso?'
     Author: Autor
+    COMMENT: Comentario
+    CommentLabel: Comentario
     ExecutedLabel: Ejecutado
+    FRONTENDCOMMENT: Comentario
     FinishedLabel: Terminado
     TITLE: Título
     TitleDescription: 'El título se usa como el rótulo del botón para esta acción del flujo de trabajo'
     Transitions: Transiciones
     TypeLabel: Tipo
-    COMMENT: Comentario
-    CommentLabel: Comentario
-    FRONTENDCOMMENT: Comentario
   WorkflowActionInstance:
     Title: Título
   WorkflowApplicable:
@@ -154,70 +221,3 @@ es:
     TRANSITIONLOOP: 'Una transición no puede llevar de nuevo a su acción padre.'
     TYPE: Tipo
     TabTitle: 'Restringir a los usuarios'
-  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
-    PLURALNAME: 'Asignar usuarios a acciones del flujo de trabajo'
-    SINGULARNAME: 'Asignar usuarios a una acción del flujo de trabajo'
-    many_many_Groups: Grupos
-    many_many_Users: Usuarios
-  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
-    PLURALNAME: 'Cancelar acciones del flujo de trabajo'
-    SINGULARNAME: 'Cancelar acción del flujo de trabajo'
-  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
-    MENUTITLE: 'Flujos de trabajo'
-  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
-    PLURALNAME: 'Plantillas de flujo de trabajo importadas'
-    SINGULARNAME: 'Plantilla de flujo de trabajo importada'
-    db_Content: Contenido
-    db_Filename: 'Nombre del archivo'
-    db_Name: Nombre
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
-    PLURALNAME: 'Acciones del flujo de trabajo'
-    SINGULARNAME: 'Acción del flujo de trabajo'
-    db_Comment: Comentario
-    db_Executed: Ejecutado
-    db_Sort: Ordenar
-    db_Title: Título
-    db_Type: Tipo
-    has_many_Transitions: Transiciones
-    has_one_Member: Miembro
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
-    PLURALNAME: 'Instancias de acción del flujo de trabajo'
-    SINGULARNAME: 'Instancia de acción del flujo de trabajo'
-    db_Comment: Comentario
-    db_Finished: Terminado
-    has_one_Member: Miembro
-    has_one_Workflow: 'Flujo de trabajo'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
-    PLURALNAME: 'Definiciones del flujo de trabajo'
-    SINGULARNAME: 'Definición del flujo de trabajo'
-    db_Description: Descripción
-    db_Sort: Ordenar
-    db_Title: Título
-    has_many_Actions: Acciones
-    many_many_Groups: Grupos
-    many_many_Users: Usuarios
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
-    PLURALNAME: 'Instancias de flujo de trabajo'
-    SINGULARNAME: 'Instancia de flujo de trabajo'
-    db_Title: Título
-    has_many_Actions: Acciones
-    has_one_CurrentAction: 'Acción actual'
-    many_many_Groups: Grupos
-    many_many_Users: Usuarios
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
-    PLURALNAME: 'Transiciones del flujo de trabajo'
-    SINGULARNAME: 'Transición del flujo de trabajo'
-    db_Sort: Ordenar
-    db_Title: Título
-    db_Type: Tipo
-    has_one_Action: Acción
-    many_many_Groups: Grupos
-    many_many_Users: Usuarios
-  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
-    Export: Exportar
-  UnpublishItemWorkflowAction:
-    DELAYUNPUBDAYSAFTER: días
-  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
-    db_EmailFrom: 'Email de'
-    db_EmailSubject: 'Asunto del Email'
-    db_EmailTemplate: 'Plantilla de Email'
