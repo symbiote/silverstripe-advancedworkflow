@@ -8,32 +8,6 @@ fr:
     USERS: Utilisateurs
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: 'Sujet de l''email'
-  WorkflowAction:
-    Author: Auteur
-    COMMENT: Commentaire
-    CommentLabel: Commentaire
-    FRONTENDCOMMENT: Commentaire
-    TITLE: Titre
-    TypeLabel: Type
-  WorkflowActionInstance:
-    Title: Titre
-  WorkflowDefinition:
-    DESCRIPTION: Description
-    TITLE: Titre
-  WorkflowField:
-    CreateLabel: Créer
-    DeleteAction: Supprimer
-    EditAction: Éditer
-  WorkflowInstance:
-    TitleLabel: Titre
-  WorkflowList:
-    TableHeaderActions: Actions
-  WorkflowReminderEmail:
-    HeadingTitle: Titre
-  WorkflowReminderTask:
-    SAVE: Sauvegarder
-  WorkflowTransition:
-    TYPE: Type
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Groupes
     many_many_Users: Utilisateurs
@@ -70,3 +44,29 @@ fr:
     db_Type: Type
     many_many_Groups: Groupes
     many_many_Users: Utilisateurs
+  WorkflowAction:
+    Author: Auteur
+    COMMENT: Commentaire
+    CommentLabel: Commentaire
+    FRONTENDCOMMENT: Commentaire
+    TITLE: Titre
+    TypeLabel: Type
+  WorkflowActionInstance:
+    Title: Titre
+  WorkflowDefinition:
+    DESCRIPTION: Description
+    TITLE: Titre
+  WorkflowField:
+    CreateLabel: Créer
+    DeleteAction: Supprimer
+    EditAction: Éditer
+  WorkflowInstance:
+    TitleLabel: Titre
+  WorkflowList:
+    TableHeaderActions: Actions
+  WorkflowReminderEmail:
+    HeadingTitle: Titre
+  WorkflowReminderTask:
+    SAVE: Sauvegarder
+  WorkflowTransition:
+    TYPE: Type

@@ -9,32 +9,6 @@ ru:
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: 'Тема письма'
     FORMATTINGHELP: 'Справка по форматированию'
-  WorkflowAction:
-    Author: Автор
-    COMMENT: Комментарий
-    CommentLabel: Комментарий
-    FRONTENDCOMMENT: Комментарий
-    TITLE: Заголовок
-    TypeLabel: Тип
-  WorkflowActionInstance:
-    Title: Заголовок
-  WorkflowDefinition:
-    DESCRIPTION: Описание
-    TITLE: Заголовок
-  WorkflowField:
-    CreateLabel: Создать
-    DeleteAction: Удалить
-    EditAction: Редактировать
-  WorkflowInstance:
-    TitleLabel: Заголовок
-  WorkflowList:
-    TableHeaderActions: Действия
-  WorkflowReminderEmail:
-    HeadingTitle: Заголовок
-  WorkflowReminderTask:
-    SAVE: Сохранить
-  WorkflowTransition:
-    TYPE: Тип
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Группы
     many_many_Users: Пользователи
@@ -71,3 +45,29 @@ ru:
     db_Type: Тип
     many_many_Groups: Группы
     many_many_Users: Пользователи
+  WorkflowAction:
+    Author: Автор
+    COMMENT: Комментарий
+    CommentLabel: Комментарий
+    FRONTENDCOMMENT: Комментарий
+    TITLE: Заголовок
+    TypeLabel: Тип
+  WorkflowActionInstance:
+    Title: Заголовок
+  WorkflowDefinition:
+    DESCRIPTION: Описание
+    TITLE: Заголовок
+  WorkflowField:
+    CreateLabel: Создать
+    DeleteAction: Удалить
+    EditAction: Редактировать
+  WorkflowInstance:
+    TitleLabel: Заголовок
+  WorkflowList:
+    TableHeaderActions: Действия
+  WorkflowReminderEmail:
+    HeadingTitle: Заголовок
+  WorkflowReminderTask:
+    SAVE: Сохранить
+  WorkflowTransition:
+    TYPE: Тип

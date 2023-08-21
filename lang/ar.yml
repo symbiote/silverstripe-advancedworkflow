@@ -52,6 +52,75 @@ ar:
     NOTIFICATIONNOTE: 'جميع المستخدمين المرتبطين بمهام سير العمل سوف يتم إرسال بريد الكترونى لهم عند بدء الإجراء.'
   PublishItemWorkflowAction:
     PUBLICATIONDELAY: 'تأخير النشر'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
+    SINGULARNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
+    many_many_Groups: المجموعات
+    many_many_Users: مستخدمين
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'إلغاء فعاليات سير العمل'
+    SINGULARNAME: 'إلغاء فعاليات سير العمل'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
+    SINGULARNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
+    db_EmailFrom: 'البريد الالكترونى من'
+    db_EmailSubject: 'موضوع البريد الإلكتروني'
+    db_EmailTemplate: 'نموذج البريد الالكترونى'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
+    SINGULARNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: القيمة
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'إجراءات بسيطة للموافقة على مهام سير العمل'
+    SINGULARNAME: 'إجراء بسيط للموافقة على مهام سير العمل'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: المحتوى
+    db_Filename: 'اسم الملف'
+    db_Name: الاسم
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'إجراءات تسيير العمل'
+    SINGULARNAME: 'فعالية سير العمل'
+    db_Comment: تعليق
+    db_Executed: 'تم تنفيذه'
+    db_Title: عنوان
+    db_Type: النوع
+    has_many_Transitions: التنقلات
+    has_one_Member: العضو
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    SINGULARNAME: 'مثال لفعاليات سير العمل'
+    db_Comment: تعليق
+    db_Finished: انتهى
+    has_one_Member: العضو
+    has_one_Workflow: 'سير العمل'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'تعريفات مهام سير العمل'
+    SINGULARNAME: 'تعريف مهام سير العمل'
+    db_Description: الوصف
+    db_Template: قالب
+    db_Title: عنوان
+    has_many_Actions: أنشطة
+    many_many_Groups: المجموعات
+    many_many_Users: مستخدمين
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    SINGULARNAME: 'مثال لسير العمل'
+    db_Title: عنوان
+    has_many_Actions: أنشطة
+    has_one_CurrentAction: 'النشاط الحالي'
+    many_many_Groups: المجموعات
+    many_many_Users: مستخدمين
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'تحولات مهام سير العمل'
+    SINGULARNAME: 'تحول مهام سير العمل'
+    db_Title: عنوان
+    db_Type: النوع
+    has_one_Action: إجراء
+    many_many_Groups: المجموعات
+    many_many_Users: مستخدمين
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: أيام
   Workflow:
     WorkflowActionsTabTitle: 'إجراءات تسيير العمل'
   WorkflowAction:
@@ -147,72 +216,3 @@ ar:
     TRANSITIONLOOP: 'التحول لا يستطيع العودة إلى الإجراء الرئيسى.'
     TYPE: نوع
     TabTitle: 'حصرا للمستخدمين'
-  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
-    PLURALNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
-    SINGULARNAME: 'قم بتعيين مستخدمين لفعاليات سير العمل'
-    many_many_Groups: المجموعات
-    many_many_Users: مستخدمين
-  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
-    PLURALNAME: 'إلغاء فعاليات سير العمل'
-    SINGULARNAME: 'إلغاء فعاليات سير العمل'
-  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
-    PLURALNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
-    SINGULARNAME: 'قم بإخطار المستخدمين بإجراءات سير العمل'
-    db_EmailFrom: 'البريد الالكترونى من'
-    db_EmailSubject: 'موضوع البريد الإلكتروني'
-    db_EmailTemplate: 'نموذج البريد الالكترونى'
-  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
-    PLURALNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
-    SINGULARNAME: 'نشر إجراءات سير العمل الخاصة بالعناصر'
-  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
-    PLURALNAME: 'إجراءات بسيطة للموافقة على مهام سير العمل'
-    SINGULARNAME: 'إجراء بسيط للموافقة على مهام سير العمل'
-  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
-    MENUTITLE: 'سير العمل'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
-    PLURALNAME: 'إجراءات تسيير العمل'
-    SINGULARNAME: 'فعالية سير العمل'
-    db_Comment: تعليق
-    db_Executed: 'تم تنفيذه'
-    db_Title: عنوان
-    db_Type: النوع
-    has_many_Transitions: التنقلات
-    has_one_Member: العضو
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
-    SINGULARNAME: 'مثال لفعاليات سير العمل'
-    db_Comment: تعليق
-    db_Finished: انتهى
-    has_one_Member: العضو
-    has_one_Workflow: 'سير العمل'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
-    PLURALNAME: 'تعريفات مهام سير العمل'
-    SINGULARNAME: 'تعريف مهام سير العمل'
-    db_Description: الوصف
-    db_Template: قالب
-    db_Title: عنوان
-    has_many_Actions: أنشطة
-    many_many_Groups: المجموعات
-    many_many_Users: مستخدمين
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
-    SINGULARNAME: 'مثال لسير العمل'
-    db_Title: عنوان
-    has_many_Actions: أنشطة
-    has_one_CurrentAction: 'النشاط الحالي'
-    many_many_Groups: المجموعات
-    many_many_Users: مستخدمين
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
-    PLURALNAME: 'تحولات مهام سير العمل'
-    SINGULARNAME: 'تحول مهام سير العمل'
-    db_Title: عنوان
-    db_Type: النوع
-    has_one_Action: إجراء
-    many_many_Groups: المجموعات
-    many_many_Users: مستخدمين
-  UnpublishItemWorkflowAction:
-    DELAYUNPUBDAYSAFTER: أيام
-  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
-    db_Value: القيمة
-  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
-    db_Content: المحتوى
-    db_Filename: 'اسم الملف'
-    db_Name: الاسم

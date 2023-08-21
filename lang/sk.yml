@@ -9,32 +9,6 @@ sk:
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: Predmet
     EMAILTEMPLATE: 'E-mailová šablóna'
-  WorkflowAction:
-    Author: Autor
-    COMMENT: Komentár
-    CommentLabel: Komentár
-    FRONTENDCOMMENT: Komentár
-    TITLE: Názov
-    TypeLabel: Typ
-  WorkflowActionInstance:
-    Title: Názov
-  WorkflowDefinition:
-    DESCRIPTION: Popis
-    TITLE: Názov
-  WorkflowField:
-    CreateLabel: Vytvoriť
-    DeleteAction: Vymazať
-    EditAction: Editovať
-  WorkflowInstance:
-    TitleLabel: Názov
-  WorkflowList:
-    TableHeaderActions: Akcie
-  WorkflowReminderEmail:
-    HeadingTitle: Názov
-  WorkflowReminderTask:
-    SAVE: Uložiť
-  WorkflowTransition:
-    TYPE: Typ
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Skupiny
     many_many_Users: Používatelia
@@ -74,3 +48,29 @@ sk:
     db_Type: Typ
     many_many_Groups: Skupiny
     many_many_Users: Používatelia
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Komentár
+    CommentLabel: Komentár
+    FRONTENDCOMMENT: Komentár
+    TITLE: Názov
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Názov
+  WorkflowDefinition:
+    DESCRIPTION: Popis
+    TITLE: Názov
+  WorkflowField:
+    CreateLabel: Vytvoriť
+    DeleteAction: Vymazať
+    EditAction: Editovať
+  WorkflowInstance:
+    TitleLabel: Názov
+  WorkflowList:
+    TableHeaderActions: Akcie
+  WorkflowReminderEmail:
+    HeadingTitle: Názov
+  WorkflowReminderTask:
+    SAVE: Uložiť
+  WorkflowTransition:
+    TYPE: Typ

@@ -9,29 +9,6 @@ lt:
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: 'El. laiško tema'
     FORMATTINGHELP: 'Galimos reikšmės turinyje'
-  WorkflowAction:
-    Author: Autorius
-    COMMENT: Komentaras
-    CommentLabel: Komentaras
-    FRONTENDCOMMENT: Komentaras
-    TITLE: Pavadinimas
-  WorkflowActionInstance:
-    Title: Pavadinimas
-  WorkflowDefinition:
-    DESCRIPTION: Aprašymas
-    TITLE: Pavadinimas
-  WorkflowField:
-    CreateLabel: Sukurti
-    DeleteAction: Ištrinti
-    EditAction: Redaguoti
-  WorkflowInstance:
-    TitleLabel: Pavadinimas
-  WorkflowList:
-    TableHeaderActions: Veiksmai
-  WorkflowReminderEmail:
-    HeadingTitle: Pavadinimas
-  WorkflowReminderTask:
-    SAVE: Saugoti
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Grupės
     many_many_Users: Vartotojai
@@ -63,3 +40,26 @@ lt:
     db_Title: Pavadinimas
     many_many_Groups: Grupės
     many_many_Users: Vartotojai
+  WorkflowAction:
+    Author: Autorius
+    COMMENT: Komentaras
+    CommentLabel: Komentaras
+    FRONTENDCOMMENT: Komentaras
+    TITLE: Pavadinimas
+  WorkflowActionInstance:
+    Title: Pavadinimas
+  WorkflowDefinition:
+    DESCRIPTION: Aprašymas
+    TITLE: Pavadinimas
+  WorkflowField:
+    CreateLabel: Sukurti
+    DeleteAction: Ištrinti
+    EditAction: Redaguoti
+  WorkflowInstance:
+    TitleLabel: Pavadinimas
+  WorkflowList:
+    TableHeaderActions: Veiksmai
+  WorkflowReminderEmail:
+    HeadingTitle: Pavadinimas
+  WorkflowReminderTask:
+    SAVE: Saugoti

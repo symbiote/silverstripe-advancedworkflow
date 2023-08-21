@@ -17,8 +17,8 @@ mi:
     INVALIDCLASSTOORDER: 'I tāurua he tauaha muhu ki te raupapa.'
     INVALIDIDLIST: 'I tāurua he rārangi muhu o ngā TT.'
     INVALIDPARENTID: 'I tāurua he TT matua muhu.'
-    SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
     LastEdited: 'Kua Hurihia'
+    SORTORDERSAVED: 'Kua tiakina te raupapa kōmaka.'
     Title: Taitara
   AdvancedWorkflowFrontendForm:
     ACTIONCONTROLLERCHECK: 'Kāore e whakaaetia te hohenga "%s" i te pūmana (Tauaha: %s)'
@@ -49,6 +49,74 @@ mi:
     NOTIFICATIONNOTE: 'Ka tukuna he īmēra ki ngā kaiwhakamahi katoa e tāpiritia ana ki te reremahi ina whakahaeretia tēnei hohenga.'
   PublishItemWorkflowAction:
     PUBLICATIONDELAY: 'Takawarenga Whakaputa'
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
+    many_many_Groups: 'Ngā Rōpū'
+    many_many_Users: 'Ngā Kaiwhakamahi'
+  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
+    PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    PLURALNAME: 'Whakamōhiotia Ngā Hohenga Reremahi Kaiwhakamahi'
+    SINGULARNAME: 'Whakamōhiotia Te Hohenga Reremahi Kaiwhakamahi'
+    db_EmailFrom: 'Īmēra mai'
+    db_EmailSubject: 'Kaupapa īmēra'
+    db_EmailTemplate: 'Tātauira īmēra'
+  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
+    PLURALNAME: 'Whakaputaina Ngā Hohenga Reremahi Tuemi'
+    SINGULARNAME: 'Whakaputaina Te Hohenga Reremahi Tuemi'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Uara
+  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
+    PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
+    SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
+  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
+    MENUTITLE: 'Ngā reremahi'
+  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
+    db_Content: 'Ngā ihirangi'
+    db_Filename: 'Ingoa Kōnae'
+    db_Name: Ingoa
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    PLURALNAME: 'Ngā Hohenga Reremahi'
+    SINGULARNAME: 'Hohenga Reremahi'
+    db_Comment: Tākupu
+    db_Executed: 'Kua Kawea'
+    db_Title: Taitara
+    db_Type: Momo
+    has_many_Transitions: 'Ngā Whakawhiti'
+    has_one_Member: Mema
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+    SINGULARNAME: 'Tauira Hohenga Reremahi'
+    db_Comment: Tākupu
+    db_Finished: 'Kua Oti'
+    has_one_Member: Mema
+    has_one_Workflow: Reremahi
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
+    PLURALNAME: 'Ngā Whakamāramatanga Reremahi'
+    SINGULARNAME: 'Whakamāramatanga Reremahi'
+    db_Description: Whakaahuatanga
+    db_Template: Tātauira
+    db_Title: Taitara
+    has_many_Actions: 'Ngā Mahi'
+    many_many_Groups: 'Ngā Rōpū'
+    many_many_Users: 'Ngā Kaiwhakamahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
+    SINGULARNAME: 'Tauira Reremahi'
+    db_Title: Taitara
+    has_many_Actions: 'Ngā Mahi'
+    many_many_Groups: 'Ngā Rōpū'
+    many_many_Users: 'Ngā Kaiwhakamahi'
+  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    PLURALNAME: 'Ngā Whakawhiti Reremahi'
+    SINGULARNAME: 'Whakawhitinga Reremahi'
+    db_Title: Taitara
+    db_Type: Momo
+    has_one_Action: Hohenga
+    many_many_Groups: 'Ngā Rōpū'
+    many_many_Users: 'Ngā Kaiwhakamahi'
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: 'ngā rā'
   Workflow:
     WorkflowActionsTabTitle: 'Ngā Hohenga Reremahi'
   WorkflowAction:
@@ -65,6 +133,8 @@ mi:
     TitleDescription: 'Ka whakamahia te Taitara hei tapanga pātene mō tēnei Rerenga Mahi'
     Transitions: 'Ngā Whakawhiti'
     TypeLabel: Momo
+  WorkflowActionInstance:
+    Title: Taitara
   WorkflowApplicable:
     DEFINITION: 'Reremahi Kua Hoatu'
     EFFECTIVE_WORKFLOW: 'Reremahi Tōtika'
@@ -116,6 +186,10 @@ mi:
     TitleLabel: Taitara
     WORKFLOW_TRANSITION_EXCEPTION: 'Tūnga whakawhiti muhu mō te hohenga #%s'
     WorkflowStatusLabel: 'Tūnga Reremahi'
+  WorkflowList:
+    TableHeaderActions: 'Ngā Mahi'
+  WorkflowReminderEmail:
+    HeadingTitle: Taitara
   WorkflowReminderTask:
     SAVE: Tiaki
   WorkflowService:
@@ -125,83 +199,9 @@ mi:
     INVALID_TEMPLATE_ACTION: 'I tāurua he tauaha hohenga muhu i te tātauira'
   WorkflowTransition:
     ACTION: Hohenga
+    Active: Hohe
     NEXT_ACTION: 'Hohenga Panuku'
     SELECTONE: '(Tīpakohia kotahi)'
     TRANSITIONLOOP: 'Kāore e taea e te whakawhitinga te ahu anō ki te hohenga matua.'
     TYPE: Momo
     TabTitle: 'Whakawhāitihia ki ngā Kaiwhakamahi'
-    Active: Hohe
-  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
-    PLURALNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Tautapa Kaiwhakamahi Ki Ngā Hohenga Reremahi'
-    many_many_Groups: 'Ngā Rōpū'
-    many_many_Users: 'Ngā Kaiwhakamahi'
-  Symbiote\AdvancedWorkflow\Actions\CancelWorkflowAction:
-    PLURALNAME: 'Whakakorea Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Whakakorea Te Hohenga Reremahi'
-  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
-    PLURALNAME: 'Whakamōhiotia Ngā Hohenga Reremahi Kaiwhakamahi'
-    SINGULARNAME: 'Whakamōhiotia Te Hohenga Reremahi Kaiwhakamahi'
-    db_EmailFrom: 'Īmēra mai'
-    db_EmailSubject: 'Kaupapa īmēra'
-    db_EmailTemplate: 'Tātauira īmēra'
-  Symbiote\AdvancedWorkflow\Actions\PublishItemWorkflowAction:
-    PLURALNAME: 'Whakaputaina Ngā Hohenga Reremahi Tuemi'
-    SINGULARNAME: 'Whakaputaina Te Hohenga Reremahi Tuemi'
-  Symbiote\AdvancedWorkflow\Actions\SimpleApprovalWorkflowAction:
-    PLURALNAME: 'Ngā Hohenga Reremahi Whakaaetanga Māmā'
-    SINGULARNAME: 'Hohenga Reremahi Whakaaetanga Māmā'
-  Symbiote\AdvancedWorkflow\Admin\AdvancedWorkflowAdmin:
-    MENUTITLE: 'Ngā reremahi'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
-    PLURALNAME: 'Ngā Hohenga Reremahi'
-    SINGULARNAME: 'Hohenga Reremahi'
-    db_Comment: Tākupu
-    db_Executed: 'Kua Kawea'
-    db_Title: Taitara
-    db_Type: Momo
-    has_many_Transitions: 'Ngā Whakawhiti'
-    has_one_Member: Mema
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
-    SINGULARNAME: 'Tauira Hohenga Reremahi'
-    db_Comment: Tākupu
-    db_Finished: 'Kua Oti'
-    has_one_Member: Mema
-    has_one_Workflow: Reremahi
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
-    PLURALNAME: 'Ngā Whakamāramatanga Reremahi'
-    SINGULARNAME: 'Whakamāramatanga Reremahi'
-    db_Description: Whakaahuatanga
-    db_Template: Tātauira
-    db_Title: Taitara
-    has_many_Actions: 'Ngā Mahi'
-    many_many_Groups: 'Ngā Rōpū'
-    many_many_Users: 'Ngā Kaiwhakamahi'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance:
-    SINGULARNAME: 'Tauira Reremahi'
-    db_Title: Taitara
-    has_many_Actions: 'Ngā Mahi'
-    many_many_Groups: 'Ngā Rōpū'
-    many_many_Users: 'Ngā Kaiwhakamahi'
-  Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
-    PLURALNAME: 'Ngā Whakawhiti Reremahi'
-    SINGULARNAME: 'Whakawhitinga Reremahi'
-    db_Title: Taitara
-    db_Type: Momo
-    has_one_Action: Hohenga
-    many_many_Groups: 'Ngā Rōpū'
-    many_many_Users: 'Ngā Kaiwhakamahi'
-  UnpublishItemWorkflowAction:
-    DELAYUNPUBDAYSAFTER: 'ngā rā'
-  WorkflowActionInstance:
-    Title: Taitara
-  WorkflowList:
-    TableHeaderActions: 'Ngā Mahi'
-  WorkflowReminderEmail:
-    HeadingTitle: Taitara
-  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
-    db_Value: Uara
-  Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
-    db_Content: 'Ngā ihirangi'
-    db_Filename: 'Ingoa Kōnae'
-    db_Name: Ingoa
