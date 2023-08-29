@@ -10,32 +10,6 @@ nl:
     EMAILSUBJECT: E-mailonderwerp
     EMAILTEMPLATE: E-mailtemplate
     FORMATTINGHELP: 'Hulp met opmaak'
-  WorkflowAction:
-    Author: Auteur
-    COMMENT: Reactie
-    CommentLabel: Reactie
-    FRONTENDCOMMENT: Reactie
-    TITLE: Titel
-    TypeLabel: 'Soort veld'
-  WorkflowActionInstance:
-    Title: Titel
-  WorkflowDefinition:
-    DESCRIPTION: Omschrijving
-    TITLE: Titel
-  WorkflowField:
-    CreateLabel: Aanmaken
-    DeleteAction: Verwijder
-    EditAction: Bewerken
-  WorkflowInstance:
-    TitleLabel: Titel
-  WorkflowList:
-    TableHeaderActions: Acties
-  WorkflowReminderEmail:
-    HeadingTitle: Titel
-  WorkflowReminderTask:
-    SAVE: Opslaan
-  WorkflowTransition:
-    TYPE: 'Soort veld'
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Groepen
     many_many_Users: Gebruikers
@@ -76,3 +50,29 @@ nl:
     db_Type: 'Soort veld'
     many_many_Groups: Groepen
     many_many_Users: Gebruikers
+  WorkflowAction:
+    Author: Auteur
+    COMMENT: Reactie
+    CommentLabel: Reactie
+    FRONTENDCOMMENT: Reactie
+    TITLE: Titel
+    TypeLabel: 'Soort veld'
+  WorkflowActionInstance:
+    Title: Titel
+  WorkflowDefinition:
+    DESCRIPTION: Omschrijving
+    TITLE: Titel
+  WorkflowField:
+    CreateLabel: Aanmaken
+    DeleteAction: Verwijder
+    EditAction: Bewerken
+  WorkflowInstance:
+    TitleLabel: Titel
+  WorkflowList:
+    TableHeaderActions: Acties
+  WorkflowReminderEmail:
+    HeadingTitle: Titel
+  WorkflowReminderTask:
+    SAVE: Opslaan
+  WorkflowTransition:
+    TYPE: 'Soort veld'

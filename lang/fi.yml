@@ -9,32 +9,6 @@ fi:
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: 'Sähköpostin aihe'
     FORMATTINGHELP: Muotoiluapu
-  WorkflowAction:
-    Author: Kirjoittaja
-    COMMENT: Kommentti
-    CommentLabel: Kommentti
-    FRONTENDCOMMENT: Kommentti
-    TITLE: Nimi
-    TypeLabel: Tyyppi
-  WorkflowActionInstance:
-    Title: Nimi
-  WorkflowDefinition:
-    DESCRIPTION: Kuvaus
-    TITLE: Nimi
-  WorkflowField:
-    CreateLabel: Luo
-    DeleteAction: Poista
-    EditAction: Muokkaa
-  WorkflowInstance:
-    TitleLabel: Nimi
-  WorkflowList:
-    TableHeaderActions: Toiminnot
-  WorkflowReminderEmail:
-    HeadingTitle: Otsikko
-  WorkflowReminderTask:
-    SAVE: Tallenna
-  WorkflowTransition:
-    TYPE: Tyyppi
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Ryhmät
     many_many_Users: Käyttäjät
@@ -72,3 +46,29 @@ fi:
     db_Type: Tyyppi
     many_many_Groups: Ryhmät
     many_many_Users: Käyttäjät
+  WorkflowAction:
+    Author: Kirjoittaja
+    COMMENT: Kommentti
+    CommentLabel: Kommentti
+    FRONTENDCOMMENT: Kommentti
+    TITLE: Nimi
+    TypeLabel: Tyyppi
+  WorkflowActionInstance:
+    Title: Nimi
+  WorkflowDefinition:
+    DESCRIPTION: Kuvaus
+    TITLE: Nimi
+  WorkflowField:
+    CreateLabel: Luo
+    DeleteAction: Poista
+    EditAction: Muokkaa
+  WorkflowInstance:
+    TitleLabel: Nimi
+  WorkflowList:
+    TableHeaderActions: Toiminnot
+  WorkflowReminderEmail:
+    HeadingTitle: Otsikko
+  WorkflowReminderTask:
+    SAVE: Tallenna
+  WorkflowTransition:
+    TYPE: Tyyppi

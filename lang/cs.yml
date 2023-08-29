@@ -9,29 +9,6 @@ cs:
   NotifyUsersWorkflowAction:
     EMAILSUBJECT: 'Předmět emailu'
     FORMATTINGHELP: 'Nápověda k formátování'
-  WorkflowAction:
-    Author: Autor
-    TITLE: Název
-    TypeLabel: Typ
-  WorkflowActionInstance:
-    Title: Název
-  WorkflowDefinition:
-    DESCRIPTION: Popis
-    TITLE: Název
-  WorkflowField:
-    CreateLabel: Vytvořit
-    DeleteAction: Smazat
-    EditAction: Editovat
-  WorkflowInstance:
-    TitleLabel: Název
-  WorkflowList:
-    TableHeaderActions: Akce
-  WorkflowReminderEmail:
-    HeadingTitle: Název
-  WorkflowReminderTask:
-    SAVE: Uložit
-  WorkflowTransition:
-    TYPE: Typ
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Skupiny
     many_many_Users: Uživatelé
@@ -63,3 +40,26 @@ cs:
     db_Type: Typ
     many_many_Groups: Skupiny
     many_many_Users: Uživatelé
+  WorkflowAction:
+    Author: Autor
+    TITLE: Název
+    TypeLabel: Typ
+  WorkflowActionInstance:
+    Title: Název
+  WorkflowDefinition:
+    DESCRIPTION: Popis
+    TITLE: Název
+  WorkflowField:
+    CreateLabel: Vytvořit
+    DeleteAction: Smazat
+    EditAction: Editovat
+  WorkflowInstance:
+    TitleLabel: Název
+  WorkflowList:
+    TableHeaderActions: Akce
+  WorkflowReminderEmail:
+    HeadingTitle: Název
+  WorkflowReminderTask:
+    SAVE: Uložit
+  WorkflowTransition:
+    TYPE: Typ
