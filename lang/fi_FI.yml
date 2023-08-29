@@ -12,51 +12,17 @@ fi_FI:
     Title: Otsikko
   AllowEditing:
     NoString: Ei
-  NotifyUsersWorkflowAction:
-    EMAILTEMPLATE: Sähköpostipohja
-    EMAILSUBJECT: Otsikko
-  WorkflowAction:
-    Author: Tekijä
-    FinishedLabel: Valmistunut
-    TITLE: Otsikko
-    TypeLabel: Tyyppi
-  WorkflowActionInstance:
-    Title: Otsikko
-  WorkflowDefinition:
-    TITLE: Otsikko
-    DESCRIPTION: Kuvaus
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Aktiivinen
-    CompletedWorkflowStateTitle: Valmistunut
-  WorkflowField:
-    CreateLabel: Luo
-    DeleteAction: Poista
-    EditAction: Muokkaa
-  WorkflowInstance:
-    ActionLogTitle: Loki
-    TargetClassLabel: Kohdeluokka
-    TargetIDLabel: Kohde
-    TitleLabel: Otsikko
-  WorkflowList:
-    TableHeaderActions: Toimenpiteet
-    TableHeaderSubmitted: Lähetetty
-  WorkflowReminderTask:
-    SAVE: Tallenna
-  WorkflowTransition:
-    Active: Aktiivinen
-    NEXT_ACTION: 'Seuraava toimenpide'
-    Passive: Passiivinen
-    TYPE: Tyyppi
   AssignUsersToWorkflowAction:
     GROUPS: Ryhmät
+  NotifyUsersWorkflowAction:
+    EMAILSUBJECT: Otsikko
+    EMAILTEMPLATE: Sähköpostipohja
+  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
+    many_many_Groups: Ryhmät
   Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
     PLURALNAME: 'Informoi käyttäjiä työnkulun toiminnoista'
     db_EmailSubject: Otsikko
     db_EmailTemplate: Sähköpostipohja
-  WorkflowReminderEmail:
-    HeadingTitle: Otsikko
-  Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
-    many_many_Groups: Ryhmät
   Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
     db_Value: Arvo
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
@@ -82,3 +48,37 @@ fi_FI:
     db_Title: Otsikko
     db_Type: Tyyppi
     many_many_Groups: Ryhmät
+  WorkflowAction:
+    Author: Tekijä
+    FinishedLabel: Valmistunut
+    TITLE: Otsikko
+    TypeLabel: Tyyppi
+  WorkflowActionInstance:
+    Title: Otsikko
+  WorkflowDefinition:
+    DESCRIPTION: Kuvaus
+    TITLE: Otsikko
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktiivinen
+    CompletedWorkflowStateTitle: Valmistunut
+  WorkflowField:
+    CreateLabel: Luo
+    DeleteAction: Poista
+    EditAction: Muokkaa
+  WorkflowInstance:
+    ActionLogTitle: Loki
+    TargetClassLabel: Kohdeluokka
+    TargetIDLabel: Kohde
+    TitleLabel: Otsikko
+  WorkflowList:
+    TableHeaderActions: Toimenpiteet
+    TableHeaderSubmitted: Lähetetty
+  WorkflowReminderEmail:
+    HeadingTitle: Otsikko
+  WorkflowReminderTask:
+    SAVE: Tallenna
+  WorkflowTransition:
+    Active: Aktiivinen
+    NEXT_ACTION: 'Seuraava toimenpide'
+    Passive: Passiivinen
+    TYPE: Tyyppi

@@ -15,30 +15,6 @@ hr:
   AssignUsersToWorkflowAction:
     GROUPS: Grupe
     USERS: Korisnici
-  WorkflowAction:
-    Author: Autor
-    COMMENT: Komentar
-    CommentLabel: Komentar
-    FRONTENDCOMMENT: Komentar
-    TITLE: Naslov
-    TypeLabel: Tip
-  WorkflowActionInstance:
-    Title: Naslov
-  WorkflowDefinition:
-    DESCRIPTION: Opis
-    TITLE: Naslov
-  WorkflowField:
-    CreateLabel: Kreiraj
-    DeleteAction: Obriši
-    EditAction: Uredi
-  WorkflowInstance:
-    TitleLabel: Naslov
-  WorkflowReminderEmail:
-    HeadingTitle: Naslov
-  WorkflowReminderTask:
-    SAVE: Spremi
-  WorkflowTransition:
-    TYPE: Tip
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Grupe
     many_many_Users: Korisnici
@@ -68,3 +44,27 @@ hr:
     db_Type: Tip
     many_many_Groups: Grupe
     many_many_Users: Korisnici
+  WorkflowAction:
+    Author: Autor
+    COMMENT: Komentar
+    CommentLabel: Komentar
+    FRONTENDCOMMENT: Komentar
+    TITLE: Naslov
+    TypeLabel: Tip
+  WorkflowActionInstance:
+    Title: Naslov
+  WorkflowDefinition:
+    DESCRIPTION: Opis
+    TITLE: Naslov
+  WorkflowField:
+    CreateLabel: Kreiraj
+    DeleteAction: Obriši
+    EditAction: Uredi
+  WorkflowInstance:
+    TitleLabel: Naslov
+  WorkflowReminderEmail:
+    HeadingTitle: Naslov
+  WorkflowReminderTask:
+    SAVE: Spremi
+  WorkflowTransition:
+    TYPE: Tip

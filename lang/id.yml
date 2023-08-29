@@ -2,52 +2,14 @@ id:
   AdvancedWorkflowAdmin:
     LastEdited: Diubah
     Title: Judul
+  AllowEditing:
+    NoString: Tidak
   AssignUsersToWorkflowAction:
     GROUPS: Grup
     USERS: Pengguna
   NotifyUsersWorkflowAction:
     EMAILFROM: 'Surel dari'
     EMAILSUBJECT: 'Judul surel'
-  WorkflowAction:
-    Author: Pengarang
-    COMMENT: Komentar
-    CommentLabel: Komentar
-    FRONTENDCOMMENT: Komentar
-    TITLE: Judul
-    Transitions: Transisi
-    TypeLabel: Tipe
-  WorkflowActionInstance:
-    Title: Judul
-  WorkflowDefinition:
-    DESCRIPTION: Deskripsi
-    TITLE: Judul
-  WorkflowEmbargoExpiryExtension:
-    ActiveWorkflowStateTitle: Aktif
-  WorkflowField:
-    CreateLabel: Buat
-    DeleteAction: Hapus
-    EditAction: Edit
-  WorkflowInstance:
-    ActionLogTitle: Log
-    TitleLabel: Judul
-  WorkflowTransition:
-    ACTION: Aksi
-    Active: Aktif
-    Passive: Pasiv
-    SELECTONE: '(Pilih satu)'
-    TYPE: Tipe
-  AllowEditing:
-    NoString: Tidak
-  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
-    Export: Ekspor
-  UnpublishItemWorkflowAction:
-    DELAYUNPUBDAYSAFTER: hari
-  WorkflowList:
-    TableHeaderActions: Tindakan
-  WorkflowReminderEmail:
-    HeadingTitle: Judul
-  WorkflowReminderTask:
-    SAVE: Simpan
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Kelompok
     many_many_Users: Pengguna
@@ -86,3 +48,41 @@ id:
     has_one_Action: Aksi
     many_many_Groups: Kelompok
     many_many_Users: Pengguna
+  Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction:
+    Export: Ekspor
+  UnpublishItemWorkflowAction:
+    DELAYUNPUBDAYSAFTER: hari
+  WorkflowAction:
+    Author: Pengarang
+    COMMENT: Komentar
+    CommentLabel: Komentar
+    FRONTENDCOMMENT: Komentar
+    TITLE: Judul
+    Transitions: Transisi
+    TypeLabel: Tipe
+  WorkflowActionInstance:
+    Title: Judul
+  WorkflowDefinition:
+    DESCRIPTION: Deskripsi
+    TITLE: Judul
+  WorkflowEmbargoExpiryExtension:
+    ActiveWorkflowStateTitle: Aktif
+  WorkflowField:
+    CreateLabel: Buat
+    DeleteAction: Hapus
+    EditAction: Edit
+  WorkflowInstance:
+    ActionLogTitle: Log
+    TitleLabel: Judul
+  WorkflowList:
+    TableHeaderActions: Tindakan
+  WorkflowReminderEmail:
+    HeadingTitle: Judul
+  WorkflowReminderTask:
+    SAVE: Simpan
+  WorkflowTransition:
+    ACTION: Aksi
+    Active: Aktif
+    Passive: Pasiv
+    SELECTONE: '(Pilih satu)'
+    TYPE: Tipe
