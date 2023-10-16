@@ -176,7 +176,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     public function clearPublishJob()
     {
         $job = $this->owner->PublishJob();
-        if ($job && $job->exists()) {
+        if ($job && $job->exists() && !$job->JobFinished) {
             $job->delete();
         }
         $this->owner->PublishJobID = 0;
@@ -189,7 +189,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
     {
         // Cancel any in-progress unpublish job
         $job = $this->owner->UnPublishJob();
-        if ($job && $job->exists()) {
+        if ($job && $job->exists() && !$job->JobFinished) {
             $job->delete();
         }
         $this->owner->UnPublishJobID = 0;
@@ -291,6 +291,10 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 
         // Jobs can only be queued for records that already exist
         if (!$this->owner->ID) {
+            return;
+        }
+        
+        if ($this->owner->hasMethod('isPublishJobRunning') && $this->owner->isPublishJobRunning()) {
             return;
         }
 
