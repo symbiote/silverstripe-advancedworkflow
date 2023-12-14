@@ -20,6 +20,8 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
  * @license    BSD License (http://silverstripe.org/bsd-license/)
  * @package    advancedworkflow
  * @subpackage actions
+ * @method SilverStripe\ORM\ManyManyList<Group> Groups()
+ * @method SilverStripe\ORM\ManyManyList<Member> Users()
  */
 class AssignUsersToWorkflowAction extends WorkflowAction
 {

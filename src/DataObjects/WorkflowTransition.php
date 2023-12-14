@@ -27,11 +27,13 @@ use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
  * Therefore, any logic around whether the workflow can proceed should be
  * managed within this method.
  *
- * @method WorkflowAction Action()
- * @method WorkflowAction NextAction()
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ * @method WorkflowAction Action()
+ * @method SilverStripe\ORM\ManyManyList<Group> Groups()
+ * @method WorkflowAction NextAction()
+ * @method SilverStripe\ORM\ManyManyList<Member> Users()
  */
 class WorkflowTransition extends DataObject
 {
