@@ -7,8 +7,6 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
 /**
- *
- *
  * @author Marcus Nyeholt <marcus@symbiote.com.au>
  */
 class SetPropertyWorkflowAction extends WorkflowAction

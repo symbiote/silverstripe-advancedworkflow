@@ -49,6 +49,10 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ * @method SilverStripe\ORM\HasManyList<WorkflowAction> Actions()
+ * @method SilverStripe\ORM\ManyManyList<Group> Groups()
+ * @method SilverStripe\ORM\HasManyList<WorkflowInstance> Instances()
+ * @method SilverStripe\ORM\ManyManyList<Member> Users()
  */
 class WorkflowDefinition extends DataObject
 {

@@ -21,10 +21,12 @@ use SilverStripe\Security\Security;
  * the action(s) that occur while in that state. An action can then have
  * subsequent transitions out of the current state.
  *
- * @method WorkflowDefinition WorkflowDef()
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ * @method Member Member()
+ * @method SilverStripe\ORM\HasManyList<WorkflowTransition> Transitions()
+ * @method WorkflowDefinition WorkflowDef()
  */
 class WorkflowAction extends DataObject
 {

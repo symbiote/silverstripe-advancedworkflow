@@ -38,13 +38,15 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
  * button (eg 'apply for approval'). This creates a standalone object
  * that maintains the state of the workflow process.
  *
- * @method WorkflowDefinition Definition()
- * @method WorkflowActionInstance CurrentAction()
- * @method Member Initiator()
- *
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ * @method SilverStripe\ORM\HasManyList<WorkflowActionInstance> Actions()
+ * @method WorkflowActionInstance CurrentAction()
+ * @method WorkflowDefinition Definition()
+ * @method SilverStripe\ORM\ManyManyList<Group> Groups()
+ * @method Member Initiator()
+ * @method SilverStripe\ORM\ManyManyList<Member> Users()
  */
 class WorkflowInstance extends DataObject
 {
