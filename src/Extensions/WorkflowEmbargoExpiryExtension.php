@@ -35,6 +35,11 @@ if (!class_exists(QueuedJobDescriptor::class)) {
  *
  * @author marcus@symbiote.com.au
  * @license BSD License http://silverstripe.org/bsd-license/
+ *
+ * @method QueuedJobDescriptor PublishJob()
+ * @method QueuedJobDescriptor UnPublishJob()
+ *
+ * @extends DataExtension<DataObject&static>
  */
 class WorkflowEmbargoExpiryExtension extends DataExtension
 {
@@ -293,7 +298,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         if (!$this->owner->ID) {
             return;
         }
-        
+
         if ($this->owner->hasMethod('isPublishJobRunning') && $this->owner->isPublishJobRunning()) {
             return;
         }

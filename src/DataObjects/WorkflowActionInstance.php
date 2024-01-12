@@ -22,6 +22,10 @@ use SilverStripe\Security\Security;
  *
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @method WorkFlowInstance Workflow()
+ * @method WorkflowAction Baseaction()
+ * @method Member Member()
  */
 class WorkflowActionInstance extends DataObject
 {
@@ -181,7 +185,7 @@ class WorkflowActionInstance extends DataObject
      * If this action returns only one valid transition it will be immediately
      * followed; otherwise the user will decide which transition to follow.
      *
-     * @return ArrayList
+     * @return ArrayList<WorkflowTransition>
      */
     public function getValidTransitions()
     {

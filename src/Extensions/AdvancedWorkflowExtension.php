@@ -4,6 +4,7 @@ namespace Symbiote\AdvancedWorkflow\Extensions;
 
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\RequestHandler;
 use SilverStripe\Core\Extension;
 use SilverStripe\Core\Manifest\ModuleLoader;
 use SilverStripe\Forms\Form;
@@ -21,6 +22,8 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @extends Extension<RequestHandler>
  */
 class AdvancedWorkflowExtension extends Extension
 {
@@ -62,7 +65,6 @@ class AdvancedWorkflowExtension extends Extension
     public function updateEditForm(Form $form)
     {
         Requirements::javascript('symbiote/silverstripe-advancedworkflow:client/dist/js/advancedworkflow.js');
-        /** @var WorkflowService $service */
         $service = singleton(WorkflowService::class);
         /** @var DataObject|WorkflowApplicable $record */
         $record = $form->getRecord();
@@ -127,7 +129,6 @@ class AdvancedWorkflowExtension extends Extension
      */
     public function updateworkflow($data, Form $form, $request)
     {
-        /** @var WorkflowService $service */
         $service = singleton(WorkflowService::class);
         /** @var DataObject $record */
         $record = $form->getRecord();

@@ -19,6 +19,8 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\ORM\Queries\SQLSelect;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
@@ -41,6 +43,9 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
  * @method WorkflowDefinition Definition()
  * @method WorkflowActionInstance CurrentAction()
  * @method Member Initiator()
+ * @method HasManyList<WorkflowActionInstance> Actions()
+ * @method ManyManyList<Member> Users()
+ * @method ManyManyList<Group> Groups()
  *
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
@@ -287,7 +292,7 @@ class WorkflowInstance extends DataObject
     /**
      * Returns the field differences between the older version and current version of Target
      *
-     * @return ArrayList
+     * @return ArrayList<ArrayData>
      */
     public function getTargetDiff()
     {
@@ -481,7 +486,7 @@ class WorkflowInstance extends DataObject
      * Returns a list of all Members that are assigned to this instance, either directly or via a group.
      *
      * @todo   This could be made more efficient.
-     * @return ArrayList
+     * @return ArrayList<Member>
      */
     public function getAssignedMembers()
     {

@@ -17,12 +17,14 @@ use SilverStripe\Forms\GridField\GridFieldExportButton;
 use SilverStripe\Forms\GridField\GridFieldImportButton;
 use SilverStripe\Forms\GridField\GridFieldPaginator;
 use SilverStripe\ORM\ArrayList;
+use SilverStripe\ORM\DataList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
 use SilverStripe\View\Requirements;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Dev\WorkflowBulkLoader;
 use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldExportAction;
 use Symbiote\AdvancedWorkflow\Forms\GridField\GridFieldWorkflowRestrictedEditButton;
@@ -195,7 +197,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         }
 
         $this->extend('updateEditFormAfter', $form);
-        
+
         return $form;
     }
 
@@ -260,7 +262,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
      *
      * @param Member $member
      * @param string $fieldName The name of the gridfield that determines which dataset to return
-     * @return DataList
+     * @return ArrayList<WorkflowInstance>
      * @todo Add the ability to see embargo/expiry dates in report-gridfields at-a-glance if QueuedJobs module installed
      */
     public function userObjects(Member $user, $fieldName)
@@ -293,11 +295,12 @@ class AdvancedWorkflowAdmin extends ModelAdmin
         return $list;
     }
 
-    /*
+    /**
      * Return content-object data depending on which gridfeld is calling for it
      *
      * @param Member $user
      * @param string $fieldName
+     * @return DataList<WorkflowInstance>
      */
     public function getFieldDependentData(Member $user, $fieldName)
     {

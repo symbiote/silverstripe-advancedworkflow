@@ -26,6 +26,8 @@ use SilverStripe\Forms\TextField;
 use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\HasManyList;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
@@ -49,6 +51,11 @@ use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @method HasManyList<WorkflowAction> Actions()
+ * @method HasManyList<WorkflowInstance> Instances()
+ * @method ManyManyList<Member> Users()
+ * @method ManyManyList<Group> Groups()
  */
 class WorkflowDefinition extends DataObject
 {

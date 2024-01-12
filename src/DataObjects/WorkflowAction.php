@@ -12,6 +12,7 @@ use SilverStripe\Forms\TabSet;
 use SilverStripe\Forms\TextField;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\HasManyList;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
 use SilverStripe\Security\Security;
@@ -25,6 +26,10 @@ use SilverStripe\Security\Security;
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @method WorkflowDefinition WorkflowDef()
+ * @method Member Member()
+ * @method HasManyList<WorkflowTransition> Transitions()
  */
 class WorkflowAction extends DataObject
 {
