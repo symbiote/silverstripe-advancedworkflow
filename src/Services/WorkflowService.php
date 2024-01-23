@@ -15,6 +15,7 @@ use Symbiote\AdvancedWorkflow\Admin\WorkflowDefinitionImporter;
 use Symbiote\AdvancedWorkflow\Extensions\FileWorkflowApplicable;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition;
@@ -199,7 +200,7 @@ class WorkflowService implements PermissionProvider
     /**
      * Get all the workflow action instances for an item
      *
-     * @return DataList|null
+     * @return DataList<WorkflowActionInstance>|void
      */
     public function getWorkflowHistoryFor($item, $limit = null)
     {
@@ -212,7 +213,7 @@ class WorkflowService implements PermissionProvider
     /**
      * Get all the available workflow definitions
      *
-     * @return DataList
+     * @return DataList<WorkflowDefinition>
      */
     public function getDefinitions()
     {
@@ -297,11 +298,10 @@ class WorkflowService implements PermissionProvider
      * Get all the workflows that this user is responsible for
      *
      * @param Member $user The user to get workflows for
-     * @return ArrayList The list of workflow instances this user owns
+     * @return ArrayList<WorkflowInstance> The list of workflow instances this user owns
      */
     public function usersWorkflows(Member $user)
     {
-
         $groupIds = $user->Groups()->column('ID');
 
         $groupInstances = null;
@@ -339,7 +339,7 @@ class WorkflowService implements PermissionProvider
      * Get items that the passed-in user has awaiting for them to action
      *
      * @param Member $member
-     * @return DataList
+     * @return DataList<WorkflowInstance>
      */
     public function userPendingItems(Member $user)
     {
@@ -367,7 +367,7 @@ class WorkflowService implements PermissionProvider
      * Get items that the passed-in user has submitted for workflow review
      *
      * @param Member $member
-     * @return DataList
+     * @return DataList<WorkflowInstance>
      */
     public function userSubmittedItems(Member $user)
     {

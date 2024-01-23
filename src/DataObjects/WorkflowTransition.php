@@ -11,6 +11,7 @@ use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DataObject;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
 use SilverStripe\Security\Permission;
@@ -27,11 +28,14 @@ use Symbiote\AdvancedWorkflow\Forms\AWRequiredFields;
  * Therefore, any logic around whether the workflow can proceed should be
  * managed within this method.
  *
- * @method WorkflowAction Action()
- * @method WorkflowAction NextAction()
  * @author  marcus@symbiote.com.au
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @method WorkflowAction Action()
+ * @method WorkflowAction NextAction()
+ * @method ManyManyList<Member> Users()
+ * @method ManyManyList<Group> Groups()
  */
 class WorkflowTransition extends DataObject
 {
@@ -251,7 +255,7 @@ class WorkflowTransition extends DataObject
     /**
      * Returns a set of all Members that are assigned to this transition, either directly or via a group.
      *
-     * @return ArrayList
+     * @return ArrayList<Member>
      */
     public function getAssignedMembers()
     {

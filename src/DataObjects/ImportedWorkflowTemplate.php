@@ -11,6 +11,8 @@ use SilverStripe\ORM\DataObject;
  * @author  russell@silverstripe.com
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
+ *
+ * @method WorkflowDefinition Definition()
  */
 class ImportedWorkflowTemplate extends DataObject
 {

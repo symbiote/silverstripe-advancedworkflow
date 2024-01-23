@@ -8,6 +8,7 @@ use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\TreeMultiselectField;
 use SilverStripe\ORM\ArrayList;
 use SilverStripe\ORM\DB;
+use SilverStripe\ORM\ManyManyList;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
@@ -20,6 +21,9 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
  * @license    BSD License (http://silverstripe.org/bsd-license/)
  * @package    advancedworkflow
  * @subpackage actions
+ *
+ * @method ManyManyList<Member> Users()
+ * @method ManyManyList<Group> Groups()
  */
 class AssignUsersToWorkflowAction extends WorkflowAction
 {
@@ -87,7 +91,7 @@ SQL;
     /**
      * Returns a set of all Members that are assigned to this WorkflowAction subclass, either directly or via a group.
      *
-     * @return ArrayList
+     * @return ArrayList<Member>
      */
     public function getAssignedMembers()
     {
