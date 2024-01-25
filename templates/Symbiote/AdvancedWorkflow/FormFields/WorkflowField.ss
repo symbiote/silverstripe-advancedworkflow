@@ -30,13 +30,13 @@
                     <h4>$Title</h4>
 
                     <div class="workflow-field-action-buttons btn-group">
-                        <a class="btn btn-outline-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.ActionLink('item',$ID,'edit')" data-icon="pencil">
+                        <a class="btn btn-outline-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.ActionLink('item',$ID,'edit')">
                             <%t WorkflowField.EditAction "Edit" %>
                         </a>
-                        <a class="btn btn-outline-secondary workflow-field-open-dialog <% if $canAddTransition %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.TransitionLink('new',$ID,'edit')" data-icon="chain--arrow">
+                        <a class="btn btn-outline-secondary workflow-field-open-dialog <% if $canAddTransition %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.TransitionLink('new',$ID,'edit')">
                             <%t WorkflowField.AddTransitionAction "Add Transition" %>
                         </a>
-                        <a href="$Top.ActionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="btn btn-outline-secondary workflow-field-delete<% if $canDelete %><% else %> workflow-field-action-disabled<% end_if %>" data-icon="cross-circle">
+                        <a href="$Top.ActionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="btn btn-outline-secondary workflow-field-delete<% if $canDelete %><% else %> workflow-field-action-disabled<% end_if %>">
                             <%t WorkflowField.DeleteAction "Delete" %>
                         </a>
                     </div>

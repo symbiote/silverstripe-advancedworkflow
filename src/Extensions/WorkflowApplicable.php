@@ -261,7 +261,6 @@ class WorkflowApplicable extends DataExtension
                             // and will be displayed as a major action.
                             if (!$addedFirst) {
                                 $addedFirst = true;
-                                $action->setAttribute('data-icon', 'navigation');
                                 $majorActions = $actions->fieldByName('MajorActions');
                                 $majorActions ? $majorActions->push($action) : $actions->push($action);
                             } else {
