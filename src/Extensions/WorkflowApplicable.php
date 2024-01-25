@@ -270,7 +270,7 @@ class WorkflowApplicable extends DataExtension
                     }
                     // Only display menu if actions pushed to it
                     if ($tab->Fields()->exists()) {
-                        $menu->insertBefore($tab, 'MoreOptions');
+                        $menu->insertBefore('MoreOptions', $tab);
                     }
                 }
             }
