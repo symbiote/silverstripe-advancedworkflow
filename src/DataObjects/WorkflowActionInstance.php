@@ -23,8 +23,8 @@ use SilverStripe\Security\Security;
  * @license BSD License (http://silverstripe.org/bsd-license/)
  * @package advancedworkflow
  *
- * @method WorkFlowInstance Workflow()
- * @method WorkflowAction Baseaction()
+ * @method WorkflowInstance Workflow()
+ * @method WorkflowAction BaseAction()
  * @method Member Member()
  */
 class WorkflowActionInstance extends DataObject
