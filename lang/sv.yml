@@ -27,6 +27,7 @@ sv:
     has_one_Member: Medlem
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
     db_Comment: Kommentar
+    db_Finished: Slutförd
     has_one_Member: Medlem
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     db_Description: Beskrivning
@@ -51,6 +52,7 @@ sv:
     COMMENT: Kommentar
     CommentLabel: Kommentar
     FRONTENDCOMMENT: Kommentar
+    FinishedLabel: Slutförd
     TITLE: Titel
     TypeLabel: Typ
   WorkflowActionInstance:
@@ -58,6 +60,8 @@ sv:
   WorkflowDefinition:
     DESCRIPTION: Beskrivning
     TITLE: Titel
+  WorkflowEmbargoExpiryExtension:
+    BADGE_UNPUBLISH: 'Går ut'
   WorkflowField:
     CreateLabel: Skapa
     DeleteAction: Radera
