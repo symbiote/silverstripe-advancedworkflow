@@ -48,6 +48,9 @@ sk:
     db_Type: Typ
     many_many_Groups: Skupiny
     many_many_Users: Používatelia
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
+    has_one_WorkflowDefinition: 'Definícia pracovného toku'
+    many_many_AdditionalWorkflowDefinitions: 'Ďalšie definície pracovného toku'
   WorkflowAction:
     Author: Autor
     COMMENT: Komentár

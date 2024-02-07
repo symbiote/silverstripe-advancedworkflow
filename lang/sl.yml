@@ -6,14 +6,25 @@ sl:
   AssignUsersToWorkflowAction:
     GROUPS: Skupine
     USERS: Uporabniki
+  NotifyUsersWorkflowAction:
+    EMAILFROM: 'Pošiljatelj e-sporočila'
+    EMAILSUBJECT: 'Predmet e-sporočila'
+    EMAILTEMPLATE: 'Predloga e-sporočila'
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Skupine
     many_many_Users: Uporabniki
+  Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'Pošiljatelj e-sporočila'
+    db_EmailSubject: 'Predmet e-sporočila'
+    db_EmailTemplate: 'Predloga e-sporočila'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Vrednost
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
     db_Content: Vsebina
     db_Filename: 'Ime datoteke'
     db_Name: Ime
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction:
+    db_Sort: Razvrščanje
     db_Title: Naziv
     db_Type: Tip
     has_one_Member: Uporabnik
@@ -21,6 +32,7 @@ sl:
     has_one_Member: Uporabnik
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowDefinition:
     db_Description: Opis
+    db_Sort: Razvrščanje
     db_Title: Naziv
     has_many_Actions: Dejanja
     many_many_Groups: Skupine
@@ -31,10 +43,14 @@ sl:
     many_many_Groups: Skupine
     many_many_Users: Uporabniki
   Symbiote\AdvancedWorkflow\DataObjects\WorkflowTransition:
+    db_Sort: Razvrščanje
     db_Title: Naziv
     db_Type: Tip
     many_many_Groups: Skupine
     many_many_Users: Uporabniki
+  Symbiote\AdvancedWorkflow\Extensions\WorkflowApplicable:
+    has_one_WorkflowDefinition: 'Definicija uredniškega procesa'
+    many_many_AdditionalWorkflowDefinitions: 'Dodatne definicije uredniških procesov'
   WorkflowAction:
     Author: Avtor
     TITLE: Naziv
