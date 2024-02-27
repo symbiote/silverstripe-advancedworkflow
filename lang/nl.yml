@@ -7,6 +7,7 @@ nl:
     GROUPS: Groepen
     USERS: Gebruikers
   NotifyUsersWorkflowAction:
+    EMAILFROM: 'E-mail van'
     EMAILSUBJECT: E-mailonderwerp
     EMAILTEMPLATE: E-mailtemplate
     FORMATTINGHELP: 'Hulp met opmaak'
@@ -14,6 +15,7 @@ nl:
     many_many_Groups: Groepen
     many_many_Users: Gebruikers
   Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'E-mail van'
     db_EmailSubject: E-mailonderwerp
     db_EmailTemplate: E-mailtemplate
   Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
