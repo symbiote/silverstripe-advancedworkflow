@@ -10,8 +10,8 @@ use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\AdvancedWorkflow\Extensions\WorkflowEmbargoExpiryExtension;
 use Symbiote\AdvancedWorkflow\Jobs\WorkflowPublishTargetJob;
-use Symbiote\QueuedJob\Services\AbstractQueuedJob;
-use Symbiote\QueuedJob\Services\QueuedJobService;
+use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 /**
  * Unpublishes an item

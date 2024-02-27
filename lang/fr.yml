@@ -7,12 +7,18 @@ fr:
     GROUPS: Groupes
     USERS: Utilisateurs
   NotifyUsersWorkflowAction:
+    EMAILFROM: 'Email de'
     EMAILSUBJECT: 'Sujet de l''email'
+    EMAILTEMPLATE: 'Modèle d''e-mail'
   Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction:
     many_many_Groups: Groupes
     many_many_Users: Utilisateurs
   Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction:
+    db_EmailFrom: 'Email de'
     db_EmailSubject: 'Sujet de l''email'
+    db_EmailTemplate: 'Modèle d''e-mail'
+  Symbiote\AdvancedWorkflow\Actions\SetPropertyWorkflowAction:
+    db_Value: Valeur
   Symbiote\AdvancedWorkflow\DataObjects\ImportedWorkflowTemplate:
     db_Content: Contenu
     db_Filename: 'Nom du fichier'
