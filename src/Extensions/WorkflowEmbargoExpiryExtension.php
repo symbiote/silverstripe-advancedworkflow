@@ -5,6 +5,7 @@ namespace Symbiote\AdvancedWorkflow\Extensions;
 use SilverStripe\Control\Controller;
 use SilverStripe\Core\Injector\Injector;
 use SilverStripe\Core\Manifest\ModuleLoader;
+use SilverStripe\Dev\Deprecation;
 use SilverStripe\Forms\FieldList;
 use SilverStripe\Forms\DatetimeField;
 use SilverStripe\Forms\HeaderField;
@@ -382,7 +383,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         }
     }
 
-    /*
+    /**
      * Define an array of message-parts for use by {@link getIntroMessage()}
      *
      * @param string $key
@@ -413,7 +414,7 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         return $parts[$key];
     }
 
-    /*
+    /**
      * Display some messages to the user, a little more complex that a simple one-liner
      *
      * @param string $key
@@ -427,11 +428,13 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
         return $msg;
     }
 
-    /*
+    /**
      * Validate
+     * @deprecated 6.4.0 Will be replaced with updateCMSCompositeValidator()
      */
     public function getCMSValidator()
     {
+        Deprecation::noticeWithNoReplacment('6.4.0', 'Will be replaced with updateCMSCompositeValidator()');
         $required = new AWRequiredFields();
         $required->setCaller($this);
         return $required;
