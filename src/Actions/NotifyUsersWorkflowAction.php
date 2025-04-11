@@ -15,9 +15,9 @@ use SilverStripe\Security\Member;
 use SilverStripe\Security\Security;
 use SilverStripe\View\ArrayData;
 use SilverStripe\View\SSViewer;
-use Swift_RfcComplianceException;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
+use Symfony\Component\Mime\Exception\RfcComplianceException;
 
 /**
  * A workflow action that notifies users attached to the workflow path that they have a task awaiting them.
@@ -151,7 +151,7 @@ class NotifyUsersWorkflowAction extends WorkflowAction
                 $email = Email::create();
                 try {
                     $email->setTo($member->Email);
-                } catch (Swift_RfcComplianceException $exception) {
+                } catch (RfcComplianceException) {
                     // If the email address isn't valid we should skip it rather than break
                     // the rest of the processing
                     continue;
