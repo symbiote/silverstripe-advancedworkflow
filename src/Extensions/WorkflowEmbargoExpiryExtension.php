@@ -381,7 +381,7 @@ class WorkflowEmbargoExpiryExtension extends Extension
         }
     }
 
-    /*
+    /**
      * Define an array of message-parts for use by {@link getIntroMessage()}
      *
      * @param string $key
@@ -412,7 +412,7 @@ class WorkflowEmbargoExpiryExtension extends Extension
         return $parts[$key];
     }
 
-    /*
+    /**
      * Display some messages to the user, a little more complex that a simple one-liner
      *
      * @param string $key
