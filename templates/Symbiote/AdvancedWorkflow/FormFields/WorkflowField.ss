@@ -5,8 +5,8 @@
     <div class="workflow-field-header">
         <h3>$Title</h3>
         <div class="workflow-field-create row">
-            <div class="col-lg-6">
-                <select class="col-lg-6 workflow-field-create-class no-change-track">
+            <div class="col-lg-6 workflow-field-create-container">
+                <select class="workflow-field-create-class no-change-track">
                     <option value="">
                         <%t WorkflowField.CreateAction "Create an action" %>&hellip;
                     </option>
@@ -14,7 +14,7 @@
                         <option value="$Top.ActionLink('new',$Class,'edit')">$Title</option>
                     <% end_loop %>
                 </select>
-                <button type="button" class="btn btn-primary btn-lg disabled workflow-field-do-create font-icon-plus">
+                <button type="button" class="btn btn-primary btn-lg disabled workflow-field-do-create workflow-field-do-create-button font-icon-plus">
                     <%t WorkflowField.CreateLabel "Create" %>
                 </button>
             </div>
