@@ -21,8 +21,16 @@
     }
   }
 
+  .workflow-field-create-container {
+    display: flex;
+  }
+
   .workflow-field-create {
     padding: calc($wf-grid / 2) $wf-grid;
+  }
+
+  .workflow-field-do-create-button {
+    flex: inherit;
   }
 
   .workflow-field-actions {
