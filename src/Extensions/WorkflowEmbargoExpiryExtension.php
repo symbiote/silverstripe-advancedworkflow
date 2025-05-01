@@ -430,11 +430,14 @@ class WorkflowEmbargoExpiryExtension extends DataExtension
 
     /**
      * Validate
-     * @deprecated 6.4.0 Will be replaced with updateCMSCompositeValidator()
+     * @deprecated 6.4.0 Will be replaced with updateCMSCompositeValidator() in a future major release
      */
     public function getCMSValidator()
     {
-        Deprecation::noticeWithNoReplacment('6.4.0', 'Will be replaced with updateCMSCompositeValidator()');
+        Deprecation::noticeWithNoReplacment(
+            '6.4.0',
+            'Will be replaced with updateCMSCompositeValidator() in a future major release'
+        );
         $required = new AWRequiredFields();
         $required->setCaller($this);
         return $required;
