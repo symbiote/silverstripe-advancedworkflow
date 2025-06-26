@@ -58,7 +58,7 @@ class WorkflowDefinitionExporter
     public function __construct($definitionID)
     {
         $this->setMember(Security::getCurrentUser());
-        $this->workflowDefinition = DataObject::get_by_id(WorkflowDefinition::class, $definitionID);
+        $this->workflowDefinition = WorkflowDefinition::get()->setUseCache(true)->byID($definitionID);
     }
 
     /**

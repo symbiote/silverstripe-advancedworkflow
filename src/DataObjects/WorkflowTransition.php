@@ -109,7 +109,7 @@ class WorkflowTransition extends DataObject
         $attachTo = $this->ActionID ? $this->ActionID : $reqParent;
 
         if ($attachTo) {
-            $action = DataObject::get_by_id(WorkflowAction::class, $attachTo);
+            $action = WorkflowAction::get()->setUseCache(true)->byID($attachTo);
             if ($action && $action->ID) {
                 $filter = '"WorkflowDefID" = '.((int) $action->WorkflowDefID);
             }

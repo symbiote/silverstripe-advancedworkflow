@@ -91,7 +91,7 @@ class WorkflowService implements PermissionProvider
             || $dataObject->hasExtension(FileWorkflowApplicable::class)
         ) {
             if ($dataObject->WorkflowDefinitionID) {
-                return DataObject::get_by_id(WorkflowDefinition::class, $dataObject->WorkflowDefinitionID);
+                return WorkflowDefinition::get()->setUseCache(true)->byID($dataObject->WorkflowDefinitionID);
             }
             if ($dataObject->hasMethod('useInheritedWorkflow') && !$dataObject->useInheritedWorkflow()) {
                 return null;
@@ -130,7 +130,7 @@ class WorkflowService implements PermissionProvider
                 || ($workflow = $object->AdditionalWorkflowDefinitions()->byID($workflowID))
             ) {
                 if (is_null($workflow)) {
-                    $workflow = DataObject::get_by_id(WorkflowDefinition::class, $workflowID);
+                    $workflow = WorkflowDefinition::get()->setUseCache(true)->byID($workflowID);
                 }
             }
         }
@@ -180,20 +180,19 @@ class WorkflowService implements PermissionProvider
 
         if ($item instanceof WorkflowAction) {
             $id = $item->WorkflowID;
-            return DataObject::get_by_id(WorkflowInstance::class, $id);
+            return WorkflowInstance::get()->setUseCache(true)->byID($id);
         } elseif (is_object($item) && ($item->hasExtension(WorkflowApplicable::class)
                 || $item->hasExtension(FileWorkflowApplicable::class))
         ) {
-            $filter = sprintf(
-                '"TargetClass" = \'%s\' AND "TargetID" = %d',
-                Convert::raw2sql(DataObject::getSchema()->baseDataClass($item)),
-                $item->ID
-            );
-            $complete = $includeComplete ? 'OR "WorkflowStatus" = \'Complete\' ' : '';
-            return DataObject::get_one(
-                WorkflowInstance::class,
-                $filter . ' AND ("WorkflowStatus" = \'Active\' OR "WorkflowStatus"=\'Paused\' ' . $complete . ')'
-            );
+            $statuses = ['Active', 'Paused'];
+            if ($includeComplete) {
+                $statuses[] = 'Complete';
+            }
+            return WorkflowInstance::get()->setUseCache(true)->filter([
+                'TargetClass' => DataObject::getSchema()->baseDataClass($item),
+                'TargetID' => $item->ID,
+                'WorkflowStatus' => $statuses,
+            ])->first();
         }
     }
 
@@ -235,7 +234,7 @@ class WorkflowService implements PermissionProvider
     public function executeTransition(DataObject $target, $transitionId)
     {
         $workflow   = $this->getWorkflowFor($target);
-        $transition = DataObject::get_by_id(WorkflowTransition::class, $transitionId);
+        $transition = WorkflowTransition::get()->setUseCache(true)->byID($transitionId);
 
         if (!$transition) {
             throw new Exception(_t('WorkflowService.INVALID_TRANSITION_ID', "Invalid transition ID $transitionId"));
