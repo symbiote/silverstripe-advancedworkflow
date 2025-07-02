@@ -420,7 +420,7 @@ class WorkflowTemplate
             if (isset($source['users']) && is_array($source['users'])) {
                 foreach ($source['users'] as $user) {
                     $email = Convert::raw2sql($user['email']);
-                    if ($_user = DataObject::get_one(Member::class, "Email = '".$email."'")) {
+                    if ($_user = Member::get()->setUseCache(true)->find('Email', $email)) {
                         $object->Users()->add($_user);
                     }
                 }
@@ -436,7 +436,7 @@ class WorkflowTemplate
             if (isset($source['groups']) && is_array($source['groups'])) {
                 foreach ($source['groups'] as $group) {
                     $title = Convert::raw2sql($group['title']);
-                    if ($_group = DataObject::get_one(Group::class, "Title = '".$title."'")) {
+                    if ($_group = Group::get()->setUseCache(true)->find('Title', $title)) {
                         $object->Groups()->add($_group);
                     }
                 }

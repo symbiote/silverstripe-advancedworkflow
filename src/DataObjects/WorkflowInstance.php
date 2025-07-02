@@ -271,7 +271,7 @@ class WorkflowInstance extends DataObject
                 )->byID($this->TargetID);
             }
             if (!$targetObject) {
-                $targetObject = DataObject::get_by_id($this->TargetClass, $this->TargetID);
+                $targetObject = DataObject::get($this->TargetClass)->setUseCache(true)->byID($this->TargetID);
             }
 
             return $targetObject;
@@ -467,7 +467,7 @@ class WorkflowInstance extends DataObject
 
         $action->actionComplete($transition);
 
-        $definition = DataObject::get_by_id(WorkflowAction::class, $transition->NextActionID);
+        $definition = WorkflowAction::get()->setUseCache(true)->byID($transition->NextActionID);
         $action = $definition->getInstanceForWorkflow();
         $action->WorkflowID   = $this->ID;
         $action->write();

@@ -5,6 +5,7 @@ namespace Symbiote\AdvancedWorkflow\Tests;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
 use Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction;
@@ -138,7 +139,7 @@ class WorkflowEngineTest extends SapphireTest
 
         $action->execute($instance);
 
-        $page = DataObject::get_by_id(SiteTree::class, $page->ID);
+        $page = SiteTree::get()->byID($page->ID);
         $this->assertTrue($page->isPublished());
     }
 
@@ -223,12 +224,12 @@ class WorkflowEngineTest extends SapphireTest
 
         // Test a user with lame permissions
         $memberID = $this->logInWithPermission('SITETREE_VIEW_ALL');
-        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
+        $member = Member::get()->byID($memberID);
         $this->assertFalse($def->canCreate($member));
 
         // Test a user with good permissions
         $memberID = $this->logInWithPermission('CREATE_WORKFLOW');
-        $member = DataObject::get_by_id('SilverStripe\\Security\\Member', $memberID);
+        $member = Member::get()->byID($memberID);
         $this->assertTrue($def->canCreate($member));
     }
 
@@ -263,7 +264,7 @@ class WorkflowEngineTest extends SapphireTest
         $instance->execute();
 
         // Check the content is assigned
-        $testPage = DataObject::get_by_id(SiteTree::class, $page->ID);
+        $testPage = SiteTree::get()->byID($page->ID);
         $this->assertEquals($instance->TargetID, $testPage->ID);
 
         // 3). Delete the workflow

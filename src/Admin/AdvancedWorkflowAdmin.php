@@ -275,7 +275,7 @@ class AdvancedWorkflowAdmin extends ModelAdmin
             }
             // @todo can we use $this->getDefinitionFor() to fetch the "Parent" definition of $instance? Maybe
             // define $this->workflowParent()
-            $effectiveWorkflow = DataObject::get_by_id(WorkflowDefinition::class, $instance->DefinitionID);
+            $effectiveWorkflow = WorkflowDefinition::get()->setUseCache(true)->byID($instance->DefinitionID);
             $target = $instance->getTarget();
             if (!is_object($effectiveWorkflow) || !$target) {
                 continue;

@@ -183,7 +183,7 @@ class WorkflowDefinition extends DataObject
         $this->Users()->removeAll();
         $this->Groups()->removeAll();
         $this->Actions()->each(function ($action) {
-            if ($orphan = DataObject::get_by_id(WorkflowAction::class, $action->ID)) {
+            if ($orphan = WorkflowAction::get()->setUseCache(true)->byID($action->ID)) {
                 $orphan->delete();
             }
         });

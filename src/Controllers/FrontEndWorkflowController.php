@@ -43,7 +43,7 @@ abstract class FrontEndWorkflowController extends Controller
         if (!$this->contextObj) {
             if ($id = $this->getContextID()) {
                 $cType = $this->getContextType();
-                $cObj = DataObject::get_by_id($cType, $id);
+                $cObj = DataObject::get($cType)->setUseCache(true)->byID($id);
                 if ($cObj) {
                     $this->contextObj = $cObj->canView() ? $cObj : null;
                 }
@@ -140,7 +140,7 @@ abstract class FrontEndWorkflowController extends Controller
     {
         $trans = null;
         if ($this->transitionID) {
-            $trans = DataObject::get_by_id(WorkflowTransition::class, $this->transitionID);
+            $trans = WorkflowTransition::get()->setUseCache(true)->byID($this->transitionID);
         }
         return $trans;
     }
