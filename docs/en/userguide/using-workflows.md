@@ -8,9 +8,9 @@ title: Using workflows
 Depending on the specific permissions content authors have, authors may only have the ability to create or edit content
 and to request publication, but not to actually publish content - making it publicly viewable - themselves.
 
- * **Content Author - Non-admin**: To request publication, press the "Apply for Approval" button (or equivalent,
+- **Content Author - Non-admin**: To request publication, press the "Apply for Approval" button (or equivalent,
  depending on how your workflow has been setup) in the same bottom menu of the Editing Pane.
- * **Content Publisher - Admin**: You will be asked to add a comment about your edits. This comment will become a part of the audit trail for your content, and we recommend adding this information.
+- **Content Publisher - Admin**: You will be asked to add a comment about your edits. This comment will become a part of the audit trail for your content, and we recommend adding this information.
 However, it is not enforced, and you can safely proceed while leaving this field blank.
 
 Depending on how your workflow is setup, users and/or groups configured with "approval" permissions will be alerted via
