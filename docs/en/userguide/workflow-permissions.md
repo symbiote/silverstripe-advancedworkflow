@@ -1,6 +1,7 @@
 ---
 title: Workflow permissions
 ---
+
 # Workflow permissions
 
 ## Adding groups and users
@@ -9,7 +10,7 @@ First of all, login to the CMS as an administrator. Ensure you have "Authors", "
 with a single user linked to each group (in the standard "Security" admin). Assign the six "Advanced Workflow"
 permissions to each group.
 
-## Workflow permissions
+## Workflow permissions {#workflow-permissions-2}
 
 This section describes the different permission that can be assigned to a user, group or role.
 
@@ -23,15 +24,15 @@ A user with this permission can create and change workflow definitions.
 
 A user with this permission can delete:
 
- * workflow definitions
- * workflow instances
+- workflow definitions
+- workflow instances
 
 That means, if a user needs to completely stop and delete an active workflow, they would need this permission.
 
 ### Apply workflow
 
 A user with this permission can choose which workflow should be used for an item. For instance, for a page this permission
-will allow the user to change the workflow in a drop down under the _Page > Settings > Workflow_ tab.
+will allow the user to change the workflow in a drop down under the *Page > Settings > Workflow* tab.
 
 ### View active workflows
 
