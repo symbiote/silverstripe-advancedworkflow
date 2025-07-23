@@ -1,8 +1,14 @@
-## Security
+---
+title: Security
+summary: Ehance security by restricting accessible parameters in email templates.
+icon: user-shield
+---
 
-### `whitelist_template_variables`
+# Security
 
-The `NotifyUsersWorkflowAction` workflow action has a configuration parameter, `whitelist_template_variables`.
+## `whitelist_template_variables`
+
+The [`NotifyUsersWorkflowAction`](api:Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction) workflow action has a configuration parameter, `whitelist_template_variables`.
 Currently this variable defaults to false in order to retain backwards compatibility. In a future major release it will
 be changed to default to true.
 

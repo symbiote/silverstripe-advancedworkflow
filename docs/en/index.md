@@ -1,15 +1,21 @@
-# Advanced Workflow documentation
+---
+title: Advanced Workflow
+summary: Create and apply approval workflows to content, with features like embargo/expiry and notifications
+icon: project-diagram
+---
 
-## Developer documentation
- - [Configuration](configuration.md)
- - [Security](security.md)
- 
-## User guide
- - [What is a workflow?](userguide/about-workflows.md)
- - [Using workflows](userguide/using-workflows.md)
- - [Setting up workflows](userguide/setting-up-workflows.md)
- - [Workflow users and permissions](userguide/workflow-permissions.md)
- - [Advanced workflow setup](userguide/workflow-advanced-setup.md)
- - [Exporting and importing workflows](userguide/workflow-export-import.md)
+# Advanced workflow
 
+The Advanced Workflow module allows you to create and apply approval workflows to content objects. This includes features such as setting embargo and expiry dates, and sending email notifications and reminders.
 
+## Installation
+
+```bash
+composer require symbiote/silverstripe-advancedworkflow
+```
+
+## GitHub repository
+
+<https://github.com/symbiote/silverstripe-advancedworkflow>
+
+[CHILDREN]
