@@ -455,7 +455,7 @@ class WorkflowInstance extends DataObject
         $action          = $this->CurrentAction();
         $allTransitions  = $action->BaseAction()->Transitions();
 
-        $valid = $allTransitions->find('ID', $transition->ID);
+        $valid = $allTransitions->filter('ID', $transition->ID)->exists();
         if (!$valid) {
             throw new Exception(
                 sprintf(_t(
@@ -585,7 +585,8 @@ class WorkflowInstance extends DataObject
         // This method primarily "protects" access to a WorkflowInstance, but assumes access only to be granted to
         // users assigned-to that WorkflowInstance. However; lowly authors (users entering items into a workflow) are
         // not assigned - but we still wish them to see their submitted content.
-        $inWorkflowGroupOrUserTables = ($member->inGroups($this->Groups()) || $this->Users()->find('ID', $member->ID));
+        $inWorkflowGroupOrUserTables = $this->Users()->filter('ID', $member->ID)->exists()
+            || $member->inGroups($this->Groups());
         // This method is used in more than just the ModelAdmin. Check for the current controller to determine where
         // canView() expectations differ
         if ($this->getTarget() && Controller::curr()->getAction() == 'index' && !$inWorkflowGroupOrUserTables) {

@@ -207,7 +207,7 @@ class WorkflowTransition extends DataObject
 
         // If not admin, check if the member is in the list of assigned members
         if (!Permission::check('ADMIN') && $members->exists()) {
-            if (!$members->find('ID', Security::getCurrentUser()->ID)) {
+            if (!$members->filter('ID', Security::getCurrentUser()->ID)->exists()) {
                 $return = false;
             }
         }
