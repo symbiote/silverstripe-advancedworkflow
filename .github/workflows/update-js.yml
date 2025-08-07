@@ -13,9 +13,9 @@ on:
           - 'prev-major-curr-minor'
           - 'curr-major-curr-minor'
           - 'curr-major-next-minor'
-  # At 7:35 AM UTC, on day 1, 2, and 3 of the month, only in February and August
+  # At 7:35 AM UTC, on day 1 of the month, only in February and August
   schedule:
-    - cron: '35 7 1,2,3 2,8 *'
+    - cron: '35 7 1 2,8 *'
 
 permissions: {}
 
