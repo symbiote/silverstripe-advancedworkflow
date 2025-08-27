@@ -14,7 +14,8 @@
                         <option value="$Top.ActionLink('new',$Class,'edit')">$Title</option>
                     <% end_loop %>
                 </select>
-                <button type="button" class="btn btn-primary btn-lg disabled workflow-field-do-create workflow-field-do-create-button font-icon-plus">
+                <button type="button" class="btn btn-primary btn-lg disabled workflow-field-do-create workflow-field-do-create-button">
+                    <span class="font-icon-plus" aria-hidden="true"></span>
                     <%t WorkflowField.CreateLabel "Create" %>
                 </button>
             </div>
@@ -56,10 +57,12 @@
                                     </div>
                                 </span>
                                 <div class="btn-group workflow-transition-actions">
-                                    <a href="$Top.TransitionLink('item', $ID, 'edit')" class="btn btn-secondary font-icon-edit workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>">
+                                    <a href="$Top.TransitionLink('item', $ID, 'edit')" class="btn btn-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>">
+                                        <span class="font-icon-edit" aria-hidden="true"></span>
                                         <span class="visually-hidden"><%t WorkflowField.EditAction "Edit" %></span>
                                     </a>
-                                    <a href="$Top.TransitionLink('item', $ID, 'delete')" data-securityid="$SecurityID" class="btn btn-secondary font-icon-trash workflow-field-delete<% if $canDelete %><% else %> workflow-field-action-disabled<% end_if %>">
+                                    <a href="$Top.TransitionLink('item', $ID, 'delete')" data-securityid="$SecurityID" class="btn btn-secondary workflow-field-delete<% if $canDelete %><% else %> workflow-field-action-disabled<% end_if %>">
+                                        <span class="font-icon-trash" aria-hidden="true"></span>
                                         <span class="visually-hidden"><%t WorkflowField.DeleteAction "Delete" %></span>
                                     </a>
                                 </div>
