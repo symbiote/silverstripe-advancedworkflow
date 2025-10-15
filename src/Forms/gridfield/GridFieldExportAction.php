@@ -110,7 +110,8 @@ class GridFieldExportAction extends AbstractGridFieldComponent implements
             "exportrecord",
             array('RecordID' => $record->ID)
         )
-            ->addExtraClass('btn btn--no-text btn--icon-md font-icon-export');
+            ->setIcon('export')
+            ->addExtraClass('btn btn--no-text btn--icon-md');
 
         $segment1 = Director::baseURL();
         $segment2 = Config::inst()->get(AdvancedWorkflowAdmin::class, 'url_segment');
