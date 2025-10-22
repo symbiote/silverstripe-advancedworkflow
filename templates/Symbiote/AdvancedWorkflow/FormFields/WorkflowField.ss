@@ -31,10 +31,16 @@
                     <h4>$Title</h4>
 
                     <div class="workflow-field-action-buttons btn-group">
-                        <a class="btn btn-outline-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.ActionLink('item',$ID,'edit')">
+                        <a class="btn btn-outline-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>"
+                            href="$Top.ActionLink('item',$ID,'edit')"
+                            data-modal-title="<%t WorkflowField.EditSpecificAction "Edit {action}" action=$Title.LowerCase %>"
+                        >
                             <%t WorkflowField.EditAction "Edit" %>
                         </a>
-                        <a class="btn btn-outline-secondary workflow-field-open-dialog <% if $canAddTransition %><% else %> workflow-field-action-disabled<% end_if %>" href="$Top.TransitionLink('new',$ID,'edit')">
+                        <a class="btn btn-outline-secondary workflow-field-open-dialog <% if $canAddTransition %><% else %> workflow-field-action-disabled<% end_if %>"
+                            href="$Top.TransitionLink('new',$ID,'edit')"
+                            data-modal-title="<%t WorkflowField.AddTransition "Add transition to {action}" action=$Title.LowerCase %>"
+                        >
                             <%t WorkflowField.AddTransitionAction "Add Transition" %>
                         </a>
                         <a href="$Top.ActionLink('item',$ID,'delete')" data-securityid="$SecurityID" class="btn btn-outline-secondary workflow-field-delete<% if $canDelete %><% else %> workflow-field-action-disabled<% end_if %>">
@@ -57,7 +63,10 @@
                                     </div>
                                 </span>
                                 <div class="btn-group workflow-transition-actions">
-                                    <a href="$Top.TransitionLink('item', $ID, 'edit')" class="btn btn-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>">
+                                    <a class="btn btn-secondary workflow-field-open-dialog<% if $canEdit %><% else %> workflow-field-action-disabled<% end_if %>"
+                                        href="$Top.TransitionLink('item', $ID, 'edit')"
+                                        data-modal-title="<%t WorkflowField.EditTransition "Edit transition {action}" action=$Title.LowerCase %>"
+                                    >
                                         <span class="font-icon-edit" aria-hidden="true"></span>
                                         <span class="visually-hidden"><%t WorkflowField.EditAction "Edit" %></span>
                                     </a>

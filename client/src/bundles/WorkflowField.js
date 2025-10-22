@@ -17,6 +17,7 @@ jQuery.entwine('workflow', ($) => {
         height: 600,
         modal: true,
         dialogClass: 'workflow-field-editor-dialog',
+        draggable: false,
       });
 
       this.getDialog().on('click', 'button', (event) => {
@@ -41,9 +42,10 @@ jQuery.entwine('workflow', ($) => {
       $('.workflow-field-editor-dialog').remove();
     },
 
-    showDialog(url) {
+    showDialog(url, title = null) {
       const dlg = this.getDialog();
 
+      dlg.empty().dialog('option', 'title', title);
       dlg.empty().dialog('open');
       dlg.parent().addClass('loading');
 
@@ -129,7 +131,7 @@ jQuery.entwine('workflow', ($) => {
       const field = this.closest('.workflow-field');
 
       if (sel.val()) {
-        field.showDialog(sel.val());
+        field.showDialog(sel.val(), i18n._t('Workflow.CreateWorkflow', 'Create workflow'));
       }
 
       return false;
@@ -138,7 +140,7 @@ jQuery.entwine('workflow', ($) => {
 
   $('.workflow-field .workflow-field-open-dialog').entwine({
     onclick() {
-      this.closest('.workflow-field').showDialog(this.prop('href'));
+      this.closest('.workflow-field').showDialog(this.prop('href'), this.data('modalTitle'));
       return false;
     },
   });
