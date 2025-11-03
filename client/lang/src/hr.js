@@ -1,4 +1,5 @@
 {
+    "Workflow.CreateWorkflow": "Kreiraj proces",
     "Workflow.DeleteQuestion": "Da li ste sigurni da želite trajno obrisati ovo?",
     "Workflow.EMBARGOMESSAGEDATE": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s u %s</a>",
