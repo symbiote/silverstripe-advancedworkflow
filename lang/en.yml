@@ -292,11 +292,14 @@ en:
     TabTitle: 'Publishing Schedule'
     UNPUBLISH_ON: 'Scheduled un-publish date'
   WorkflowField:
+    AddTransition: 'Add transition to {action}'
     AddTransitionAction: 'Add Transition'
     CreateAction: 'Create an action'
     CreateLabel: Create
     DeleteAction: Delete
     EditAction: Edit
+    EditSpecificAction: 'Edit {action}'
+    EditTransition: 'Edit transition {action}'
   WorkflowInstance:
     ActionLogTitle: Log
     EXECUTE_EXCEPTION: 'Attempted to start an invalid workflow instance #%s!'
