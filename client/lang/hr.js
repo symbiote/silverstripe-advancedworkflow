@@ -6,6 +6,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('hr', {
+    "Workflow.CreateWorkflow": "Kreiraj proces",
     "Workflow.DeleteQuestion": "Da li ste sigurni da želite trajno obrisati ovo?",
     "Workflow.EMBARGOMESSAGEDATE": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Spremljeni draft ove stranice će biti automatski objavljen <a>%s u %s</a>",
