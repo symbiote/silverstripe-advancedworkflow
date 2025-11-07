@@ -1,4 +1,5 @@
 {
+    "Workflow.CreateWorkflow": "Crear flujo de trabajo",
     "Workflow.DeleteQuestion": "¿Está seguro de querer borrar esto permanentemente?",
     "Workflow.EMBARGOMESSAGEDATE": "Los borradores guardados de esta página se publicarán automáticamente el <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Los borradores guardados de esta página se publicarán automáticamente el <a>%s a las %s</a>",

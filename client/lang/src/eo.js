@@ -1,4 +1,5 @@
 {
+    "Workflow.CreateWorkflow": "Krei laborfluon",
     "Workflow.DeleteQuestion": "Ĉi vi vere volas porĉiame forigi ĉi tiun dosieron?",
     "Workflow.EMBARGOMESSAGEDATE": "Konservitaj malnetoj de la paĝo aŭtomate publikiĝos je <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Konservitaj malnetoj de la paĝo aŭtomate publikiĝos ĉe <a>%s je %s</a>",
