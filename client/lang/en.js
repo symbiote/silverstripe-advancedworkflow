@@ -14,6 +14,6 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
     "Workflow.ProcessError": "Could not process workflow",
     "WorkflowField.AddTransition": "Add transition to {action}",
     "WorkflowField.EditSpecificAction": "Edit {action}",
-    "WorkflowField.EditTransition": "Edit transition {action}",
+    "WorkflowField.EditTransition": "Edit transition {action}"
 });
 }

@@ -6,6 +6,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('it', {
+    "Workflow.CreateWorkflow": "Crea flusso di lavoro",
     "Workflow.DeleteQuestion": "Si e' sicuri di voler eliminare definitivamente questo? ",
     "Workflow.EMBARGOMESSAGEDATE": "Le bozze salvate di questa pagina saranno auto pubblicate il <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Le bozze salvate di questa pagina saranno auto pubblicate il <a>%s alle %s</a>",

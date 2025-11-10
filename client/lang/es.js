@@ -6,6 +6,7 @@ if (typeof(ss) === 'undefined' || typeof(ss.i18n) === 'undefined') {
   }
 } else {
   ss.i18n.addDictionary('es', {
+    "Workflow.CreateWorkflow": "Crear flujo de trabajo",
     "Workflow.DeleteQuestion": "¿Está seguro de querer borrar esto permanentemente?",
     "Workflow.EMBARGOMESSAGEDATE": "Los borradores guardados de esta página se publicarán automáticamente el <a>%s</a>",
     "Workflow.EMBARGOMESSAGEDATETIME": "Los borradores guardados de esta página se publicarán automáticamente el <a>%s a las %s</a>",
