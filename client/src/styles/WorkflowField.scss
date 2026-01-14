@@ -3,6 +3,8 @@
   padding-bottom: 0;
 
   .workflow-field-header {
+    --focus-outline-color: var(--focus-outline-color-inverted);
+
     background: $med-blue;
     border: 1px solid rgba(0, 0, 0, .1);
     border-radius: $wf-radius $wf-radius 0 0;
@@ -67,6 +69,8 @@
     }
 
     .workflow-field-action-header {
+      --focus-outline-offset: 0;
+
       background: $light-blue;
       border: 1px solid $med-blue;
       border-left: 0;
