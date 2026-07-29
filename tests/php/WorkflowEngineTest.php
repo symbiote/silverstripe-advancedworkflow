@@ -5,6 +5,7 @@ namespace Symbiote\AdvancedWorkflow\Tests;
 use SilverStripe\CMS\Model\SiteTree;
 use SilverStripe\Dev\SapphireTest;
 use SilverStripe\ORM\DataObject;
+use SilverStripe\Security\Member;
 use SilverStripe\Versioned\Versioned;
 use Symbiote\AdvancedWorkflow\Actions\AssignUsersToWorkflowAction;
 use Symbiote\AdvancedWorkflow\Actions\NotifyUsersWorkflowAction;
@@ -140,6 +141,48 @@ class WorkflowEngineTest extends SapphireTest
 
         $page = DataObject::get_by_id(SiteTree::class, $page->ID);
         $this->assertTrue($page->isPublished());
+    }
+
+    /**
+     * The notification email template is author-controlled free text (a plain TextareaField with no
+     * escaping) rendered through the template engine. A `<%t %>` default string must never be evaluated
+     * as PHP — doing so is a remote code execution vector. This relies on the framework SSTemplateParser
+     * fix; this test guards against a regression of the NotifyUsersWorkflowAction render path.
+     */
+    public function testNotifyUsersTemplateDoesNotEvaluatePhp()
+    {
+        $this->logInWithPermission();
+
+        $rceFile = ASSETS_PATH . '/aw_rce_test.txt';
+        if (file_exists($rceFile ?? '')) {
+            unlink($rceFile ?? '');
+        }
+
+        $page = new SiteTree();
+        $page->Title = 'Notify target';
+        $page->write();
+
+        $member = new Member();
+        $member->Email = 'recipient@example.com';
+        $member->write();
+
+        $instance = new WorkflowInstance();
+        $instance->TargetClass = SiteTree::class;
+        $instance->TargetID = $page->ID;
+        $instance->write();
+        $instance->Users()->add($member);
+
+        $action = new NotifyUsersWorkflowAction();
+        $action->EmailSubject = 'Subject';
+        $action->EmailFrom = 'from@example.com';
+        $action->EmailTemplate = '<%t Foo "{${\'file_put_contents\'(\''
+            . $rceFile . '\',\'pwned\')}}" %>';
+        $action->write();
+
+        $action->execute($instance);
+
+        // The payload must not have been executed, so no file should have been written.
+        $this->assertFileDoesNotExist($rceFile);
     }
 
     public function testCreateDefinitionWithEmptyTitle()

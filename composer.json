@@ -21,7 +21,7 @@
     "require": {
         "php": "^8.1",
         "silverstripe/cms": "^5",
-        "silverstripe/framework": "^5",
+        "silverstripe/framework": "^5.4.30",
         "silverstripe/admin": "^2",
         "silverstripe/versioned": "^2",
         "symfony/yaml": "^6"
